@@ -2,10 +2,10 @@
 cls
 :start
 echo ###########################
-echo         USB TRACING
+echo     USB AND HID TRACING
 echo ###########################
 echo.
-echo 1) Start USB Tracing
+echo 1) Start Tracing
 echo 2) Stop Boot Session Trace
 echo 3) Cleanup Previous Session
 echo 4) Exit
@@ -13,15 +13,20 @@ echo.
 set /p selection=Enter selection number: 
 echo.
 if '%selection%'=='1' goto :starttracing
-if '%selection%'=='2' goto :stopboottracing
+if '%selection%'=='2' goto :stopboottracing_sethid
 if '%selection%'=='3' goto :cleanup
 if '%selection%'=='4' goto :end
 echo "%selection%" is not a valid option.  Please try again.
 echo.
 goto start
 
+:stopboottracing_sethid
+set usehid=1
+goto :stopboottracing
+
 :cleanup
 set cleanup=1
+set usehid=1
 echo.
 echo Cleaning up previous session.  Use this if the trace script
 echo was interrupted unexpectedly and a previous trace session is
@@ -32,7 +37,11 @@ goto :stopsession
 
 :starttracing
 set cleanup=0
-echo Start USB Tracing Options:
+set usehid=0
+set /p hid=Include HID? (y/n)
+if '%hid%'=='y' set usehid=1
+if '%hid%'=='Y' set usehid=1
+echo Start Tracing Options:
 echo 1) Start Now
 echo 2) Start Next Boot Session
 echo 3) Back
@@ -47,6 +56,15 @@ echo.
 goto starttracing
 
 :starttracingnow
+if '%usehid%'=='0' goto :startUSBnow
+logman create trace -n HID_WPP -o %SystemRoot%\Tracing\HID_WPP.etl -nb 128 640 -bs 128
+logman update trace -n HID_WPP -p {47c779cd-4efd-49d7-9b10-9f16e5c25d06} 0x7FFFFFFF 0xFF
+logman update trace -n HID_WPP -p {896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c} 0x7FFFFFFF 0xFF
+logman update trace -n HID_WPP -p {E742C27D-29B1-4E4B-94EE-074D3AD72836} 0x7FFFFFFF 0xFF
+logman update trace -n HID_WPP -p {07699FF6-D2C0-4323-B927-2C53442ED29B} 0x7FFFFFFF 0xFF
+logman update trace -n HID_WPP -p {0107cf95-313a-473e-9078-e73cd932f2fe} 0x7FFFFFFF 0xF
+logman start -n HID_WPP
+:startUSBnow
 logman create trace -n usbtrace -o %SystemRoot%\Tracing\usbtrace.etl -ct perf -nb 128 640 -bs 128
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBXHCI (Default,PartialDataBusTrace,StateMachine)
 logman update trace -n usbtrace -p Microsoft-Windows-USB-UCX (Default,PartialDataBusTrace,StateMachine)
@@ -69,6 +87,11 @@ pause
 echo.
 
 :stopsession
+if '%usehid%'=='0' goto :stopUSBSession
+logman stop -n HID_WPP
+logman delete -n HID_WPP
+move /Y %SystemRoot%\Tracing\HID_WPP_000001.etl %SystemRoot%\Tracing\HID_WPP.etl
+:stopUSBSession
 logman stop -n usbtrace
 logman delete -n usbtrace
 move /Y %SystemRoot%\Tracing\usbtrace_000001.etl %SystemRoot%\Tracing\usbtrace.etl
@@ -88,6 +111,14 @@ goto :livekernelreports
 
 :startboottracing
 echo Starting Boot Tracing
+if '%usehid%'=='0' goto :startUSBboot
+logman create trace autosession\HIDBootTrace -o HIDBootTrace.etl -nb 128 640 -bs 128 
+logman update trace autosession\HIDBootTrace -p {47c779cd-4efd-49d7-9b10-9f16e5c25d06} 0x7FFFFFFF 0xFF
+logman update trace autosession\HIDBootTrace -p {E742C27D-29B1-4E4B-94EE-074D3AD72836} 0x7FFFFFFF 0xFF
+logman update trace autosession\HIDBootTrace -p {896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c} 0x7FFFFFFF 0xFF
+logman update trace autosession\HIDBootTrace -p {07699FF6-D2C0-4323-B927-2C53442ED29B} 0x7FFFFFFF 0xFF
+logman update trace autosession\HIDBootTrace -p {0107cf95-313a-473e-9078-e73cd932f2fe} 0x7FFFFFFF 0xFF
+:startUSBboot
 logman create trace autosession\UsbBootTrace -o UsbBootTrace.etl -ets -nb 128 640 -bs 128 -f bincirc -max 50
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBXHCI Default
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-UCX Default,PartialDataBusTrace,StateMachine
@@ -100,10 +131,14 @@ goto :end
 
 :stopboottracing
 echo Stop Boot Session Trace
+if '%usehid%'=='0' goto :stopUSBboot
+logman stop HIDBootTrace
+logman delete autosession\HIDBootTrace -ets
+:stopUSBboot
 logman stop UsbBootTrace -ets
 logman delete autosession\UsbBootTrace -ets
 if '%cleanup%'=='1' goto :end
-echo Please collect log file UsbBootTrace.etl from the current directory for further analysis.
+echo Please collect log file boot trace file(s) from the current directory for further analysis.
 goto :livekernelreports
 
 :livekernelreports

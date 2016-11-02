@@ -10,3 +10,5 @@
 
 See the Microsoft Windows USB Core Team Blog for additional information on USB tracing: http://aka.ms/usblogs
 
+Click here to download the BUS IO Tools package as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip
+

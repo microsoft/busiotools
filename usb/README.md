@@ -1,7 +1,7 @@
-#USB & HID Diagnostics
+# USB & HID Diagnostics
 
-##usbtrace.cmd
-###Capture Traces
+## usbtrace.cmd
+### Capture Traces
 - Run usbtrace.cmd from an elevated command prompt
 - At the first menu list, select "Start Tracing"
 - Optionally enable HID tracing at the next prompt

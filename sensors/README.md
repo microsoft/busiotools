@@ -16,3 +16,11 @@
 6) Collect the traces and build information from C:\Windows\tracing
 
 Click here to download the BUS IO Tools package as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip
+
+# Brightness
+The following are only supported on systems which support changing display brightness.
+
+## Reactivity testing
+1. Open an elevated PowerShell window
+2. Run ReactivityScript.ps1
+3. The script will toggle your screen between bright and dim. Observe and make sure that the reaction time is quick.

@@ -17,9 +17,9 @@ for($i = 0; $i -lt 4; $i++) {
 
     Sleep -Seconds $ThinkTimeSeconds
 
-    Write-Host "Attempt setting brightness level @ Level[99] = " $BrightnessLevel[99]
+    Write-Host "Attempt setting brightness level @ Level[$BrightnessLevelsCount - 1] = " $BrightnessLevel[$BrightnessLevelsCount - 1]
 
-    $MonitorMethods.WmiSetBrightness(0, $BrightnessLevel[99])
+    $MonitorMethods.WmiSetBrightness(0, $BrightnessLevel[$BrightnessLevelsCount - 1])
 
     Sleep -Seconds $ThinkTimeSeconds
 }

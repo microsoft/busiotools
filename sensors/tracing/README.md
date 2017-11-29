@@ -26,4 +26,4 @@ The following are only supported on systems which support changing display brigh
 3. The script will toggle your screen between bright and dim. Observe and make sure that the reaction time is quick.
 
 ### Known limitations
-1. The reactivity testing script assumes that the device supports 101 levels of backlight. The script may fail if you do not. It is recommended that you support all 101 backlight for the best brightness experience.
+1. The reactivity testing script assumes that the device supports 101 levels of backlight. The script may fail if you do not. It is recommended that you support all 101 backlight levels (0 to 100 inclusive) for the best brightness experience.

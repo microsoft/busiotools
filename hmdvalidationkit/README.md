@@ -1,10 +1,8 @@
 # HMD Validation Kit Libraries
 
 ## Managed Libraries
-
-###HmdKit.cs
-
-###Usage:
+### HmdKit.cs
+### Usage:
 
 
 - Include HmdKit.cs in your automation app.

@@ -85,11 +85,11 @@
         
         /// Sends a command to the HMD Exerciser. The command should return within responseTime milliseconds. This overload doesn't have an output and the parameter is optional.
         /// Parameter "command"
-        /// The command to send to the HMD Kit. The command should be a part of the hmdKitCommand Dictionary.
+        ///     The command to send to the HMD Kit. The command should be a part of the hmdKitCommand Dictionary.
         /// Parameter "responseTime"
-        /// The time that the SendCommand method should wait for a response. This can be longer for commands that will take more time.
+        ///     The time that the SendCommand method should wait for a response. This can be longer for commands that will take more time.
         /// Parameter "parameter"
-        /// An optional parameter for commands that set USB ports, HDMI ports, etc. This will be appended to the command and sent to the HMD Kit.
+        ///     An optional parameter for commands that set USB ports, HDMI ports, etc. This will be appended to the command and sent to the HMD Kit.
         public void SendCommand(string command, int responseTime, string parameter = null)
         
         /// Sets the USB port that is connected to J1.

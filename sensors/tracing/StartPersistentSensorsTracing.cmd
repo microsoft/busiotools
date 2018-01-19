@@ -34,6 +34,9 @@ logman update trace -n autosession\SensorsTrace -p "{b12f2c9f-d3a1-447b-92f8-dca
 rem Windows V2 Sensors API
 logman update trace -n autosession\SensorsTrace -p "{096772ba-b6d9-4c54-b776-3d070efb40ec}" 0xffffffffffffffff 0xff -ets >nul
 logman start -n SensorsTrace -ets
+rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1
 echo Tracing has been setup.  
 echo ===========================================================
 echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing. 

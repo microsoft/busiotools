@@ -2,7 +2,7 @@
 
 SETLOCAL ENABLEDELAYEDEXPANSION
 
-CALL WHOAMI.EXE /GROUPS | FIND.EXE /I "S-1-16-12288" >nul
+CALL WHOAMI.EXE /GROUPS | FINDSTR.EXE /I "S-1-16-12288" >nul
 IF ERRORLEVEL 1 (
     ECHO This script must be run from an elevated prompt.
     ECHO Script will exit now....
@@ -29,6 +29,9 @@ rem Windows V1 Sensors API
 logman update trace SensorsTrace -p "{b12f2c9f-d3a1-447b-92f8-dca5f6c31429}" 0xffffffffffffffff 0xff -ets >nul
 rem Windows V2 Sensors API
 logman update trace SensorsTrace -p "{096772ba-b6d9-4c54-b776-3d070efb40ec}" 0xffffffffffffffff 0xff -ets >nul
+rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1
 echo Tracing has been started.  
 echo ===========================
 echo Repro your scenario now. Once complete, press any key to stop tracing.
@@ -40,4 +43,9 @@ echo Now collecting version info
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %SystemRoot%\Tracing\BuildNumber.txt
 powershell "(dir %SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll).VersionInfo | fl" >> %SystemRoot%\Tracing\BuildNumber.txt
 dir /s %SystemRoot%\LiveKernelReports\* >> %SystemRoot%\Tracing\BuildNumber.txt
+
+rem copying the WUDF traces
+copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %SystemRoot%\Tracing >nul 2>&1
+copy %ProgramData%\Microsoft\WDF\*.dmp %SystemRoot%\Tracing >nul 2>&1
+
 start %SystemRoot%\Tracing

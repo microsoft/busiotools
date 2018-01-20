@@ -30,8 +30,8 @@ logman update trace SensorsTrace -p "{b12f2c9f-d3a1-447b-92f8-dca5f6c31429}" 0xf
 rem Windows V2 Sensors API
 logman update trace SensorsTrace -p "{096772ba-b6d9-4c54-b776-3d070efb40ec}" 0xffffffffffffffff 0xff -ets >nul
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
-reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1
-reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
 echo Tracing has been started.  
 echo ===========================
 echo Repro your scenario now. Once complete, press any key to stop tracing.

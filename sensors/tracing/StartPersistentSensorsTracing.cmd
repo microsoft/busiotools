@@ -1,6 +1,7 @@
 @ECHO OFF
 
-SETLOCAL ENABLEDELAYEDEXPANSION
+IF EXIST c:\windows\system32\logman.exe (
+echo Running logging for desktop systems...
 
 CALL WHOAMI.EXE /GROUPS | FIND.EXE /I "S-1-16-12288" >nul
 IF ERRORLEVEL 1 (
@@ -35,10 +36,34 @@ rem Windows V2 Sensors API
 logman update trace -n autosession\SensorsTrace -p "{096772ba-b6d9-4c54-b776-3d070efb40ec}" 0xffffffffffffffff 0xff -ets >nul
 logman start -n SensorsTrace -ets
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
-reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1
-reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
 echo Tracing has been setup.  
 echo ===========================================================
 echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing. 
 echo ===========================================================
 pause
+
+) ELSE (
+
+echo Running logging for other systems...
+
+echo First stopping any duplicate traces that might already be running...
+tracelog -stop SensorsTrace >nul
+tracelog -remove SensorsTrace >nul
+echo Setting up traces...
+cd %SystemRoot%\Tracing\
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SensorsCx0102\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SensorsHIDClassDriver\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SdoV2\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
+tracelog -addautologger SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #c88b592b-6090-480f-a839-ca2434de5844 -flag 0x7fffffff -level 0xff >nul
+tracelog -start SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #c88b592b-6090-480f-a839-ca2434de5844 -flag 0x7fffffff -level 0xff >nul
+rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
+reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+echo Tracing has been setup.  
+echo ===========================================================
+echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing. 
+echo ===========================================================
+
+)

@@ -1,3 +1,4 @@
+
 @ECHO OFF
 
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -27,6 +28,7 @@ copy %ProgramData%\Microsoft\WDF\*.dmp %SystemRoot%\Tracing >nul 2>&1
 start %SystemRoot%\Tracing
 
 ) ELSE (
+
 echo Running logging for other systems...
 
 echo Stopping trace...

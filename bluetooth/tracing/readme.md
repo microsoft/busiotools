@@ -13,16 +13,15 @@ From an administrator command prompt:
 3. Reproduce the issue.
 4. Run as admin: "wpr.exe -stop bth_tracing.etl"
 
-*Note: This will not survice a reboot*
+*Note: This will not continue tracing after a reboot*
 
 ## Collecting logs across reboots
 From an administrator command prompt: 
 1. Run as admin: "wpr.exe -boottrace -addboot BluetoothStack.wprp"
 2. Reboot machine 
   * Trace is not running until you reboot the machine
-3. Toggle the Bluetooth radio off-on via the quick action menu or force a power cycle of the remote device (we want the connection information).
-4. Reproduce the issue - log will keep running across reboots until you stop it manually
-5. Run as admin: "wpr.exe -boottrace -stopboot bth_tracing.etl"
+3. Reproduce the issue - log will keep running across reboots until you stop it manually
+4. Run as admin: "wpr.exe -boottrace -stopboot bth_tracing.etl"
 
 ## Collecting logs for driver or setup issues
 * Attach c:\windows\inf\setupapi.*.log and c:\Windows\Panther\setupact.log and c:\windows\logs\windowsupdate\* to the bug.

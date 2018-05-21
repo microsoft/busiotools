@@ -40,3 +40,6 @@ rem Setting up IFR on bthhfaud
 
 rem Setting up IFR on bthhfhid
 @REG ADD "HKLM\System\CurrentControlSet\Services\bthhfhid\Parameters" /v "VerboseOn" /t  REG_DWORD /d 0x1 /f
+
+rem Setting up IFR on Microsoft_Bluetooth_AvrcpTransport
+@REG ADD "HKLM\System\CurrentControlSet\Services\Microsoft_bluetooth_avrcptransport\Parameters" /v "VerboseOn" /t  REG_DWORD /d 0x1 /f

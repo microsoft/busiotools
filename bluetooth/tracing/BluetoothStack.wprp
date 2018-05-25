@@ -44,6 +44,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose" Name="7355ca5c-21c2-4834-a8a0-3057011b4533" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHCM" Name="A9B5617D-6C0E-4ADC-B076-F3B0CDD4D0ED" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x0"/>
@@ -164,6 +169,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BTAG.Verbose" Name="B0F691EA-EF99-45A0-8AF4-2C2BCF7F67B8" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BTCM" Name="01695584-6993-48FC-8F14-45CEF52435D5" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -270,6 +280,11 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="Microsoft.WindowsPhone.Bluetooth.BthAVRCP" Name="77b174b4-c0fb-4f2c-96e1-e9771c435686" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.WindowsPhone.Bluetooth.BthAVRCP.Verbose" Name="77b174b4-c0fb-4f2c-96e1-e9771c435686" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -743,6 +758,9 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Gap.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Gatt.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Protocols.Att.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTAG.Verbose"/>
+            <EventProviderId Value="Microsoft.WindowsPhone.Bluetooth.BthAVRCP.Verbose"/>
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="Traces_nonpaged">

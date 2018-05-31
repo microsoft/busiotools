@@ -89,6 +89,11 @@
         <Keyword Value="0xffffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.DeviceEnumeration.Verbose" Name="1B42986F-288F-4DD7-B7F9-120297715C1E" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.FdBth" Name="1C5221CB-C1F6-4999-8136-501C2023E4CD" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -229,6 +234,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthWinRT.Verbose" Name="5acbeb5b-fd8c-45d4-83f1-c8ce2303763c" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.DAFBTH" Name="8bbe74b4-d9fc-4052-905e-92d01579e3f1" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -240,6 +250,11 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.DeviceAccess" Name="797E4878-22CF-452A-86FF-3872D880F93B" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.DeviceAccess.Verbose" Name="797E4878-22CF-452A-86FF-3872D880F93B" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -761,6 +776,9 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTAG.Verbose"/>
             <EventProviderId Value="Microsoft.WindowsPhone.Bluetooth.BthAVRCP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthWinRT.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.DeviceEnumeration.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceAccess.Verbose"/>
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="Traces_nonpaged">

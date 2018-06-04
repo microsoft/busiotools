@@ -244,6 +244,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.DAFBTH.Verbose" Name="8bbe74b4-d9fc-4052-905e-92d01579e3f1" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.DASBTH" Name="19E464A4-7408-49BD-B960-53446AE47820" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -779,6 +784,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthWinRT.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.DeviceEnumeration.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceAccess.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DAFBTH.Verbose"/>
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="Traces_nonpaged">

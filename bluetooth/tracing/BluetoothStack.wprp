@@ -766,36 +766,133 @@
         
       </Collectors>
     </Profile>
-
-    <!-- Inherit everything from above profile, just change the verbosity level for certain providers -->
-    <Profile Id="BluetoothStack.Verbose.Memory" Base="BluetoothStack.Light.Memory" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose">
+    
+    <Profile Id="BluetoothStack.Verbose.Memory" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose">
       <Collectors>
         <EventCollectorId Value="Traces_paged">
           <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTCMClientProvider"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHAG"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHCM"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthMAP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHOBEX"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthOPP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthPBAP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthPbapSvc"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthUXCPL"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.DeviceEnumeration.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.FdBth"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.ForkbeardCore.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.ForkbeardPolicy.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Dis.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Gap.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Gatt.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Protocols.Advertisement"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Protocols.Att.Verbose"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BluetoothAPIs"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTAG.Verbose"/>
-            <EventProviderId Value="Microsoft.WindowsPhone.Bluetooth.BthAVRCP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTCM"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthCsti"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHfSvc"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthMapSvc"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthOppManager"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPrint"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHRADIOMEDIA"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHSERV"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthSmtcMediaController"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHTELEMETRY"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthWinRT.Verbose"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.DeviceEnumeration.Verbose"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceAccess.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DAFBTH.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DASBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceAccess.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceBackgroundBroker"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Foundation"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTHLE"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Mjolnir"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ShellCPL"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WshBth"/>
+            <EventProviderId Value="Microsoft.WindowsPhone.Bluetooth.BthAVRCP.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Proximity"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.QuickPair"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.UserService"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.SDP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.AudioService"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Avrcp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Service"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Battery"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Common"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.QuickPair"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Proximity"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WinsockSocket"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ConsentUI"/>
+            <EventProviderId Value="Microsoft.Windows.Broker.InfrastructureWPP"/>
+            <EventProviderId Value="Microsoft.Windows.BrokerCommonWPP"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.SES"/>
+            <EventProviderId Value="Microsoft.Windows.AudioStackTrace"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.AudioPortClass"/>
+            <EventProviderId Value="Microsoft.Windows.AudioEngineVerbose"/>
+            <EventProviderId Value="Microsoft.WindowsPhone.AudioSrvPolicyManager"/>
+            <EventProviderId Value="Microsoft.WindowsPhone.PhoneAudioSes"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.DevicePairing"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.DevicesFlowDataModel"/>
+            <EventProviderId Value="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation"/>
+            <EventProviderId Value="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers"/>
+            <EventProviderId Value="Microsoft.Windows.Microsoft.WirelessDisplayWPP"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManager"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManagerApi"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DSUI"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceDriverRetrievalClient"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceMetadataRetrievalClient"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupStatusProvider"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DsmUserTask"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.FdDDO"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DevPropMgr"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceMetadataParsers"/>
+            <EventProviderId Value="Microsoft.Windows.DSM.DeviceSoftwareInstallationClient"/>
+            <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
           </EventProviders>
         </EventCollectorId>
+
         <EventCollectorId Value="Traces_nonpaged">
           <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPort.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.RFCOMM"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BtAmPm"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthAvrcp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Enumerator"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHFEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHL2CAP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthModem"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.bthusb.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthTelemetry"/>
+            <EventProviderId Value="Intel.Windows.Bluetooth.IBTUSB"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthPort"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
           </EventProviders>
         </EventCollectorId>
+
+        <EventCollectorId Value="Bthport_ETW">
+          <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT"/>
+          </EventProviders>
+        </EventCollectorId>
+        
       </Collectors>
     </Profile>
-
   </Profiles>
 </WindowsPerformanceRecorder>
 

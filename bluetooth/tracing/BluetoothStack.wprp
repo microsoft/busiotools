@@ -779,7 +779,7 @@
 
     <Profile Id="BluetoothStack.Light.File" LoggingMode="File" Base="BluetoothStack.Light.Memory" Name="BluetoothStack" DetailLevel="Light" Description="Bluetooth stack default profile"/>
 
-    <Profile Id="BluetoothStack.Verbose.Memory" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose">
+    <Profile Id="BluetoothStack.Verbose.File" LoggingMode="File" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose">
       <Collectors>
         <EventCollectorId Value="Traces_paged_verbose">
           <EventProviders>
@@ -906,7 +906,8 @@
       </Collectors>
     </Profile>
 
-    <Profile Id="BluetoothStack.Verbose.File" Base="BluetoothStack.Verbose.Memory" LoggingMode="File" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose"/>
+    <!-- We explicitly avoid defining the Verbose Memory profile since Verbose traces will rapidly fill the memory buffers. -->
+    <!--<Profile Id="BluetoothStack.Verbose.Memory" Base="BluetoothStack.Verbose.File" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose"/>-->
   </Profiles>
 </WindowsPerformanceRecorder>
 

@@ -8,7 +8,7 @@ wpr.exe /? will also give you more information.
 ## Collecting logs
 
 From an administrator command prompt: 
-1. Run as admin: "wpr.exe -start BluetoothStack.wprp"
+1. Run as admin: "wpr.exe -start BluetoothStack.wprp -filemode"
 2. Toggle the Bluetooth radio off-on via the quick action menu or force a power cycle of the remote device (we want the connection information).
 3. Reproduce the issue.
 4. Run as admin: "wpr.exe -stop bth_tracing.etl"
@@ -17,7 +17,7 @@ From an administrator command prompt:
 
 ## Collecting logs across reboots
 From an administrator command prompt: 
-1. Run as admin: "wpr.exe -boottrace -addboot BluetoothStack.wprp"
+1. Run as admin: "wpr.exe -boottrace -addboot BluetoothStack.wprp -filemode"
 2. Reboot machine 
   
   *Note: Trace is not running until you reboot the machine*

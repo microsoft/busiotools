@@ -18,6 +18,16 @@
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
     </EventCollector>
 
+    <EventCollector Id="Traces_paged_verbose" Name="Event Collector Paged (Verbose)">
+      <BufferSize Value="1024"/>
+      <Buffers Value="16"/>
+    </EventCollector>
+
+    <EventCollector Id="Traces_nonpaged_verbose" Name="Event Collector NonPaged (Verbose)">
+      <BufferSize Value="1024"/>
+      <Buffers Value="16"/>
+    </EventCollector>
+
     <EventCollector Id="Bthport_ETW" Name="Event Collector Bthport ETW">
       <BufferSize Value="1024"/>
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
@@ -766,10 +776,12 @@
         
       </Collectors>
     </Profile>
-    
+
+    <Profile Id="BluetoothStack.Light.File" LoggingMode="File" Base="BluetoothStack.Light.Memory" Name="BluetoothStack" DetailLevel="Light" Description="Bluetooth stack default profile"/>
+
     <Profile Id="BluetoothStack.Verbose.Memory" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose">
       <Collectors>
-        <EventCollectorId Value="Traces_paged">
+        <EventCollectorId Value="Traces_paged_verbose">
           <EventProviders>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTCMClientProvider"/>
@@ -858,7 +870,7 @@
           </EventProviders>
         </EventCollectorId>
 
-        <EventCollectorId Value="Traces_nonpaged">
+        <EventCollectorId Value="Traces_nonpaged_verbose">
           <EventProviders>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
@@ -893,6 +905,8 @@
         
       </Collectors>
     </Profile>
+
+    <Profile Id="BluetoothStack.Verbose.File" Base="BluetoothStack.Verbose.Memory" LoggingMode="File" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose"/>
   </Profiles>
 </WindowsPerformanceRecorder>
 

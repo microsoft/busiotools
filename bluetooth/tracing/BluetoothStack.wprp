@@ -334,7 +334,7 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.A2dp" Name="BFC64184-2044-4D88-B23B-C1DEFAA93DF4" Level="7" NonPagedMemory="false">
+    <EventProvider Id="Microsoft.Windows.Bluetooth.A2dpService" Name="BFC64184-2044-4D88-B23B-C1DEFAA93DF4" Level="7" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xfffffff"/>
       </Keywords>
@@ -504,11 +504,6 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="4" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0x0"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.Profiles.AVRCP" Name="B93FE5CC-2156-4427-AB7F-C487B1734F11" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -526,7 +521,22 @@
         <Keyword Value="0x0"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x0"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp.Verbose" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x0"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthA2DP" Name="B79B9C1F-2626-4D0C-9574-5CFCE4E793E6" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthA2DP.Verbose" Name="B79B9C1F-2626-4D0C-9574-5CFCE4E793E6" Level="5" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -697,7 +707,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.UserService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.SDP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.AudioService"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dpService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Avrcp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Service"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Battery"/>
@@ -731,7 +741,6 @@
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceMetadataParsers"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSoftwareInstallationClient"/>
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
           </EventProviders>
         </EventCollectorId>
@@ -740,6 +749,7 @@
           <EventProviders>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
@@ -826,7 +836,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.UserService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.SDP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.AudioService"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dpService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Avrcp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Service"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Battery"/>
@@ -860,7 +870,6 @@
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceMetadataParsers"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSoftwareInstallationClient"/>
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
           </EventProviders>
         </EventCollectorId>
@@ -869,7 +878,8 @@
           <EventProviders>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPort.Verbose"/>

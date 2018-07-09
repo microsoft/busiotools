@@ -17,6 +17,8 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Se
 logman start SensorsTrace -ets -o %SystemRoot%\Tracing\SensorsTrace.etl -nb 128 640 -bs 128 -f bincirc -max 250 >nul
 rem SensorsHid
 logman update trace SensorsTrace -p "{32e38bd8-ac95-4605-894e-a5d815ca0f3b}" 0xffffffffffffffff 0xff -ets >nul
+rem Hidi2c
+logman update trace SensorsTrace -p "{E742C27D-29B1-4E4B-94EE-074D3AD72836}" 0xffffffffffffffff 0xff -ets >nul
 rem SensorService and class extension
 logman update trace SensorsTrace -p "{c88b592b-6090-480f-a839-ca2434de5844}" 0xffffffffffffffff 0xff -ets >nul
 rem Desktop SensrSvc

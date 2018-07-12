@@ -36,6 +36,10 @@ rem Windows V2 Sensors API
 logman update trace -n autosession\SensorsTrace -p "{096772ba-b6d9-4c54-b776-3d070efb40ec}" 0xffffffffffffffff 0xff -ets >nul
 rem DES
 logman update trace -n autosession\SensorsTrace -p "{5875532E-B0C2-4954-A77E-5319D71F97B8}" 0xffffffffffffffff 0xff -ets >nul
+rem DEM
+logman update trace -n autosession\SensorsTrace -p "{DD902827-DD80-4244-ABFD-0289ADB05F31}" 0xffffffffffffffff 0xff -ets >nul
+rem DEO
+logman update trace -n autosession\SensorsTrace -p "{7AE1974C-262A-43C6-B1FA-58CB4E36084B}" 0xffffffffffffffff 0xff -ets >nul
 logman start -n SensorsTrace -ets
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1

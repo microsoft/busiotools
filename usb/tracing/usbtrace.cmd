@@ -64,6 +64,7 @@ logman update trace -n HID_WPP -p {896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c} 0x7FFFF
 logman update trace -n HID_WPP -p {E742C27D-29B1-4E4B-94EE-074D3AD72836} 0x7FFFFFFF 0xFF
 logman update trace -n HID_WPP -p {07699FF6-D2C0-4323-B927-2C53442ED29B} 0x7FFFFFFF 0xFF
 logman update trace -n HID_WPP -p {0107cf95-313a-473e-9078-e73cd932f2fe} 0x7FFFFFFF 0xF
+logman update trace -n HID_WPP -p {0a6b3bb2-3504-49c1-81d0-6a4b88b96427} 0x7FFFFFFF 0xF
 logman start -n HID_WPP
 :startUSBnow
 logman create trace -n usbtrace -o %SystemRoot%\Tracing\usbtrace.etl -ct perf -nb 128 640 -bs 128
@@ -85,6 +86,9 @@ logman start -ets usbport -ct perf -p {d75aedbe-cfcd-42b9-94ab-f47b224245dd} 0xf
 logman start -ets ucmcx -ct perf -p {C5964C90-1824-4835-857A-5E95F8AA33B2} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmcx.etl
 logman start -ets ucmtcpcicx -ct perf -p {8DEAEA72-4C63-49A4-9B8B-25DA24DAE056} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmtcpcicx.etl
 logman start -ets ucmucsi -ct perf -p {EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmucsi.etl
+logman start -ets ucsicx -ct perf -p {C500C63A-6EFE-433B-84A7-C0740D5DC97F} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucsicx.etl
+logman start -ets ucsicxacpi -ct perf -p {EDEF8E04-4E22-4A95-9D04-539EBD112A5E} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucsicxacpi.etl
+logman start -ets usbtask -ct perf -p {04b3644b-27ca-4cac-9243-29bed5c91cf9} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbtask.etl
 echo.
 echo Tracing started. Reproduce the issue and hit any key to stop tracing...
 pause
@@ -110,6 +114,9 @@ logman stop -ets usbport
 logman stop -ets ucmcx
 logman stop -ets ucmtcpcicx
 logman stop -ets ucmucsi
+logman stop -ets ucsicx
+logman stop -ets ucsicxacpi
+logman stop -ets usbtask
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %SystemRoot%\Tracing\BuildNumber.txt
 if '%cleanup%'=='1' goto :stopboottracing
 echo.

@@ -17,7 +17,7 @@ cd %SystemRoot%\Tracing\
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SensorsCx0102\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SensorsHIDClassDriver\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SdoV2\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
-logman create trace -n autosession\SensorsTrace -ow -o "%SystemRoot%\Tracing\SensorsTraces.etl" -ets -max 128 >nul
+logman create trace -n autosession\SensorsTrace -ow -o "%SystemRoot%\Tracing\SensorsTraces.etl" -ets -max 128 -f bincirc >nul
 rem SensorsHid
 logman update trace -n autosession\SensorsTrace -p "{32e38bd8-ac95-4605-894e-a5d815ca0f3b}" 0xffffffffffffffff 0xff -ets >nul
 rem Hidi2c

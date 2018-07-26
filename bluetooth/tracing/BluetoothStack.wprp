@@ -279,11 +279,6 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.HIDCLASS" Name="47c779cd-4efd-49d7-9b10-9f16e5c25d06" Level="4" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0x7fffffff"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.Mjolnir" Name="a5ac3157-27d5-4418-8510-c8f0dc1fe098" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -617,6 +612,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.HIDCLASS" Name="47c779cd-4efd-49d7-9b10-9f16e5c25d06" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.BthTelemetry" Name="D951CB3F-2CBA-4A1C-9436-6CF2E904DDE8" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x0"/>
@@ -697,7 +697,6 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceBackgroundBroker"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Foundation"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTHLE"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Mjolnir"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ShellCPL"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WshBth"/>
@@ -764,6 +763,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthModem"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.bthusb"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthTelemetry"/>
             <EventProviderId Value="Intel.Windows.Bluetooth.IBTUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthPort"/>

@@ -822,7 +822,6 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.DeviceBackgroundBroker"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Foundation"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTHLE"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Mjolnir"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ShellCPL"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WshBth"/>
@@ -892,6 +891,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthModem"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.bthusb.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthTelemetry"/>
             <EventProviderId Value="Intel.Windows.Bluetooth.IBTUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthPort"/>

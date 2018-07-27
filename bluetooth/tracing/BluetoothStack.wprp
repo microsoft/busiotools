@@ -34,11 +34,6 @@
     </EventCollector>
 
     <!-- Paged providers. They are kept separate for readability -->
-    <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0xffffffffffffffff"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTCMClientProvider" Name="B67069E7-206C-4e4c-80CE-4663560EA07F" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -496,6 +491,11 @@
     </EventProvider>
     
     <!-- Non Paged providers. They are kept separate for readability -->
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xffffffffffffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BTHMINI" Name="F0CB5D88-0C28-475A-8AE9-D3331ED861DE" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -658,7 +658,6 @@
       <Collectors>
         <EventCollectorId Value="Traces_paged">
           <EventProviders>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTCMClientProvider"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHAG"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP"/>
@@ -743,6 +742,7 @@
 
         <EventCollectorId Value="Traces_nonpaged">
           <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
@@ -787,7 +787,6 @@
       <Collectors>
         <EventCollectorId Value="Traces_paged_verbose">
           <EventProviders>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTCMClientProvider"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHAG"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthAVCTP.Verbose"/>
@@ -873,6 +872,7 @@
 
         <EventCollectorId Value="Traces_nonpaged_verbose">
           <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.Verbose"/>

@@ -1,5 +1,7 @@
-# Prerequisite
+# Prerequisites
 Click here to download the sensors tracing package (A.K.A. Bus IO tool) as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip
+
+Unzip the package locally and browse to the sensors\tracing subfolder
 
 # Sensors Diagnostics
 

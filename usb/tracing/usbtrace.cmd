@@ -90,6 +90,7 @@ logman start -ets ucsicx -ct perf -p {C500C63A-6EFE-433B-84A7-C0740D5DC97F} 0xff
 logman start -ets ucsicxacpi -ct perf -p {EDEF8E04-4E22-4A95-9D04-539EBD112A5E} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucsicxacpi.etl
 logman start -ets usbtask -ct perf -p {04b3644b-27ca-4cac-9243-29bed5c91cf9} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbtask.etl
 logman start -ets usbpmapi -ct perf -p {9c06e0ca-f00e-4ac3-a049-65663b654393} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbpmapi.etl
+logman start -ets usbcapi -ct perf -p {C1330B70-D01E-4AA6-B30D-B2BDAF228EC3} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbcapi.etl
 echo.
 echo Tracing started. Reproduce the issue and hit any key to stop tracing...
 pause
@@ -119,6 +120,7 @@ logman stop -ets ucsicx
 logman stop -ets ucsicxacpi
 logman stop -ets usbtask
 logman stop -ets usbpmapi
+logman stop -ets usbcapi
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %SystemRoot%\Tracing\BuildNumber.txt
 if '%cleanup%'=='1' goto :stopboottracing
 echo.

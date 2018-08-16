@@ -1,5 +1,8 @@
 # Sensor Tools and Diagnostics
 
+## Sensors tracing
+For sensors tracing, please browse to the "tracing" subdirectory.
+
 ## Directory of Sensor tools
 * MonitorBrightnessApp - Win32k sample for viewing sensor state 
     * [Source](MonitorBrightnessApp) 

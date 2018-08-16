@@ -1,3 +1,8 @@
+# Prerequisites
+Click here to download the sensors tracing package (A.K.A. Bus IO tool) as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip
+
+Unzip the package locally and browse to the sensors\tracing subfolder
+
 # Sensors Diagnostics
 
 1) Open an elevated command prompt
@@ -17,6 +22,3 @@ The following are only supported on systems which support changing display brigh
 
 ### Known limitations
 1. The reactivity testing script assumes that the device supports 101 levels of backlight. The script may fail if you do not. It is recommended that you support all 101 backlight levels (0 to 100 inclusive) for the best brightness experience.
-
-# Other
-Click here to download the BUS IO Tools package as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip

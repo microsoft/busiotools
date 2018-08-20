@@ -73,8 +73,8 @@ logman update trace -n usbtrace -p Microsoft-Windows-USB-UCX (Default,PartialDat
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB3 (Default,PartialDataBusTrace,StateMachine)
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBPORT
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB
-logman update trace -n usbtrace -p Microsoft-WindowsPhone-Ufx
-logman update trace -n usbtrace -p Microsoft-WindowsPhone-UfxSynopsys
+logman update trace -n usbtrace -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
+logman update trace -n usbtrace -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
 logman update trace -n usbtrace -p Microsoft-Windows-Kernel-IoTrace 0 2
 logman start -n usbtrace
 logman start -ets usbccgp -ct perf -p {bc6c9364-fc67-42c5-acf7-abed3b12ecc6} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbccgp.etl
@@ -149,8 +149,9 @@ logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-UCX Default
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB3 Default,PartialDataBusTrace,StateMachine
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBPORT
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB
-logman update autosession\UsbBootTrace -ets -p Microsoft-WindowsPhone-Ufx
-logman update autosession\UsbBootTrace -ets -p Microsoft-WindowsPhone-UfxSynopsys
+logman update autosession\UsbBootTrace -ets -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
+logman update autosession\UsbBootTrace -ets -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
+logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-Kernel-IoTrace 0 2
 
 echo.
 echo Please reboot your PC to enable tracing.

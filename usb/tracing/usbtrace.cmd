@@ -73,6 +73,8 @@ logman update trace -n usbtrace -p Microsoft-Windows-USB-UCX (Default,PartialDat
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB3 (Default,PartialDataBusTrace,StateMachine)
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBPORT
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB
+logman update trace -n usbtrace -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
+logman update trace -n usbtrace -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
 logman update trace -n usbtrace -p Microsoft-Windows-Kernel-IoTrace 0 2
 logman start -n usbtrace
 logman start -ets usbccgp -ct perf -p {bc6c9364-fc67-42c5-acf7-abed3b12ecc6} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbccgp.etl
@@ -83,6 +85,8 @@ logman start -ets ucx01000 -ct perf -p {6fb6e467-9ed4-4b73-8c22-70b97e22c7d9}  0
 logman start -ets usbxhci -ct perf -p {9F7711DD-29AD-C1EE-1B1B-B52A0118A54C} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbxhci.etl
 logman start -ets usbhub -ct perf -p {b10d03b8-e1f6-47f5-afc2-0fa0779b8188} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbhub.etl
 logman start -ets usbport -ct perf -p {d75aedbe-cfcd-42b9-94ab-f47b224245dd} 0xffffffff 0xff  -o %SystemRoot%\Tracing\usbport.etl
+logman start -ets ufx01000 -ct perf -p {468D9E9D-07F5-4537-B650-98389559206E} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ufx01000.etl
+logman start -ets ufxsynopsys -ct perf -p {8650230D-68B0-476E-93ED-634490DCE145} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ufxsynopsys.etl
 logman start -ets ucmcx -ct perf -p {C5964C90-1824-4835-857A-5E95F8AA33B2} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmcx.etl
 logman start -ets ucmtcpcicx -ct perf -p {8DEAEA72-4C63-49A4-9B8B-25DA24DAE056} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmtcpcicx.etl
 logman start -ets ucmucsi -ct perf -p {EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37} 0xffffffff 0xff  -o %SystemRoot%\Tracing\ucmucsi.etl
@@ -113,6 +117,8 @@ logman stop -ets ucx01000
 logman stop -ets usbxhci
 logman stop -ets usbhub
 logman stop -ets usbport
+logman stop -ets ufx01000
+logman stop -ets ufxsynopsys
 logman stop -ets ucmcx
 logman stop -ets ucmtcpcicx
 logman stop -ets ucmucsi
@@ -141,6 +147,12 @@ logman create trace autosession\UsbBootTrace -o UsbBootTrace.etl -ets -nb 128 64
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBXHCI Default
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-UCX Default,PartialDataBusTrace,StateMachine
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB3 Default,PartialDataBusTrace,StateMachine
+logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBPORT
+logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB
+logman update autosession\UsbBootTrace -ets -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
+logman update autosession\UsbBootTrace -ets -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
+logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-Kernel-IoTrace 0 2
+
 echo.
 echo Please reboot your PC to enable tracing.
 echo Run this script and select Stop Boot Session Trace to disable.

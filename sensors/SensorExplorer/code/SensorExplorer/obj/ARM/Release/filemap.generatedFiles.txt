@@ -1,0 +1,10 @@
+obj\ARM\Release\filemap.pri
+obj\ARM\Release\filemap.map.txt
+obj\ARM\Release\filemap.scale-100.pri
+obj\ARM\Release\filemap.scale-100.map.txt
+obj\ARM\Release\filemap.scale-125.pri
+obj\ARM\Release\filemap.scale-125.map.txt
+obj\ARM\Release\filemap.scale-150.pri
+obj\ARM\Release\filemap.scale-150.map.txt
+obj\ARM\Release\filemap.scale-400.pri
+obj\ARM\Release\filemap.scale-400.map.txt

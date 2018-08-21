@@ -1,0 +1,84 @@
+﻿<Page
+    x:Class="SensorExplorer.Scenario0Tests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="feedbackButton" Click="FeedbackButton">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE939;" FontFamily="Segoe MDL2 Assets"/>
+                        <TextBlock Text="Feedback" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Grid>
+                    <TextBlock x:Name="textBlockNoSensor" Grid.Row="2" Margin="16" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <Pivot x:Name="pivotSensor" IsTextScaleFactorEnabled="False"/>
+                </Grid>
+            </Grid>
+
+            <!-- Orientation test -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button x:Name="startButtonOrientation" Content="Start" Click="StartButtonOrientation" Margin="10" Height="85" Width="150" FontSize="36" Visibility="Collapsed"/>
+                <Button x:Name="restartButtonOrientation" Content="Restart" Click="RestartButton" Margin="10" Height="85" Width="150" FontSize="36" Visibility="Collapsed"/>
+                <Button x:Name="saveButtonOrientation" Content="Save log" Click="SaveFileButtonClick" Margin="10" Height="85" FontSize="36" Visibility="Collapsed"/>
+            </StackPanel>
+            <RelativePanel Margin="0,10,0,0">
+                <Ellipse x:Name="circle" Height="300" Width="300" StrokeThickness="2" Stroke="DeepSkyBlue" Visibility="Collapsed" RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+                <Path x:Name="arrowRight" Stretch="Fill" Fill="DeepSkyBlue" 
+                    Data="M 0,115 95,115 65,90 85,90 120,120 85,150 65,150 95,125 0,125 Z"
+                    HorizontalAlignment="Center"  Width="120" Height="120" Visibility="Collapsed"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                <Path x:Name="arrowLeft" Stretch="Fill" Fill="DeepSkyBlue" 
+                    Data="M 0,115 95,115 65,90 85,90 120,120 85,150 65,150 95,125 0,125 Z"
+                    HorizontalAlignment="Center"  Width="120" Height="120" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <Path.RenderTransform>
+                        <CompositeTransform Rotation="180"/>
+                    </Path.RenderTransform>
+                </Path>
+                <Path x:Name="arrowUp" Stretch="Fill" Fill="DeepSkyBlue" 
+                    Data="M 0,115 95,115 65,90 85,90 120,120 85,150 65,150 95,125 0,125 Z"
+                    HorizontalAlignment="Center"  Width="120" Height="120" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <Path.RenderTransform>
+                        <CompositeTransform Rotation="-90"/>
+                    </Path.RenderTransform>
+                </Path>
+                <Path x:Name="arrowDown" Stretch="Fill" Fill="DeepSkyBlue" 
+                    Data="M 0,115 95,115 65,90 85,90 120,120 85,150 65,150 95,125 0,125 Z"
+                    HorizontalAlignment="Center"  Width="120" Height="120" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <Path.RenderTransform>
+                        <CompositeTransform Rotation="90"/>
+                    </Path.RenderTransform>
+                </Path>
+            </RelativePanel>
+            <TextBlock x:Name="timerLogOrientation" Width="570" Margin="30,10,10,10"/>
+            <Image x:Name="imgCheckmark" Source="Images\greencheckmark.png" Margin="0,10,0,0" Height="120" Visibility="Collapsed"/>
+            <Image x:Name="imgX" Source="Images\redx.png" Margin="0,10,0,0" Height="120" Visibility="Collapsed" />
+            
+            <!-- Other tests -->
+            <TextBlock x:Name="instruction" FontSize="25" TextWrapping="Wrap" Margin="30,10,10,10"/>
+            <Button x:Name="startButton" Content="Start" HorizontalAlignment="Center" Click="StartButton" Height="85" Width="150" FontSize="36" Visibility="Collapsed"/>
+            <TextBlock x:Name="timerLog" FontSize="25" Margin="30,10,10,10"/>
+            <TextBlock x:Name="output" Margin="30,10,10,10"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="saveButton" Content="Save Log"  Click="SaveFileButtonClick" Height="85" Width="200" FontSize="30" Margin="10" Visibility="Collapsed"/>
+                <Button x:Name="restartButton" Content="Restart" Click="RestartButton" Height="85" Width="200" FontSize="30" Margin="10" Visibility="Collapsed"/>
+            </StackPanel>
+            <Button Name="cancelButton" Content="Cancel" HorizontalAlignment="Center" Click="CancelButton" Height="85" Width="200" FontSize="30" Margin="10" Visibility="Collapsed"/>
+        
+        </StackPanel>
+    </ScrollViewer>
+</Page>

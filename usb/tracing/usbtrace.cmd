@@ -59,6 +59,7 @@ goto starttracing
 :starttracingnow
 if '%usehid%'=='0' goto :startUSBnow
 logman create trace -n HID_WPP -o %SystemRoot%\Tracing\HID_WPP.etl -nb 128 640 -bs 128
+rem WPP: hidclass, hidusb, hidi2c, hidbth, HidOverGatt, hidspi
 logman update trace -n HID_WPP -p {47c779cd-4efd-49d7-9b10-9f16e5c25d06} 0x7FFFFFFF 0xFF
 logman update trace -n HID_WPP -p {896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c} 0x7FFFFFFF 0xFF
 logman update trace -n HID_WPP -p {E742C27D-29B1-4E4B-94EE-074D3AD72836} 0x7FFFFFFF 0xFF
@@ -73,6 +74,7 @@ logman update trace -n usbtrace -p Microsoft-Windows-USB-UCX (Default,PartialDat
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB3 (Default,PartialDataBusTrace,StateMachine)
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBPORT
 logman update trace -n usbtrace -p Microsoft-Windows-USB-USBHUB
+rem ETW: ufx01000 and ufxsynopsys
 logman update trace -n usbtrace -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
 logman update trace -n usbtrace -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
 logman update trace -n usbtrace -p Microsoft-Windows-Kernel-IoTrace 0 2
@@ -137,6 +139,7 @@ goto :livekernelreports
 echo Starting Boot Tracing
 if '%usehid%'=='0' goto :startUSBboot
 logman create trace autosession\HIDBootTrace -o HIDBootTrace.etl -nb 128 640 -bs 128 
+rem WPP: hidclass, hidusb, hidi2c, hidbth, HidOverGatt, hidspi
 logman update trace autosession\HIDBootTrace -p {47c779cd-4efd-49d7-9b10-9f16e5c25d06} 0x7FFFFFFF 0xFF
 logman update trace autosession\HIDBootTrace -p {E742C27D-29B1-4E4B-94EE-074D3AD72836} 0x7FFFFFFF 0xFF
 logman update trace autosession\HIDBootTrace -p {896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c} 0x7FFFFFFF 0xFF
@@ -149,9 +152,29 @@ logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-UCX Default
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB3 Default,PartialDataBusTrace,StateMachine
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBPORT
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-USB-USBHUB
+rem ETW: ufx01000 and ufxsynopsys
 logman update autosession\UsbBootTrace -ets -p {E98EBDBF-3058-4784-8521-47860B1D2B8E}
 logman update autosession\UsbBootTrace -ets -p {49B12C7C-4BD5-4F93-BB75-30FCE739600B}
 logman update autosession\UsbBootTrace -ets -p Microsoft-Windows-Kernel-IoTrace 0 2
+rem WPP: usbccgp, winusb, pci, usbhub3, ucx01000, usbxhci, usbhub, usbport, ufx01000, ufxsynopsys, ucmcx, ucmtcpcicx, ucmucsi, ucsicx, ucsicxacpi, usbtask, usbpmapil, usbcapi
+logman update autosession\UsbBootTrace -p {bc6c9364-fc67-42c5-acf7-abed3b12ecc6} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {ef201d1b-4e45-4199-9e9e-74591f447955} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {47711976-08c7-44ef-8fa2-082da6a30a30} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {6e6cc2c5-8110-490e-9905-9f2ed700e455} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {6fb6e467-9ed4-4b73-8c22-70b97e22c7d9} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {9F7711DD-29AD-C1EE-1B1B-B52A0118A54C} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {b10d03b8-e1f6-47f5-afc2-0fa0779b8188} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {d75aedbe-cfcd-42b9-94ab-f47b224245dd} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {468D9E9D-07F5-4537-B650-98389559206E} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {8650230D-68B0-476E-93ED-634490DCE145} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {C5964C90-1824-4835-857A-5E95F8AA33B2} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {8DEAEA72-4C63-49A4-9B8B-25DA24DAE056} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {C500C63A-6EFE-433B-84A7-C0740D5DC97F} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {EDEF8E04-4E22-4A95-9D04-539EBD112A5E} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {04b3644b-27ca-4cac-9243-29bed5c91cf9} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {9c06e0ca-f00e-4ac3-a049-65663b654393} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {C1330B70-D01E-4AA6-B30D-B2BDAF228EC3} 0xffffffff 0xff
 
 echo.
 echo Please reboot your PC to enable tracing.
@@ -160,15 +183,16 @@ echo.
 goto :end
 
 :stopboottracing
-echo Stop Boot Session Trace
 if '%usehid%'=='0' goto :stopUSBboot
+echo Stop HID Boot Session Trace. (Errors can be ignored if HID wasn't selected before.)
 logman stop HIDBootTrace
 logman delete autosession\HIDBootTrace -ets
 :stopUSBboot
+echo Stop USB Boot Session Trace
 logman stop UsbBootTrace -ets
 logman delete autosession\UsbBootTrace -ets
 if '%cleanup%'=='1' goto :end
-echo Please collect log file boot trace file(s) from the current directory for further analysis.
+echo Please collect boot trace file(s) from the current directory for further analysis.
 goto :livekernelreports
 
 :livekernelreports

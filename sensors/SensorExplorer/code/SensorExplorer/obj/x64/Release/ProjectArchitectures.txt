@@ -1,1 +1,0 @@
-C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_Develop\SensorExplorer\SensorExplorer\SensorExplorer.csproj;x64

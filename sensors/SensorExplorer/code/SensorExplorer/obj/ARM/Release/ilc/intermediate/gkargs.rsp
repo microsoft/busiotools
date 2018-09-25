@@ -1,7 +1,0 @@
-/In:"C:\Users\jialzhu\Desktop\SensorExplorer\SensorExplorer\obj\ARM\Release\ilc\in"
-/Lib:"C:\Users\jialzhu\Desktop\SensorExplorer\SensorExplorer\obj\ARM\Release\ilc\in"
-/Lib:"C:\Program Files (x86)\MSBuild\15.0\.Net\.NetNative\15.0.24211\ARM\ilc\lib\Private"
-/WinMD:"C:\Users\jialzhu\Desktop\SensorExplorer\SensorExplorer\obj\ARM\Release\ilc\in\WinMetadata\Windows.winmd"
-/VSTelemetrySessionSettings:{"AppId":1001,"AppInsightsInstrumentationKey":"f144292e-e3b2-4011-ac90-20e5c03fbce5","AsimovInstrumentationKey":"AIF-312cbd79-9dbb-4c48-a7da-3cc2a931cb70","HostName":"Dev14","Id":"c2c73135-b2fc-4531-b0ec-4b908226a4a7","IsOptedIn":true,"ProcessStartTime":636735086885671353,"UserId":"b5e6046f-7b61-46ff-89f1-5eb5a0ab2a84"}
-/RdXmlPath:"C:\Program Files (x86)\MSBuild\15.0\.Net\.NetNative\15.0.24211\LibraryXML"
-/RunOnlyPreDR

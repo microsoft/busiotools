@@ -8,11 +8,10 @@ namespace SensorExplorer
 {
     static class PeriodicTimer
     {
-        public static List<SensorData> SensorData = null;
-        public static List<SensorDisplay> SensorDisplay = null;
-
-        private static CoreDispatcher cd = Window.Current.CoreWindow.Dispatcher;
-        private static ThreadPoolTimer periodicTimer = null;
+        public static List<SensorData> sensorData = null;
+        public static List<SensorDisplay> sensorDisplay = null;
+        private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
+        private static ThreadPoolTimer _periodicTimer = null;
 
         /// <summary>
         /// Create a periodic timer that fires every time the period elapses.
@@ -21,83 +20,102 @@ namespace SensorExplorer
         /// </summary>
         public static void Create(int index)
         {
-            SensorData[index].ClearReading();
-            if (periodicTimer == null)
+            sensorData[index].ClearReading();
+            if (_periodicTimer == null)
             {
-                periodicTimer = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback), new TimeSpan(0, 0, 1));
+                _periodicTimer = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback), new TimeSpan(0, 0, 1));
+            }
+        }
+
+        public static void Cancel()
+        {
+            bool allOff = true;
+            for (int i = 0; i < sensorDisplay.Count; i++)
+            {
+                if (sensorDisplay[i]._isOn)
+                {
+                    allOff = false;
+                    break;
+                }
+            }
+
+            if (allOff && _periodicTimer != null)
+            {
+                _periodicTimer.Cancel();
+                _periodicTimer = null;
             }
         }
 
         private async static void PeriodicTimerCallback(ThreadPoolTimer timer)
         {
-            await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                for (int i = 0; i < SensorDisplay.Count; i++)
+                for (int i = 0; i < sensorDisplay.Count; i++)
                 {
-                    if (SensorDisplay[i].StackPanelSensor.Visibility == Visibility.Visible)
+                    if (sensorDisplay[i].StackPanelSensor.Visibility == Visibility.Visible)
                     {
-                        SensorDisplay[i].PlotCanvas.Plot(SensorData[i]);
-                        SensorDisplay[i].UpdateText(SensorData[i]);
+                        sensorDisplay[i]._plotCanvas.Plot(sensorData[i]);
+                        sensorDisplay[i].UpdateText(sensorData[i]);
                     }
 
                     // Update report interval
-                    if (SensorData[i].ReportIntervalChanged)
+                    if (sensorData[i]._reportIntervalChanged)
                     {
                         try
                         {
-                            if (SensorData[i].SensorType == Sensor.ACCELEROMETER)
+                            if (sensorData[i]._sensorType == Sensor.ACCELEROMETER)
                             {
-                                Sensor.AccelerometerStandardList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.AccelerometerStandardList[SensorData[i].Count].ReportInterval;
+                                Sensor.AccelerometerStandardList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.AccelerometerStandardList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.ACCELEROMETERLINEAR)
+                            else if (sensorData[i]._sensorType == Sensor.ACCELEROMETERLINEAR)
                             {
-                                Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval;
+                                Sensor.AccelerometerLinearList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.AccelerometerLinearList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.ACCELEROMETERGRAVITY)
+                            else if (sensorData[i]._sensorType == Sensor.ACCELEROMETERGRAVITY)
                             {
-                                Sensor.AccelerometerGravityList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.AccelerometerGravityList[SensorData[i].Count].ReportInterval;
+                                Sensor.AccelerometerGravityList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.AccelerometerGravityList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.COMPASS)
+                            else if (sensorData[i]._sensorType == Sensor.COMPASS)
                             {
-                                Sensor.CompassList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.CompassList[SensorData[i].Count].ReportInterval;
+                                Sensor.CompassList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.CompassList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.GYROMETER)
+                            else if (sensorData[i]._sensorType == Sensor.GYROMETER)
                             {
-                                Sensor.GyrometerList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.GyrometerList[SensorData[i].Count].ReportInterval;
+                                Sensor.GyrometerList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.GyrometerList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.INCLINOMETER)
+                            else if (sensorData[i]._sensorType == Sensor.INCLINOMETER)
                             {
-                                Sensor.InclinometerList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.InclinometerList[SensorData[i].Count].ReportInterval;
+                                Sensor.InclinometerList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.InclinometerList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.LIGHTSENSOR)
+                            else if (sensorData[i]._sensorType == Sensor.LIGHTSENSOR)
                             {
-                                Sensor.LightSensor.ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.LightSensor.ReportInterval;
+                                Sensor.LightSensor.ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.LightSensor.ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.ORIENTATIONSENSOR)
+                            else if (sensorData[i]._sensorType == Sensor.ORIENTATIONSENSOR)
                             {
-                                Sensor.OrientationAbsoluteList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.OrientationAbsoluteList[SensorData[i].Count].ReportInterval;
+                                Sensor.OrientationAbsoluteList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.OrientationAbsoluteList[sensorData[i]._count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.ORIENTATIONRELATIVE)
+                            else if (sensorData[i]._sensorType == Sensor.ORIENTATIONRELATIVE)
                             {
-                                Sensor.OrientationRelativeList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.OrientationRelativeList[SensorData[i].Count].ReportInterval;
+                                Sensor.OrientationRelativeList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.OrientationRelativeList[sensorData[i]._count].ReportInterval;
                             }
 
-                            SensorData[i].ReportIntervalChanged = false;
+                            sensorData[i]._reportIntervalChanged = false;
                         }
                         catch { }
 
                         // Update UI
-                        SensorDisplay[i].UpdateProperty(SensorData[i].DeviceId, SensorData[i].DeviceName, SensorData[i].ReportInterval, SensorData[i].MinReportInterval, SensorData[i].ReportLatency,
-                                                        SensorData[i].Category, SensorData[i].PersistentUniqueId, SensorData[i].Manufacturer, SensorData[i].Model, SensorData[i].ConnectionType);
+                        sensorDisplay[i].UpdateProperty(sensorData[i]._deviceId, sensorData[i]._deviceName, sensorData[i]._reportInterval, sensorData[i]._minReportInterval, sensorData[i]._reportLatency,
+                                                        sensorData[i]._category, sensorData[i]._persistentUniqueId, sensorData[i]._manufacturer, sensorData[i]._model, sensorData[i]._connectionType);
                     }
                 }
             });

@@ -1,2 +1,2 @@
-MainPackage=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_Develop\SensorExplorer\SensorExplorer\bin\x64\Release\SensorExplorer_1.0.7.0_x64.appx
-SymbolPackage=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_Develop\SensorExplorer\SensorExplorer\AppPackages\SensorExplorer_1.0.7.0_Test\SensorExplorer_1.0.7.0_x64.appxsym
+MainPackage=C:\Users\jialzhu\Desktop\SensorExplorer\SensorExplorer\bin\x64\Release\SensorExplorer_1.0.8.0_x64.appx
+SymbolPackage=C:\Users\jialzhu\Desktop\SensorExplorer\SensorExplorer\AppPackages\SensorExplorer_1.0.8.0_Test\SensorExplorer_1.0.8.0_x64.appxsym

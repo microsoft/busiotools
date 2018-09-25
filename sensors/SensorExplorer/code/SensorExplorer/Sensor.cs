@@ -20,6 +20,7 @@ namespace SensorExplorer
         public const int ORIENTATIONSENSOR = 7;
         public const int ORIENTATIONRELATIVE = 8;
         public const int ORIENTATIONGEOMAGNETIC = 9;
+
         public const int ACTIVITYSENSOR = 10;
         public const int ALTIMETER = 11;
         public const int BAROMETER = 12;
@@ -28,12 +29,18 @@ namespace SensorExplorer
         public const int PROXIMITYSENSOR = 15;
         public const int SIMPLEORIENTATIONSENSOR = 16;
 
+        public const int CO2SENSOR = 17;
+        public const int HEARTRATESENSOR = 18;
+        public const int HUMIDITYSENSOR = 19;
+        public const int UVSENSOR = 20;
+        public const int TEMPERATURESENSOR = 21;
+
         public const int ACTIVITYNONE = 2;
         public const int ACTIVITYNOTSUPPORTED = 3;
 
-        public static List<SensorData> SensorData;
-        public static List<SensorDisplay> SensorDisplay;
-    
+        public static List<SensorData> sensorData;
+        public static List<SensorDisplay> sensorDisplay;
+
         public static List<Accelerometer> AccelerometerStandardList;
         public static List<DeviceInformation> AccelerometerStandardDeviceInfo;
         public static List<Accelerometer> AccelerometerLinearList;
@@ -69,9 +76,11 @@ namespace SensorExplorer
         public static SimpleOrientationSensor SimpleOrientationSensor;
         public static DeviceInformation SimpleOrientationSensorDeviceInfo;
 
+        private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
+        private const int MINIMUMREPORTINTERVAL = 16;
+
         public static int currentId = -1;
-        private static CoreDispatcher cd = Window.Current.CoreWindow.Dispatcher;
-        
+
         public static async Task<bool> GetDefault()
         {
             AccelerometerStandardList = new List<Accelerometer>();
@@ -208,7 +217,7 @@ namespace SensorExplorer
             try
             {
                 // GetDeviceSelector() for LightSensor gives an exception
-                string lightSensorGetDeviceSelector = "System.Devices.InterfaceClassGuid:= \"{17A665C0-9063-4216-B202-5C7A255E18CE}\" AND System.Devices.InterfaceEnabled:= System.StructuredQueryType.Boolean#True";
+                String lightSensorGetDeviceSelector = "System.Devices.InterfaceClassGuid:= \"{17A665C0-9063-4216-B202-5C7A255E18CE}\" AND System.Devices.InterfaceEnabled:= System.StructuredQueryType.Boolean#True";
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(lightSensorGetDeviceSelector, Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -287,7 +296,7 @@ namespace SensorExplorer
             catch { }
             try
             {
-                string simpleOrientationSensorGetDeviceSelector = "System.Devices.InterfaceClassGuid:= \"{86A19291-0482-402C-BF4C-ADDAC52B1C39}\" AND System.Devices.InterfaceEnabled:= System.StructuredQueryType.Boolean#True";
+                String simpleOrientationSensorGetDeviceSelector = "System.Devices.InterfaceClassGuid:= \"{86A19291-0482-402C-BF4C-ADDAC52B1C39}\" AND System.Devices.InterfaceEnabled:= System.StructuredQueryType.Boolean#True";
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(simpleOrientationSensorGetDeviceSelector, Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -296,7 +305,6 @@ namespace SensorExplorer
                 }
             }
             catch { }
-
             return true;
         }
 
@@ -415,7 +423,7 @@ namespace SensorExplorer
                     connectionType = Constants.SensorConnectionTypes[int.Parse(AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
                 }
                 catch { }
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency,
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency,
                                                    category, persistentUniqueId, manufacturer, model, connectionType);
                 AccelerometerStandardList[index].ReadingChanged += Accelerometer_ReadingChanged;
             }
@@ -433,14 +441,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ACCELEROMETER)
+                if (sensorData[currentId]._sensorType == ACCELEROMETER)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -507,7 +515,7 @@ namespace SensorExplorer
                     connectionType = Constants.SensorConnectionTypes[int.Parse(AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
                 }
                 catch { }
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency,
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency,
                                               category, persistentUniqueId, manufacturer, model, connectionType);
                 AccelerometerLinearList[index].ReadingChanged += AccelerometerLinear_ReadingChanged;
             }
@@ -525,14 +533,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ACCELEROMETERLINEAR)
+                if (sensorData[currentId]._sensorType == ACCELEROMETERLINEAR)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -600,7 +608,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, category, persistentUniqueId, manufacturer, model, connectionType);
                 AccelerometerGravityList[index].ReadingChanged += AccelerometerGravity_ReadingChanged;
             }
         }
@@ -617,279 +625,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ACCELEROMETERGRAVITY)
+                if (sensorData[currentId]._sensorType == ACCELEROMETERGRAVITY)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
-                        });
-                    }
-                }
-            }
-            catch { }
-        }
-
-        private static void EnableActivitySensor(int index, int totalIndex)
-        {
-            if (ActivitySensorList[index] != null)
-            {
-                string deviceId = string.Empty;
-                string deviceName = string.Empty;
-                uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                try
-                {
-                    deviceId = ActivitySensorList[index].DeviceId;
-                }
-                catch { }
-                try
-                {
-                    minimumReportInterval = ActivitySensorList[index].MinimumReportInterval;
-                }
-                catch { }
-                try
-                {
-                    category = Constants.SensorCategories[ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
-
-                // subscribe to all supported activities
-                foreach (ActivityType activityType in ActivitySensorList[index].SupportedActivities)
-                {
-                    ActivitySensorList[index].SubscribedActivities.Add(activityType);
-                }
-
-                ActivitySensorList[index].ReadingChanged += ActivitySensor_ReadingChanged;
-            }
-        }
-
-        private static void DisableActivitySensor(int index)
-        {
-            if (ActivitySensorList[index] != null)
-            {
-                ActivitySensorList[index].ReadingChanged -= ActivitySensor_ReadingChanged;
-            }
-        }
-
-        private async static void ActivitySensor_ReadingChanged(object sender, ActivitySensorReadingChangedEventArgs e)
-        {
-            try
-            {
-                if (SensorData[currentId].SensorType == ACCELEROMETER)
-                {
-                    ActivitySensorReading reading = e.Reading;
-                    double[] activitySensorReadingConfidence = new double[] { ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED };
-                    foreach (ActivityType activityType in ActivitySensorList[currentId].SupportedActivities)
-                    {
-                        activitySensorReadingConfidence[Convert.ToInt32(activityType)] = ACTIVITYNONE;
-                    }
-                    activitySensorReadingConfidence[Convert.ToInt32(reading.Activity)] = Convert.ToDouble(reading.Confidence);
-
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, activitySensorReadingConfidence))
-                    {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
-                        });
-                    }
-                }
-            }
-            catch { }
-        }
-
-        private static void EnableAltimeter(int totalIndex)
-        {
-            if (Altimeter != null)
-            {
-                string deviceId = string.Empty;
-                string deviceName = string.Empty;
-                uint reportInterval = 0;
-                uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                try
-                {
-                    deviceId = Altimeter.DeviceId;
-                }
-                catch { }
-                try
-                {
-                    reportInterval = Altimeter.ReportInterval;
-                }
-                catch { }
-                try
-                {
-                    minimumReportInterval = Altimeter.MinimumReportInterval;
-                }
-                catch { }
-                try
-                {
-                    category = Constants.SensorCategories[AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
-                Altimeter.ReadingChanged += Altimeter_ReadingChanged;
-            }
-        }
-
-        private static void DisableAltimeter()
-        {
-            if (Altimeter != null)
-            {
-                Altimeter.ReadingChanged -= Altimeter_ReadingChanged;
-            }
-        }
-
-        private async static void Altimeter_ReadingChanged(object sender, AltimeterReadingChangedEventArgs e)
-        {
-            try
-            {
-                if (SensorData[currentId].SensorType == ALTIMETER)
-                {
-                    AltimeterReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AltitudeChangeInMeters }))
-                    {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
-                        });
-                    }
-                }
-            }
-            catch { }
-        }
-
-        private static void EnableBarometer(int index, int totalIndex)
-        {
-            if (BarometerList[index] != null)
-            {
-                string deviceId = string.Empty;
-                string deviceName = string.Empty;
-                uint reportInterval = 0;
-                uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                try
-                {
-                    deviceId = BarometerList[index].DeviceId;
-                }
-                catch { }
-                try
-                {
-                    reportInterval = BarometerList[index].ReportInterval;
-                }
-                catch { }
-                try
-                {
-                    minimumReportInterval = BarometerList[index].MinimumReportInterval;
-                }
-                catch { }
-                try
-                {
-                    category = Constants.SensorCategories[BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
-                BarometerList[index].ReadingChanged += Barometer_ReadingChanged;
-            }
-        }
-
-        private static void DisableBarometer(int index)
-        {
-            if (BarometerList[index] != null)
-            {
-                BarometerList[index].ReadingChanged -= Barometer_ReadingChanged;
-            }
-        }
-
-        private async static void Barometer_ReadingChanged(object sender, BarometerReadingChangedEventArgs e)
-        {
-            try
-            {
-                if (SensorData[currentId].SensorType == BAROMETER)
-                {
-                    BarometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.StationPressureInHectopascals }))
-                    {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -951,7 +694,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 CompassList[index].ReadingChanged += Compass_ReadingChanged;
             }
         }
@@ -968,16 +711,16 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == COMPASS)
+                if (sensorData[currentId]._sensorType == COMPASS)
                 {
                     CompassReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.HeadingMagneticNorth),
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.HeadingMagneticNorth),
                                                                                                        Convert.ToDouble(reading.HeadingTrueNorth),
                                                                                                        (int)reading.HeadingAccuracy }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1039,7 +782,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 GyrometerList[index].ReadingChanged += Gyrometer_ReadingChanged;
             }
         }
@@ -1056,14 +799,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == GYROMETER)
+                if (sensorData[currentId]._sensorType == GYROMETER)
                 {
                     GyrometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AngularVelocityX, reading.AngularVelocityY, reading.AngularVelocityZ }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AngularVelocityX, reading.AngularVelocityY, reading.AngularVelocityZ }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1124,7 +867,7 @@ namespace SensorExplorer
                     connectionType = Constants.SensorConnectionTypes[int.Parse(InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
                 }
                 catch { }
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 InclinometerList[index].ReadingChanged += Inclinometer_ReadingChanged;
             }
         }
@@ -1141,17 +884,17 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == INCLINOMETER)
+                if (sensorData[currentId]._sensorType == INCLINOMETER)
                 {
                     InclinometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.PitchDegrees,
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.PitchDegrees,
                                                                                                        reading.RollDegrees,
                                                                                                        reading.YawDegrees,
                                                                                                        (int)reading.YawAccuracy }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1212,7 +955,7 @@ namespace SensorExplorer
                     connectionType = Constants.SensorConnectionTypes[int.Parse(LightSensorDeviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
                 }
                 catch { }
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 LightSensor.ReadingChanged += LightSensor_ReadingChanged;
             }
         }
@@ -1229,15 +972,15 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == LIGHTSENSOR)
+                if (sensorData[currentId]._sensorType == LIGHTSENSOR)
                 {
                     LightSensorReading reading = e.Reading;
-                    Scenario1View.Scenario1.LogDataLightSensor(reading);
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.IlluminanceInLux }))
+                    Scenario1View.Current.LogDataLightSensor(reading);
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.IlluminanceInLux }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1299,7 +1042,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 OrientationAbsoluteList[index].ReadingChanged += OrientationSensor_ReadingChanged;
             }
         }
@@ -1316,10 +1059,10 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ORIENTATIONSENSOR)
+                if (sensorData[currentId]._sensorType == ORIENTATIONSENSOR)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1333,9 +1076,9 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1397,7 +1140,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 OrientationRelativeList[totalIndex].ReadingChanged += RelativeOrientationSensor_ReadingChanged;
             }
         }
@@ -1414,10 +1157,10 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ORIENTATIONRELATIVE)
+                if (sensorData[currentId]._sensorType == ORIENTATIONRELATIVE)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1431,9 +1174,9 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1495,7 +1238,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 OrientationGeomagneticList[totalIndex].ReadingChanged += OrientationGeomagnetic_ReadingChanged;
             }
         }
@@ -1512,10 +1255,10 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == ORIENTATIONRELATIVE)
+                if (sensorData[currentId]._sensorType == ORIENTATIONRELATIVE)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1529,9 +1272,274 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void EnableActivitySensor(int index, int totalIndex)
+        {
+            if (ActivitySensorList[index] != null)
+            {
+                string deviceId = string.Empty;
+                string deviceName = string.Empty;
+                uint minimumReportInterval = 0;
+                string category = string.Empty;
+                string persistentUniqueId = string.Empty;
+                string manufacturer = string.Empty;
+                string model = string.Empty;
+                string connectionType = string.Empty;
+                try
+                {
+                    deviceId = ActivitySensorList[index].DeviceId;
+                }
+                catch { }
+                try
+                {
+                    minimumReportInterval = ActivitySensorList[index].MinimumReportInterval;
+                }
+                catch { }
+                try
+                {
+                    category = Constants.SensorCategories[ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
+                }
+                catch { }
+                try
+                {
+                    persistentUniqueId = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    manufacturer = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    model = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    connectionType = Constants.SensorConnectionTypes[int.Parse(ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
+                }
+                catch { }
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+
+                // subscribe to all supported activities
+                foreach (ActivityType activityType in ActivitySensorList[index].SupportedActivities)
+                {
+                    ActivitySensorList[index].SubscribedActivities.Add(activityType);
+                }
+
+                ActivitySensorList[index].ReadingChanged += ActivitySensor_ReadingChanged;
+            }
+        }
+
+        private static void DisableActivitySensor(int index)
+        {
+            if (ActivitySensorList[index] != null)
+            {
+                ActivitySensorList[index].ReadingChanged -= ActivitySensor_ReadingChanged;
+            }
+        }
+
+        private async static void ActivitySensor_ReadingChanged(object sender, ActivitySensorReadingChangedEventArgs e)
+        {
+            try
+            {
+                if (sensorData[currentId]._sensorType == ACCELEROMETER)
+                {
+                    ActivitySensorReading reading = e.Reading;
+                    double[] activitySensorReadingConfidence = new double[] { ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED };
+                    foreach (ActivityType activityType in ActivitySensorList[currentId].SupportedActivities)
+                    {
+                        activitySensorReadingConfidence[Convert.ToInt32(activityType)] = ACTIVITYNONE;
+                    }
+                    activitySensorReadingConfidence[Convert.ToInt32(reading.Activity)] = Convert.ToDouble(reading.Confidence);
+
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, activitySensorReadingConfidence))
+                    {
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void EnableAltimeter(int totalIndex)
+        {
+            if (Altimeter != null)
+            {
+                string deviceId = string.Empty;
+                string deviceName = string.Empty;
+                uint reportInterval = 0;
+                uint minimumReportInterval = 0;
+                string category = string.Empty;
+                string persistentUniqueId = string.Empty;
+                string manufacturer = string.Empty;
+                string model = string.Empty;
+                string connectionType = string.Empty;
+                try
+                {
+                    deviceId = Altimeter.DeviceId;
+                }
+                catch { }
+                try
+                {
+                    reportInterval = Altimeter.ReportInterval;
+                }
+                catch { }
+                try
+                {
+                    minimumReportInterval = Altimeter.MinimumReportInterval;
+                }
+                catch { }
+                try
+                {
+                    category = Constants.SensorCategories[AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()];
+                }
+                catch { }
+                try
+                {
+                    persistentUniqueId = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    manufacturer = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    model = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Model"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    connectionType = Constants.SensorConnectionTypes[int.Parse(AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
+                }
+                catch { }
+
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                Altimeter.ReadingChanged += Altimeter_ReadingChanged;
+            }
+        }
+
+        private static void DisableAltimeter()
+        {
+            if (Altimeter != null)
+            {
+                Altimeter.ReadingChanged -= Altimeter_ReadingChanged;
+            }
+        }
+
+        private async static void Altimeter_ReadingChanged(object sender, AltimeterReadingChangedEventArgs e)
+        {
+            try
+            {
+                if (sensorData[currentId]._sensorType == ALTIMETER)
+                {
+                    AltimeterReading reading = e.Reading;
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AltitudeChangeInMeters }))
+                    {
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void EnableBarometer(int index, int totalIndex)
+        {
+            if (BarometerList[index] != null)
+            {
+                string deviceId = string.Empty;
+                string deviceName = string.Empty;
+                uint reportInterval = 0;
+                uint minimumReportInterval = 0;
+                string category = string.Empty;
+                string persistentUniqueId = string.Empty;
+                string manufacturer = string.Empty;
+                string model = string.Empty;
+                string connectionType = string.Empty;
+                try
+                {
+                    deviceId = BarometerList[index].DeviceId;
+                }
+                catch { }
+                try
+                {
+                    reportInterval = BarometerList[index].ReportInterval;
+                }
+                catch { }
+                try
+                {
+                    minimumReportInterval = BarometerList[index].MinimumReportInterval;
+                }
+                catch { }
+                try
+                {
+                    category = Constants.SensorCategories[BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
+                }
+                catch { }
+                try
+                {
+                    persistentUniqueId = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    manufacturer = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    model = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
+                }
+                catch { }
+                try
+                {
+                    connectionType = Constants.SensorConnectionTypes[int.Parse(BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
+                }
+                catch { }
+
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                BarometerList[index].ReadingChanged += Barometer_ReadingChanged;
+            }
+        }
+
+        private static void DisableBarometer(int index)
+        {
+            if (BarometerList[index] != null)
+            {
+                BarometerList[index].ReadingChanged -= Barometer_ReadingChanged;
+            }
+        }
+
+        private async static void Barometer_ReadingChanged(object sender, BarometerReadingChangedEventArgs e)
+        {
+            try
+            {
+                if (sensorData[currentId]._sensorType == BAROMETER)
+                {
+                    BarometerReading reading = e.Reading;
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.StationPressureInHectopascals }))
+                    {
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1593,7 +1601,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 MagnetometerList[index].ReadingChanged += Magnetometer_ReadingChanged;
             }
         }
@@ -1610,14 +1618,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == MAGNETOMETER)
+                if (sensorData[currentId]._sensorType == MAGNETOMETER)
                 {
                     MagnetometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.MagneticFieldX, reading.MagneticFieldY, reading.MagneticFieldZ }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.MagneticFieldX, reading.MagneticFieldY, reading.MagneticFieldZ }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1679,7 +1687,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 PedometerList[index].ReadingChanged += Pedometer_ReadingChanged;
             }
         }
@@ -1696,14 +1704,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == PEDOMETER)
+                if (sensorData[currentId]._sensorType == PEDOMETER)
                 {
                     PedometerReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.CumulativeSteps, reading.CumulativeStepsDuration.Seconds, Convert.ToDouble(reading.StepKind) }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.CumulativeSteps, reading.CumulativeStepsDuration.Seconds, Convert.ToDouble(reading.StepKind) }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1753,7 +1761,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 ProximitySensorList[totalIndex].ReadingChanged += ProximitySensor_ReadingChanged;
             }
         }
@@ -1770,14 +1778,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == PROXIMITYSENSOR)
+                if (sensorData[currentId]._sensorType == PROXIMITYSENSOR)
                 {
                     ProximitySensorReading reading = e.Reading;
-                    if (SensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.IsDetected), Convert.ToDouble(reading.DistanceInMillimeters) }))
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.IsDetected), Convert.ToDouble(reading.DistanceInMillimeters) }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }
@@ -1827,7 +1835,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType);
                 SimpleOrientationSensor.OrientationChanged += SimpleOrientationSensor_OrientationChanged;
             }
         }
@@ -1844,14 +1852,14 @@ namespace SensorExplorer
         {
             try
             {
-                if (SensorData[currentId].SensorType == SIMPLEORIENTATIONSENSOR)
+                if (sensorData[currentId]._sensorType == SIMPLEORIENTATIONSENSOR)
                 {
                     SimpleOrientation reading = e.Orientation;
-                    if (SensorData[currentId].AddReading(DateTime.UtcNow, new double[] { Convert.ToDouble(reading) }))
+                    if (sensorData[currentId].AddReading(DateTime.UtcNow, new double[] { Convert.ToDouble(reading) }))
                     {
-                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            SensorDisplay[currentId].UpdateText(SensorData[currentId]);
+                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
                         });
                     }
                 }

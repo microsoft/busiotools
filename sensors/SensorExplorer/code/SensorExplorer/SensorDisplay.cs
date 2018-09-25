@@ -4,6 +4,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -16,7 +17,7 @@ namespace SensorExplorer
 {
     class SensorDisplay
     {
-        public static Dictionary<ActivityType, string> DictionaryActivity = new Dictionary<ActivityType, string>
+        public static Dictionary<ActivityType, String> DictionaryActivity = new Dictionary<ActivityType, String>
         {
             { ActivityType.Unknown,    "❓" },
             { ActivityType.Idle,       "⚲" },
@@ -28,7 +29,7 @@ namespace SensorExplorer
             { ActivityType.Biking,     "🚲" },
         };
 
-        public static Dictionary<PedometerStepKind, string> DictionaryStepKind = new Dictionary<PedometerStepKind, string>
+        public static Dictionary<PedometerStepKind, String> DictionaryStepKind = new Dictionary<PedometerStepKind, String>
         {
             { PedometerStepKind.Unknown, "❓" },
             { PedometerStepKind.Walking, "🚶" },
@@ -38,41 +39,48 @@ namespace SensorExplorer
         public StackPanel StackPanelSwitch = new StackPanel();
         public Button ButtonSensor = new Button();
         public StackPanel StackPanelSensor = new StackPanel();
-        public bool ManualToggle = true;
-        public bool IsOn = false;
-        public bool IsSelected = false;
-        public PlotCanvas PlotCanvas;
-        public int SensorType;
-        public int Index;
+        public bool _manualToggle = true;
+        public bool _isOn = false;
+        public bool _isSelected = false;
+        public PlotCanvas _plotCanvas;
 
-        private StackPanel stackPanelTop = new StackPanel();
-        private Ellipse ellipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
-        private Image imageCompass = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Compass.png")) };
-        private Image imageGyrometerX = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
-        private Image imageGyrometerY = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
-        private Image imageGyrometerZ = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
-        private Image imageInclinometerPitch = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
-        private Image imageInclinometerRoll = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
-        private Image imageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
-        private TextBlock textBlockSensor = new TextBlock() { Foreground = new SolidColorBrush(Colors.Black), FontSize = 72 };
-        private StackPanel stackPanelBottom = new StackPanel();
-        private StackPanel stackPanelDataName = new StackPanel();
-        private TextBlock[] textBlockProperty;
-        private StackPanel stackPanelValue = new StackPanel();
-        private TextBlock[] textBlockValue;
-        private StackPanel stackPanelMinValue = new StackPanel();
-        private TextBlock[] textBlockMinValue;
-        private StackPanel stackPanelMaxValue = new StackPanel();
-        private TextBlock[] textBlockMaxValue;
-        private StackPanel stackPanelPropertyName = new StackPanel();
-        private TextBlock[] textBlockPropertyName;
-        private StackPanel stackPanelPropertyValue = new StackPanel();
-        private TextBlock[] textBlockPropertyValue;
-        private StackPanel stackPanelProperty = new StackPanel();
-        private Canvas canvasSensor = new Canvas();
-        private int totalIndex;
-        private string name;
-        private string[] properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "Device ID" };
+        private StackPanel StackPanelTop = new StackPanel();
+        private Ellipse EllipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
+        private Image ImageCompass = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Compass.png")) };
+        private Image ImageGyrometerX = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
+        private Image ImageGyrometerY = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
+        private Image ImageGyrometerZ = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
+        private Image ImageInclinometerPitch = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
+        private Image ImageInclinometerRoll = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
+        private Image ImageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
+        private TextBlock TextBlockSensor = new TextBlock() { Foreground = new SolidColorBrush(Colors.Black), FontSize = 72 };
+
+        private StackPanel StackPanelBottom = new StackPanel();
+        private StackPanel StackPanelDataName = new StackPanel();
+        private TextBlock[] TextBlockProperty;
+        private StackPanel StackPanelValue = new StackPanel();
+        private TextBlock[] TextBlockValue;
+        private StackPanel StackPanelMinValue = new StackPanel();
+        private TextBlock[] TextBlockMinValue;
+        private StackPanel StackPanelMaxValue = new StackPanel();
+        private TextBlock[] TextBlockMaxValue;
+
+        private StackPanel StackPanelPropertyName = new StackPanel();
+        private TextBlock[] TextBlockPropertyName;
+        private StackPanel StackPanelPropertyValue = new StackPanel();
+        private TextBlock[] TextBlockPropertyValue;
+
+        private StackPanel StackPanelProperty = new StackPanel();
+        private Canvas CanvasSensor = new Canvas();
+
+        public int _sensorType;
+        public int _index;
+        private int _totalIndex;
+        private string _name;
+        private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "Device ID" };
+
+        private DisplayInformation _displayInformation;
+        private Windows.Foundation.Collections.IPropertySet _localState = ApplicationData.Current.LocalSettings.Values;
 
         public SensorDisplay(int sensorType, int index, int totalIndex, string name, int minValue, int maxValue, int scale, Color[] color)
         {
@@ -80,10 +88,10 @@ namespace SensorExplorer
 
             StackPanelSensor.Children.Clear();
 
-            SensorType = sensorType;
-            Index = index;
-            this.totalIndex = totalIndex;
-            this.name = name;
+            _sensorType = sensorType;
+            _index = index;
+            _totalIndex = totalIndex;
+            _name = name;
 
             string[] vAxisLabel = new string[scale + 1];
 
@@ -110,7 +118,7 @@ namespace SensorExplorer
                 }
             }
 
-            PlotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensor, vAxisLabel);
+            _plotCanvas = new PlotCanvas(minValue, maxValue, color, CanvasSensor, vAxisLabel);
 
             StackPanelSwitch.Children.Add(ButtonSensor);
 
@@ -118,139 +126,141 @@ namespace SensorExplorer
             StackPanelSensor.Orientation = Orientation.Vertical;
             StackPanelSensor.Visibility = Visibility.Collapsed;
 
-            stackPanelTop.Orientation = Orientation.Horizontal;
-            stackPanelTop.Height = 100;
-            stackPanelTop.HorizontalAlignment = HorizontalAlignment.Center;
+            StackPanelTop.Orientation = Orientation.Horizontal;
+            StackPanelTop.Height = 100;
+            StackPanelTop.HorizontalAlignment = HorizontalAlignment.Center;
 
             if (sensorType == Sensor.ACCELEROMETER || sensorType == Sensor.ACCELEROMETERLINEAR || sensorType == Sensor.ACCELEROMETERGRAVITY)
             {
                 Grid GridAccelerometer = new Grid();
                 GridAccelerometer.Children.Add(new Ellipse() { Width = 100, Height = 100, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 });
                 GridAccelerometer.Children.Add(new Ellipse() { Width = 50, Height = 50, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 });
-                GridAccelerometer.Children.Add(ellipseAccelerometer);
-                stackPanelTop.Children.Add(GridAccelerometer);
+                GridAccelerometer.Children.Add(EllipseAccelerometer);
+                StackPanelTop.Children.Add(GridAccelerometer);
             }
             else if (sensorType == Sensor.COMPASS)
             {
-                stackPanelTop.Children.Add(imageCompass);
+                StackPanelTop.Children.Add(ImageCompass);
             }
             else if (sensorType == Sensor.GYROMETER)
             {
                 StackPanel StackPanelX = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelX.Children.Add(imageGyrometerX);
+                StackPanelX.Children.Add(ImageGyrometerX);
                 StackPanelX.Children.Add(new TextBlock() { Text = "X", HorizontalAlignment = HorizontalAlignment.Center });
 
                 StackPanel StackPanelY = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelY.Children.Add(imageGyrometerY);
+                StackPanelY.Children.Add(ImageGyrometerY);
                 StackPanelY.Children.Add(new TextBlock() { Text = "Y", HorizontalAlignment = HorizontalAlignment.Center });
 
                 StackPanel StackPanelZ = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelZ.Children.Add(imageGyrometerZ);
+                StackPanelZ.Children.Add(ImageGyrometerZ);
                 StackPanelZ.Children.Add(new TextBlock() { Text = "Z", HorizontalAlignment = HorizontalAlignment.Center });
 
-                stackPanelTop.Children.Add(StackPanelX);
-                stackPanelTop.Children.Add(StackPanelY);
-                stackPanelTop.Children.Add(StackPanelZ);
+                StackPanelTop.Children.Add(StackPanelX);
+                StackPanelTop.Children.Add(StackPanelY);
+                StackPanelTop.Children.Add(StackPanelZ);
             }
             else if (sensorType == Sensor.INCLINOMETER)
             {
                 StackPanel StackPanelX = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelX.Children.Add(imageInclinometerPitch);
+                StackPanelX.Children.Add(ImageInclinometerPitch);
                 StackPanelX.Children.Add(new TextBlock() { Text = "Pitch", HorizontalAlignment = HorizontalAlignment.Center });
 
                 StackPanel StackPanelY = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelY.Children.Add(imageInclinometerRoll);
+                StackPanelY.Children.Add(ImageInclinometerRoll);
                 StackPanelY.Children.Add(new TextBlock() { Text = "Roll", HorizontalAlignment = HorizontalAlignment.Center });
 
                 StackPanel StackPanelZ = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10), Width = 60 };
-                StackPanelZ.Children.Add(imageInclinometerYaw);
+                StackPanelZ.Children.Add(ImageInclinometerYaw);
                 StackPanelZ.Children.Add(new TextBlock() { Text = "Yaw", HorizontalAlignment = HorizontalAlignment.Center });
 
-                stackPanelTop.Children.Add(StackPanelX);
-                stackPanelTop.Children.Add(StackPanelY);
-                stackPanelTop.Children.Add(StackPanelZ);
+                StackPanelTop.Children.Add(StackPanelX);
+                StackPanelTop.Children.Add(StackPanelY);
+                StackPanelTop.Children.Add(StackPanelZ);
             }
             else if (sensorType == Sensor.ACTIVITYSENSOR || sensorType == Sensor.LIGHTSENSOR || sensorType == Sensor.PEDOMETER || sensorType == Sensor.PROXIMITYSENSOR)
             {
-                stackPanelTop.Children.Add(textBlockSensor);
+                StackPanelTop.Children.Add(TextBlockSensor);
             }
             else
             {
-                stackPanelTop.Height = 0;
+                StackPanelTop.Height = 0;
             }
 
-            stackPanelBottom.Orientation = Orientation.Horizontal;
-            stackPanelDataName.Orientation = Orientation.Vertical;
-            stackPanelValue.Orientation = Orientation.Vertical;
-            stackPanelMinValue.Orientation = Orientation.Vertical;
-            stackPanelMaxValue.Orientation = Orientation.Vertical;
+            StackPanelBottom.Orientation = Orientation.Horizontal;
 
-            textBlockProperty = new TextBlock[color.Length + 1];
-            textBlockValue = new TextBlock[textBlockProperty.Length];
-            textBlockMinValue = new TextBlock[textBlockProperty.Length];
-            textBlockMaxValue = new TextBlock[textBlockProperty.Length];
+            StackPanelDataName.Orientation = Orientation.Vertical;
+            StackPanelValue.Orientation = Orientation.Vertical;
+            StackPanelMinValue.Orientation = Orientation.Vertical;
+            StackPanelMaxValue.Orientation = Orientation.Vertical;
 
-            textBlockProperty[color.Length] = SetTextStyle("", HorizontalAlignment.Center);
-            stackPanelDataName.Children.Add(textBlockProperty[color.Length]);
+            TextBlockProperty = new TextBlock[color.Length + 1];
+            TextBlockValue = new TextBlock[TextBlockProperty.Length];
+            TextBlockMinValue = new TextBlock[TextBlockProperty.Length];
+            TextBlockMaxValue = new TextBlock[TextBlockProperty.Length];
 
-            textBlockValue[color.Length] = SetTextStyle(resourceLoader.GetString("Value"), HorizontalAlignment.Center);
-            stackPanelValue.Children.Add(textBlockValue[color.Length]);
+            TextBlockProperty[color.Length] = SetTextStyle("", HorizontalAlignment.Center);
+            StackPanelDataName.Children.Add(TextBlockProperty[color.Length]);
 
-            textBlockMinValue[color.Length] = SetTextStyle(resourceLoader.GetString("Min"), HorizontalAlignment.Center);
-            stackPanelMinValue.Children.Add(textBlockMinValue[color.Length]);
+            TextBlockValue[color.Length] = SetTextStyle(resourceLoader.GetString("Value"), HorizontalAlignment.Center);
+            StackPanelValue.Children.Add(TextBlockValue[color.Length]);
 
-            textBlockMaxValue[color.Length] = SetTextStyle(resourceLoader.GetString("Max"), HorizontalAlignment.Center);
-            stackPanelMaxValue.Children.Add(textBlockMaxValue[color.Length]);
+            TextBlockMinValue[color.Length] = SetTextStyle(resourceLoader.GetString("Min"), HorizontalAlignment.Center);
+            StackPanelMinValue.Children.Add(TextBlockMinValue[color.Length]);
+
+            TextBlockMaxValue[color.Length] = SetTextStyle(resourceLoader.GetString("Max"), HorizontalAlignment.Center);
+            StackPanelMaxValue.Children.Add(TextBlockMaxValue[color.Length]);
 
             for (int i = 0; i < color.Length; i++)
             {
-                textBlockProperty[i] = SetTextStyle("", HorizontalAlignment.Left);
-                textBlockProperty[i].Foreground = new SolidColorBrush(color[i]);
-                stackPanelDataName.Children.Add(textBlockProperty[i]);
+                TextBlockProperty[i] = SetTextStyle("", HorizontalAlignment.Left);
+                TextBlockProperty[i].Foreground = new SolidColorBrush(color[i]);
+                StackPanelDataName.Children.Add(TextBlockProperty[i]);
 
-                textBlockValue[i] = SetTextStyle("", HorizontalAlignment.Right);
-                textBlockValue[i].Foreground = new SolidColorBrush(color[i]);
-                stackPanelValue.Children.Add(textBlockValue[i]);
+                TextBlockValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                TextBlockValue[i].Foreground = new SolidColorBrush(color[i]);
+                StackPanelValue.Children.Add(TextBlockValue[i]);
 
-                textBlockMinValue[i] = SetTextStyle("", HorizontalAlignment.Right);
-                textBlockMinValue[i].Foreground = new SolidColorBrush(color[i]);
-                stackPanelMinValue.Children.Add(textBlockMinValue[i]);
+                TextBlockMinValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                TextBlockMinValue[i].Foreground = new SolidColorBrush(color[i]);
+                StackPanelMinValue.Children.Add(TextBlockMinValue[i]);
 
-                textBlockMaxValue[i] = SetTextStyle("", HorizontalAlignment.Right);
-                textBlockMaxValue[i].Foreground = new SolidColorBrush(color[i]);
-                stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
+                TextBlockMaxValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                TextBlockMaxValue[i].Foreground = new SolidColorBrush(color[i]);
+                StackPanelMaxValue.Children.Add(TextBlockMaxValue[i]);
             }
 
-            stackPanelDataName.Margin = new Thickness(40, 0, 0, 0);
+            StackPanelDataName.Margin = new Thickness(40, 0, 0, 0);
 
-            stackPanelBottom.Children.Add(stackPanelProperty);
-            stackPanelBottom.Children.Add(stackPanelDataName);
-            stackPanelBottom.Children.Add(stackPanelValue);
-            stackPanelBottom.Children.Add(stackPanelMinValue);
-            stackPanelBottom.Children.Add(stackPanelMaxValue);
+            StackPanelBottom.Children.Add(StackPanelProperty);
+            StackPanelBottom.Children.Add(StackPanelDataName);
+            StackPanelBottom.Children.Add(StackPanelValue);
+            StackPanelBottom.Children.Add(StackPanelMinValue);
+            StackPanelBottom.Children.Add(StackPanelMaxValue);
 
-            stackPanelProperty.Orientation = Orientation.Horizontal;
-            stackPanelPropertyName.Orientation = Orientation.Vertical;
-            stackPanelPropertyValue.Orientation = Orientation.Vertical;
+            StackPanelProperty.Orientation = Orientation.Horizontal;
 
-            textBlockPropertyName = new TextBlock[properties.Length];
-            textBlockPropertyValue = new TextBlock[textBlockPropertyName.Length];
+            StackPanelPropertyName.Orientation = Orientation.Vertical;
+            StackPanelPropertyValue.Orientation = Orientation.Vertical;
 
-            for (int i = 0; i < properties.Length; i++)
+            TextBlockPropertyName = new TextBlock[_properties.Length];
+            TextBlockPropertyValue = new TextBlock[TextBlockPropertyName.Length];
+
+            for (int i = 0; i < _properties.Length; i++)
             {
-                textBlockPropertyName[i] = SetTextStyle(properties[i], HorizontalAlignment.Left);
-                stackPanelPropertyName.Children.Add(textBlockPropertyName[i]);
+                TextBlockPropertyName[i] = SetTextStyle(_properties[i], HorizontalAlignment.Left);
+                StackPanelPropertyName.Children.Add(TextBlockPropertyName[i]);
 
-                textBlockPropertyValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
-                stackPanelPropertyValue.Children.Add(textBlockPropertyValue[i]);
+                TextBlockPropertyValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
+                StackPanelPropertyValue.Children.Add(TextBlockPropertyValue[i]);
             }
 
-            stackPanelProperty.Children.Add(stackPanelPropertyName);
-            stackPanelProperty.Children.Add(stackPanelPropertyValue);
+            StackPanelProperty.Children.Add(StackPanelPropertyName);
+            StackPanelProperty.Children.Add(StackPanelPropertyValue);
 
-            StackPanelSensor.Children.Add(stackPanelTop);
-            StackPanelSensor.Children.Add(canvasSensor);
-            StackPanelSensor.Children.Add(stackPanelBottom);
+            StackPanelSensor.Children.Add(StackPanelTop);
+            StackPanelSensor.Children.Add(CanvasSensor);
+            StackPanelSensor.Children.Add(StackPanelBottom);
         }
 
         private TextBlock SetTextStyle(string text, HorizontalAlignment horizontalAlignment)
@@ -266,8 +276,9 @@ namespace SensorExplorer
         public double SetWidth(double width, double height)
         {
             double actualWidth = 0;
-            double stackPanelMinWidth = StackPanelSensor.Margin.Left + stackPanelDataName.Width + stackPanelValue.Width + StackPanelSensor.Margin.Right;
-            double stackPanelTextWidth = stackPanelMinWidth + stackPanelMinValue.Width + stackPanelMaxValue.Width;
+            double stackPanelMinWidth = StackPanelSensor.Margin.Left + StackPanelDataName.Width + StackPanelValue.Width + StackPanelSensor.Margin.Right;
+            double stackPanelTextWidth = stackPanelMinWidth + StackPanelMinValue.Width + StackPanelMaxValue.Width; // 348
+
             double fontSize = 11;
 
             if (width > 1366)
@@ -285,38 +296,38 @@ namespace SensorExplorer
 
             SetFontSize(fontSize);
             SetHeight(height * 0.2);
-            canvasSensor.Width = width * 0.7;
+            CanvasSensor.Width = width * 0.7;
 
             return actualWidth;
         }
 
         private void SetFontSize(double fontSize)
         {
-            for (int i = 0; i < textBlockProperty.Length; i++)
+            for (int i = 0; i < TextBlockProperty.Length; i++)
             {
-                textBlockProperty[i].FontSize = fontSize;
-                textBlockValue[i].FontSize = fontSize;
-                textBlockMinValue[i].FontSize = fontSize;
-                textBlockMaxValue[i].FontSize = fontSize;
+                TextBlockProperty[i].FontSize = fontSize;
+                TextBlockValue[i].FontSize = fontSize;
+                TextBlockMinValue[i].FontSize = fontSize;
+                TextBlockMaxValue[i].FontSize = fontSize;
             }
 
-            for (int i = 0; i < textBlockPropertyName.Length; i++)
+            for (int i = 0; i < TextBlockPropertyName.Length; i++)
             {
-                textBlockPropertyName[i].FontSize = fontSize;
-                textBlockPropertyValue[i].FontSize = fontSize;
+                TextBlockPropertyName[i].FontSize = fontSize;
+                TextBlockPropertyValue[i].FontSize = fontSize;
             }
 
             TextBlock textBlock = new TextBlock();
             textBlock.Text = "00000000";
             textBlock.FontSize = fontSize;
             textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
-            canvasSensor.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
-            PlotCanvas.SetFontSize(fontSize);
+            CanvasSensor.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
+            _plotCanvas.SetFontSize(fontSize);
         }
 
         public void SetHeight(double height)
         {
-            PlotCanvas.SetHeight(height);
+            _plotCanvas.SetHeight(height);
         }
 
         public void EnableSensor()
@@ -325,46 +336,46 @@ namespace SensorExplorer
             ButtonSensor.Opacity = 1;
             ButtonSensor.SetValue(AutomationProperties.NameProperty, "x");
 
-            IsOn = !IsOn;
+            _isOn = !_isOn;
             ButtonSensor.SetValue(AutomationProperties.NameProperty, "");
             StackPanelSensor.Visibility = Visibility.Visible;
             StackPanelSensor.Opacity = 1;
-            PeriodicTimer.Create(totalIndex);
-            Sensor.EnableSensor(SensorType, Index, totalIndex);
+            PeriodicTimer.Create(_totalIndex);
+            Sensor.EnableSensor(_sensorType, _index, _totalIndex);
         }
 
         public void UpdateProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
                                    string category, string persistentUniqueId, string manufacturer, string model, string connectionType)
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
-            textBlockPropertyValue[0].Text = String.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
-            textBlockPropertyValue[1].Text = String.Format("  {0}", minReportInterval != 0 ? minReportInterval.ToString() : "-");
-            textBlockPropertyValue[2].Text = "  " + category;
-            textBlockPropertyValue[3].Text = "  " + persistentUniqueId;
-            textBlockPropertyValue[4].Text = "  " + manufacturer;
-            textBlockPropertyValue[5].Text = "  " + model;
-            textBlockPropertyValue[6].Text = "  " + connectionType;
-            textBlockPropertyValue[7].Text = $"{deviceId.Replace("{", "\r\n  {")}";
+            TextBlockPropertyValue[0].Text = String.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
+            TextBlockPropertyValue[1].Text = String.Format("  {0}", minReportInterval != 0 ? minReportInterval.ToString() : "-");
+            TextBlockPropertyValue[2].Text = "  " + category;
+            TextBlockPropertyValue[3].Text = "  " + persistentUniqueId;
+            TextBlockPropertyValue[4].Text = "  " + manufacturer;
+            TextBlockPropertyValue[5].Text = "  " + model;
+            TextBlockPropertyValue[6].Text = "  " + connectionType;
+            TextBlockPropertyValue[7].Text = $"{deviceId.Replace("{", "\r\n  {")}";
         }
 
         public void UpdateText(SensorData sensorData)
         {
             try
             {
-                int index = sensorData.ReadingList.Count - 1;
-                if (sensorData.Count == Sensor.currentId)
+                int index = sensorData._reading.Count - 1;
+                if (sensorData._count == Sensor.currentId)
                 {
-                    UpdateProperty(sensorData.DeviceId, sensorData.DeviceName, sensorData.ReportInterval, sensorData.MinReportInterval, sensorData.ReportLatency,
-                                   sensorData.Category, sensorData.PersistentUniqueId, sensorData.Manufacturer, sensorData.Model, sensorData.ConnectionType);
+                    UpdateProperty(sensorData._deviceId, sensorData._deviceName, sensorData._reportInterval, sensorData._minReportInterval, sensorData._reportLatency,
+                                   sensorData._category, sensorData._persistentUniqueId, sensorData._manufacturer, sensorData._model, sensorData._connectionType);
                 }
 
                 if (StackPanelSensor.Visibility == Visibility.Visible)
                 {
-                    if (sensorData.SensorType == Sensor.ACCELEROMETER || sensorData.SensorType == Sensor.ACCELEROMETERLINEAR || sensorData.SensorType == Sensor.ACCELEROMETERGRAVITY)
+                    if (sensorData._sensorType == Sensor.ACCELEROMETER || sensorData._sensorType == Sensor.ACCELEROMETERLINEAR || sensorData._sensorType == Sensor.ACCELEROMETERGRAVITY)
                     {
                         double margin = 80;
-                        double x = Math.Min(1, sensorData.ReadingList[index].value[0]);
-                        double y = Math.Min(1, sensorData.ReadingList[index].value[1]);
+                        double x = Math.Min(1, sensorData._reading[index].value[0]);
+                        double y = Math.Min(1, sensorData._reading[index].value[1]);
                         double square = x * x + y * y;
 
                         if (square > 1)
@@ -378,140 +389,140 @@ namespace SensorExplorer
                         {
                             switch (displayInformation.CurrentOrientation)
                             {
-                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
-                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
-                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
+                                case DisplayOrientations.Landscape: EllipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
+                                case DisplayOrientations.Portrait: EllipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
+                                case DisplayOrientations.LandscapeFlipped: EllipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
+                                case DisplayOrientations.PortraitFlipped: EllipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
                             }
                         }
                         else if (displayInformation.NativeOrientation == DisplayOrientations.Portrait)
                         {
                             switch (displayInformation.CurrentOrientation)
                             {
-                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
-                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
-                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
+                                case DisplayOrientations.Landscape: EllipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
+                                case DisplayOrientations.Portrait: EllipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
+                                case DisplayOrientations.LandscapeFlipped: EllipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
+                                case DisplayOrientations.PortraitFlipped: EllipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
                             }
                         }
                     }
 
-                    for (int i = 0; i < sensorData.ReadingList[index].value.Length; i++)
+                    for (int i = 0; i < sensorData._reading[index].value.Length; i++)
                     {
-                        textBlockProperty[i].Text = sensorData.Property[i];
-                        textBlockValue[i].Text = String.Format("        {0,5:0.00}", sensorData.ReadingList[index].value[i]);
-                        textBlockMinValue[i].Text = String.Format("        {0,5:0.0}", sensorData.MinValue[i]);
-                        textBlockMaxValue[i].Text = String.Format("        {0,5:0.0}", sensorData.MaxValue[i]);
-                        if (sensorData.Property[i].StartsWith("MagneticNorth"))
+                        TextBlockProperty[i].Text = sensorData._property[i];
+                        TextBlockValue[i].Text = String.Format("        {0,5:0.00}", sensorData._reading[index].value[i]);
+                        TextBlockMinValue[i].Text = String.Format("        {0,5:0.0}", sensorData._minValue[i]);
+                        TextBlockMaxValue[i].Text = String.Format("        {0,5:0.0}", sensorData._maxValue[i]);
+                        if (sensorData._property[i].StartsWith("MagneticNorth"))
                         {
                             RotateTransform rotateCompass = new RotateTransform();
-                            imageCompass.RenderTransform = rotateCompass;
+                            ImageCompass.RenderTransform = rotateCompass;
 
-                            rotateCompass.Angle = (-1) * Convert.ToDouble(sensorData.ReadingList[index].value[i]);
-                            rotateCompass.CenterX = imageCompass.ActualWidth / 2;
-                            rotateCompass.CenterY = imageCompass.ActualHeight / 2;
+                            rotateCompass.Angle = (-1) * Convert.ToDouble(sensorData._reading[index].value[i]);
+                            rotateCompass.CenterX = ImageCompass.ActualWidth / 2;
+                            rotateCompass.CenterY = ImageCompass.ActualHeight / 2;
                         }
-                        else if (sensorData.Property[i].StartsWith("AngularVelocityX"))
+                        else if (sensorData._property[i].StartsWith("AngularVelocityX"))
                         {
-                            RotateTransform rotateGyrometerX = new RotateTransform() { CenterX = imageGyrometerX.ActualWidth / 2, CenterY = imageGyrometerX.ActualHeight / 2 };
-                            imageGyrometerX.RenderTransform = rotateGyrometerX;
+                            RotateTransform rotateGyrometerX = new RotateTransform() { CenterX = ImageGyrometerX.ActualWidth / 2, CenterY = ImageGyrometerX.ActualHeight / 2 };
+                            ImageGyrometerX.RenderTransform = rotateGyrometerX;
 
-                            rotateGyrometerX.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData.ReadingList[index].value[i])));
+                            rotateGyrometerX.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData._reading[index].value[i])));
                         }
-                        else if (sensorData.Property[i].StartsWith("AngularVelocityY"))
+                        else if (sensorData._property[i].StartsWith("AngularVelocityY"))
                         {
                             RotateTransform rotateGyrometerY = new RotateTransform();
-                            imageGyrometerY.RenderTransform = rotateGyrometerY;
+                            ImageGyrometerY.RenderTransform = rotateGyrometerY;
 
-                            rotateGyrometerY.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData.ReadingList[index].value[i])));
-                            rotateGyrometerY.CenterX = imageGyrometerY.ActualWidth / 2;
-                            rotateGyrometerY.CenterY = imageGyrometerY.ActualHeight / 2;
+                            rotateGyrometerY.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData._reading[index].value[i])));
+                            rotateGyrometerY.CenterX = ImageGyrometerY.ActualWidth / 2;
+                            rotateGyrometerY.CenterY = ImageGyrometerY.ActualHeight / 2;
                         }
-                        else if (sensorData.Property[i].StartsWith("AngularVelocityZ"))
+                        else if (sensorData._property[i].StartsWith("AngularVelocityZ"))
                         {
                             RotateTransform rotateGyrometerZ = new RotateTransform();
-                            imageGyrometerZ.RenderTransform = rotateGyrometerZ;
+                            ImageGyrometerZ.RenderTransform = rotateGyrometerZ;
 
-                            rotateGyrometerZ.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData.ReadingList[index].value[i])));
-                            rotateGyrometerZ.CenterX = imageGyrometerZ.ActualWidth / 2;
-                            rotateGyrometerZ.CenterY = imageGyrometerZ.ActualHeight / 2;
+                            rotateGyrometerZ.Angle = Math.Max(-135, Math.Min(135, Convert.ToDouble(sensorData._reading[index].value[i])));
+                            rotateGyrometerZ.CenterX = ImageGyrometerZ.ActualWidth / 2;
+                            rotateGyrometerZ.CenterY = ImageGyrometerZ.ActualHeight / 2;
                         }
-                        else if (sensorData.Property[i].StartsWith("Pitch"))
+                        else if (sensorData._property[i].StartsWith("Pitch"))
                         {
-                            RotateTransform rotate = new RotateTransform() { CenterX = imageInclinometerPitch.ActualWidth / 2, CenterY = imageInclinometerPitch.ActualHeight / 2 };
-                            imageInclinometerPitch.RenderTransform = rotate;
+                            RotateTransform rotate = new RotateTransform() { CenterX = ImageInclinometerPitch.ActualWidth / 2, CenterY = ImageInclinometerPitch.ActualHeight / 2 };
+                            ImageInclinometerPitch.RenderTransform = rotate;
 
-                            rotate.Angle = sensorData.ReadingList[index].value[i];
+                            rotate.Angle = sensorData._reading[index].value[i];
                         }
-                        else if (sensorData.Property[i].StartsWith("Roll"))
+                        else if (sensorData._property[i].StartsWith("Roll"))
                         {
-                            RotateTransform rotate = new RotateTransform() { CenterX = imageInclinometerRoll.ActualWidth / 2, CenterY = imageInclinometerRoll.ActualHeight / 2 };
-                            imageInclinometerRoll.RenderTransform = rotate;
+                            RotateTransform rotate = new RotateTransform() { CenterX = ImageInclinometerRoll.ActualWidth / 2, CenterY = ImageInclinometerRoll.ActualHeight / 2 };
+                            ImageInclinometerRoll.RenderTransform = rotate;
 
-                            rotate.Angle = sensorData.ReadingList[index].value[i];
+                            rotate.Angle = sensorData._reading[index].value[i];
                         }
-                        else if (sensorData.Property[i] == "Yaw (°)")
+                        else if (sensorData._property[i] == "Yaw (°)")
                         {
-                            RotateTransform rotate = new RotateTransform() { CenterX = imageInclinometerYaw.ActualWidth / 2, CenterY = imageInclinometerYaw.ActualHeight / 2 };
-                            imageInclinometerYaw.RenderTransform = rotate;
+                            RotateTransform rotate = new RotateTransform() { CenterX = ImageInclinometerYaw.ActualWidth / 2, CenterY = ImageInclinometerYaw.ActualHeight / 2 };
+                            ImageInclinometerYaw.RenderTransform = rotate;
 
-                            rotate.Angle = -sensorData.ReadingList[index].value[i];
+                            rotate.Angle = -sensorData._reading[index].value[i];
                         }
-                        else if (sensorData.Property[i] == "Illuminance (lux)")
+                        else if (sensorData._property[i] == "Illuminance (lux)")
                         {
-                            textBlockSensor.Text = "💡";
-                            if (sensorData.ReadingList[index].value[i] < 1)
+                            TextBlockSensor.Text = "💡";
+                            if (sensorData._reading[index].value[i] < 1)
                             {
-                                textBlockSensor.Opacity = 0.1;
+                                TextBlockSensor.Opacity = 0.1;
                             }
                             else
                             {
-                                textBlockSensor.Opacity = Math.Min(0.1 + Math.Log(sensorData.ReadingList[index].value[i], 2) / 10, 1);
+                                TextBlockSensor.Opacity = Math.Min(0.1 + Math.Log(sensorData._reading[index].value[i], 2) / 10, 1);
                             }
                         }
-                        else if (sensorData.Property[i] == "CumulativeSteps")
+                        else if (sensorData._property[i] == "CumulativeSteps")
                         {
-                            int value = Convert.ToInt32(sensorData.ReadingList[index].value[i]) / 100;
-                            PlotCanvas.SetRange((value + 1) * 100, value * 100);
+                            int value = Convert.ToInt32(sensorData._reading[index].value[i]) / 100;
+                            _plotCanvas.SetRange((value + 1) * 100, value * 100);
                         }
-                        else if (sensorData.Property[i] == "HeadingAccuracy" || sensorData.Property[i] == "YawAccuracy")
+                        else if (sensorData._property[i] == "HeadingAccuracy" || sensorData._property[i] == "YawAccuracy")
                         {
-                            MagnetometerAccuracy magnetometerAccuracy = (MagnetometerAccuracy)sensorData.ReadingList[index].value[i];
-                            textBlockValue[i].Text = String.Format("        {0}", magnetometerAccuracy);
+                            MagnetometerAccuracy magnetometerAccuracy = (MagnetometerAccuracy)sensorData._reading[index].value[i];
+                            TextBlockValue[i].Text = String.Format("        {0}", magnetometerAccuracy);
                         }
-                        else if (sensorData.Property[i] == "IsDetected")
+                        else if (sensorData._property[i] == "IsDetected")
                         {
-                            textBlockSensor.Text = (sensorData.ReadingList[index].value[i] > 0.5 ? "📲" : "📱");
+                            TextBlockSensor.Text = (sensorData._reading[index].value[i] > 0.5 ? "📲" : "📱");
                         }
-                        else if (sensorData.Property[i] == "StepKind")
+                        else if (sensorData._property[i] == "StepKind")
                         {
-                            PedometerStepKind pedometerStepKind = (PedometerStepKind)sensorData.ReadingList[index].value[i];
-                            textBlockValue[i].Text = String.Format("        {0}", pedometerStepKind);
+                            PedometerStepKind pedometerStepKind = (PedometerStepKind)sensorData._reading[index].value[i];
+                            TextBlockValue[i].Text = String.Format("        {0}", pedometerStepKind);
 
-                            textBlockSensor.Text = DictionaryStepKind[pedometerStepKind];
+                            TextBlockSensor.Text = DictionaryStepKind[pedometerStepKind];
                         }
-                        else if (sensorData.SensorType == Sensor.SIMPLEORIENTATIONSENSOR)
+                        else if (sensorData._sensorType == Sensor.SIMPLEORIENTATIONSENSOR)
                         {
-                            SimpleOrientation simpleOrientation = (SimpleOrientation)sensorData.ReadingList[index].value[i];
-                            textBlockValue[i].Text = String.Format("        {0}", simpleOrientation).Replace("DegreesCounterclockwise", "°↺");
-                            textBlockMinValue[i].Text = "";
-                            textBlockMaxValue[i].Text = "";
+                            SimpleOrientation simpleOrientation = (SimpleOrientation)sensorData._reading[index].value[i];
+                            TextBlockValue[i].Text = String.Format("        {0}", simpleOrientation).Replace("DegreesCounterclockwise", "°↺");
+                            TextBlockMinValue[i].Text = "";
+                            TextBlockMaxValue[i].Text = "";
                         }
-                        else if (sensorData.SensorType == Sensor.ACTIVITYSENSOR)
+                        else if (sensorData._sensorType == Sensor.ACTIVITYSENSOR)
                         {
-                            if (sensorData.ReadingList[index].value[i] == Sensor.ACTIVITYNONE)
+                            if (sensorData._reading[index].value[i] == Sensor.ACTIVITYNONE)
                             {
-                                textBlockValue[i].Text = "None";
+                                TextBlockValue[i].Text = "None";
                             }
-                            else if (sensorData.ReadingList[index].value[i] == Sensor.ACTIVITYNOTSUPPORTED)
+                            else if (sensorData._reading[index].value[i] == Sensor.ACTIVITYNOTSUPPORTED)
                             {
-                                textBlockValue[i].Text = "Not Supported";
+                                TextBlockValue[i].Text = "Not Supported";
                             }
                             else
                             {
-                                ActivitySensorReadingConfidence activitySensorReadingConfidence = (ActivitySensorReadingConfidence)sensorData.ReadingList[index].value[i];
-                                textBlockValue[i].Text = String.Format("        {0}", activitySensorReadingConfidence);
-                                textBlockSensor.Text = DictionaryActivity[(ActivityType)i];
+                                ActivitySensorReadingConfidence activitySensorReadingConfidence = (ActivitySensorReadingConfidence)sensorData._reading[index].value[i];
+                                TextBlockValue[i].Text = String.Format("        {0}", activitySensorReadingConfidence);
+                                TextBlockSensor.Text = DictionaryActivity[(ActivityType)i];
                             }
                         }
                     }

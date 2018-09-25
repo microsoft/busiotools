@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage.Pickers;
 using Windows.Storage;
-using Windows.Graphics.Display;
 
 namespace SensorExplorer
 {
@@ -75,7 +74,8 @@ namespace SensorExplorer
         {
             // If we are connected to the device or planning to reconnect, we should disable the list of devices
             // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
-            if (EventHandlerForDevice.Current.IsDeviceConnected || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
+            if (EventHandlerForDevice.Current.IsDeviceConnected 
+                || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
                 && EventHandlerForDevice.Current.DeviceInformation != null))
             {
                 UpdateConnectDisconnectButtonsAndList(false);
@@ -121,7 +121,7 @@ namespace SensorExplorer
         {
             if (EventHandlerForDevice.Current.Device == null)
             {
-                scrollViewer.Visibility = Visibility.Collapsed;
+                stackpanel2.Visibility = Visibility.Collapsed;
                 MainPage.Current.NotifyUser("Device is not connected", NotifyType.ErrorMessage);
             }
             else
@@ -165,9 +165,6 @@ namespace SensorExplorer
                         stackpanel1.Visibility = Visibility.Collapsed;
                         initialize();
                         stackpanel2.Visibility = Visibility.Visible;
-                        DataWriterObject = new DataWriter(EventHandlerForDevice.Current.Device.OutputStream);
-                        DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
-                        DataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
                     }
                 }
             }
@@ -495,10 +492,10 @@ namespace SensorExplorer
 
         private async void ButtonLIGHT(object sender, RoutedEventArgs e)
         {
-            buttonLIGHT.IsEnabled = false;
-
             if (textboxLIGHT.Text.Length != 0)
             {
+                buttonLIGHT.IsEnabled = false;
+
                 char[] buffer = new char[textboxLIGHT.Text.Length];
                 textboxLIGHT.Text.CopyTo(0, buffer, 0, textboxLIGHT.Text.Length);
                 UInt32 lightLevel;
@@ -526,32 +523,32 @@ namespace SensorExplorer
                 return;
             }
 
-            string command = "LIGHT " + lightLevel + "\r";
-            WriteCommand(command);
+            string command = "LIGHT " + lightLevel + "\n";
+            await WriteCommandAsync(command);
             await ReadErrorCode(command);
         }
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(comboBox.SelectedValue != null)
             {
-                SetConversionTime(Convert.ToUInt32(comboBox.SelectedValue));
+                await SetConversionTime(Convert.ToUInt32(comboBox.SelectedValue));
             }
         }
 
-        private void SetConversionTime(UInt32 conversionTime)
+        private async Task SetConversionTime(UInt32 conversionTime)
         {
-            string command = "CONVERSIONTIME " + conversionTime + "\r";
-            WriteCommand(command);
-            // TODO: Arduino not writing anything back
+            string command = "CONVERSIONTIME " + conversionTime + "\n";
+            await WriteCommandAsync(command);
+            await ReadErrorCode(command);
         }
 
         private async void ButtonMALTVERSION(object sender, RoutedEventArgs e)
         {
             buttonMALTVERSION.IsEnabled = false;
 
-            string command = "MALTVERSION\r";
-            WriteCommand(command);
+            string command = "MALTVERSION\n";
+            await WriteCommandAsync(command);
             await ReadVersion(command);
 
             buttonMALTVERSION.IsEnabled = true;
@@ -562,10 +559,10 @@ namespace SensorExplorer
         {
             buttonREADALSSENSOR1.IsEnabled = false;
 
-            string command = "READALSSENSOR 1\r";
-            WriteCommand(command);
-            double value = await ReadSensor(command);
-            textblockSensor1.Text = value + " Lux";
+            string command = "READALSSENSOR 1\n";
+            await WriteCommandAsync(command);
+            double value = await ReadLightSensor(command);
+            textblockLightSensor1.Text = value + " Lux";
 
             buttonREADALSSENSOR1.IsEnabled = true;
         }
@@ -575,10 +572,42 @@ namespace SensorExplorer
         {
             buttonREADALSSENSOR2.IsEnabled = false;
 
-            string command = "READALSSENSOR 2\r";
-            WriteCommand(command);
-            double value = await ReadSensor(command);
-            textblockSensor2.Text = value + " Lux";
+            string command = "READALSSENSOR 2\n";
+            await WriteCommandAsync(command);
+            double value = await ReadLightSensor(command);
+            textblockLightSensor2.Text = value + " Lux";
+
+            buttonREADALSSENSOR2.IsEnabled = true;
+        }
+
+        // get ambient RGB
+        private async void ButtonREADCOLORSENSOR1(object sender, RoutedEventArgs e)
+        {
+            buttonREADALSSENSOR1.IsEnabled = false;
+
+            string command = "READCOLORSENSOR 1\n";
+            await WriteCommandAsync(command);
+            string[] result = await ReadColorSensor(command);
+            textblockColorSensor1.Text = "Clear: " + result[1] +
+                                         ", Red: " + result[2] +
+                                         ", Green: " + result[3] +
+                                         ", Blue: " + result[4];
+
+            buttonREADALSSENSOR1.IsEnabled = true;
+        }
+
+        // get screen RGB
+        private async void ButtonREADCOLORSENSOR2(object sender, RoutedEventArgs e)
+        {
+            buttonREADALSSENSOR2.IsEnabled = false;
+
+            string command = "READCOLORSENSOR 2\n";
+            await WriteCommandAsync(command);
+            string[] result = await ReadColorSensor(command);
+            textblockColorSensor2.Text = "Clear: " + result[1] +
+                                    ", Red: " + result[2] +
+                                    ", Green: " + result[3] +
+                                    ", Blue: " + result[4];
 
             buttonREADALSSENSOR2.IsEnabled = true;
         }
@@ -588,6 +617,7 @@ namespace SensorExplorer
         {
             stackpanel2.Visibility = Visibility.Collapsed;
             stackpanel3.Visibility = Visibility.Visible;
+            rootPage.DisableScenarioSelect();
 
             output.Text = "Please specify where the .csv file will be saved to.";
             FileSavePicker savePicker = new FileSavePicker();
@@ -633,17 +663,16 @@ namespace SensorExplorer
             try
             {
                 var csv = new System.Text.StringBuilder();
-                SetConversionTime(100);
-                csv.AppendLine("MALT Auto-Brightness Curve");
-                csv.AppendLine("Setting conversion time to 100ms to make the test faster.");
+                await SetConversionTime(100);
                 csv.AppendLine("Light Level,Ambient Lux,Screen Lux");
+
+                output.Text = "Auto Brightness test running...";
 
                 // Move the light up in increments of 5 to speed the test up further.
                 for (uint i = 500; i <= 2600; i += 5)
                 {
                     await Task.Delay(150);
                     await SetLight(i);
-                    output.Text = "Light Level = " + i.ToString();
 
                     await Task.Delay(150);
                     ambientLux1 = await GetAmbientLux();
@@ -678,11 +707,22 @@ namespace SensorExplorer
 
                 output.Text = "Successfully written data to " + file.Path.ToString();
                 restartButton.Visibility = Visibility.Visible;
+
+                var mediaElement = new MediaElement();
+                var folder = await Package.Current.InstalledLocation.GetFolderAsync("Music");
+                var wav = await folder.GetFileAsync("Alarm05.wav");
+                var stream = await wav.OpenAsync(FileAccessMode.Read);
+                mediaElement.SetSource(stream, "");
+                mediaElement.Play();
+
+                rootPage.EnableScenarioSelect();
             }
             catch (Exception exception)
             {
                 output.Text = exception.Message;
-            }         
+
+                rootPage.EnableScenarioSelect();
+            }
         }
 
         private void RestartButton(object sender, RoutedEventArgs e)
@@ -692,133 +732,41 @@ namespace SensorExplorer
             stackpanel2.Visibility = Visibility.Visible;
         }
 
-        // TODO: get manual brightness curve
-        private async void ButtonMANUALCURVE(object sender, RoutedEventArgs e)
-        {
-            stackpanel2.Visibility = Visibility.Collapsed;
-            stackpanel3.Visibility = Visibility.Visible;
-
-            output.Text = "Please specify where the .csv file will be saved to.";
-            FileSavePicker savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("csv", new List<string>() { ".csv" });
-            savePicker.SuggestedFileName = "ManualCurve";
-            file = await savePicker.PickSaveFileAsync();
-
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-            tmp = await storageFolder.CreateFileAsync("tmp.csv", CreationCollisionOption.ReplaceExisting);
-
-            stackpanelWaitTime2.Visibility = Visibility.Visible;
-            output.Text = "Please specify the wait time (in seconds) before test begins.";
-        }
-
-        // TODO
-        private async void ButtonMANUALCURVE2(object sender, RoutedEventArgs e)
-        {
-            stackpanelWaitTime2.Visibility = Visibility.Collapsed;
-            double waitTime = 0;
-
-            if (textboxAUTOCURVE.Text.Length != 0)
-            {
-                char[] buffer = new char[textboxAUTOCURVE.Text.Length];
-                textboxAUTOCURVE.Text.CopyTo(0, buffer, 0, textboxAUTOCURVE.Text.Length);
-                try
-                {
-                    waitTime = Convert.ToDouble(new string(buffer));
-                }
-                catch
-                {
-                    rootPage.NotifyUser("Please enter a valid value.", NotifyType.ErrorMessage);
-                    stackpanelWaitTime2.Visibility = Visibility.Visible;
-                    return;
-                }
-            }
-
-            output.Text = "Preparation time...";
-            BrightnessOverride bo = BrightnessOverride.GetForCurrentView();
-            bo.SetBrightnessLevel(0, DisplayBrightnessOverrideOptions.None);
-            bo.StartOverride();
-            await Task.Delay((int)waitTime * 1000);
-
-            double screenLux1 = 0, screenLux2 = 0, screenLuxCurrent = 0;
-
-            try
-            {
-                var csv = new System.Text.StringBuilder();
-                SetConversionTime(100);
-                csv.AppendLine("MALT  Manual Brightness Curve");
-                csv.AppendLine("Setting conversion time to 100ms to make the test faster.");
-                csv.AppendLine("Brightness Percentage,Screen Lux");
-
-                // Move the light up in increments of 5 to speed the test up further.
-                for (double i = 0; i <= 1; i += 0.01)
-                {
-                    await Task.Delay(150);
-                    bo.SetBrightnessLevel(i, DisplayBrightnessOverrideOptions.None);
-                    bo.StartOverride();
-                    output.Text = "Light Level = " + i.ToString();
-
-                    await Task.Delay(150);
-                    screenLux1 = await GetScreenLux();
-
-                    await Task.Delay(150);
-                    screenLux2 = await GetScreenLux();
-
-                    await Task.Delay(150);
-                    screenLuxCurrent = await GetScreenLux();
-
-                    while (screenLux1 != screenLux2 || screenLux2 != screenLuxCurrent)
-                    {
-                        screenLux1 = screenLux2;
-                        screenLux2 = screenLuxCurrent;
-
-                        await Task.Delay(150);
-                        screenLuxCurrent = await GetScreenLux();
-                    }
-
-                    csv.AppendLine(String.Format("{0},{1}", i, screenLuxCurrent));
-                }
-
-                await Task.Run(() => { File.WriteAllText(tmp.Path, csv.ToString()); });
-                await tmp.CopyAndReplaceAsync(file);
-
-                output.Text = "Successfully written data to " + file.Path.ToString();
-            }
-            catch (Exception exception)
-            {
-                output.Text = exception.Message;
-            }
-        }
-
         private async Task<double> GetAmbientLux()
         {
-            string command = "READALSSENSOR 1\r";
-            WriteCommand(command);
-            double value = await ReadSensor(command);
+            string command = "READALSSENSOR 1\n";
+            await WriteCommandAsync(command);
+            double value = await ReadLightSensor(command);
 
             return value;
         }
 
         private async Task<double> GetScreenLux()
         {
-            string command = "READALSSENSOR 2\r";
-            WriteCommand(command);
-            double value = await ReadSensor(command);
+            string command = "READALSSENSOR 2\n";
+            await WriteCommandAsync(command);
+            double value = await ReadLightSensor(command);
 
             return value;
         }
 
-        private void WriteCommand(string command)
+        private async Task WriteCommandAsync(string command)
         {
-            try
+            if (EventHandlerForDevice.Current.IsDeviceConnected)
             {
-                DataWriterObject.WriteString(command);
-                DataWriterObject.StoreAsync().AsTask().Wait();
+                try
+                {
+                    DataWriterObject = new DataWriter(EventHandlerForDevice.Current.Device.OutputStream);
+                    DataWriterObject.WriteString(command);
+                    uint x = await DataWriterObject.StoreAsync().AsTask();
+                    DataWriterObject.DetachStream();
+                    DataWriterObject = null;
+                }
+                catch { }
             }
-            catch { }
         }
 
-        private async Task<double> ReadSensor(string command)
+        private async Task<double> ReadLightSensor(string command)
         {
             try
             {
@@ -831,6 +779,21 @@ namespace SensorExplorer
                 return RawToLux(Convert.ToInt32(split[2]), Convert.ToInt32(split[1]));
             }
             catch { return -1; }
+        }
+
+        private async Task<string[]> ReadColorSensor(string command)
+        {
+            try
+            {
+                string data = await ReadLines(5);
+                data = data.Replace("\n", "");
+                string[] delim = new string[1] { "\r" };
+                string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+                OutputError(command, split[0]);
+
+                return split;
+            }
+            catch { return new string []{ }; }
         }
 
         private async Task ReadVersion(string command)
@@ -856,6 +819,7 @@ namespace SensorExplorer
             int newLines = 0;
             string data = string.Empty;
 
+            DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
             while (newLines != numLines)
             {
                 uint x = await DataReaderObject.LoadAsync(1);
@@ -866,6 +830,8 @@ namespace SensorExplorer
                     newLines++;
                 }
             }
+            DataReaderObject.DetachStream();
+            DataReaderObject = null;
 
             return data;
         }

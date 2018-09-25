@@ -33,53 +33,64 @@
 
         <StackPanel x:Name="stackpanel2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
             <Button x:Name="showConnectionButton" Margin="10,0,0,0" Height="35" Content="Connect to another device" Click="ShowConnectionButton"/>
-            <ScrollViewer x:Name="scrollViewer" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
-                <StackPanel Orientation="Vertical" Margin="10,30,0,0">
+            <StackPanel Orientation="Horizontal" Margin="10,18,0,0">
+                <StackPanel>
                     <TextBlock Text="Light Value" FontSize="20"/>
                     <TextBlock Text="Please enter a value in the range of 0 - 2600." Margin="0,10,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                         <TextBox x:Name="textboxLIGHT" Height="30" Width="150"/>
                         <Button x:Name="buttonLIGHT" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonLIGHT"/>
                     </StackPanel>
-                    <TextBlock Text="Conversion Time" FontSize="20" Margin="0,20,0,0"/>
+                </StackPanel>
+                <StackPanel Margin="100,0,0,0">
+                    <TextBlock Text="Conversion Time" FontSize="20"/>
                     <TextBlock Text="Please enter either 100 or 800" Margin="0,10,0,0"/>
                     <ComboBox x:Name="comboBox" Width="200" ItemsSource="100, 800" Margin="0,10,0,0"/>
-                    <TextBlock Text="MALT Version" FontSize="20" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="buttonMALTVERSION" Content="Get version" Height="35" Click="ButtonMALTVERSION" Margin="0,10,0,0"/>
-                        <TextBlock x:Name="textblockVersion" Margin="20,18,0,0"/>
-                    </StackPanel>
-                    <TextBlock Text="Ambient Lux" FontSize="20" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="buttonREADALSSENSOR1" Content="Read ambient-facing sensor" Height="35" Click="ButtonREADALSSENSOR1" Margin="0,10,0,0"/>
-                        <TextBlock x:Name="textblockSensor1" Margin="20,18,0,0"/>
-                    </StackPanel>
-                    <TextBlock Text="Screen Lux" FontSize="20" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="buttonREADALSSENSOR2" Content="Read screen-facing sensor" Height="35" Click="ButtonREADALSSENSOR2" Margin="0,10,0,0"/>
-                        <TextBlock x:Name="textblockSensor2" Margin="20,18,0,0"/>
-                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="10,0,0,0">
                     <TextBlock Text="Run a Test" FontSize="20" Margin="0,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0" Click="ButtonAUTOCURVE"/>
-                        <Button x:Name="buttonMANUALCURVE" Content="Take manual brightness curve" Height="35" Margin="20,10,0,0" Click="ButtonMANUALCURVE" IsEnabled="False"/>
                         <Button x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>
                     </StackPanel>
-                    <TextBlock Name="instruction" TextWrapping="Wrap" Margin="10"/>
                 </StackPanel>
-            </ScrollViewer>
+                <StackPanel Margin="80,0,0,0">
+                    <TextBlock Text="MALT Version" FontSize="20" Margin="0,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="buttonMALTVERSION" Content="Get" Height="35" Click="ButtonMALTVERSION" Margin="0,10,0,0"/>
+                        <TextBlock x:Name="textblockVersion" Margin="20,18,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Sensor Data" FontSize="20" Margin="10,20,0,0"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="buttonREADALSSENSOR1" Content="Get ambient brightness" Height="35" Click="ButtonREADALSSENSOR1" Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:Name="textblockLightSensor1" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="buttonREADALSSENSOR2" Content="Get screen brightness" Height="35" Click="ButtonREADALSSENSOR2" Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:Name="textblockLightSensor2" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="buttonREADCOLORSENSOR1" Content="Get ambient RGB" Height="35" Click="ButtonREADCOLORSENSOR1" Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:Name="textblockColorSensor1" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="buttonREADCOLORSENSOR2" Content="Get screen RGB" Height="35" Click="ButtonREADCOLORSENSOR2" Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:Name="textblockColorSensor2" Margin="20,18,0,0"/>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
 
         <StackPanel x:Name="stackpanel3" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
             <TextBlock x:Name="output" TextWrapping="Wrap" Margin="0,10,0,0" FontSize="25"/>
-            <Button x:Name="restartButton" Content="Restart" Height="35" Margin="0,10,0,0" Click="RestartButton" Visibility="Collapsed"/>
+            <Button x:Name="restartButton" Content="Restart" Click="RestartButton" Margin="30" Height="85" Width="150" FontSize="36" Visibility="Collapsed" HorizontalAlignment="Center"/>
             <StackPanel x:Name="stackpanelWaitTime1" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
                 <TextBox x:Name="textboxAUTOCURVE" Height="30" Width="150" TextWrapping="Wrap"/>
                 <Button x:Name="buttonAUTOCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonAUTOCURVE2"/>
-            </StackPanel>
-            <StackPanel x:Name="stackpanelWaitTime2" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
-                <TextBox x:Name="textboxMANUALCURVE" Height="30" Width="150" TextWrapping="Wrap"/>
-                <Button x:Name="buttonMANUALCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonMANUALCURVE2"/>
             </StackPanel>
         </StackPanel>
 

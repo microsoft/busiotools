@@ -17,62 +17,66 @@ namespace SensorExplorer
             }
         }
 
-        public List<Reading> ReadingList = new List<Reading>();
-        public int SensorType = -1;
-        public int Count = -1;
-        public string Name = string.Empty;
-        public string[] Property;
-        public double[] MaxValue;
-        public double[] MinValue;
-        public uint DefaultReportInterval = 0;
-        public string DeviceId;
-        public string DeviceName;
-        public uint ReportInterval = 0;
-        public uint MinReportInterval = 0;
-        public uint ReportLatency = 0;
-        public bool ReportIntervalChanged = false;
-        public string Category;
-        public string PersistentUniqueId;
-        public string Manufacturer;
-        public string Model;
-        public string ConnectionType;
+        public List<Reading> _reading = new List<Reading>();
+
+        public int _sensorType = -1;
+        public int _count = -1;
+
+        public string _name = string.Empty;
+        public string[] _property;
+
+        public double[] _maxValue;
+        public double[] _minValue;
+
+        public uint _defaultReportInterval = 0;
+        public string _deviceId;
+        public string _deviceName;
+        public uint _reportInterval = 0;
+        public uint _minReportInterval = 0;
+        public uint _reportLatency = 0;
+        public bool _reportIntervalChanged = false;
+        public string _category;
+        public string _persistentUniqueId;
+        public string _manufacturer;
+        public string _model;
+        public string _connectionType;
 
         public SensorData(int sensorType, int count, string name, string[] property)
         {
-            SensorType = sensorType;
-            Count = count;
-            Name = name;
-            Property = property;
-            MaxValue = new double[Property.Length];
-            MinValue = new double[Property.Length];
+            _sensorType = sensorType;
+            _count = count;
+            _name = name;
+            _property = property;
+            _maxValue = new double[_property.Length];
+            _minValue = new double[_property.Length];
         }
 
         public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
                                 string category, string persistentUniqueId, string manufacturer, string model, string connectionType)
         {
-            if (DefaultReportInterval == 0)
+            if (_defaultReportInterval == 0)
             {
-                DefaultReportInterval = reportInterval;
+                _defaultReportInterval = reportInterval;
             }
 
-            DeviceId = deviceId;
-            DeviceName = deviceName;
-            ReportInterval = reportInterval;
-            MinReportInterval = minReportInterval;
-            ReportLatency = reportLatency;
-            Category = category;
-            PersistentUniqueId = persistentUniqueId;
-            Manufacturer = manufacturer;
-            Model = model;
-            ConnectionType = connectionType;
-    }
+            _deviceId = deviceId;
+            _deviceName = deviceName;
+            _reportInterval = reportInterval;
+            _minReportInterval = minReportInterval;
+            _reportLatency = reportLatency;
+            _category = category;
+            _persistentUniqueId = persistentUniqueId;
+            _manufacturer = manufacturer;
+            _model = model;
+            _connectionType = connectionType;
+        }
 
         public void UpdateReportInterval(uint reportInterval)
         {
-            if (ReportInterval != reportInterval)
+            if (reportInterval != _reportInterval)
             {
-                ReportInterval = reportInterval;
-                ReportIntervalChanged = true;
+                _reportInterval = reportInterval;
+                _reportIntervalChanged = true;
             }
         }
 
@@ -80,51 +84,50 @@ namespace SensorExplorer
         {
             try
             {
-                int count = ReadingList.Count;
+                int count = _reading.Count;
 
                 if (count == 0)
                 {
                     for (int i = 0; i < value.Length; i++)
                     {
-                        MaxValue[i] = value[i];
-                        MinValue[i] = value[i];
+                        _maxValue[i] = value[i];
+                        _minValue[i] = value[i];
                     }
                 }
                 else
                 {
                     for (int i = 0; i < value.Length; i++)
                     {
-                        if (value[i] > MaxValue[i])
+                        if (value[i] > _maxValue[i])
                         {
-                            MaxValue[i] = value[i];
+                            _maxValue[i] = value[i];
                         }
-                        else if (value[i] < MinValue[i])
+                        else if (value[i] < _minValue[i])
                         {
-                            MinValue[i] = value[i];
+                            _minValue[i] = value[i];
                         }
                     }
                 }
 
-                if (count == 0 || (timestamp - ReadingList[count - 1].timestamp).TotalMilliseconds >= ReportInterval)
+                if (count == 0 || (timestamp - _reading[count - 1].timestamp).TotalMilliseconds >= _reportInterval)
                 {
                     Reading reading = new Reading(timestamp, value);
-                    ReadingList.Add(reading);
+                    _reading.Add(reading);
 
                     return true;
                 }
             }
             catch { }
-
             return false;
         }
 
         public void ClearReading()
         {
-            ReadingList = new List<Reading>();
-            for (int i = 0; i < Property.Length; i++)
+            _reading = new List<Reading>();
+            for (int i = 0; i < _property.Length; i++)
             {
-                MaxValue[i] = 0;
-                MinValue[i] = 0;
+                _maxValue[i] = 0;
+                _minValue[i] = 0;
             }
         }
     }

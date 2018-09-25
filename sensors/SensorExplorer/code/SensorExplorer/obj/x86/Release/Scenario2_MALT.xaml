@@ -1,0 +1,100 @@
+﻿<Page
+    x:Class="SensorExplorer.Scenario2MALT"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <CollectionViewSource x:ConnectionId='2' x:Name="DeviceListSource"/>
+    </Page.Resources>
+
+    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel x:ConnectionId='3' x:Name="stackpanel1" Margin="12,20,12,12">
+            <TextBlock Text="Device Selection" Margin="0,0,0,10"/>
+            <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <Button x:ConnectionId='31' x:Name="connectToDeviceButton" Content="Connect to device" Margin="0,0,10,0"                             />
+                        <Button x:ConnectionId='32' x:Name="disconnectFromDeviceButton" Content="Disconnect from device" Margin="0,0,10,0"                                  />
+                    </StackPanel>
+                    <TextBlock Text="Select an Arduino Device:" Margin="0,25,0,0"/>
+                    <ListBox x:ConnectionId='29' x:Name="connectDevices" ItemsSource="{Binding Source={StaticResource DeviceListSource}}"  Height="250" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding InstanceId}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+            <Border x:ConnectionId='28' x:Name="errorBorder" Background="Red"/>
+        </StackPanel>
+
+        <StackPanel x:ConnectionId='4' x:Name="stackpanel2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
+            <Button x:ConnectionId='12' x:Name="showConnectionButton" Margin="10,0,0,0" Height="35" Content="Connect to another device"                             />
+            <StackPanel Orientation="Horizontal" Margin="10,18,0,0">
+                <StackPanel>
+                    <TextBlock Text="Light Value" FontSize="20"/>
+                    <TextBlock Text="Please enter a value in the range of 0 - 2600." Margin="0,10,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBox x:ConnectionId='26' x:Name="textboxLIGHT" Height="30" Width="150"/>
+                        <Button x:ConnectionId='27' x:Name="buttonLIGHT" Margin="20,0,0,0" Height="32" Width="50" Content="Set"                    />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="100,0,0,0">
+                    <TextBlock Text="Conversion Time" FontSize="20"/>
+                    <TextBlock Text="Please enter either 100 or 800" Margin="0,10,0,0"/>
+                    <ComboBox x:ConnectionId='25' x:Name="comboBox" Width="200" ItemsSource="100, 800" Margin="0,10,0,0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="10,0,0,0">
+                    <TextBlock Text="Run a Test" FontSize="20" Margin="0,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:ConnectionId='23' x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0"                        />
+                        <Button x:ConnectionId='24' x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="80,0,0,0">
+                    <TextBlock Text="MALT Version" FontSize="20" Margin="0,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:ConnectionId='21' x:Name="buttonMALTVERSION" Content="Get" Height="35"                           Margin="0,10,0,0"/>
+                        <TextBlock x:ConnectionId='22' x:Name="textblockVersion" Margin="20,18,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Sensor Data" FontSize="20" Margin="10,20,0,0"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:ConnectionId='19' x:Name="buttonREADALSSENSOR1" Content="Get ambient brightness" Height="35"                              Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:ConnectionId='20' x:Name="textblockLightSensor1" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:ConnectionId='17' x:Name="buttonREADALSSENSOR2" Content="Get screen brightness" Height="35"                              Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:ConnectionId='18' x:Name="textblockLightSensor2" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:ConnectionId='15' x:Name="buttonREADCOLORSENSOR1" Content="Get ambient RGB" Height="35"                                Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:ConnectionId='16' x:Name="textblockColorSensor1" Margin="20,18,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:ConnectionId='13' x:Name="buttonREADCOLORSENSOR2" Content="Get screen RGB" Height="35"                                Margin="10,10,0,0" Width="200"/>
+                    <TextBlock x:ConnectionId='14' x:Name="textblockColorSensor2" Margin="20,18,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel x:ConnectionId='5' x:Name="stackpanel3" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
+            <TextBlock x:ConnectionId='7' x:Name="output" TextWrapping="Wrap" Margin="0,10,0,0" FontSize="25"/>
+            <Button x:ConnectionId='8' x:Name="restartButton" Content="Restart"                       Margin="30" Height="85" Width="150" FontSize="36" Visibility="Collapsed" HorizontalAlignment="Center"/>
+            <StackPanel x:ConnectionId='9' x:Name="stackpanelWaitTime1" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
+                <TextBox x:ConnectionId='10' x:Name="textboxAUTOCURVE" Height="30" Width="150" TextWrapping="Wrap"/>
+                <Button x:ConnectionId='11' x:Name="buttonAUTOCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set"                         />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock x:ConnectionId='6' x:Name="StatusBlock" Margin="12, 10, 12, 10" Visibility="Collapsed"/>
+    </StackPanel>
+</Page>
+

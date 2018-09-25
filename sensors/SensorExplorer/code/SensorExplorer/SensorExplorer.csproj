@@ -124,6 +124,9 @@
     <Compile Include="Scenario0_Tests.xaml.cs">
       <DependentUpon>Scenario0_Tests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Scenario3_Source.xaml.cs">
+      <DependentUpon>Scenario3_Source.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sensor.cs" />
     <Compile Include="SensorData.cs" />
     <Compile Include="SensorDisplay.cs" />
@@ -184,6 +187,7 @@
     <Content Include="Images\Gyrometer.png" />
     <Content Include="Images\Inclinometer.png" />
     <Content Include="Images\redx.png" />
+    <Content Include="Music\Alarm05.wav" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -211,6 +215,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Scenario0_Tests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Scenario3_Source.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

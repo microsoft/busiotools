@@ -32,11 +32,13 @@ namespace SensorExplorer
                 { "Frequency", 60 },
                 { "Offset", 60 },
                 { "Jitter", 60*15 },
+                { "Drift", 60*15 },
+                { "PacketLoss", 60*5}
             }; // In seconds
         private List<int> indices;
         private string testType;
         private List<double[]> dataList;
-        private List<string> timestampList;
+        private List<DateTime> timestampList;
         private Countdown countdown;
         private int[] quadrants = new int[numQuadrants]; // Number of tests completed in each quadrant
         private int testsCompleted;
@@ -51,12 +53,15 @@ namespace SensorExplorer
         private Magnetometer currentMagnetometer;
         private OrientationSensor currentOrientationSensor;
         private OrientationSensorReading orientationSensorInitialReading;
+        private List<double[]> orientationSensorFirstMinuteDataList;
+        private List<double[]> orientationSensorLastMinuteDataList;
         private SimpleOrientationSensor currentSimpleOrientationSensor;
         private Boolean accelerometerInitialized;
         private Boolean inclinometerInitialized;
         private Boolean orientationInitialized;
         private Boolean simpleOrientationInitialized;
         private string sensorDataLog;
+        private DateTime startTime;
 
         public Scenario0Tests()
         {
@@ -82,12 +87,6 @@ namespace SensorExplorer
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            try
-            {
-                rootPage.loggingChannelTests.Dispose();
-            }
-            catch { }
-
             rootPage.NotifyUser("", NotifyType.StatusMessage);
         }
 
@@ -273,6 +272,14 @@ namespace SensorExplorer
                     testType = "Jitter";
                     DisplayPrecondition();
                     break;
+                case "Drift Test":
+                    testType = "Drift";
+                    DisplayPrecondition();
+                    break;
+                case "Packet Loss Test":
+                    testType = "PacketLoss";
+                    DisplayPrecondition();
+                    break;
             }
         }
 
@@ -294,6 +301,14 @@ namespace SensorExplorer
                                        "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
                                        "Keep it in stationary state.";
                     break;
+                case "Drift":
+                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                       "Keep it in stationary state.";
+                    break;
+                case "PacketLoss":
+                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                       "Keep it in stationary state.";
+                    break;
             }
 
             pivotSensor.Visibility = Visibility.Collapsed;
@@ -313,6 +328,8 @@ namespace SensorExplorer
             Button frequencyTestButton = CreateTestButton("Frequency Test");
             Button offsetTestButton = CreateTestButton("Offset Test");
             Button jitterTestButton = CreateTestButton("Jitter Test");
+            Button driftTestButton = CreateTestButton("Drift Test");
+            Button packetLossTestButton = CreateTestButton("Packet Loss Test");
        
             TextBlock noTestAvailable = new TextBlock();
             noTestAvailable.Text = "No tests available for this sensor.";
@@ -325,12 +342,14 @@ namespace SensorExplorer
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.GYROMETER)
             {
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.INCLINOMETER)
             {
@@ -341,10 +360,12 @@ namespace SensorExplorer
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.MAGNETOMETER)
             {
                 stackPanel.Children.Add(frequencyTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.ORIENTATIONSENSOR)
             {
@@ -352,6 +373,8 @@ namespace SensorExplorer
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.SIMPLEORIENTATIONSENSOR)
             {
@@ -421,7 +444,9 @@ namespace SensorExplorer
         private void TestBegin()
         {
             dataList = new List<double[]>();
-            timestampList = new List<string>();
+            orientationSensorFirstMinuteDataList = new List<double[]>();
+            orientationSensorLastMinuteDataList = new List<double[]>();
+            timestampList = new List<DateTime>();
             rootPage.NotifyUser("", NotifyType.StatusMessage);
             int count = 0;
 
@@ -449,8 +474,9 @@ namespace SensorExplorer
                     {
                         accelerometerInitialReading = currentAccelerometer.GetCurrentReading();
                     }
-                    currentAccelerometer.ReadingChanged += AccelerometerReadingChanged;
                     countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentAccelerometer.ReadingChanged += AccelerometerReadingChanged;
                     instruction.Text = "Accelerometer " + testType + " Test in progress...";
                 }
             }
@@ -478,8 +504,9 @@ namespace SensorExplorer
                     {
                         gyrometerInitialReading = currentGyrometer.GetCurrentReading();
                     }
-                    currentGyrometer.ReadingChanged += GyrometerReadingChanged;
                     countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentGyrometer.ReadingChanged += GyrometerReadingChanged;
                     instruction.Text = "Gyrometer " + testType + " Test in progress...";
                 }
             }
@@ -506,8 +533,9 @@ namespace SensorExplorer
                     {
                         lightSensorInitialReading = currentLightSensor.GetCurrentReading();
                     }
-                    currentLightSensor.ReadingChanged += LightSensorReadingChanged;
                     countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentLightSensor.ReadingChanged += LightSensorReadingChanged;
                     instruction.Text = "Light Sensor " + testType + " Test in progress...";
                 }
             }
@@ -530,8 +558,9 @@ namespace SensorExplorer
                 {
                     rootPage.DisableScenarioSelect();
                     cancelButton.Visibility = Visibility.Visible;
-                    currentMagnetometer.ReadingChanged += MagnetometerReadingChanged;
                     countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentMagnetometer.ReadingChanged += MagnetometerReadingChanged;
                     instruction.Text = "Magnetometer " + testType + " Test in progress...";
                 }
             }
@@ -558,8 +587,9 @@ namespace SensorExplorer
                     {
                         orientationSensorInitialReading = currentOrientationSensor.GetCurrentReading();
                     }
-                    currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
                     countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
                     instruction.Text = "Orientation Sensor" + " " + testType + " Test in progress...";
                 }               
             }
@@ -567,7 +597,6 @@ namespace SensorExplorer
 
         public async void TestEnd()
         {
-            cancelButton.Visibility = Visibility.Collapsed;
             int type = SensorType[pivotSensor.SelectedIndex];
             if (type == Sensor.ACCELEROMETER)
             {
@@ -589,6 +618,7 @@ namespace SensorExplorer
             {
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
             }
+            cancelButton.Visibility = Visibility.Collapsed;
             instruction.Text = "Calculating result...";
             await Task.Delay(5000); 
             output.Text = "";
@@ -604,6 +634,14 @@ namespace SensorExplorer
             else if (testType == "Jitter")
             {
                 CalculateJitterTest();
+            }
+            else if (testType == "Drift")
+            {
+                CalculateDriftTest();
+            }
+            else if (testType == "PacketLoss")
+            {
+                CalculatePacketLossTest();
             }
 
             DisplayRestart();
@@ -769,7 +807,7 @@ namespace SensorExplorer
             }
 
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text += str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
         }
 
         private void CalculateJitterTest()
@@ -831,57 +869,160 @@ namespace SensorExplorer
             }
 
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text += str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+        }
+
+        private void CalculateDriftTest()
+        {
+            string str = string.Empty;
+            double[] firstMinuteSum = new double[4];  // w, x, y, z
+            double[] lastMinuteSum = new double[4];  // w, x, y, z
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                if(timestampList[i].Subtract(startTime) <= TimeSpan.FromMinutes(1))
+                {
+                    orientationSensorFirstMinuteDataList.Add(dataList[i]);
+                }
+                else if(timestampList[i].Subtract(startTime) >= TimeSpan.FromMinutes(14))
+                {
+                    orientationSensorLastMinuteDataList.Add(dataList[i]);
+                }
+            }
+
+            foreach (double[] array in orientationSensorFirstMinuteDataList)
+            {
+                firstMinuteSum[0] += array[0];
+                firstMinuteSum[1] += array[1];
+                firstMinuteSum[2] += array[2];
+                firstMinuteSum[3] += array[3];
+            }
+
+            foreach (double[] array in orientationSensorLastMinuteDataList)
+            {
+                lastMinuteSum[0] += array[0];
+                lastMinuteSum[1] += array[1];
+                lastMinuteSum[2] += array[2];
+                lastMinuteSum[3] += array[3];
+            }
+
+            double[] firstMinuteAvg = new double[4];  // w, x, y, z
+            double[] lastMinuteAvg = new double[4];  // w, x, y, z
+
+            firstMinuteAvg[0] = firstMinuteSum[0] / orientationSensorFirstMinuteDataList.Count;
+            firstMinuteAvg[1] = firstMinuteSum[1] / orientationSensorFirstMinuteDataList.Count;
+            firstMinuteAvg[2] = firstMinuteSum[2] / orientationSensorFirstMinuteDataList.Count;
+            firstMinuteAvg[3] = firstMinuteSum[3] / orientationSensorFirstMinuteDataList.Count;
+
+            lastMinuteAvg[0] = lastMinuteSum[0] / orientationSensorLastMinuteDataList.Count;
+            lastMinuteAvg[1] = lastMinuteSum[1] / orientationSensorLastMinuteDataList.Count;
+            lastMinuteAvg[2] = lastMinuteSum[2] / orientationSensorLastMinuteDataList.Count;
+            lastMinuteAvg[3] = lastMinuteSum[3] / orientationSensorLastMinuteDataList.Count;
+
+            int type = SensorType[pivotSensor.SelectedIndex];
+            str = Constants.SensorName[type] + " " + testType + " Test Result: \n" +
+                  "--> Difference in W: " + (lastMinuteAvg[0] - firstMinuteAvg[0]) + " Degrees\n" +
+                  "--> Difference in X: " + (lastMinuteAvg[1] - firstMinuteAvg[1]) + " Degrees\n" +
+                  "--> Difference in Y: " + (lastMinuteAvg[2] - firstMinuteAvg[2]) + " Degrees\n" +
+                  "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + " Degrees\n";
+
+            rootPage.loggingChannelTests.LogMessage(str);
+            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+        }
+
+        private void CalculatePacketLossTest()
+        {
+            int type = SensorType[pivotSensor.SelectedIndex];
+            uint reportInterval = 0;
+            if (type == Sensor.ACCELEROMETER)
+            {
+                reportInterval = currentAccelerometer.ReportInterval;
+            }
+            else if (type == Sensor.GYROMETER)
+            {
+                reportInterval = currentGyrometer.ReportInterval;
+            }
+            else if (type == Sensor.LIGHTSENSOR)
+            {
+                reportInterval = currentLightSensor.ReportInterval;
+            }
+            else if (type == Sensor.MAGNETOMETER)
+            {
+                reportInterval = currentMagnetometer.ReportInterval;
+            }
+            else if (type == Sensor.ORIENTATIONSENSOR)
+            {
+                reportInterval = currentOrientationSensor.ReportInterval;
+            }
+            double expectedNumData = testLength[testType] / (reportInterval / 1000.0);
+            string str = Constants.SensorName[type] + " " + testType + " Test Result: " + ((expectedNumData - dataList.Count) / expectedNumData) * 100 + " %\n";
+            rootPage.loggingChannelTests.LogMessage(str);
+            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
         }
 
         private async void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
-            timestampList.Add(e.Reading.Timestamp.ToString());
-            dataList.Add(new double[] { e.Reading.AccelerationX, e.Reading.AccelerationY, e.Reading.AccelerationZ });
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (e.Reading.Timestamp.Subtract(startTime) <= TimeSpan.FromSeconds(testLength[testType]))
             {
-                output.Text = e.Reading.Timestamp + ": x=" + e.Reading.AccelerationX + ", y=" + e.Reading.AccelerationY + ", z=" + e.Reading.AccelerationZ;
-            });
+                timestampList.Add(e.Reading.Timestamp.DateTime);
+                dataList.Add(new double[] { e.Reading.AccelerationX, e.Reading.AccelerationY, e.Reading.AccelerationZ });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                {
+                    output.Text = e.Reading.Timestamp + ": x=" + e.Reading.AccelerationX + ", y=" + e.Reading.AccelerationY + ", z=" + e.Reading.AccelerationZ;
+                });
+            }
         }
 
         private async void GyrometerReadingChanged(object sender, GyrometerReadingChangedEventArgs e)
         {
-            timestampList.Add(e.Reading.Timestamp.ToString());
-            dataList.Add(new double[] { e.Reading.AngularVelocityX, e.Reading.AngularVelocityY, e.Reading.AngularVelocityZ });
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (e.Reading.Timestamp.Subtract(startTime) <= TimeSpan.FromSeconds(testLength[testType]))
             {
-                output.Text = e.Reading.Timestamp + ": x=" + e.Reading.AngularVelocityX + ", y=" + e.Reading.AngularVelocityY + ", z=" + e.Reading.AngularVelocityZ;
-            });
+                timestampList.Add(e.Reading.Timestamp.DateTime);
+                dataList.Add(new double[] { e.Reading.AngularVelocityX, e.Reading.AngularVelocityY, e.Reading.AngularVelocityZ });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    output.Text = e.Reading.Timestamp + ": x=" + e.Reading.AngularVelocityX + ", y=" + e.Reading.AngularVelocityY + ", z=" + e.Reading.AngularVelocityZ;
+                });
+            }
         }
 
         private async void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
         {
-            timestampList.Add(e.Reading.Timestamp.ToString());
-            dataList.Add(new double[] { e.Reading.IlluminanceInLux });
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (e.Reading.Timestamp.Subtract(startTime) <= TimeSpan.FromSeconds(testLength[testType]))
             {
-                output.Text = e.Reading.Timestamp + ": " + e.Reading.IlluminanceInLux;
-            });
+                timestampList.Add(e.Reading.Timestamp.DateTime);
+                dataList.Add(new double[] { e.Reading.IlluminanceInLux });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    output.Text = e.Reading.Timestamp + ": " + e.Reading.IlluminanceInLux;
+                });
+            }
         }
 
         private async void MagnetometerReadingChanged(object sender, MagnetometerReadingChangedEventArgs e)
         {
-            timestampList.Add(e.Reading.Timestamp.ToString());
-            dataList.Add(new double[] { e.Reading.MagneticFieldX, e.Reading.MagneticFieldY, e.Reading.MagneticFieldZ });
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (e.Reading.Timestamp.Subtract(startTime) <= TimeSpan.FromSeconds(testLength[testType]))
             {
-                output.Text = e.Reading.Timestamp + ": x=" + e.Reading.MagneticFieldX + ", y=" + e.Reading.MagneticFieldY + ", z=" + e.Reading.MagneticFieldZ;
-            });
+                timestampList.Add(e.Reading.Timestamp.DateTime);
+                dataList.Add(new double[] { e.Reading.MagneticFieldX, e.Reading.MagneticFieldY, e.Reading.MagneticFieldZ });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    output.Text = e.Reading.Timestamp + ": x=" + e.Reading.MagneticFieldX + ", y=" + e.Reading.MagneticFieldY + ", z=" + e.Reading.MagneticFieldZ;
+                });
+            }
         }
 
         private async void OrientationSensorReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
         {
-            timestampList.Add(e.Reading.Timestamp.ToString());
-            dataList.Add(new double[] { e.Reading.Quaternion.W, e.Reading.Quaternion.X, e.Reading.Quaternion.Y, e.Reading.Quaternion.Z });
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (e.Reading.Timestamp.Subtract(startTime) <= TimeSpan.FromSeconds(testLength[testType]))
             {
-                output.Text = e.Reading.Timestamp + ": w=" + e.Reading.Quaternion.W + ", x=" + e.Reading.Quaternion.X + ", y=" + e.Reading.Quaternion.Y + ", z=" + e.Reading.Quaternion.Z;
-            });
+                timestampList.Add(e.Reading.Timestamp.DateTime);
+                dataList.Add(new double[] { e.Reading.Quaternion.W, e.Reading.Quaternion.X, e.Reading.Quaternion.Y, e.Reading.Quaternion.Z });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    output.Text = e.Reading.Timestamp + ": w=" + e.Reading.Quaternion.W + ", x=" + e.Reading.Quaternion.X + ", y=" + e.Reading.Quaternion.Y + ", z=" + e.Reading.Quaternion.Z;
+                });
+            }
         }
 
         private void PivotSensorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1084,131 +1225,132 @@ namespace SensorExplorer
         {
             currentAccelerometer.ReadingChanged -= AccelerometerReadingChangedOrientation;
 
-            if (SensorType[pivotSensor.SelectedIndex] == Sensor.ACCELEROMETER)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                sensorDataLog = e.Reading.Timestamp.ToString() +
-                                 " x = " + e.Reading.AccelerationX +
-                                 ", y = " + e.Reading.AccelerationY +
-                                 ", z = " + e.Reading.AccelerationZ;
-                rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
+                if (SensorType[pivotSensor.SelectedIndex] == Sensor.ACCELEROMETER)
+                {
+                    sensorDataLog = e.Reading.Timestamp.ToString() +
+                                     " x = " + e.Reading.AccelerationX +
+                                     ", y = " + e.Reading.AccelerationY +
+                                     ", z = " + e.Reading.AccelerationZ;
+                    rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
 
-                if (!accelerometerInitialized)
-                {
-                    accelerometerInitialized = true;
-                    LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
-                    rootPage.loggingChannelTests.LogEvent("AccelerometerInitialized", loggingFields);
-                }
-                else if ((e.Reading.AccelerationX < -0.9 && arrowDir == (int )Directions.left) ||
-                         (e.Reading.AccelerationX > 0.9 && arrowDir == (int)Directions.right) ||
-                         (e.Reading.AccelerationY > 0.9 && arrowDir == (int)Directions.up) ||
-                         (e.Reading.AccelerationY < -0.9 && arrowDir == (int)Directions.down))
-                {
-                    arrowDir = (int)Directions.nothing;
-                    testsCompleted++;
-                    LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
-                    LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "AccelerometerSingleTestResult");
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    if (!accelerometerInitialized)
                     {
+                        accelerometerInitialized = true;
+                        LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
+                        rootPage.loggingChannelTests.LogEvent("AccelerometerInitialized", loggingFields);
+                    }
+                    else if ((e.Reading.AccelerationX < -0.9 && arrowDir == (int)Directions.left) ||
+                             (e.Reading.AccelerationX > 0.9 && arrowDir == (int)Directions.right) ||
+                             (e.Reading.AccelerationY > 0.9 && arrowDir == (int)Directions.up) ||
+                             (e.Reading.AccelerationY < -0.9 && arrowDir == (int)Directions.down))
+                    {
+                        arrowDir = (int)Directions.nothing;
+                        testsCompleted++;
+                        LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
+                        LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "AccelerometerSingleTestResult");
                         TestSuccess();
-                    });
+                    }
+                    else
+                    {
+                        currentAccelerometer.ReadingChanged += AccelerometerReadingChangedOrientation;
+                    }
                 }
-                else
-                {
-                    currentAccelerometer.ReadingChanged += AccelerometerReadingChangedOrientation;
-                }
-            }
+            });
         }
 
         private async void InclinometerReadingChangedOrientation(object sender, InclinometerReadingChangedEventArgs e)
         {
             currentInclinometer.ReadingChanged -= InclinometerReadingChangedOrientation;
 
-            if (SensorType[pivotSensor.SelectedIndex] == Sensor.INCLINOMETER)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                sensorDataLog = e.Reading.Timestamp.ToString() +
-                                 " x = " + e.Reading.PitchDegrees +
-                                 ", y = " + e.Reading.RollDegrees +
-                                 ", z = " + e.Reading.YawDegrees;
-                rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
+                if (SensorType[pivotSensor.SelectedIndex] == Sensor.INCLINOMETER)
+                {
+                    sensorDataLog = e.Reading.Timestamp.ToString() +
+                                     " x = " + e.Reading.PitchDegrees +
+                                     ", y = " + e.Reading.RollDegrees +
+                                     ", z = " + e.Reading.YawDegrees;
+                    rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
 
-                if (!inclinometerInitialized)
-                {
-                    inclinometerInitialized = true;
-                    LoggingFields loggingFields = LogInclinometerReading(e.Reading);
-                    rootPage.loggingChannelTests.LogEvent("InclinometerInitialized", loggingFields);
-                }
-                else if ((e.Reading.RollDegrees > 80 && e.Reading.RollDegrees < 100 && arrowDir == (int)Directions.right) ||
-                         (e.Reading.RollDegrees > -100 && e.Reading.RollDegrees < -80 && arrowDir == (int)Directions.left) ||
-                         (e.Reading.PitchDegrees > -100 && e.Reading.PitchDegrees < -80 && arrowDir == (int)Directions.up) ||
-                         (e.Reading.PitchDegrees > 80 && e.Reading.PitchDegrees < 100 && arrowDir == (int)Directions.down))
-                {
-                    arrowDir = (int)Directions.nothing;
-                    testsCompleted++;
-                    LoggingFields loggingFields = LogInclinometerReading(e.Reading);
-                    LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "InclinometerSingleTestResult");
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    if (!inclinometerInitialized)
                     {
+                        inclinometerInitialized = true;
+                        LoggingFields loggingFields = LogInclinometerReading(e.Reading);
+                        rootPage.loggingChannelTests.LogEvent("InclinometerInitialized", loggingFields);
+                    }
+                    else if ((e.Reading.RollDegrees > 80 && e.Reading.RollDegrees < 100 && arrowDir == (int)Directions.right) ||
+                             (e.Reading.RollDegrees > -100 && e.Reading.RollDegrees < -80 && arrowDir == (int)Directions.left) ||
+                             (e.Reading.PitchDegrees > -100 && e.Reading.PitchDegrees < -80 && arrowDir == (int)Directions.up) ||
+                             (e.Reading.PitchDegrees > 80 && e.Reading.PitchDegrees < 100 && arrowDir == (int)Directions.down))
+                    {
+                        arrowDir = (int)Directions.nothing;
+                        testsCompleted++;
+                        LoggingFields loggingFields = LogInclinometerReading(e.Reading);
+                        LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "InclinometerSingleTestResult");
                         TestSuccess();
-                    });
+                    }
+                    else
+                    {
+                        currentInclinometer.ReadingChanged += InclinometerReadingChangedOrientation;
+                    }
                 }
-                else
-                {
-                    currentInclinometer.ReadingChanged += InclinometerReadingChangedOrientation;
-                }
-            }
+            });
         }
 
         private async void OrientationReadingChangedOrientation(object sender, OrientationSensorReadingChangedEventArgs e)
         {
             currentOrientationSensor.ReadingChanged -= OrientationReadingChangedOrientation;
 
-            if (SensorType[pivotSensor.SelectedIndex] == Sensor.ORIENTATIONSENSOR)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                sensorDataLog = e.Reading.Timestamp.ToString() +
-                                 " x = " + e.Reading.Quaternion.X +
-                                 ", y = " + e.Reading.Quaternion.Y +
-                                 ", z = " + e.Reading.Quaternion.Z +
-                                 ", w = " + e.Reading.Quaternion.W;
-                sensorDataLog += ", M11 = " + e.Reading.RotationMatrix.M11 +
-                                  ", M12 = " + e.Reading.RotationMatrix.M12 +
-                                  ", M13 = " + e.Reading.RotationMatrix.M13 +
-                                  ", M21 = " + e.Reading.RotationMatrix.M21 +
-                                  ", M22 = " + e.Reading.RotationMatrix.M22 +
-                                  ", M23 = " + e.Reading.RotationMatrix.M23 +
-                                  ", M31 = " + e.Reading.RotationMatrix.M31 +
-                                  ", M32 = " + e.Reading.RotationMatrix.M32 +
-                                  ", M33 = " + e.Reading.RotationMatrix.M33;
-                rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
+                if (SensorType[pivotSensor.SelectedIndex] == Sensor.ORIENTATIONSENSOR)
+                {
+                    sensorDataLog = e.Reading.Timestamp.ToString() +
+                                     " x = " + e.Reading.Quaternion.X +
+                                     ", y = " + e.Reading.Quaternion.Y +
+                                     ", z = " + e.Reading.Quaternion.Z +
+                                     ", w = " + e.Reading.Quaternion.W;
+                    sensorDataLog += ", M11 = " + e.Reading.RotationMatrix.M11 +
+                                      ", M12 = " + e.Reading.RotationMatrix.M12 +
+                                      ", M13 = " + e.Reading.RotationMatrix.M13 +
+                                      ", M21 = " + e.Reading.RotationMatrix.M21 +
+                                      ", M22 = " + e.Reading.RotationMatrix.M22 +
+                                      ", M23 = " + e.Reading.RotationMatrix.M23 +
+                                      ", M31 = " + e.Reading.RotationMatrix.M31 +
+                                      ", M32 = " + e.Reading.RotationMatrix.M32 +
+                                      ", M33 = " + e.Reading.RotationMatrix.M33;
+                    rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
 
-                if (!orientationInitialized)
-                {
-                    orientationInitialized = true;
-                    LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
-                    rootPage.loggingChannelTests.LogEvent("OrientationSensorInitialized", loggingFields);
-                }
-                else
-                {
-                    double[] eulerAngle = QuaternionToEulerAngle(e.Reading.Quaternion);
-                    if ((eulerAngle[0] > (Math.PI / 2 - 0.2) && eulerAngle[0] < (Math.PI / 2 + 0.2) && arrowDir == (int)Directions.right) ||
-                        (eulerAngle[0] > (-1) * (Math.PI / 2 + 0.2) && eulerAngle[0] < (-1) * (Math.PI / 2 - 0.2) && arrowDir == (int)Directions.left) ||
-                        (eulerAngle[1] > (-1) * (Math.PI / 2 + 0.2) && eulerAngle[1] < (-1) * (Math.PI / 2 - 0.2) && arrowDir == (int)Directions.up) ||
-                        (eulerAngle[1] > (Math.PI / 2 - 0.2) && eulerAngle[1] < (Math.PI / 2 + 0.2) && arrowDir == (int)Directions.down))
+                    if (!orientationInitialized)
                     {
-                        arrowDir = (int)Directions.nothing;
-                        testsCompleted++;
+                        orientationInitialized = true;
                         LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
-                        LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "OrientationSensorSingleTestResult");
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            TestSuccess();
-                        });
+                        rootPage.loggingChannelTests.LogEvent("OrientationSensorInitialized", loggingFields);
                     }
                     else
                     {
-                        currentOrientationSensor.ReadingChanged += OrientationReadingChangedOrientation;
+                        double[] eulerAngle = QuaternionToEulerAngle(e.Reading.Quaternion);
+                        if ((eulerAngle[0] > (Math.PI / 2 - 0.2) && eulerAngle[0] < (Math.PI / 2 + 0.2) && arrowDir == (int)Directions.right) ||
+                            (eulerAngle[0] > (-1) * (Math.PI / 2 + 0.2) && eulerAngle[0] < (-1) * (Math.PI / 2 - 0.2) && arrowDir == (int)Directions.left) ||
+                            (eulerAngle[1] > (-1) * (Math.PI / 2 + 0.2) && eulerAngle[1] < (-1) * (Math.PI / 2 - 0.2) && arrowDir == (int)Directions.up) ||
+                            (eulerAngle[1] > (Math.PI / 2 - 0.2) && eulerAngle[1] < (Math.PI / 2 + 0.2) && arrowDir == (int)Directions.down))
+                        {
+                            arrowDir = (int)Directions.nothing;
+                            testsCompleted++;
+                            LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
+                            LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "OrientationSensorSingleTestResult");
+                            TestSuccess();
+
+                        }
+                        else
+                        {
+                            currentOrientationSensor.ReadingChanged += OrientationReadingChangedOrientation;
+                        }
                     }
                 }
-            }
+            });
         }
 
         private double[] QuaternionToEulerAngle(SensorQuaternion quaternion)
@@ -1239,20 +1381,23 @@ namespace SensorExplorer
             return eulerAngle;
         }
 
-        private void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
+        private async void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
         {
-            if (SensorType[pivotSensor.SelectedIndex] == Sensor.SIMPLEORIENTATIONSENSOR)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                sensorDataLog = e.Timestamp.ToString() + " " + e.Orientation.ToString();
-                rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
-
-                if (!simpleOrientationInitialized)
+                if (SensorType[pivotSensor.SelectedIndex] == Sensor.SIMPLEORIENTATIONSENSOR)
                 {
-                    simpleOrientationInitialized = true;
-                    LoggingFields loggingFields = LogSimpleOrientationSensorReading(e.Orientation);
-                    rootPage.loggingChannelTests.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
+                    sensorDataLog = e.Timestamp.ToString() + " " + e.Orientation.ToString();
+                    rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
+
+                    if (!simpleOrientationInitialized)
+                    {
+                        simpleOrientationInitialized = true;
+                        LoggingFields loggingFields = LogSimpleOrientationSensorReading(e.Orientation);
+                        rootPage.loggingChannelTests.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
+                    }
                 }
-            }
+            });
         }
 
         public void CurrentSimpleOrientation()

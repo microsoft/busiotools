@@ -1,0 +1,22 @@
+# USB Test Documentation Reference
+
+- The root of the documentation for USB testing is here: https://aka.ms/usbtesting
+    - Please start here for an overview of the USB test tools.
+- All partners should review https://aka.ms/usbmuttsetup for directions on preparing a test system for MUTT testing
+- Partners who are using the tools for testing a System should review the following:
+    - Stress and transfer tests: https://aka.ms/usbstress
+    - Visual Studio based Fundamentals tests: https://aka.ms/usbfundtests
+    - HLK System Fundamentals tests: https://aka.ms/usbhlksystem  
+- If the system supports USB Type-C review the following:
+    - USB Type-C Connection Exerciser Stress: https://aka.ms/usbtypecstress
+    - USB Type-C Interoperability: https://aka.ms/usbtypecmanual
+- Partners who are using the tools for USB host controller testing should review:
+    - Overview: https://aka.ms/usbcontrollertesting
+    - Stress and transfer tests: https://aka.ms/usbstress
+    - Fundamentals tests: https://aka.ms/usbfundtests
+- Partners who are using the tools for testing USB hubs:
+    - https://aka.ms/usbhubtesting
+    - Also review USB hub specific HLK tests: https://aka.ms/usbhlk  
+- Partners who are using the tools for testing USB devices:
+    - https://aka.ms/usbdevicetesting
+    - Also review USB device specific HLK tests: https://aka.ms/usbhlk 

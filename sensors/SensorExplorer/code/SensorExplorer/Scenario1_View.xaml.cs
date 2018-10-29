@@ -147,14 +147,14 @@ namespace SensorExplorer
                     _sensorData.Add(_inclinometerData);
                     AddPivotItem(Sensor.INCLINOMETER, index, totalIndex);
                 }
-                if (Sensor.LightSensor != null)
+                for (int index = 0; index < Sensor.LightSensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _lightSensorData = new SensorData(Sensor.LIGHTSENSOR, totalIndex, "LightSensor", new string[] { "Illuminance (lux)" });
-                    SensorDisplay _lightSensorDisplay = new SensorDisplay(Sensor.LIGHTSENSOR, 0, totalIndex, "LightSensor", 0, 1000, 2, new Color[] { Colors.DarkOrange });
+                    SensorData _lightSensorData = new SensorData(Sensor.LIGHTSENSOR, totalIndex, "LightSensor", new string[] { "Illuminance (lux)", "Chromaticity X", "Chromaticity Y" });
+                    SensorDisplay _lightSensorDisplay = new SensorDisplay(Sensor.LIGHTSENSOR, index, totalIndex, "LightSensor", 0, 1000, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
                     _sensorDisplay.Add(_lightSensorDisplay);
                     _sensorData.Add(_lightSensorData);
-                    AddPivotItem(Sensor.LIGHTSENSOR, 0, totalIndex);
+                    AddPivotItem(Sensor.LIGHTSENSOR, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.MagnetometerList.Count; index++)
                 {
@@ -234,20 +234,20 @@ namespace SensorExplorer
                     _sensorData.Add(_proximitySensorData);
                     AddPivotItem(Sensor.PROXIMITYSENSOR, index, totalIndex);
                 }
-                if (Sensor.SimpleOrientationSensor != null)
+                for (int index = 0; index < Sensor.SimpleOrientationSensorList.Count; index++)
                 {
                     totalIndex++;
                     SensorData _simpleOrientationSensorData = new SensorData(Sensor.SIMPLEORIENTATIONSENSOR, totalIndex, "SimpleOrientationSensor", new string[] { "SimpleOrientation" });
-                    SensorDisplay _simpleOrientationSensorDisplay = new SensorDisplay(Sensor.SIMPLEORIENTATIONSENSOR, 0, totalIndex, "SimpleOrientationSensor", 0, 5, 5, new Color[] { Colors.Lime });
+                    SensorDisplay _simpleOrientationSensorDisplay = new SensorDisplay(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex, "SimpleOrientationSensor", 0, 5, 5, new Color[] { Colors.Lime });
                     _sensorDisplay.Add(_simpleOrientationSensorDisplay);
                     _sensorData.Add(_simpleOrientationSensorData);
-                    AddPivotItem(Sensor.PROXIMITYSENSOR, 0, totalIndex);
+                    AddPivotItem(Sensor.PROXIMITYSENSOR, index, totalIndex);
                 }
 
                 AddSummaryPage();
 
                 var resourceLoader = ResourceLoader.GetForCurrentView();
-                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + (PivotSensor.Items.Count - 1), NotifyType.StatusMessage);
+                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + (PivotSensor.Items.Count - 1) + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
                 ProgressRingSensor.IsActive = false;
 
                 if (PivotSensor.Items.Count > 0)
@@ -414,9 +414,11 @@ namespace SensorExplorer
             stackpanel.Orientation = Orientation.Horizontal;
             StackPanel stackpanelProperty = new StackPanel();
             StackPanel stackpanelValue = new StackPanel();
-            TextBlock[] TextBlockProperties = new TextBlock[18];
-            TextBlock[] TextBlockValues = new TextBlock[18];
-            for (int i = 0; i < 18; i++)
+            StackPanel stackpanelFailed = new StackPanel();
+            TextBlock[] TextBlockProperties = new TextBlock[19];
+            TextBlock[] TextBlockValues = new TextBlock[19];
+            TextBlock[] TextBlockFailed = new TextBlock[19];
+            for (int i = 0; i < 19; i++)
             {
                 TextBlockProperties[i] = new TextBlock();
                 TextBlockProperties[i].FontSize = 20;
@@ -426,10 +428,17 @@ namespace SensorExplorer
                 TextBlockValues[i].FontSize = 20;
                 TextBlockValues[i].HorizontalAlignment = HorizontalAlignment.Center;
                 stackpanelValue.Children.Add(TextBlockValues[i]);
+
+                TextBlockFailed[i] = new TextBlock();
+                TextBlockFailed[i].Margin = new Thickness() { Left = 20 };
+                TextBlockFailed[i].FontSize = 20;
+                TextBlockFailed[i].HorizontalAlignment = HorizontalAlignment.Center;
+                stackpanelFailed.Children.Add(TextBlockFailed[i]);
             }
 
             stackpanel.Children.Add(stackpanelProperty);
             stackpanel.Children.Add(stackpanelValue);
+            stackpanel.Children.Add(stackpanelFailed);
 
             TextBlockProperties[0].Text = "Sensor Category";
             TextBlockProperties[0].FontWeight = FontWeights.Bold;
@@ -450,6 +459,7 @@ namespace SensorExplorer
             TextBlockProperties[15].Text = "Pedometer";
             TextBlockProperties[16].Text = "Proximity Sensor";
             TextBlockProperties[17].Text = "Simple Orientation Sensor";
+            TextBlockProperties[18].Text = "Other";
 
             TextBlockValues[0].Text = "Number of Sensor(s) Available";
             TextBlockValues[0].FontWeight = FontWeights.Bold;
@@ -462,14 +472,36 @@ namespace SensorExplorer
             TextBlockValues[7].Text = Sensor.CompassList.Count.ToString();
             TextBlockValues[8].Text = Sensor.GyrometerList.Count.ToString();
             TextBlockValues[9].Text = Sensor.InclinometerList.Count.ToString();
-            TextBlockValues[10].Text = (Sensor.LightSensor == null) ? ("0") : ("1");
+            TextBlockValues[10].Text = Sensor.LightSensorList.Count.ToString();
             TextBlockValues[11].Text = Sensor.MagnetometerList.Count.ToString();
             TextBlockValues[12].Text = Sensor.OrientationAbsoluteList.Count.ToString();
             TextBlockValues[13].Text = Sensor.OrientationGeomagneticList.Count.ToString();
             TextBlockValues[14].Text = Sensor.OrientationRelativeList.Count.ToString();
             TextBlockValues[15].Text = Sensor.PedometerList.Count.ToString();
             TextBlockValues[16].Text = Sensor.ProximitySensorList.Count.ToString();
-            TextBlockValues[17].Text = (Sensor.SimpleOrientationSensor == null) ? ("0") : ("1");
+            TextBlockValues[17].Text = Sensor.SimpleOrientationSensorList.Count.ToString();
+            TextBlockValues[18].Text = Sensor.SensorClassDevice.Count.ToString();
+
+            TextBlockFailed[0].Text = "Any Failed Enumerations";
+            TextBlockFailed[0].FontWeight = FontWeights.Bold;
+            TextBlockFailed[1].Text = Sensor.AccelerometerStandardFailed ? "Yes" : "No";
+            TextBlockFailed[2].Text = Sensor.AccelerometerGravityFailed ? "Yes" : "No";
+            TextBlockFailed[3].Text = Sensor.AccelerometerLinearFailed ? "Yes" : "No";
+            TextBlockFailed[4].Text = Sensor.ActivitySensorFailed ? "Yes" : "No";
+            TextBlockFailed[5].Text = Sensor.AltimeterFailed ? "Yes" : "No";
+            TextBlockFailed[6].Text = Sensor.BarometerFailed ? "Yes" : "No";
+            TextBlockFailed[7].Text = Sensor.CompassFailed ? "Yes" : "No";
+            TextBlockFailed[8].Text = Sensor.GyrometerFailed ? "Yes" : "No";
+            TextBlockFailed[9].Text = Sensor.InclinometerFailed ? "Yes" : "No";
+            TextBlockFailed[10].Text = Sensor.LightSensorFailed ? "Yes" : "No";
+            TextBlockFailed[11].Text = Sensor.MagnetometerFailed ? "Yes" : "No";
+            TextBlockFailed[12].Text = Sensor.OrientationAbsoluteFailed ? "Yes" : "No";
+            TextBlockFailed[13].Text = Sensor.OrientationGeomagneticFailed ? "Yes" : "No";
+            TextBlockFailed[14].Text = Sensor.OrientationRelativeFailed ? "Yes" : "No";
+            TextBlockFailed[15].Text = Sensor.PedometerFailed ? "Yes" : "No";
+            TextBlockFailed[16].Text = Sensor.ProximitySensorFailed ? "Yes" : "No";
+            TextBlockFailed[17].Text = Sensor.SimpleOrientationSensorFailed ? "Yes" : "No";
+            TextBlockFailed[18].Text = Sensor.OtherSensorFailed ? "Yes" : "No";
 
             PivotItemSensor.Header = "Summary";
             scrollViewerSensor.Content = stackpanel;
@@ -525,7 +557,7 @@ namespace SensorExplorer
                 }
                 else if (selected._sensorType == Sensor.LIGHTSENSOR)
                 {
-                    Sensor.LightSensor.ReportInterval = uint.Parse(textboxReportInterval.Text);
+                    Sensor.LightSensorList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
                     _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.MAGNETOMETER)

@@ -95,8 +95,8 @@ namespace SensorExplorer
                             }
                             else if (sensorData[i]._sensorType == Sensor.LIGHTSENSOR)
                             {
-                                Sensor.LightSensor.ReportInterval = sensorData[i]._reportInterval;
-                                sensorData[i]._reportInterval = Sensor.LightSensor.ReportInterval;
+                                Sensor.LightSensorList[sensorData[i]._count].ReportInterval = sensorData[i]._reportInterval;
+                                sensorData[i]._reportInterval = Sensor.LightSensorList[sensorData[i]._count].ReportInterval;
                             }
                             else if (sensorData[i]._sensorType == Sensor.ORIENTATIONSENSOR)
                             {

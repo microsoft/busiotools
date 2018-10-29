@@ -36,10 +36,13 @@
                                    RelativePanel.Above="LinksPanel" Margin="10,10,0,0"
                                    TextWrapping="Wrap"/>
                         <StackPanel x:Name="LinksPanel" Orientation="Horizontal" Margin="10,10,0,10">
-                            <HyperlinkButton Content="Trademarks" Tag="http://go.microsoft.com/fwlink/?LinkID=623755"
-                        Click="FooterClick" FontSize="12"/>
+                            <HyperlinkButton Content="Trademarks" Tag="http://go.microsoft.com/fwlink/?LinkID=623755" Click="FooterClick" FontSize="12"/>
                             <TextBlock Text="|" VerticalAlignment="Center" />
                             <HyperlinkButton x:Name="PrivacyLink" Content="Privacy" Tag="http://privacy.microsoft.com" Click="FooterClick" FontSize="12"/>
+                            <TextBlock Text="|" VerticalAlignment="Center" />
+                            <HyperlinkButton x:Name="SourceLink" Content="Source" Tag="https://aka.ms/sensorstrace" Click="FooterClick" FontSize="12"/>
+                            <TextBlock Text="|" VerticalAlignment="Center" />
+                            <HyperlinkButton x:Name="BlogLink" Content="Blog" Tag="https://aka.ms/sensorexplorerblog" Click="FooterClick" FontSize="12"/>
                         </StackPanel>
                     </StackPanel>
                 </RelativePanel>

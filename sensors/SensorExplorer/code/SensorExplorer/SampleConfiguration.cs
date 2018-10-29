@@ -11,7 +11,6 @@ namespace SensorExplorer
             new Scenario() { Title = "Tests", ClassType = typeof(Scenario0Tests) },
             new Scenario() { Title = "View", ClassType = typeof(Scenario1View) },
             new Scenario() { Title = "MALT", ClassType = typeof(Scenario2MALT) },
-            new Scenario() { Title = "Source", ClassType = typeof(Scenario3Source) }
         };
     }
 

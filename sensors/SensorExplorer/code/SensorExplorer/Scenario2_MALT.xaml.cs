@@ -654,6 +654,7 @@ namespace SensorExplorer
                 }
 
                 output.Text = "Preparation time...";
+                await SetLight(0);
                 await Task.Delay((int)waitTime*1000);
             }
             

@@ -162,12 +162,12 @@ namespace SensorExplorer
                     SensorType.Add(Sensor.INCLINOMETER);
                     indices.Add(index);
                 }
-                if (Sensor.LightSensor != null)
+                for (int index = 0; index < Sensor.LightSensorList.Count; index++)
                 {
                     totalIndex++;
-                    AddPivotItem(Sensor.LIGHTSENSOR, 0, totalIndex);
+                    AddPivotItem(Sensor.LIGHTSENSOR, index, totalIndex);
                     SensorType.Add(Sensor.LIGHTSENSOR);
-                    indices.Add(0);
+                    indices.Add(index);
                 }
                 for (int index = 0; index < Sensor.MagnetometerList.Count; index++)
                 {
@@ -211,16 +211,16 @@ namespace SensorExplorer
                     SensorType.Add(Sensor.PROXIMITYSENSOR);
                     indices.Add(index);
                 }
-                if (Sensor.SimpleOrientationSensor != null)
+                for (int index = 0; index < Sensor.SimpleOrientationSensorList.Count; index++)
                 {
                     totalIndex++;
-                    AddPivotItem(Sensor.SIMPLEORIENTATIONSENSOR, 0, totalIndex);
+                    AddPivotItem(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex);
                     SensorType.Add(Sensor.SIMPLEORIENTATIONSENSOR);
                     indices.Add(0);
                 }
 
                 var resourceLoader = ResourceLoader.GetForCurrentView();
-                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + pivotSensor.Items.Count, NotifyType.StatusMessage);
+                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + pivotSensor.Items.Count + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
 
                 if (pivotSensor.Items.Count > 0)
                 {
@@ -435,7 +435,7 @@ namespace SensorExplorer
             else if (type == Sensor.SIMPLEORIENTATIONSENSOR)
             {
                 IsSimpleOrientationSensor = true;
-                currentSimpleOrientationSensor = Sensor.SimpleOrientationSensor;
+                currentSimpleOrientationSensor = Sensor.SimpleOrientationSensorList[indices[pivotSensor.SelectedIndex]];
                 instruction.Text = "Simple orientation sensor ready\n" + currentSimpleOrientationSensor.DeviceId;
                 currentSimpleOrientationSensor.OrientationChanged += SimpleOrientationChangedOrientation;
             }
@@ -512,7 +512,7 @@ namespace SensorExplorer
             }
             else if (type == Sensor.LIGHTSENSOR)
             {
-                currentLightSensor = Sensor.LightSensor;
+                currentLightSensor = Sensor.LightSensorList[indices[pivotSensor.SelectedIndex]];
 
                 // Set to minimum report interval (try 10 times)
                 while (currentLightSensor.ReportInterval != currentLightSensor.MinimumReportInterval && count < 10)

@@ -68,7 +68,6 @@
       <RootProperty Name="Visibility" />
       <RootProperty Name="FontSize" />
       <RootProperty Name="Width" />
-      <RootProperty Name="Inlines" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.Primitives.ToggleButton">
       <RootProperty Name="VerticalAlignment" />
@@ -201,14 +200,5 @@
       <RootProperty Name="Rotation" />
     </RootType>
     <RootType FullName="SensorExplorer.Scenario0Tests" />
-    <RootType FullName="Windows.UI.Xaml.Documents.Span">
-      <RootProperty Name="Inlines" />
-    </RootType>
-    <RootType FullName="Windows.UI.Xaml.Documents.Run" />
-    <RootType FullName="Windows.UI.Xaml.Documents.Hyperlink">
-      <RootProperty Name="NavigateUri" />
-      <RootProperty Name="Inlines" />
-    </RootType>
-    <RootType FullName="SensorExplorer.Scenario3Source" />
   </Roots.RootTypes>
 </Roots>

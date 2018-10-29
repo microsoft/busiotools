@@ -38,7 +38,7 @@
                     <TextBlock Text="Light Value" FontSize="20"/>
                     <TextBlock Text="Please enter a value in the range of 0 - 2600." Margin="0,10,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBox x:Name="textboxLIGHT" Height="30" Width="150"/>
+                        <TextBox x:Name="textboxLIGHT" Width="150"/>
                         <Button x:Name="buttonLIGHT" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonLIGHT"/>
                     </StackPanel>
                 </StackPanel>

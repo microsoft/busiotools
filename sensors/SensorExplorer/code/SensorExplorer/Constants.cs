@@ -6,6 +6,10 @@ namespace SensorExplorer
 {
     public static class Constants
     {
+        public static Dictionary<string, string> ColorSensorReading = new Dictionary<string, string>() {
+            { "Chromaticity_X", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62" },
+            { "Chromaticity_Y", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63" },
+        };
         public static Dictionary<string, string> Properties = new Dictionary<string, string>() {
             { "Sensor_Type", "{D4247382-969D-4F24-BB14-FB9671870BBF} 2" },
             { "Sensor_Category", "{D4247382-969D-4F24-BB14-FB9671870BBF} 3" },

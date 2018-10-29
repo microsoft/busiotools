@@ -1,16 +1,20 @@
 #define MCG_WINRT_SUPPORTED
 using Mcg.System;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using global::Windows.Foundation;
+using global::Windows.Foundation.Collections;
 
 [assembly: global::System.Runtime.InteropServices.McgGeneratedAssembly]
+[assembly: global::System.Runtime.CompilerServices.IgnoresAccessChecksTo("System.Private.WinRTInterop.CoreLib")]
 [assembly: global::System.Runtime.CompilerServices.IgnoresAccessChecksTo("System.Runtime.WindowsRuntime")]
 [assembly: global::System.Runtime.CompilerServices.IgnoresAccessChecksTo("System.Text.Encoding.CodePages")]
-[assembly: global::System.Runtime.CompilerServices.IgnoresAccessChecksTo("System.Threading.Overlapped")]
-[assembly: global::System.Runtime.CompilerServices.IgnoresAccessChecksTo("System.IO.FileSystem")]
+[assembly: global::System.Diagnostics.DebuggerGuidedStepThrough]
+[assembly: global::System.Runtime.CompilerServices.CompilerGenerated]
 
 
 // -----------------------------------------------------------------------------------------------------------
@@ -25,7 +29,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 // 
 // 1. Public type definitions with interop implementation used by this application including WinRT & COM data structures and P/Invokes.
 // 
-// 2. The 'McgInterop' class containing marshaling code that acts as a bridge from managed code to native code.
+// 2. The '__Interop' class containing marshaling code that acts as a bridge from managed code to native code.
 // 
 // 3. The 'McgNative' class containing marshaling code and native type definitions that call into native code and are called by native code.
 // 

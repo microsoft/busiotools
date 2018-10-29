@@ -525,6 +525,15 @@ namespace SensorExplorer
                                 TextBlockSensor.Text = DictionaryActivity[(ActivityType)i];
                             }
                         }
+                        else if (sensorData._sensorType == Sensor.LIGHTSENSOR)
+                        {
+                            if (sensorData._reading[index].value[i] == -1)
+                            {
+                                TextBlockValue[i].Text = "N/A";
+                                TextBlockMinValue[i].Text = "N/A";
+                                TextBlockMaxValue[i].Text = "N/A";
+                            }
+                        }
                     }
                 }
             }

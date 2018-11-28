@@ -504,7 +504,12 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    
+    <EventProvider Id="Microsoft.Windows.TestExecution.WexLogger" Name="40c4df8b-00a9-5159-62bc-9bbc5ee78a29" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+
     <!-- Non Paged providers. They are kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="true">
       <Keywords>
@@ -855,6 +860,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
+            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1001,6 +1007,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
+            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
           </EventProviders>
         </EventCollectorId>
 

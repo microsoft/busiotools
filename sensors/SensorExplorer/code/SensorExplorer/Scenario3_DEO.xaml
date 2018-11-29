@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="SensorExplorer.Scenario3DEO"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    Background="White">
+
+    <Grid MaxWidth="500">
+        <StackPanel>
+            <controls:Expander Header="Percentage Brightness Settings">
+                <Grid Margin="10">
+                    <Slider x:Name="PercentageBrightnessSlider" MinWidth="300" ValueChanged="PercentageBrightnessSlider_ValueChanged" Minimum="0" Maximum="100" />
+                </Grid>
+            </controls:Expander>
+
+            <controls:Expander Header="Scenario Brightness Settings">
+                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="FullBrightnessScenarioButton" Click="FullBrightnessScenarioButton_Click" Margin="5">Full Brightness</Button>
+                    <Button x:Name="BarcodeBrightnessScenarioButton" Click="BarcodeBrightnessScenarioButton_Click" Margin="5">Barcode Brightness</Button>
+                    <Button x:Name="IdleBrightnessScenarioButton" Click="IdleBrightnessScenarioButton_Click" Margin="5">Idle Brightness</Button>
+                    <Button x:Name="NoneBrightnessScenarioButton" Click="NoneBrightnessScenarioButton_Click" Margin="5">None</Button>
+                </controls:WrapPanel>
+            </controls:Expander>
+
+            <controls:Expander Header="Nits Brightness Settings">
+                <Grid>
+                    <TextBlock>Support Coming Soon</TextBlock>
+                </Grid>
+            </controls:Expander>
+
+            <controls:Expander Header="Color Settings">
+                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="AccurateColorScenarioButton" Click="AccurateColorScenarioButton_Click" Margin="5">Accurate Colors</Button>
+                    <Button x:Name="NonColorScenarioButton" Click="NonColorScenarioButton_Click" Margin="5">None</Button>
+                </controls:WrapPanel>
+            </controls:Expander>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="BrightnessPercentageSupportedLabelTextBlock">Brightess Percentage Support:</TextBlock>
+                    <TextBlock x:Name="BrightnessNitsSupportedLabelTextBlock">Brightness Nits Support:</TextBlock>
+                    <TextBlock x:Name="BrightnessSettingLabelTextBlock">Brightness Setting:</TextBlock>
+                    <TextBlock x:Name="ColorSettingLabelTextBlock">Color Setting:</TextBlock>
+                    <TextBlock x:Name="CanOverrideLabelTextBlock">Can Override:</TextBlock>
+                    <TextBlock x:Name="IsOverrideActiveLabelTextBlock">Override Active:</TextBlock>
+                    <TextBlock x:Name="OverrideRequestLabelTextBlock">Override Requested:</TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="BrightnessPercentageSupportedStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="BrightnessNitsSupportedStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="BrightnessSettingStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="ColorSettingStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="CanOverrideActiveStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="IsOverrideActiveStateTextBlock">?</TextBlock>
+                    <ToggleSwitch x:Name="OverrideToggle" OnContent="Requested" OffContent="Stopped" IsEnabled="False" Toggled="OverrideToggle_Toggled"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                    <TextBlock x:Name="DebugTextBlock">Please select a brightness or color setting before requesting an override</TextBlock>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10">
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
+

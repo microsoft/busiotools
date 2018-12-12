@@ -1,6 +1,6 @@
 Building the code:
 
-1) Clone the code for the ConnectionExerciser project.
+1) Clone the code for the MALT project.
 2) Clone the following projects into the libraries directory:
 
     https://github.com/kroimon/Arduino-SerialCommand

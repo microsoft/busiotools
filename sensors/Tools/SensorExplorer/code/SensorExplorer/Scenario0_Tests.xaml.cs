@@ -290,6 +290,7 @@ namespace SensorExplorer
 
         private void DisplayPrecondition()
         {
+            int type = SensorType[pivotSensor.SelectedIndex];
             switch (testType)
             {
                 case "Frequency":

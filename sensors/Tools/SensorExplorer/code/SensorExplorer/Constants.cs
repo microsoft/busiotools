@@ -1,4 +1,7 @@
-﻿using System;
+/* Copyright (c) Intel Corporation. All rights reserved.
+   Licensed under the MIT License. */
+
+using System;
 using System.Collections.Generic;
 using Windows.UI;
 
@@ -70,7 +73,8 @@ namespace SensorExplorer
             { Sensor.ACCELEROMETER, new double[3] { 0, 0, -1 } },
             { Sensor.GYROMETER, new double[3] { 0, 0, 0 } },
             { Sensor.LIGHTSENSOR, new double[1] { 0 } },
-            { Sensor.ORIENTATIONSENSOR, new double[4] { 0, 0, 0, 1 } }
+            { Sensor.ORIENTATIONSENSOR, new double[4] { 0, 0, 0, 1 } },
+            { Sensor.ORIENTATIONGEOMAGNETIC, new double[4] { 0, 0, 0, 1 } }
         };
         public static Dictionary<int, string> SensorName = new Dictionary<int, string>()
         {

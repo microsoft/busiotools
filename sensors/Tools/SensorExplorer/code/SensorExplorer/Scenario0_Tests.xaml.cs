@@ -1,4 +1,7 @@
-﻿using System;
+/* Copyright (c) Intel Corporation. All rights reserved.
+   Licensed under the MIT License. */
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
@@ -59,6 +62,7 @@ namespace SensorExplorer
         private Boolean accelerometerInitialized;
         private Boolean inclinometerInitialized;
         private Boolean orientationInitialized;
+        private Boolean orientationAmInitialized;
         private Boolean simpleOrientationInitialized;
         private string sensorDataLog;
         private DateTime startTime;
@@ -255,6 +259,7 @@ namespace SensorExplorer
                     accelerometerInitialized = false;
                     inclinometerInitialized = false;
                     orientationInitialized = false;
+                    orientationAmInitialized = false;
                     simpleOrientationInitialized = false;
                     instruction.Text = "Please disable auto-rotation on your device.";
                     startButtonOrientation.Visibility = Visibility.Visible;
@@ -285,6 +290,7 @@ namespace SensorExplorer
 
         private void DisplayPrecondition()
         {
+            int type = SensorType[pivotSensor.SelectedIndex];
             switch (testType)
             {
                 case "Frequency":
@@ -292,14 +298,28 @@ namespace SensorExplorer
                                        "Keep it in stationary state.";
                     break;
                 case "Offset":
-                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
-                                       "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
-                                       "Keep it in stationary state.";
+                    if(type == Sensor.LIGHTSENSOR)
+                    {
+                        instruction.Text = "Put device on a static level surface, with its ambient light sensor covered.\n";
+                    }
+                    else
+                    {
+                        instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                           "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
+                                           "Keep it in stationary state.";
+                    }
                     break;
                 case "Jitter":
-                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
-                                       "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
-                                       "Keep it in stationary state.";
+                    if(type == Sensor.LIGHTSENSOR)
+                    {
+                        instruction.Text = "Put device on a static level surface, with its ambient light sensor covered.\n";
+                    }
+                    else
+                    {
+                        instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                           "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
+                                           "Keep it in stationary state.";
+                    }
                     break;
                 case "Drift":
                     instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
@@ -349,6 +369,7 @@ namespace SensorExplorer
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(driftTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.INCLINOMETER)
@@ -379,6 +400,14 @@ namespace SensorExplorer
             else if (sensorType == Sensor.SIMPLEORIENTATIONSENSOR)
             {
                 stackPanel.Children.Add(orientationTestButton);
+            }
+            else if (sensorType == Sensor.ORIENTATIONGEOMAGNETIC)
+            {
+                stackPanel.Children.Add(frequencyTestButton);
+                stackPanel.Children.Add(offsetTestButton);
+                stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
             }
             else
             {
@@ -429,6 +458,13 @@ namespace SensorExplorer
             {
                 currentOrientationSensor = Sensor.OrientationAbsoluteList[indices[pivotSensor.SelectedIndex]];
                 instruction.Text = "Orientation sensor ready\n" + currentOrientationSensor.DeviceId;
+                currentOrientationSensor.ReportInterval = Math.Max(currentOrientationSensor.MinimumReportInterval, 200);
+                currentOrientationSensor.ReadingChanged += OrientationReadingChangedOrientation;
+            }
+            else if (type == Sensor.ORIENTATIONGEOMAGNETIC)
+            {
+                currentOrientationSensor = Sensor.OrientationGeomagneticList[indices[pivotSensor.SelectedIndex]];
+                instruction.Text = "Geomagnetic orientation sensor ready\n" + currentOrientationSensor.DeviceId;
                 currentOrientationSensor.ReportInterval = Math.Max(currentOrientationSensor.MinimumReportInterval, 200);
                 currentOrientationSensor.ReadingChanged += OrientationReadingChangedOrientation;
             }
@@ -593,6 +629,33 @@ namespace SensorExplorer
                     instruction.Text = "Orientation Sensor" + " " + testType + " Test in progress...";
                 }               
             }
+            else if (type == Sensor.ORIENTATIONGEOMAGNETIC)
+            {
+                currentOrientationSensor = Sensor.OrientationGeomagneticList[indices[pivotSensor.SelectedIndex]];
+                while (currentOrientationSensor.ReportInterval != currentOrientationSensor.MinimumReportInterval && count < 10)
+                {
+                    currentOrientationSensor.ReportInterval = currentOrientationSensor.MinimumReportInterval;
+                    count++;
+                }
+                if (currentOrientationSensor.ReportInterval != currentOrientationSensor.MinimumReportInterval)
+                {
+                    rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    restartButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    rootPage.DisableScenarioSelect();
+                    cancelButton.Visibility = Visibility.Visible;
+                    if (testType == "Jitter")
+                    {
+                        orientationSensorInitialReading = currentOrientationSensor.GetCurrentReading();
+                    }
+                    countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
+                    instruction.Text = "Geomagnetic orientation Sensor " + testType + " Test in progress...";
+                }
+            }
         }
 
         public async void TestEnd()
@@ -615,6 +678,10 @@ namespace SensorExplorer
                 currentMagnetometer.ReadingChanged -= MagnetometerReadingChanged;
             }
             else if (type == Sensor.ORIENTATIONSENSOR)
+            {
+                currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
+            }
+            else if (type == Sensor.ORIENTATIONGEOMAGNETIC)
             {
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
             }
@@ -716,7 +783,7 @@ namespace SensorExplorer
             {
                 currentMagnetometer.ReadingChanged -= MagnetometerReadingChanged;
             }
-            else if (type == Sensor.ORIENTATIONSENSOR)
+            else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC)
             {
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
             }
@@ -788,7 +855,7 @@ namespace SensorExplorer
                 double result = errorSum / dataList.Count;
                 str = Constants.SensorName[type] + " " + testType + " Test Result: " + (errorSum / dataList.Count) + " Lux\n";
             }
-            else if (type == Sensor.ORIENTATIONSENSOR)
+            else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC)
             {
                 double[] errorSum = new double[4];  // w, x, y, z
                 foreach (double[] array in dataList)
@@ -851,7 +918,7 @@ namespace SensorExplorer
                 }
                 str = Constants.SensorName[type] + " " + testType + " Test Result: " + maxDifference + " Lux\n";
             }
-            else if (type == Sensor.GYROMETER)
+            else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC)
             {
                 double[] maxDifference = new double[4];
                 foreach (double[] array in dataList)
@@ -950,7 +1017,7 @@ namespace SensorExplorer
             {
                 reportInterval = currentMagnetometer.ReportInterval;
             }
-            else if (type == Sensor.ORIENTATIONSENSOR)
+            else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC)
             {
                 reportInterval = currentOrientationSensor.ReportInterval;
             }
@@ -1305,7 +1372,7 @@ namespace SensorExplorer
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                if (SensorType[pivotSensor.SelectedIndex] == Sensor.ORIENTATIONSENSOR)
+                if (SensorType[pivotSensor.SelectedIndex] == Sensor.ORIENTATIONSENSOR || SensorType[pivotSensor.SelectedIndex] == Sensor.ORIENTATIONGEOMAGNETIC)
                 {
                     sensorDataLog = e.Reading.Timestamp.ToString() +
                                      " x = " + e.Reading.Quaternion.X +
@@ -1323,9 +1390,10 @@ namespace SensorExplorer
                                       ", M33 = " + e.Reading.RotationMatrix.M33;
                     rootPage.NotifyUser(sensorDataLog, NotifyType.StatusMessage);
 
-                    if (!orientationInitialized)
+                    if (!orientationInitialized && !orientationAmInitialized)
                     {
                         orientationInitialized = true;
+                        orientationAmInitialized = true;
                         LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
                         rootPage.loggingChannelTests.LogEvent("OrientationSensorInitialized", loggingFields);
                     }

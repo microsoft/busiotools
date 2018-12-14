@@ -655,7 +655,7 @@ namespace SensorExplorer
                     currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
                     instruction.Text = "Geomagnetic orientation Sensor " + testType + " Test in progress...";
                 }
-            }			
+            }
         }
 
         public async void TestEnd()

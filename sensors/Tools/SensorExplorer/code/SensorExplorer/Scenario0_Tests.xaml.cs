@@ -303,7 +303,7 @@ namespace SensorExplorer
                         instruction.Text = "Please put device on a static level surface, with its ambient light sensor covered.\n";
                     }
                     else
-					{
+                    {
                         instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
                                            "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
                                            "Keep it in stationary state.";

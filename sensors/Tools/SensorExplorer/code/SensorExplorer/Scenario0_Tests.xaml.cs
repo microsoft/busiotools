@@ -300,7 +300,7 @@ namespace SensorExplorer
                 case "Offset":
                     if(type == Sensor.LIGHTSENSOR)
                     {
-                        instruction.Text = "Please put the device on static level with its ambient light sensor covered.\n";
+                        instruction.Text = "Please put device on a static level surface, with its ambient light sensor covered.\n";
                     }
                     else
 					{
@@ -312,7 +312,7 @@ namespace SensorExplorer
                 case "Jitter":
                     if(type == Sensor.LIGHTSENSOR)
                     {
-                        instruction.Text = "Please put the device on static level with its ambient light sensor covered.\n";
+                        instruction.Text = "Please put device on a static level surface, with its ambient light sensor covered.\n";
                     }
                     else
                     {

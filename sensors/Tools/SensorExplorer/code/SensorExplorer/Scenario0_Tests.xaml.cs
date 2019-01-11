@@ -43,7 +43,7 @@ namespace SensorExplorer
         private List<int> indices;
         private string testType;
         private List<double[]> dataList;
-        private List<double> OriAngles;
+        private List<double> oriAngles;
         private List<DateTime> timestampList;
         private Countdown countdown;
         private int[] quadrants = new int[numQuadrants]; // Number of tests completed in each quadrant
@@ -338,11 +338,11 @@ namespace SensorExplorer
                                        "Keep it in stationary state.";
                     break;
                 case "StaticAccuracy":
-                    instruction.Text = "Put device on a level surface with (Y axis) pointing to the magnet north.";
+                    instruction.Text = "Put device on a level surface with its Y axis pointing to the magnet north.";
                     break;
                 case "MagInterference":
-                    instruction.Text = "Please moving approximately 1G magnet pass stationary device in about 0.25m / s\n" +
-                    "you have 30 seconds to do the test.";
+                    instruction.Text = "Please move a magnet (~1G) pass the stationary device at a speed of approximately 0.25 m/s .\n" +
+                    "You have 30 seconds to do the test.";
                     break;
             }
             pivotSensor.Visibility = Visibility.Collapsed;
@@ -363,7 +363,7 @@ namespace SensorExplorer
             Button driftTestButton = CreateTestButton("Drift Test");
             Button packetLossTestButton = CreateTestButton("Packet Loss Test");
             Button staticAccuracyButton = CreateTestButton("Static Accuracy Test");
-            Button MagInterferenceButton = CreateTestButton("MagInterference Test", 28);
+            Button magInterferenceButton = CreateTestButton("MagInterference Test", 28);
             TextBlock noTestAvailable = new TextBlock();
             noTestAvailable.Text = "No tests available for this sensor.";
             pivotItemSensor.Header = Constants.SensorName[sensorType] + " " + (index + 1);
@@ -408,7 +408,7 @@ namespace SensorExplorer
                 stackPanel.Children.Add(driftTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
                 stackPanel.Children.Add(staticAccuracyButton);
-                stackPanel.Children.Add(MagInterferenceButton);
+                stackPanel.Children.Add(magInterferenceButton);
             }
             else if (sensorType == Sensor.ORIENTATIONRELATIVE)
             {
@@ -418,7 +418,7 @@ namespace SensorExplorer
                 stackPanel.Children.Add(driftTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
                 stackPanel.Children.Add(staticAccuracyButton);
-                stackPanel.Children.Add(MagInterferenceButton);
+                stackPanel.Children.Add(magInterferenceButton);
             }
             else if (sensorType == Sensor.SIMPLEORIENTATIONSENSOR)
             {
@@ -432,7 +432,7 @@ namespace SensorExplorer
                 stackPanel.Children.Add(driftTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
                 stackPanel.Children.Add(staticAccuracyButton);
-                stackPanel.Children.Add(MagInterferenceButton);
+                stackPanel.Children.Add(magInterferenceButton);
             }
             else
             {
@@ -639,7 +639,7 @@ namespace SensorExplorer
                 }
                 else if (testType == "StaticAccuracy")
                 {
-                    staticAccuracyHandler();
+                    StaticAccuracyHandler();
                 }
                 else
                 {
@@ -670,7 +670,7 @@ namespace SensorExplorer
                 }
                 else if (testType == "StaticAccuracy")
                 {
-                    staticAccuracyHandler();
+                    StaticAccuracyHandler();
                 }
                 else
                 {
@@ -703,7 +703,7 @@ namespace SensorExplorer
                 }
                 else if (testType == "StaticAccuracy")
                 {
-                    staticAccuracyHandler();
+                    StaticAccuracyHandler();
                 }
                 else
                 {
@@ -829,9 +829,9 @@ namespace SensorExplorer
         }
         private void CalculateStaticAccuracy()
         {
-            OriAngles.Sort();
-            OriAngles.Reverse();
-            double result = OriAngles[0];
+            oriAngles.Sort();
+            oriAngles.Reverse();
+            double result = oriAngles[0];
             instruction.Text = "The result of Static Accuracy is\n" + " " + result + " " + "degrees";
         }
         private void LogDataList()
@@ -1568,7 +1568,7 @@ namespace SensorExplorer
             eulerAngle[2] = Math.Atan2(siny, cosy);
             return eulerAngle;
         }
-        private double innerProduct(double[] quaternionA, double[] quaternionB)
+        private double InnerProduct(double[] quaternionA, double[] quaternionB)
         {
             double inner = 0;
             inner += quaternionA[0] * quaternionB[0];
@@ -1577,18 +1577,18 @@ namespace SensorExplorer
             inner += quaternionA[3] * quaternionB[3];
             return inner;
         }
-        private double norm(double[] quaternion)
+        private double Norm(double[] quaternion)
         {
-            double SumOfSquares = 0;
-            SumOfSquares += quaternion[0] * quaternion[0];
-            SumOfSquares += quaternion[1] * quaternion[1];
-            SumOfSquares += quaternion[2] * quaternion[2];
-            SumOfSquares += quaternion[3] * quaternion[3];
-            return Math.Sqrt(SumOfSquares);
+            double sumOfSquares = 0;
+            sumOfSquares += quaternion[0] * quaternion[0];
+            sumOfSquares += quaternion[1] * quaternion[1];
+            sumOfSquares += quaternion[2] * quaternion[2];
+            sumOfSquares += quaternion[3] * quaternion[3];
+            return Math.Sqrt(sumOfSquares);
         }
         private double Angle4(double[] current, double[] expected)
         {
-            double value = innerProduct(current, expected) / (norm(current)) * (norm(expected));
+            double value = InnerProduct(current, expected) / (Norm(current)) * (Norm(expected));
             return 2 * Math.Acos(value) * 180 / Math.PI;
         }
         private double OriAngleCalculate(int index)
@@ -1613,9 +1613,9 @@ namespace SensorExplorer
             if (Math.Abs(result) >= 30 && Math.Abs(result) <= 60) result = Math.Abs(45 - result);
             return result;
         }
-        private async void staticAccuracyHandler()
+        private async void StaticAccuracyHandler()
         {
-            OriAngles = new List<double>();
+            oriAngles = new List<double>();
             startTime = DateTime.Now;
             for (int i = 0; i < 15; i++)
             {
@@ -1626,13 +1626,13 @@ namespace SensorExplorer
                 for (int count = 10; count >= 0; count--)
                 {
                     if (i == 0 || i == 5 || i == 10 || i == 14) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to Rotate the device on a level surface with its y axis pointing to magnetic north...";
+                            "seconds to rotate the device on a level surface with its y axis pointing to magnetic north...";
                     else if (i < 5) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to Rotate 90 degrees counterclockwise around the z axis and stop to a static position...";
+                            "seconds to rotate 90 degrees counterclockwise around the z axis and stop to a static position...";
                     else if (i < 10) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to Rotate 90 degrees counterclockwise around the x axis and stop to a static position...";
+                            "seconds to rotate 90 degrees counterclockwise around the x axis and stop to a static position...";
                     else instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to Rotate 90 degrees counterclockwise around the y axis and stop to a static position...";
+                            "seconds to rotate 90 degrees counterclockwise around the y axis and stop to a static position...";
                     await Task.Delay(1000);
                 }
                 startTime = DateTime.Now;
@@ -1642,11 +1642,11 @@ namespace SensorExplorer
                     instruction.Text = "Sampling data for" + " " + count + " " + "seconds...";
                     await Task.Delay(1000);
                 }
-                OriAngles.Add(OriAngleCalculate(i));
+                oriAngles.Add(OriAngleCalculate(i));
             }
             countdown = new Countdown(testLength[testType], testType);
             startTime = DateTime.Now;
-            instruction.Text = testType + " Is ending...";
+            instruction.Text = testType + " is ending...";
         }
         private async void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
         {

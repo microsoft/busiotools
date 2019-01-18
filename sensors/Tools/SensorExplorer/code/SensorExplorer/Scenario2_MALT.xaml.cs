@@ -586,7 +586,7 @@ namespace SensorExplorer
         // get ambient RGB
         private async void ButtonREADCOLORSENSOR1(object sender, RoutedEventArgs e)
         {
-            buttonREADALSSENSOR1.IsEnabled = false;
+            buttonREADCOLORSENSOR1.IsEnabled = false;
 
             string command = "READCOLORSENSOR 1\n";
             await WriteCommandAsync(command);
@@ -596,13 +596,13 @@ namespace SensorExplorer
                                          ", Green: " + result[3] +
                                          ", Blue: " + result[4];
 
-            buttonREADALSSENSOR1.IsEnabled = true;
+            buttonREADCOLORSENSOR1.IsEnabled = true;
         }
 
         // get screen RGB
         private async void ButtonREADCOLORSENSOR2(object sender, RoutedEventArgs e)
         {
-            buttonREADALSSENSOR2.IsEnabled = false;
+            buttonREADCOLORSENSOR2.IsEnabled = false;
 
             string command = "READCOLORSENSOR 2\n";
             await WriteCommandAsync(command);
@@ -612,7 +612,7 @@ namespace SensorExplorer
                                     ", Green: " + result[3] +
                                     ", Blue: " + result[4];
 
-            buttonREADALSSENSOR2.IsEnabled = true;
+            buttonREADCOLORSENSOR2.IsEnabled = true;
         }
 
         // get auto-brightness curve

@@ -136,6 +136,12 @@ namespace SensorExplorer
                 DeviceInformation = deviceInfo;
                 DeviceSelector = deviceSelector;
 
+                Device.BaudRate = 9600;
+                Device.StopBits = SerialStopBitCount.One;
+                Device.DataBits = 8;
+                Device.Parity = SerialParity.None;
+                Device.Handshake = SerialHandshake.None;
+
                 notificationStatus = NotifyType.StatusMessage;
                 notificationMessage = "Device " + DeviceInformation.Id + " opened";
 

@@ -15,6 +15,7 @@ namespace SensorExplorer
         public static List<SensorDisplay> sensorDisplay = null;
         private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
         private static ThreadPoolTimer _periodicTimer = null;
+        private static ThreadPoolTimer _periodicTimer2 = null;
 
         /// <summary>
         /// Create a periodic timer that fires every time the period elapses.
@@ -27,6 +28,14 @@ namespace SensorExplorer
             if (_periodicTimer == null)
             {
                 _periodicTimer = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback), new TimeSpan(0, 0, 1));
+            }
+        }
+
+        public static void Create()
+        {
+            if (_periodicTimer2 == null)
+            {
+                _periodicTimer2 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback2), new TimeSpan(0, 0, 1));
             }
         }
 
@@ -46,6 +55,15 @@ namespace SensorExplorer
             {
                 _periodicTimer.Cancel();
                 _periodicTimer = null;
+            }
+        }
+
+        public static void Cancel2()
+        {
+            if ( _periodicTimer2 != null)
+            {
+                _periodicTimer2.Cancel();
+                _periodicTimer2 = null;
             }
         }
 
@@ -121,6 +139,14 @@ namespace SensorExplorer
                                                         sensorData[i]._category, sensorData[i]._persistentUniqueId, sensorData[i]._manufacturer, sensorData[i]._model, sensorData[i]._connectionType);
                     }
                 }
+            });
+        }
+
+        private async static void PeriodicTimerCallback2(ThreadPoolTimer timer)
+        {
+            await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Scenario2MALT.Scenario2.GetMALTData();
             });
         }
     }

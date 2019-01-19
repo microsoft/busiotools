@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage.Pickers;
 using Windows.Storage;
+using Windows.Devices.Sensors;
 
 namespace SensorExplorer
 {
@@ -40,6 +41,7 @@ namespace SensorExplorer
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
         private List<string> conversionValues = new List<string> { "100", "800" };
+        private LightSensor lightSensor;
 
         // MALTERROR
         private const int E_SUCCESS = 0;
@@ -77,7 +79,7 @@ namespace SensorExplorer
         {
             // If we are connected to the device or planning to reconnect, we should disable the list of devices
             // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
-            if (EventHandlerForDevice.Current.IsDeviceConnected 
+            if (EventHandlerForDevice.Current.IsDeviceConnected
                 || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
                 && EventHandlerForDevice.Current.DeviceInformation != null))
             {
@@ -120,7 +122,7 @@ namespace SensorExplorer
             CancelAllIoTasks();
         }
 
-        private void initialize()
+        private async void initialize()
         {
             if (EventHandlerForDevice.Current.Device == null)
             {
@@ -134,6 +136,12 @@ namespace SensorExplorer
                 // So we can reset future tasks
                 ResetReadCancellationTokenSource();
                 ResetWriteCancellationTokenSource();
+            }
+
+            DeviceInformationCollection deviceInfoCollection = await DeviceInformation.FindAllAsync(LightSensor.GetDeviceSelector(), Constants.RequestedProperties);
+            foreach (DeviceInformation deviceInfo in deviceInfoCollection)
+            {
+                lightSensor = await LightSensor.FromIdAsync(deviceInfo.Id);
             }
         }
 
@@ -163,7 +171,7 @@ namespace SensorExplorer
                     // Disable connect button if we connected to the device
                     UpdateConnectDisconnectButtonsAndList(!openSuccess);
 
-                    if(openSuccess)
+                    if (openSuccess)
                     {
                         stackpanel1.Visibility = Visibility.Collapsed;
                         initialize();
@@ -533,7 +541,7 @@ namespace SensorExplorer
 
         private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(comboBox.SelectedValue != null)
+            if (comboBox.SelectedValue != null)
             {
                 await SetConversionTime(Convert.ToUInt32(comboBox.SelectedValue));
             }
@@ -615,6 +623,69 @@ namespace SensorExplorer
             buttonREADCOLORSENSOR2.IsEnabled = true;
         }
 
+        private void ButtonInternalExternal(object sender, RoutedEventArgs e)
+        {
+            stackpanel2.Visibility = Visibility.Collapsed;
+            stackpanel4.Visibility = Visibility.Visible;
+
+            if (lightSensor != null)
+            {
+                lightSensor.ReadingChanged += LightSensorReadingChanged;
+            }
+
+            PeriodicTimer.Create();
+        }
+
+        public async void GetMALTData()
+        {
+            await WriteCommandAsync("READCOLORSENSOR 1\n");
+            string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
+            textblockClear.Text = result[1];
+            textblockR.Text = result[2];
+            textblockG.Text = result[3];
+            textblockB.Text = result[4];
+        }
+
+        private async void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                LightSensorReading reading = e.Reading;
+                object x, y;
+                reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62", out x);
+                reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63", out y);
+
+                double chromaticity_x = -1, chromaticity_y = -1;
+                try
+                {
+                    chromaticity_x = double.Parse(x.ToString());
+                    chromaticity_y = double.Parse(y.ToString());
+                }
+                catch { }
+
+                textblockChromaticityX.Text = chromaticity_x.ToString();
+                textblockChromaticityY.Text = chromaticity_y.ToString();
+            });
+        }
+
+        private double[] RGBToXYZ(double[] rgb)
+        {
+            return new double[] { 0, 0, 0 };
+        }
+
+        private async void ButtonBackToMenu(object sender, RoutedEventArgs e)
+        {
+            if (lightSensor != null)
+            {
+                lightSensor.ReadingChanged -= LightSensorReadingChanged;
+            }
+
+            PeriodicTimer.Cancel2();
+
+            stackpanel4.Visibility = Visibility.Collapsed;
+            stackpanel2.Visibility = Visibility.Visible;
+        }
+
         // get auto-brightness curve
         private async void ButtonAUTOCURVE(object sender, RoutedEventArgs e)
         {
@@ -658,9 +729,9 @@ namespace SensorExplorer
 
                 output.Text = "Preparation time...";
                 await SetLight(0);
-                await Task.Delay((int)waitTime*1000);
+                await Task.Delay((int)waitTime * 1000);
             }
-            
+
             double ambientLux1 = 0, ambientLux2 = 0, ambientLuxCurrent = 0;
             double screenLux1 = 0, screenLux2 = 0, screenLuxCurrent = 0;
 
@@ -797,7 +868,7 @@ namespace SensorExplorer
 
                 return split;
             }
-            catch { return new string []{ }; }
+            catch { return new string[] { }; }
         }
 
         private async Task ReadVersion(string command)
@@ -842,7 +913,6 @@ namespace SensorExplorer
 
         private void OutputError(string command, string data)
         {
-            
             if (data.Trim() == E_SUCCESS.ToString())
             {
                 if (command.Contains("LIGHT"))

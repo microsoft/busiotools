@@ -102,37 +102,33 @@
             <StackPanel>
                 <TextBlock Text="Internal Color Sensor" FontSize="20" Margin="10,20,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock Text="Chromaticity X" Width="200"/>
-                    <TextBlock Text="Chromaticity Y" Width="200"/>
-                    <TextBlock Text="Chromaticity Y" Width="200"/>
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock x:Name="textblockChromaticityX" Width="200"/>
-                    <TextBlock x:Name="textblockChromaticityY"  Width="200"/>
-                    <TextBlock x:Name="textblockChromaticityy" Width="200"/>
+                    <TextBlock x:Name="textblockChromaticityx" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY" Width="120"/>
                 </StackPanel>
-                <TextBlock Text="External Color Sensor" FontSize="20" Margin="10,20,0,0"/>
+                <TextBlock Text="External Color Sensor" FontSize="20" Margin="10,40,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock Text="Chromaticity X" Width="200"/>
-                    <TextBlock Text="Chromaticity Y" Width="200"/>
-                    <TextBlock Text="Chromaticity Y" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock x:Name="textblockChromaticityX2" Width="200"/>
-                    <TextBlock x:Name="textblockChromaticityY2"  Width="200"/>
-                    <TextBlock x:Name="textblockChromaticityy2" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock Text="Clear" Width="200"/>
-                    <TextBlock Text="R" Width="200"/>
-                    <TextBlock Text="G" Width="200"/>
-                    <TextBlock Text="B" Width="200"/>
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
+                    <TextBlock Text="Clear" Width="120" Foreground="DarkGray"/>
+                    <TextBlock Text="R" Width="120" Foreground="Red"/>
+                    <TextBlock Text="G" Width="120" Foreground="Green"/>
+                    <TextBlock Text="B" Width="120" Foreground="Blue"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
-                    <TextBlock x:Name="textblockClear" Width="200"/>
-                    <TextBlock x:Name="textblockR"  Width="200"/>
-                    <TextBlock x:Name="textblockG" Width="200"/>
-                    <TextBlock x:Name="textblockB" Width="200"/>
+                    <TextBlock x:Name="textblockChromaticityx2" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy2"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY2" Width="120"/>
+                    <TextBlock x:Name="textblockClear" Width="120" Foreground="DarkGray"/>
+                    <TextBlock x:Name="textblockR"  Width="120" Foreground="Red"/>
+                    <TextBlock x:Name="textblockG" Width="120" Foreground="Green"/>
+                    <TextBlock x:Name="textblockB" Width="120" Foreground="Blue"/>
                 </StackPanel>
                 <Button x:Name="buttonBackToMenu" Margin="10,100,0,0" Height="32" Content="Back to main menu" Click="ButtonBackToMenu"/>
             </StackPanel>

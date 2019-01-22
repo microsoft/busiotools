@@ -109,6 +109,12 @@ namespace SensorExplorer
         /// </summary>
         protected override void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
+            if(lightSensor != null)
+            {
+                lightSensor.ReadingChanged -= LightSensorReadingChanged;
+            }
+            PeriodicTimer.Cancel2();
+
             DisconnectFromDeviceClick(null, null);
 
             StopDeviceWatchers();
@@ -640,10 +646,13 @@ namespace SensorExplorer
         {
             await WriteCommandAsync("READCOLORSENSOR 1\n");
             string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
-            textblockClear.Text = result[1];
-            textblockR.Text = result[2];
-            textblockG.Text = result[3];
-            textblockB.Text = result[4];
+            if (result != null && result.Length == 5)
+            {
+                textblockClear.Text = result[1];
+                textblockR.Text = result[2];
+                textblockG.Text = result[3];
+                textblockB.Text = result[4];
+            }
         }
 
         private async void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
@@ -663,8 +672,8 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                textblockChromaticityX.Text = chromaticity_x.ToString();
-                textblockChromaticityY.Text = chromaticity_y.ToString();
+                textblockChromaticityx.Text = chromaticity_x.ToString();
+                textblockChromaticityy.Text = chromaticity_y.ToString();
             });
         }
 

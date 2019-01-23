@@ -111,7 +111,7 @@
                     <TextBlock x:Name="textblockChromaticityy"  Width="120"/>
                     <TextBlock x:Name="textblockChromaticityY" Width="120"/>
                 </StackPanel>
-                <TextBlock Text="External Color Sensor" FontSize="20" Margin="10,40,0,0"/>
+                <TextBlock Text="MALT Color Sensor (Ambient)" FontSize="20" Margin="10,40,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
                     <TextBlock Text="Chromaticity x" Width="120"/>
                     <TextBlock Text="Chromaticity y" Width="120"/>
@@ -129,6 +129,25 @@
                     <TextBlock x:Name="textblockR"  Width="120" Foreground="Red"/>
                     <TextBlock x:Name="textblockG" Width="120" Foreground="Green"/>
                     <TextBlock x:Name="textblockB" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <TextBlock Text="MALT Color Sensor (Screen)" FontSize="20" Margin="10,40,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
+                    <TextBlock Text="Clear" Width="120" Foreground="DarkGray"/>
+                    <TextBlock Text="R" Width="120" Foreground="Red"/>
+                    <TextBlock Text="G" Width="120" Foreground="Green"/>
+                    <TextBlock Text="B" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock x:Name="textblockChromaticityx3" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy3"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY3" Width="120"/>
+                    <TextBlock x:Name="textblockClear3" Width="120" Foreground="DarkGray"/>
+                    <TextBlock x:Name="textblockR3"  Width="120" Foreground="Red"/>
+                    <TextBlock x:Name="textblockG3" Width="120" Foreground="Green"/>
+                    <TextBlock x:Name="textblockB3" Width="120" Foreground="Blue"/>
                 </StackPanel>
                 <Button x:Name="buttonBackToMenu" Margin="10,100,0,0" Height="32" Content="Back to main menu" Click="ButtonBackToMenu"/>
             </StackPanel>

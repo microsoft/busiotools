@@ -653,6 +653,16 @@ namespace SensorExplorer
                 textblockG.Text = result[3];
                 textblockB.Text = result[4];
             }
+
+            await WriteCommandAsync("READCOLORSENSOR 12\n");
+            string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
+            if (result2 != null && result.Length == 5)
+            {
+                textblockClear3.Text = result[1];
+                textblockR3.Text = result[2];
+                textblockG3.Text = result[3];
+                textblockB3.Text = result[4];
+            }
         }
 
         private async void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
@@ -682,7 +692,7 @@ namespace SensorExplorer
             return new double[] { 0, 0, 0 };
         }
 
-        private async void ButtonBackToMenu(object sender, RoutedEventArgs e)
+        private void ButtonBackToMenu(object sender, RoutedEventArgs e)
         {
             if (lightSensor != null)
             {

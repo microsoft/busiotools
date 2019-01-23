@@ -136,11 +136,22 @@ namespace SensorExplorer
                 DeviceInformation = deviceInfo;
                 DeviceSelector = deviceSelector;
 
-                Device.BaudRate = 9600;
-                Device.StopBits = SerialStopBitCount.One;
-                Device.DataBits = 8;
-                Device.Parity = SerialParity.None;
-                Device.Handshake = SerialHandshake.None;
+                // necessary for the MALT read/write to work
+                try
+                {
+                    Device.BaudRate = 9600;
+                    Device.DataBits = 8;
+                    Device.Handshake = SerialHandshake.None;
+                }
+                catch { }
+
+                // should be set by default
+                try
+                {
+                    Device.StopBits = SerialStopBitCount.One;
+                    Device.Parity = SerialParity.None;
+                }
+                catch { }
 
                 notificationStatus = NotifyType.StatusMessage;
                 notificationMessage = "Device " + DeviceInformation.Id + " opened";

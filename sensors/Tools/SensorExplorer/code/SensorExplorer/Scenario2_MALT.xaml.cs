@@ -654,14 +654,14 @@ namespace SensorExplorer
                 textblockB.Text = result[4];
             }
 
-            await WriteCommandAsync("READCOLORSENSOR 12\n");
+            await WriteCommandAsync("READCOLORSENSOR 2\n");
             string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
             if (result2 != null && result.Length == 5)
             {
-                textblockClear3.Text = result[1];
-                textblockR3.Text = result[2];
-                textblockG3.Text = result[3];
-                textblockB3.Text = result[4];
+                textblockClear3.Text = result2[1];
+                textblockR3.Text = result2[2];
+                textblockG3.Text = result2[3];
+                textblockB3.Text = result2[4];
             }
         }
 

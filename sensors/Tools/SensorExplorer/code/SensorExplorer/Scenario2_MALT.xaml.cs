@@ -719,11 +719,19 @@ namespace SensorExplorer
             savePicker.SuggestedFileName = "AutoCurve";
             file = await savePicker.PickSaveFileAsync();
 
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-            tmp = await storageFolder.CreateFileAsync("tmp.csv", CreationCollisionOption.ReplaceExisting);
+            if (file != null)
+            {
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+                tmp = await storageFolder.CreateFileAsync("tmp.csv", CreationCollisionOption.ReplaceExisting);
 
-            stackpanelWaitTime1.Visibility = Visibility.Visible;
-            output.Text = "Please specify the wait time (in seconds) before test begins.";
+                stackpanelWaitTime1.Visibility = Visibility.Visible;
+                output.Text = "Please specify the wait time (in seconds) before test begins.";
+            }
+            else
+            {
+                stackpanel3.Visibility = Visibility.Collapsed;
+                stackpanel2.Visibility = Visibility.Visible;
+            }
         }
 
         private async void ButtonAUTOCURVE2(object sender, RoutedEventArgs e)

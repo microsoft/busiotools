@@ -93,7 +93,7 @@
             <TextBlock x:Name="output" TextWrapping="Wrap" Margin="0,10,0,0" FontSize="25"/>
             <Button x:Name="restartButton" Content="Restart" Click="RestartButton" Margin="30" Height="85" Width="150" FontSize="36" Visibility="Collapsed" HorizontalAlignment="Center"/>
             <StackPanel x:Name="stackpanelWaitTime1" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
-                <TextBox x:Name="textboxAUTOCURVE" Height="30" Width="150" TextWrapping="Wrap"/>
+                <TextBox x:Name="textboxAUTOCURVE" Height="32" Width="150" TextWrapping="Wrap"/>
                 <Button x:Name="buttonAUTOCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonAUTOCURVE2"/>
             </StackPanel>
         </StackPanel>

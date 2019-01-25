@@ -648,10 +648,19 @@ namespace SensorExplorer
             string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
             if (result != null && result.Length == 5)
             {
-                textblockClear.Text = result[1];
-                textblockR.Text = result[2];
-                textblockG.Text = result[3];
-                textblockB.Text = result[4];
+                textblockClear2.Text = result[1];
+                textblockR2.Text = result[2];
+                textblockG2.Text = result[3];
+                textblockB2.Text = result[4];
+
+                /*
+                double[] RGB = new double[] { Convert.ToDouble(result[2]), Convert.ToDouble(result[3]), Convert.ToDouble(result[4]) };
+                double[] XYZ = RGBToXYZ(RGB, redPrimary, greenPrimary, bluePrimary, white);
+                double[] xyY = XYZToxyY(XYZ);
+                textblockChromaticityx2.Text = xyY[0].ToString();
+                textblockChromaticityy2.Text = xyY[1].ToString();
+                textblockChromaticityY2.Text = xyY[2].ToString();
+                */
             }
 
             await WriteCommandAsync("READCOLORSENSOR 2\n");
@@ -662,6 +671,15 @@ namespace SensorExplorer
                 textblockR3.Text = result2[2];
                 textblockG3.Text = result2[3];
                 textblockB3.Text = result2[4];
+
+                /*
+                double[] RGB = new double[] { Convert.ToDouble(result2[2]), Convert.ToDouble(result2[3]), Convert.ToDouble(result2[4]) };
+                double[] XYZ = RGBToXYZ(RGB, redPrimary, greenPrimary, bluePrimary, white);
+                double[] xyY = XYZToxyY(XYZ);
+                textblockChromaticityx3.Text = xyY[0].ToString();
+                textblockChromaticityy3.Text = xyY[1].ToString();
+                textblockChromaticityY3.Text = xyY[2].ToString();
+                */
             }
         }
 
@@ -685,11 +703,6 @@ namespace SensorExplorer
                 textblockChromaticityx.Text = chromaticity_x.ToString();
                 textblockChromaticityy.Text = chromaticity_y.ToString();
             });
-        }
-
-        private double[] RGBToXYZ(double[] rgb)
-        {
-            return new double[] { 0, 0, 0 };
         }
 
         private void ButtonBackToMenu(object sender, RoutedEventArgs e)
@@ -1067,6 +1080,74 @@ namespace SensorExplorer
                     rootPage.NotifyUser("Canceling Write... Please wait...", NotifyType.StatusMessage);
                 }
             }));
+        }
+
+        private double[] XYZToxyY(double[] XYZ)
+        {
+            double[] xyY = new double[3];
+            xyY[0] = XYZ[0] / (XYZ[0] + XYZ[1] + XYZ[2]);
+            xyY[1] = XYZ[1] / (XYZ[0] + XYZ[1] + XYZ[2]);
+            xyY[2] = XYZ[2];
+
+            return xyY;
+        }
+
+        // white is in XYZ
+        private double[] RGBToXYZ(double[] RGB, double[] redPrimary, double[] greenPrimary, double[] bluePrimary, double[] white)
+        {
+            double Xr = redPrimary[0] / redPrimary[1];
+            double Yr = 1.0;
+            double Zr = (1.0 - redPrimary[0] - redPrimary[1]) / redPrimary[1];
+            double Xg = greenPrimary[0] / greenPrimary[1];
+            double Yg = 1.0;
+            double Zg = (1.0 - greenPrimary[0] - greenPrimary[1]) / greenPrimary[1];
+            double Xb = bluePrimary[0] / bluePrimary[1];
+            double Yb = 1.0;
+            double Zb = (1.0 - bluePrimary[0] - bluePrimary[1]) / bluePrimary[1];
+
+            double determinant = (Xr * Yg * Zb) + (Xg * Yb * Zr) + (Xb * Yr * Zg) - (Xb * Yg * Zr) - (Xg * Yr * Zb) - (Xr * Yb * Zg);
+
+            //                      -1
+            // | Sr |   | Xr Xg Xb |   | Xw | 
+            // | Sg | = | Yr Yg Yb |   | Yw |
+            // | Sb |   | Zr Zg Zb |   | Zw |
+            // inv12 means first row second column of the inverse matrix
+            double inv11 = 1.0 / determinant * ((Yg * Zb) - (Yb * Zg));
+            double inv12 = 1.0 / determinant * ((Xb * Zg) - (Xg * Zb));
+            double inv13 = 1.0 / determinant * ((Xg * Yb) - (Xb * Yg));
+            double inv21 = 1.0 / determinant * ((Yb * Zr) - (Yr * Zb));
+            double inv22 = 1.0 / determinant * ((Xr * Zb) - (Xb * Zr));
+            double inv23 = 1.0 / determinant * ((Xb * Yr) - (Xr * Yb));
+            double inv31 = 1.0 / determinant * ((Yr * Zg) - (Yg * Zr));
+            double inv32 = 1.0 / determinant * ((Xg * Zr) - (Xr * Zg));
+            double inv33 = 1.0 / determinant * ((Xr * Yg) - (Xg * Yr));
+
+            double Sr = (inv11 * white[0]) + (inv12 * white[1]) + (inv13 * white[2]);
+            double Sg = (inv21 * white[0]) + (inv22 * white[1]) + (inv23 * white[2]);
+            double Sb = (inv31 * white[0]) + (inv32 * white[1]) + (inv33 * white[2]);
+
+            //       | M11 M12 M13 |   | SrXr SgXg SbXb |
+            // [M] = | M21 M22 M23 | = | SrYr SgYg SbYb |
+            //       | M31 M32 M33 |   | SrZr SgZg SbZb |
+            double M11 = Sr * Xr;
+            double M12 = Sg * Xg;
+            double M13 = Sb * Xb;
+            double M21 = Sr * Yr;
+            double M22 = Sg * Yg;
+            double M23 = Sb * Yb;
+            double M31 = Sr * Zr;
+            double M32 = Sg * Zg;
+            double M33 = Sb * Zb;
+
+            // | X |       | R |
+            // | Y | = [M] | G |
+            // | Z |       | B |
+            double[] XYZ = new double[3];
+            XYZ[0] = M11 * RGB[0] + M12 * RGB[1] + M13 * RGB[2];
+            XYZ[1] = M21 * RGB[0] + M22 * RGB[1] + M23 * RGB[2];
+            XYZ[2] = M31 * RGB[0] + M32 * RGB[1] + M33 * RGB[2];
+
+            return XYZ;
         }
     }
 }

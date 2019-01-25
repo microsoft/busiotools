@@ -125,10 +125,10 @@
                     <TextBlock x:Name="textblockChromaticityx2" Width="120"/>
                     <TextBlock x:Name="textblockChromaticityy2"  Width="120"/>
                     <TextBlock x:Name="textblockChromaticityY2" Width="120"/>
-                    <TextBlock x:Name="textblockClear" Width="120" Foreground="DarkGray"/>
-                    <TextBlock x:Name="textblockR"  Width="120" Foreground="Red"/>
-                    <TextBlock x:Name="textblockG" Width="120" Foreground="Green"/>
-                    <TextBlock x:Name="textblockB" Width="120" Foreground="Blue"/>
+                    <TextBlock x:Name="textblockClear2" Width="120" Foreground="DarkGray"/>
+                    <TextBlock x:Name="textblockR2"  Width="120" Foreground="Red"/>
+                    <TextBlock x:Name="textblockG2" Width="120" Foreground="Green"/>
+                    <TextBlock x:Name="textblockB2" Width="120" Foreground="Blue"/>
                 </StackPanel>
                 <TextBlock Text="MALT Color Sensor (Screen)" FontSize="20" Margin="10,40,0,0"/>
                 <StackPanel Orientation="Horizontal" Margin="10,20,0,0">

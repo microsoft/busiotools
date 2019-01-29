@@ -7,9 +7,12 @@ From an adminstrative PowerShell session:
     wpr.exe -start BluetoothStack.wprp!BluetoothStack -filemode
 
 Ensure the device reconnects either:
-    * Toggle the Bluetooth radio off-on via the quick action menu.
-    * Force a power cycle of the remote device.
+
+* Toggle the Bluetooth radio off-on via the quick action menu.
+* Force a power cycle of the remote device.
+    
 *Reproduce the issue.*
+
 From an adminstrative PowerShell session:
    
     wpr.exe -stop BthTracing.etl

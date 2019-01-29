@@ -7,6 +7,8 @@ foreach ($device in $devices)
 {   
     $radio = New-Object PSObject
     Add-Member -InputObject $radio -MemberType NoteProperty -Name "InstanceId" -Value $device.InstanceId
+    $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName 'DEVPKEY_Bluetooth_RadioAddress'
+    Add-Member -InputObject $radio -MemberType NoteProperty -Name "MAC" -Value $(-join ($property.Data |  foreach { "{0:X2}" -f $_ } ))
     $radios.Add($radio) | Out-Null
 
     # Driver Info

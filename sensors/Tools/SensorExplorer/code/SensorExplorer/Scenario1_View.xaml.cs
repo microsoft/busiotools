@@ -512,81 +512,81 @@ namespace SensorExplorer
             PivotSensor.Items.Add(PivotItemSensor);
         }
 
-        private void ReportIntervalButton(object sender, RoutedEventArgs e)
+        public void ReportIntervalButton(object sender, RoutedEventArgs e)
         {
             try
             {
                 SensorDisplay selected = _sensorDisplay[Sensor.currentId];
                 if (selected._sensorType == Sensor.ACCELEROMETER)
                 {
-                    Sensor.AccelerometerStandardList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.AccelerometerStandardList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ACCELEROMETERLINEAR)
                 {
-                    Sensor.AccelerometerLinearList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.AccelerometerLinearList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ACCELEROMETERGRAVITY)
                 {
-                    Sensor.AccelerometerGravityList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.AccelerometerGravityList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 // ActivitySensor doesn't have ReportInterval
                 else if (selected._sensorType == Sensor.ALTIMETER)
                 {
-                    Sensor.Altimeter.ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.Altimeter.ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.BAROMETER)
                 {
-                    Sensor.BarometerList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.BarometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.COMPASS)
                 {
-                    Sensor.CompassList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.CompassList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.GYROMETER)
                 {
-                    Sensor.GyrometerList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.GyrometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.INCLINOMETER)
                 {
-                    Sensor.InclinometerList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.InclinometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.LIGHTSENSOR)
                 {
-                    Sensor.LightSensorList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.LightSensorList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.MAGNETOMETER)
                 {
-                    Sensor.MagnetometerList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.MagnetometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONSENSOR)
                 {
-                    Sensor.OrientationAbsoluteList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.OrientationAbsoluteList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONGEOMAGNETIC)
                 {
-                    Sensor.OrientationGeomagneticList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.OrientationGeomagneticList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONRELATIVE)
                 {
-                    Sensor.OrientationRelativeList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.OrientationRelativeList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.PEDOMETER)
                 {
-                    Sensor.PedometerList[selected._index].ReportInterval = uint.Parse(textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(textboxReportInterval.Text));
+                    Sensor.PedometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
                 }
                 //ProximitySensor doesn't have ReportInterval
                 //SimpleOrientationSensor doesn't have ReportInterval               

@@ -19,11 +19,6 @@
                     </StackPanel>
                 </Button>
                 <Button x:Name="saveFileButton" Margin="10,0,10,0" Content="Save Log" Click="SaveFileButtonClick" IsEnabled="False"/>
-                <TextBlock x:Name="textblockReportInterval" Text="Report Interval" Margin="100,0,10,5" />
-                <StackPanel x:Name="stackpanelReportInterval" Orientation="Horizontal" Margin="10,0,10,0">
-                    <TextBox x:Name="textboxReportInterval" Width="100" Margin="10,0,10,0" />
-                    <Button x:Name="buttonReportInterval" Margin="10,0,10,0" Height="30" Content="Execute" Click="ReportIntervalButton" VerticalAlignment="Stretch" />
-                </StackPanel>
             </StackPanel>
             <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                 <Grid>

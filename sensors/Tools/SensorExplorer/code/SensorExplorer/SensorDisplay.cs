@@ -47,6 +47,9 @@ namespace SensorExplorer
         public bool _isSelected = false;
         public PlotCanvas _plotCanvas;
 
+        public TextBox textboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness() { Left = 40, Right = 10, Top = 20, Bottom = 10 } };
+        public Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness(10) { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
+
         private StackPanel StackPanelTop = new StackPanel();
         private Ellipse EllipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
         private Image ImageCompass = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Compass.png")) };
@@ -252,10 +255,25 @@ namespace SensorExplorer
             for (int i = 0; i < _properties.Length; i++)
             {
                 TextBlockPropertyName[i] = SetTextStyle(_properties[i], HorizontalAlignment.Left);
+                TextBlockPropertyValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
                 StackPanelPropertyName.Children.Add(TextBlockPropertyName[i]);
 
-                TextBlockPropertyValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
-                StackPanelPropertyValue.Children.Add(TextBlockPropertyValue[i]);
+                if (i == 0)
+                {
+                    TextBlockPropertyName[i].Height = 60;
+                    TextBlockPropertyValue[i].Height = 60;
+                    buttonReportInterval.Click += Scenario1View.Current.ReportIntervalButton;
+                    StackPanel StackPanelReportInterval = new StackPanel();
+                    StackPanelReportInterval.Orientation = Orientation.Horizontal;
+                    StackPanelReportInterval.Children.Add(TextBlockPropertyValue[i]);
+                    StackPanelReportInterval.Children.Add(textboxReportInterval);
+                    StackPanelReportInterval.Children.Add(buttonReportInterval);
+                    StackPanelPropertyValue.Children.Add(StackPanelReportInterval);
+                }
+                else
+                {
+                    StackPanelPropertyValue.Children.Add(TextBlockPropertyValue[i]);
+                }
             }
 
             StackPanelProperty.Children.Add(StackPanelPropertyName);

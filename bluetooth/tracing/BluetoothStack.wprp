@@ -671,7 +671,7 @@
     <!-- Natural Authentication Providers -->
     <EventProvider Id="Microsoft.Windows.Security.NaturalAuth.Service" Name="c632d944-dddb-599f-a131-baf37bf22ef0" Level="7" NonPagedMemory="true">
       <Keywords>
-        <Keyword Value="0xfffffff"/>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF"/>
       </Keywords>
     </EventProvider>
     

@@ -22,7 +22,7 @@ From an adminstrative PowerShell session:
 ## Collecting logs across reboots
 From an adminstrative PowerShell session:
     
-    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
+    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -UseBasicParsing -outfile .\BluetoothStack.wprp
     wpr.exe -boottrace BluetoothStack.wprp!BluetoothStack -filemode
     shutdown -r -f -t 0
   
@@ -50,4 +50,4 @@ wpr.exe /? will also give you more information.
 
 From PowerShell execute: 
   
-    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 | iex
+    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex

@@ -805,3 +805,141 @@ function Gather-PnpUtil {
     [void]$BackgroundJobs.Add($pnpUtilJob)
 }
 
+<#
+ .SYNOPSIS
+ Run background task to gather system info with WinBioEvtx
+#>
+function Gather-WinBioEvtx {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
+    #
+    # Collect information about the machine.
+    #
+
+    #
+    # Collect the winbio.evtx
+    #
+    $winbioJob = Start-Job -Name "Winbio.evtx" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\winbio.evtx") -ScriptBlock {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]
+            $OutputFile
+        )
+
+        try {
+            & wevtutil epl Microsoft-Windows-Biometrics/Operational $OutputFile
+        } catch {
+            Write-Verbose "[Save-TargetDetailsOnStop] Error while getting WER logs: $_"
+        }
+    }
+
+    [void]$BackgroundJobs.Add($winbioJob)
+    Write-Verbose "[Save-TargetDetailsOnStop] Done"
+}
+
+<#
+ .SYNOPSIS
+ Run background task to gather system info with WinHelloInfo
+#>
+function Gather-WinHelloInfo {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
+    #
+    # Collect information about the machine.
+    #
+
+    $winHelloJob = Start-Job -Name "WinHelloInfo" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\WinHelloInfo.log") -ScriptBlock {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]
+            $OutputFile
+        )
+
+        try {
+            # analog provider
+            $InfoStr = New-Object System.Text.StringBuilder
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query analog provider regkeys recursively")
+            $regValue = Reg Query "HKLM\Software\Microsoft\Analog" /s
+            [void]$InfoStr.AppendLine($regValue)
+            
+            # winbio
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query FrameServer regkeys recursively")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WinBio" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            # kinect
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query Kinect regkeys recursively")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Kinect" -TargetType /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #DLP
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query DLP regkeys recursively")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\EFS\EdpCredentials" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #Biometrics
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query for PassportForWork policies")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Policies\PassportForWork\Biometrics" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #FaceLogon
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query for FaceLogon")
+            $regValue = Reg Query"HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\FaceLogon" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #Greetings
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query for Greetings")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\Greetings" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #SessionData
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query for SessionData")
+            $regValue = Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\SessionData" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            #Sphinx setting
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query user Sphinx setting")
+            $regValue = Reg Query "REG QUERY HKEY_CURRENT_USER\SOFTWARE\Microsoft\BioAuth\FaceAuth" -RegName "EnableSphinx" /s
+            [void]$InfoStr.AppendLine($regValue)
+
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query status of SensorDataService:")
+            $log = sc query sensordataservice
+            [void]$InfoStr.AppendLine($log)
+
+
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query status of Win Bio Service:")
+            $log = sc query wbiosrvc
+            [void]$InfoStr.AppendLine($log)
+
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query status of KinectService:")
+            $log = sc query kinectmonitor
+            [void]$InfoStr.AppendLine($log)
+
+            [void]$InfoStr.AppendLine("@echo ===============================================")
+            [void]$InfoStr.AppendLine("@echo Query Wake status")
+            $log = powercfg /LASTWAKE
+            [void]$InfoStr.AppendLine($log)
+
+            $InfoStr.ToString() | Set-Content $OutputFile -Encoding Ascii
+
+        } catch {
+            Write-Verbose "[Save-TargetDetails] Error while getting winHelloInfo logs: $_"
+        }
+    }
+
+    [void]$BackgroundJobs.Add($winHelloJob)
+}

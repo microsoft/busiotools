@@ -147,7 +147,7 @@ function Main {
             Prepare-Target
 
             Write-Host "Saving target system details..."
-            Save-TargetDetails
+            Save-TargetDetailsOnStart
 
             Write-Host "Creating tracing scripts..."
             Create-Scripts
@@ -163,6 +163,9 @@ function Main {
             Stop-Tracing -DownloadFiles
             $tracingStarted = $false
 
+            Write-Host "Saving target system details..."
+            Save-TargetDetailsOnStop
+
             Write-Host "Waiting for the background jobs to complete..."
             Wait-ForBackgroundJobs
 
@@ -171,6 +174,8 @@ function Main {
             Compress-Archive -Path $($EnvironmentInfo.TracePathLocal) -DestinationPath $($EnvironmentInfo.TracePathLocal)
             
 
+        } catch {
+            Write-Error "Unexpected error: $_"
         } finally {
             # Open the output, and archive directory.
             if (Test-Path $EnvironmentInfo.TracePathLocal) {
@@ -241,7 +246,7 @@ function Get-EnvironmentInformation {
  .SYNOPSIS
  Stores system information in the output folder.
 #>
-function Save-TargetDetails {
+function Save-TargetDetailsOnStart {
     [CmdletBinding()]
     [OutputType([void])]
     param()
@@ -256,19 +261,20 @@ function Save-TargetDetails {
 
         try{
             $buildInfo = Get-BuildInfo -TargetType $TargetType
-            $buildInfoFilePath = "$($EnvironmentInfo.TracePathTarget)\BuildInfo.log"
+            $buildInfoFilePath = "$($EnvironmentInfo.TracePathLocal)\BuildInfo.log"
 
+            # build 
             $buildInfoStr = New-Object System.Text.StringBuilder
             [void]$buildInfoStr.AppendLine("Version=$($buildInfo.Version),Arch=$($buildInfo.Flavor),Branch=$($buildInfo.Branch)")
             $buildInfoStr.ToString() | Set-Content $buildInfoFilePath -Encoding Ascii
 
         } catch {
-                Write-Verbose "[Save-TargetDetails] Error while getting buildInfo: $_"
+                Write-Verbose "[Save-TargetDetailsOnStart] Error while getting buildInfo: $_"
         }
 
         if ($TargetType -eq [Tracing.TargetType]::Local) {
             
-            Write-Verbose "[Save-TargetDetails] Collecting machine information and crash reports"
+            Write-Verbose "[Save-TargetDetailsOnStart] Collecting machine information and crash reports"
 
             #
             # Collect information about the machine.
@@ -279,6 +285,33 @@ function Save-TargetDetails {
 
             # Save buildInfo
         }
+    }
+}
+
+<#
+ .SYNOPSIS
+ Stores system information in the output folder.
+#>
+function Save-TargetDetailsOnStop {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
+
+    begin {
+        Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    }
+
+    process {
+        if ($TargetType -ne [Tracing.TargetType]::Local) {
+            Write-Verbose "[Save-TargetDetailsOnStop] Skipping for the remote device"
+        } else {
+            Write-Verbose "[Save-TargetDetailsOnStop] Collecting machine information and crash reports"
+
+            Gather-WinHelloInfo
+            Gather-WinBioEvtx
+
+            Write-Verbose "[Save-TargetDetailsOnStop] Done"
+       }
     }
 }
 

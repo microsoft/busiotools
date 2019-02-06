@@ -668,6 +668,13 @@
       </Keywords>
     </EventProvider>
 
+    <!-- Natural Authentication Providers -->
+    <EventProvider Id="Microsoft.Windows.Security.NaturalAuth.Service" Name="c632d944-dddb-599f-a131-baf37bf22ef0" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF"/>
+      </Keywords>
+    </EventProvider>
+    
     <!-- BthPort ETW provider. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHPORT" Name="8a1f9517-3a8c-4a9e-a018-4f17a200f277" Level="4" NonPagedMemory="true">
       <Keywords>
@@ -861,6 +868,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Security.NaturalAuth.Service"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1008,6 +1016,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Security.NaturalAuth.Service"/>            
           </EventProviders>
         </EventCollectorId>
 

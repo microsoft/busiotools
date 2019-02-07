@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Resources;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
@@ -12,6 +13,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
@@ -48,7 +50,31 @@ namespace SensorExplorer
         public PlotCanvas _plotCanvas;
 
         public TextBox textboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness() { Left = 40, Right = 10, Top = 20, Bottom = 10 } };
-        public Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness(10) { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
+        public Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
+
+        public Button MALTButton = new Button() { Content = "Include MALT", Height = 50, Width = 200, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness() { Top = 50 }, FontSize = 20 };
+
+        // MALT panel
+        private TextBlock deviceSelection = new TextBlock() { Text = "Device Selection", Margin = new Thickness() { Left = 20, Top = 10 } };
+        public StackPanel stackPanelMALT = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(50), Background = new SolidColorBrush(Colors.AliceBlue) };
+        private StackPanel stackPanelMALT2 = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness() { Left = 20, Top = 20 } };
+        public Button connectToDeviceButton = new Button() { Content = "Connect to device" };
+        public Button disconnectFromDeviceButton = new Button() { Content = "Disconnect from device", Margin = new Thickness() { Left = 10 } };
+        private TextBlock textblockMALT1 = new TextBlock() { Text = "Select an Arduino Device:", Margin = new Thickness() { Left = 20, Top = 10 } };
+        public ObservableCollection<DeviceListEntry> listOfDevices;
+
+        // MALT data panel
+        public StackPanel stackPanelMALTData = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(50), Background = new SolidColorBrush(Colors.AliceBlue) };
+        private TextBlock textblockMALTData1 = new TextBlock() { Text = "MALT Color Sensor (Ambient)", FontSize = 20, Margin = new Thickness() { Left = 20, Top = 10 } };
+        private StackPanel stackPanelMALTPropertyName1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        private TextBlock[] textBlockMALTPropertyName1;
+        private StackPanel stackPanelMALTPropertyValue1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        public TextBlock[] textBlockMALTPropertyValue1;
+        private TextBlock textblockMALTData2 = new TextBlock() { Text = "MALT Color Sensor (Screen)", FontSize = 20, Margin = new Thickness() { Left = 20, Top = 10 } };
+        private StackPanel stackPanelMALTPropertyName2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        private TextBlock[] textBlockMALTPropertyName2;
+        private StackPanel stackPanelMALTPropertyValue2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10, Bottom = 20 } };
+        public TextBlock[] textBlockMALTPropertyValue2;
 
         private StackPanel StackPanelTop = new StackPanel();
         private Ellipse EllipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
@@ -62,6 +88,10 @@ namespace SensorExplorer
         private TextBlock TextBlockSensor = new TextBlock() { Foreground = new SolidColorBrush(Colors.Black), FontSize = 72 };
 
         private StackPanel StackPanelBottom = new StackPanel();
+        private StackPanel StackPanelBottomData = new StackPanel();
+        private StackPanel StackPanelBottomRightCol = new StackPanel();
+        private StackPanel StackPanelMALT = new StackPanel();
+
         private StackPanel StackPanelDataName = new StackPanel();
         private TextBlock[] TextBlockProperty;
         private StackPanel StackPanelValue = new StackPanel();
@@ -194,6 +224,8 @@ namespace SensorExplorer
             }
 
             StackPanelBottom.Orientation = Orientation.Horizontal;
+            StackPanelBottomData.Orientation = Orientation.Horizontal;
+            StackPanelBottomRightCol.Orientation = Orientation.Vertical;
 
             StackPanelDataName.Orientation = Orientation.Vertical;
             StackPanelValue.Orientation = Orientation.Vertical;
@@ -238,11 +270,93 @@ namespace SensorExplorer
 
             StackPanelDataName.Margin = new Thickness(40, 0, 0, 0);
 
-            StackPanelBottom.Children.Add(StackPanelProperty);
-            StackPanelBottom.Children.Add(StackPanelDataName);
-            StackPanelBottom.Children.Add(StackPanelValue);
-            StackPanelBottom.Children.Add(StackPanelMinValue);
-            StackPanelBottom.Children.Add(StackPanelMaxValue);
+            if (sensorType == Sensor.LIGHTSENSOR)
+            {
+                StackPanelBottom.Children.Add(StackPanelProperty);
+
+                StackPanelBottomData.Children.Add(StackPanelDataName);
+                StackPanelBottomData.Children.Add(StackPanelValue);
+                StackPanelBottomData.Children.Add(StackPanelMinValue);
+                StackPanelBottomData.Children.Add(StackPanelMaxValue);
+
+                connectToDeviceButton.Click += Scenario1View.Current.ConnectToDeviceClick;
+                stackPanelMALT2.Children.Add(connectToDeviceButton);
+                stackPanelMALT2.Children.Add(disconnectFromDeviceButton);
+                stackPanelMALT.Children.Add(deviceSelection);
+                stackPanelMALT.Children.Add(stackPanelMALT2);
+                stackPanelMALT.Children.Add(textblockMALT1);
+
+                StackPanelBottomRightCol.Children.Add(StackPanelBottomData);
+                StackPanelBottomRightCol.Children.Add(MALTButton);
+                MALTButton.Click += Scenario1View.Current.MALTButton;
+                stackPanelMALT.Visibility = Visibility.Collapsed;
+                StackPanelBottomRightCol.Children.Add(stackPanelMALT);
+
+                textBlockMALTPropertyName1 = new TextBlock[7];
+                textBlockMALTPropertyValue1 = new TextBlock[7];
+                textBlockMALTPropertyName2 = new TextBlock[7];
+                textBlockMALTPropertyValue2 = new TextBlock[7];
+
+                textBlockMALTPropertyName1[0] = new TextBlock() { Text = "Chromaticity x", Width = 120 };
+                textBlockMALTPropertyName1[1] = new TextBlock() { Text = "Chromaticity y", Width = 120 };
+                textBlockMALTPropertyName1[2] = new TextBlock() { Text = "Chromaticity Y", Width = 120 };
+                textBlockMALTPropertyName1[3] = new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
+                textBlockMALTPropertyName1[4] = new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
+                textBlockMALTPropertyName1[5] = new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
+                textBlockMALTPropertyName1[6] = new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
+
+                textBlockMALTPropertyValue1[0] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue1[1] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue1[2] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue1[3] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
+                textBlockMALTPropertyValue1[4] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
+                textBlockMALTPropertyValue1[5] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
+                textBlockMALTPropertyValue1[6] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
+
+                textBlockMALTPropertyName2[0] = new TextBlock() { Text = "Chromaticity x", Width = 120 };
+                textBlockMALTPropertyName2[1] = new TextBlock() { Text = "Chromaticity y", Width = 120 };
+                textBlockMALTPropertyName2[2] = new TextBlock() { Text = "Chromaticity Y", Width = 120 };
+                textBlockMALTPropertyName2[3] = new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
+                textBlockMALTPropertyName2[4] = new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
+                textBlockMALTPropertyName2[5] = new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
+                textBlockMALTPropertyName2[6] = new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
+
+                textBlockMALTPropertyValue2[0] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue2[1] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue2[2] = new TextBlock() { Width = 120 };
+                textBlockMALTPropertyValue2[3] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
+                textBlockMALTPropertyValue2[4] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
+                textBlockMALTPropertyValue2[5] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
+                textBlockMALTPropertyValue2[6] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
+
+                for (int i = 0; i < textBlockMALTPropertyName1.Length; i++)
+                {
+                    stackPanelMALTPropertyName1.Children.Add(textBlockMALTPropertyName1[i]);
+                    stackPanelMALTPropertyValue1.Children.Add(textBlockMALTPropertyValue1[i]);
+                    stackPanelMALTPropertyName2.Children.Add(textBlockMALTPropertyName2[i]);
+                    stackPanelMALTPropertyValue2.Children.Add(textBlockMALTPropertyValue2[i]);
+                }
+
+                stackPanelMALTData.Children.Add(textblockMALTData1);
+                stackPanelMALTData.Children.Add(stackPanelMALTPropertyName1);
+                stackPanelMALTData.Children.Add(stackPanelMALTPropertyValue1);
+                stackPanelMALTData.Children.Add(textblockMALTData2);
+                stackPanelMALTData.Children.Add(stackPanelMALTPropertyName2);
+                stackPanelMALTData.Children.Add(stackPanelMALTPropertyValue2);
+
+                StackPanelBottomRightCol.Children.Add(stackPanelMALTData);
+                stackPanelMALTData.Visibility = Visibility.Collapsed;
+
+                StackPanelBottom.Children.Add(StackPanelBottomRightCol);
+            }
+            else
+            {
+                StackPanelBottom.Children.Add(StackPanelProperty);
+                StackPanelBottom.Children.Add(StackPanelDataName);
+                StackPanelBottom.Children.Add(StackPanelValue);
+                StackPanelBottom.Children.Add(StackPanelMinValue);
+                StackPanelBottom.Children.Add(StackPanelMaxValue);
+            }
 
             StackPanelProperty.Orientation = Orientation.Horizontal;
 

@@ -3,13 +3,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
+using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
+using Windows.Devices.SerialCommunication;
+using Windows.Foundation;
 using Windows.Foundation.Diagnostics;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
+using Windows.Storage.Streams;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -30,6 +38,21 @@ namespace SensorExplorer
 
         private ApplicationDataContainer _localState = ApplicationData.Current.LocalSettings;
         private Popup settingsPopup; // This is the container that will hold our custom content
+
+        // MALT
+        private const string buttonNameDisconnectFromDevice = "Disconnect from device";
+        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
+        private SuspendingEventHandler appSuspendEventHandler;
+        private EventHandler<Object> appResumeEventHandler;
+        private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
+        private Boolean watchersSuspended;
+        private Boolean watchersStarted;
+        private Boolean isAllDevicesEnumerated;
+        private Boolean IsNavigatedAway;
+        private StorageFile tmp, file;
+        private DataReader DataReaderObject = null;
+        private DataWriter DataWriterObject = null;
+        private List<string> conversionValues = new List<string> { "100", "800" };
 
         public Scenario1View()
         {
@@ -359,6 +382,86 @@ namespace SensorExplorer
             rootPage.loggingChannelView.LogEvent("LightSensorData", loggingFields);
         }
 
+        public void MALTButton(object sender, RoutedEventArgs e)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+            selected.MALTButton.Visibility = Visibility.Collapsed;
+            selected.stackPanelMALT.Visibility = Visibility.Visible;
+            connectDevices.Visibility = Visibility.Visible;
+
+            selected.listOfDevices = new ObservableCollection<DeviceListEntry>();
+            mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
+            watchersStarted = false;
+            watchersSuspended = false;
+            isAllDevicesEnumerated = false;
+
+            // If we are connected to the device or planning to reconnect, we should disable the list of devices
+            // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
+            if (EventHandlerForDevice.Current.IsDeviceConnected
+                || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
+                && EventHandlerForDevice.Current.DeviceInformation != null))
+            {
+                UpdateConnectDisconnectButtonsAndList(false);
+
+                // These notifications will occur if we are waiting to reconnect to device when we start the page
+                EventHandlerForDevice.Current.OnDeviceConnected = this.OnDeviceConnected;
+                EventHandlerForDevice.Current.OnDeviceClose = this.OnDeviceClosing;
+            }
+            else
+            {
+                UpdateConnectDisconnectButtonsAndList(true);
+            }
+
+            // Begin watching out for events
+            StartHandlingAppEvents();
+
+            // Initialize the desired device watchers so that we can watch for when devices are connected/removed
+            InitializeDeviceWatchers();
+            StartDeviceWatchers();
+
+            DeviceListSource.Source = selected.listOfDevices;
+        }
+
+        public async void ConnectToDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            var selection = connectDevices.SelectedItems;
+            DeviceListEntry entry = null;
+
+            if (selection.Count > 0)
+            {
+                var obj = selection[0];
+                entry = (DeviceListEntry)obj;
+
+                if (entry != null)
+                {
+                    // Create an EventHandlerForDevice to watch for the device we are connecting to
+                    EventHandlerForDevice.CreateNewEventHandlerForDevice();
+
+                    // Get notified when the device was successfully connected to or about to be closed
+                    EventHandlerForDevice.Current.OnDeviceConnected = OnDeviceConnected;
+                    EventHandlerForDevice.Current.OnDeviceClose = OnDeviceClosing;
+
+                    // It is important that the FromIdAsync call is made on the UI thread because the consent prompt, when present,
+                    // can only be displayed on the UI thread. Since this method is invoked by the UI, we are already in the UI thread.
+                    Boolean openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
+
+                    // Disable connect button if we connected to the device
+                    UpdateConnectDisconnectButtonsAndList(!openSuccess);
+
+                    if (openSuccess)
+                    {
+                        selected.stackPanelMALT.Visibility = Visibility.Collapsed;
+                        connectDevices.Visibility = Visibility.Collapsed;
+                        //initialize();
+                        selected.stackPanelMALTData.Visibility = Visibility.Visible;
+                        PeriodicTimer.CreateScenario1();
+                    }
+                }
+            }
+        }
+
         private async void FeedbackButton(object sender, RoutedEventArgs e)
         {
             var uri = new Uri(@"feedback-hub:?
@@ -592,6 +695,394 @@ namespace SensorExplorer
                 //SimpleOrientationSensor doesn't have ReportInterval               
             }
             catch { }
+        }
+
+        // MALT
+        /// <summary>
+        /// Initialize device watchers to watch for the Serial Devices.
+        /// GetDeviceSelector return an AQS string that can be passed directly into DeviceWatcher.createWatcher() or DeviceInformation.createFromIdAsync(). 
+        /// In this sample, a DeviceWatcher will be used to watch for devices because we can detect surprise device removals.
+        /// </summary>
+        private void InitializeDeviceWatchers()
+        {
+            string deviceSelector = SerialDevice.GetDeviceSelectorFromUsbVidPid(ArduinoDevice.Vid, ArduinoDevice.Pid);
+            var deviceWatcher = DeviceInformation.CreateWatcher(deviceSelector);
+            // Allow the EventHandlerForDevice to handle device watcher events that relates or effects our device (i.e. device removal, addition, app suspension/resume)
+            AddDeviceWatcher(deviceWatcher, deviceSelector);
+        }
+
+        private void StartHandlingAppEvents()
+        {
+            appSuspendEventHandler = new SuspendingEventHandler(this.OnAppSuspension);
+            appResumeEventHandler = new EventHandler<Object>(this.OnAppResume);
+
+            // This event is raised when the app is exited and when the app is suspended
+            Application.Current.Suspending += appSuspendEventHandler;
+            Application.Current.Resuming += appResumeEventHandler;
+        }
+
+        private void StopHandlingAppEvents()
+        {
+            // This event is raised when the app is exited and when the app is suspended
+            Application.Current.Suspending -= appSuspendEventHandler;
+            Application.Current.Resuming -= appResumeEventHandler;
+        }
+
+        /// <summary>
+        /// Registers for Added, Removed, and Enumerated events on the provided deviceWatcher before adding it to an internal list.
+        /// </summary>
+        private void AddDeviceWatcher(DeviceWatcher deviceWatcher, string deviceSelector)
+        {
+            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(this.OnDeviceAdded);
+            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(this.OnDeviceRemoved);
+            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>(this.OnDeviceEnumerationComplete);
+            mapDeviceWatchersToDeviceSelector.Add(deviceWatcher, deviceSelector);
+        }
+
+        /// <summary>
+        /// Starts all device watchers including ones that have been individually stopped.
+        /// </summary>
+        private void StartDeviceWatchers()
+        {
+            // Start all device watchers
+            watchersStarted = true;
+            isAllDevicesEnumerated = false;
+
+            foreach (DeviceWatcher deviceWatcher in mapDeviceWatchersToDeviceSelector.Keys)
+            {
+                if ((deviceWatcher.Status != DeviceWatcherStatus.Started) && (deviceWatcher.Status != DeviceWatcherStatus.EnumerationCompleted))
+                {
+                    deviceWatcher.Start();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Stops all device watchers.
+        /// </summary>
+        private void StopDeviceWatchers()
+        {
+            // Stop all device watchers
+            foreach (DeviceWatcher deviceWatcher in mapDeviceWatchersToDeviceSelector.Keys)
+            {
+                if ((deviceWatcher.Status == DeviceWatcherStatus.Started) || (deviceWatcher.Status == DeviceWatcherStatus.EnumerationCompleted))
+                {
+                    deviceWatcher.Stop();
+                }
+            }
+
+            // Clear the list of devices so we don't have potentially disconnected devices around
+            ClearDeviceEntries();
+
+            watchersStarted = false;
+        }
+
+        /// <summary>
+        /// Creates a DeviceListEntry for a device and adds it to the list of devices in the UI
+        /// </summary>
+        private void AddDeviceToList(DeviceInformation deviceInformation, string deviceSelector)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            // search the device list for a device with a matching interface ID
+            var match = FindDevice(deviceInformation.Id);
+
+            // Add the device if it's new
+            if (match == null)
+            {
+                // Create a new element for this device interface, and queue up the query of its device information
+                match = new DeviceListEntry(deviceInformation, deviceSelector);
+
+                // Add the new element to the end of the list of devices
+                selected.listOfDevices.Add(match);
+            }
+        }
+
+        private void RemoveDeviceFromList(string deviceId)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            // Removes the device entry from the interal list; therefore the UI
+            var deviceEntry = FindDevice(deviceId);
+
+            selected.listOfDevices.Remove(deviceEntry);
+        }
+
+        private void ClearDeviceEntries()
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            selected.listOfDevices.Clear();
+        }
+
+        /// <summary>
+        /// Searches through the existing list of devices for the first DeviceListEntry that has the specified device Id.
+        /// </summary>
+        private DeviceListEntry FindDevice(string deviceId)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            if (deviceId != null)
+            {
+                foreach (DeviceListEntry entry in selected.listOfDevices)
+                {
+                    if (entry.DeviceInformation.Id == deviceId)
+                    {
+                        return entry;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// We must stop the DeviceWatchers because device watchers will continue to raise events even if
+        /// the app is in suspension, which is not desired (drains battery). We resume the device watcher once the app resumes again.
+        /// </summary>
+        private void OnAppSuspension(Object sender, SuspendingEventArgs args)
+        {
+            if (watchersStarted)
+            {
+                watchersSuspended = true;
+                StopDeviceWatchers();
+            }
+            else
+            {
+                watchersSuspended = false;
+            }
+        }
+
+        /// <summary>
+        /// See OnAppSuspension for why we are starting the device watchers again
+        /// </summary>
+        private void OnAppResume(Object sender, Object args)
+        {
+            if (watchersSuspended)
+            {
+                watchersSuspended = false;
+                StartDeviceWatchers();
+            }
+        }
+
+        /// <summary>
+        /// We will remove the device from the UI
+        /// </summary>
+        private async void OnDeviceRemoved(DeviceWatcher sender, DeviceInformationUpdate deviceInformationUpdate)
+        {
+            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
+            {
+                rootPage.NotifyUser("Device removed - " + deviceInformationUpdate.Id, NotifyType.StatusMessage);
+                RemoveDeviceFromList(deviceInformationUpdate.Id);
+            }));
+        }
+
+        /// <summary>
+        /// This function will add the device to the listOfDevices so that it shows up in the UI
+        /// </summary>
+        private async void OnDeviceAdded(DeviceWatcher sender, DeviceInformation deviceInformation)
+        {
+            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
+            {
+                rootPage.NotifyUser("Device added - " + deviceInformation.Id, NotifyType.StatusMessage);
+                AddDeviceToList(deviceInformation, mapDeviceWatchersToDeviceSelector[sender]);
+            }));
+        }
+
+        /// <summary>
+        /// Notify the UI whether or not we are connected to a device
+        /// </summary>
+        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, Object args)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
+            {
+                isAllDevicesEnumerated = true;
+
+                // If we finished enumerating devices and the device has not been connected yet, the OnDeviceConnected method
+                // is responsible for selecting the device in the device list (UI); otherwise, this method does that.
+                if (EventHandlerForDevice.Current.IsDeviceConnected)
+                {
+                    SelectDeviceInList(EventHandlerForDevice.Current.DeviceInformation.Id);
+                    selected.disconnectFromDeviceButton.Content = buttonNameDisconnectFromDevice;
+
+                    if (EventHandlerForDevice.Current.Device.PortName != "")
+                    {
+                        rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.Device.PortName + " - " +
+                                            EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
+                    }
+                    else
+                    {
+                        rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
+                    }
+                }
+                else if (EventHandlerForDevice.Current.IsEnabledAutoReconnect && EventHandlerForDevice.Current.DeviceInformation != null)
+                {
+                    // We will be reconnecting to a device
+                    selected.disconnectFromDeviceButton.Content = buttonNameDisableReconnectToDevice;
+                    rootPage.NotifyUser("Waiting to reconnect to device -  " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
+                }
+                else
+                {
+                    rootPage.NotifyUser("No device is currently connected", NotifyType.StatusMessage);
+                }
+            }));
+        }
+
+        /// <summary>
+        /// If all the devices have been enumerated, select the device in the list we connected to. Otherwise let the EnumerationComplete event
+        /// from the device watcher handle the device selection
+        /// </summary>
+        private void OnDeviceConnected(EventHandlerForDevice sender, DeviceInformation deviceInformation)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            // Find and select our connected device
+            if (isAllDevicesEnumerated)
+            {
+                SelectDeviceInList(EventHandlerForDevice.Current.DeviceInformation.Id);
+                selected.disconnectFromDeviceButton.Content = buttonNameDisconnectFromDevice;
+            }
+
+            if (EventHandlerForDevice.Current.Device.PortName != "")
+            {
+                rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.Device.PortName + " - " +
+                                    EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
+            }
+            else
+            {
+                rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
+            }
+        }
+
+        /// <summary>
+        /// The device was closed. If we will autoreconnect to the device, reflect that in the UI
+        /// </summary>
+        private async void OnDeviceClosing(EventHandlerForDevice sender, DeviceInformation deviceInformation)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
+            {
+                // We were connected to the device that was unplugged, so change the "Disconnect from device" button
+                // to "Do not reconnect to device"
+                if (selected.disconnectFromDeviceButton.IsEnabled && EventHandlerForDevice.Current.IsEnabledAutoReconnect)
+                {
+                    selected.disconnectFromDeviceButton.Content = buttonNameDisableReconnectToDevice;
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Selects the item in the UI's listbox that corresponds to the provided device id. If there are no
+        /// matches, we will deselect anything that is selected.
+        /// </summary>
+        private void SelectDeviceInList(string deviceIdToSelect)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            // Don't select anything by default.
+            connectDevices.SelectedIndex = -1;
+
+            for (int deviceListIndex = 0; deviceListIndex < selected.listOfDevices.Count; deviceListIndex++)
+            {
+                if (selected.listOfDevices[deviceListIndex].DeviceInformation.Id == deviceIdToSelect)
+                {
+                    connectDevices.SelectedIndex = deviceListIndex;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// When ButtonConnectToDevice is disabled, ConnectDevices list will also be disabled.
+        /// </summary>
+        private void UpdateConnectDisconnectButtonsAndList(Boolean enableConnectButton)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            selected.connectToDeviceButton.IsEnabled = enableConnectButton;
+            selected.disconnectFromDeviceButton.IsEnabled = !selected.connectToDeviceButton.IsEnabled;
+            connectDevices.IsEnabled = selected.connectToDeviceButton.IsEnabled;
+        }
+
+        public async void GetMALTData()
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            await WriteCommandAsync("READCOLORSENSOR 1\n");
+            string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
+            if (result != null && result.Length == 5)
+            {
+                selected.textBlockMALTPropertyValue1[3].Text = result[1];
+                selected.textBlockMALTPropertyValue1[4].Text = result[2];
+                selected.textBlockMALTPropertyValue1[5].Text = result[3];
+                selected.textBlockMALTPropertyValue1[6].Text = result[4];
+            }
+
+            await WriteCommandAsync("READCOLORSENSOR 2\n");
+            string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
+            if (result2 != null && result.Length == 5)
+            {
+                selected.textBlockMALTPropertyValue2[3].Text = result2[1];
+                selected.textBlockMALTPropertyValue2[4].Text = result2[2];
+                selected.textBlockMALTPropertyValue2[5].Text = result2[3];
+                selected.textBlockMALTPropertyValue2[6].Text = result2[4];
+            }
+        }
+
+        private async Task WriteCommandAsync(string command)
+        {
+            if (EventHandlerForDevice.Current.IsDeviceConnected)
+            {
+                try
+                {
+                    DataWriterObject = new DataWriter(EventHandlerForDevice.Current.Device.OutputStream);
+                    DataWriterObject.WriteString(command);
+                    uint x = await DataWriterObject.StoreAsync().AsTask();
+                    DataWriterObject.DetachStream();
+                    DataWriterObject = null;
+                }
+                catch { }
+            }
+        }
+
+        private async Task<string[]> ReadColorSensor(string command)
+        {
+            try
+            {
+                string data = await ReadLines(5);
+                data = data.Replace("\n", "");
+                string[] delim = new string[1] { "\r" };
+                string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+                //OutputError(command, split[0]);
+
+                return split;
+            }
+            catch { return new string[] { }; }
+        }
+
+        private async Task<string> ReadLines(int numLines)
+        {
+            int newLines = 0;
+            string data = string.Empty;
+
+            DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
+            while (newLines != numLines)
+            {
+                uint x = await DataReaderObject.LoadAsync(1);
+                string s = DataReaderObject.ReadString(1);
+                data += s;
+                if (s == "\n")
+                {
+                    newLines++;
+                }
+            }
+            DataReaderObject.DetachStream();
+            DataReaderObject = null;
+
+            return data;
         }
     }
 }

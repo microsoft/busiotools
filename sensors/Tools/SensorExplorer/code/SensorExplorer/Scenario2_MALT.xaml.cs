@@ -25,10 +25,10 @@ namespace SensorExplorer
     public sealed partial class Scenario2MALT : Page
     {
         public static Scenario2MALT Scenario2;
+        private MainPage rootPage = MainPage.Current;
 
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
-        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
-        private MainPage rootPage = MainPage.Current;
+        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";     
         private SuspendingEventHandler appSuspendEventHandler;
         private EventHandler<Object> appResumeEventHandler;
         private ObservableCollection<DeviceListEntry> listOfDevices;

@@ -8,25 +8,37 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="feedbackButton" Click="FeedbackButton">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE939;" FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock Text="Feedback" Margin="8,0,0,0"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="saveFileButton" Margin="10,0,10,0" Content="Save Log" Click="SaveFileButtonClick" IsEnabled="False"/>
-            </StackPanel>
-            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                <Grid>
-                    <TextBlock x:Name="TextBlockNoSensor" Grid.Row="2" Margin="16" Style="{StaticResource BaseTextBlockStyle}"/>
-                    <Pivot x:Name="PivotSensor" IsTextScaleFactorEnabled="False"/>
-                    <ProgressRing x:Name="ProgressRingSensor" Height="100" Width="100" IsActive="True"/>
+    <Page.Resources>
+        <CollectionViewSource x:Name="DeviceListSource"/>
+    </Page.Resources>
+    
+    <StackPanel>
+        <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="feedbackButton" Click="FeedbackButton">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE939;" FontFamily="Segoe MDL2 Assets"/>
+                            <TextBlock Text="Feedback" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="saveFileButton" Margin="10,0,10,0" Content="Save Log" Click="SaveFileButtonClick" IsEnabled="False"/>
+                </StackPanel>
+                <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                    <Grid>
+                        <TextBlock x:Name="TextBlockNoSensor" Grid.Row="2" Margin="16" Style="{StaticResource BaseTextBlockStyle}"/>
+                        <Pivot x:Name="PivotSensor" IsTextScaleFactorEnabled="False"/>
+                        <ProgressRing x:Name="ProgressRingSensor" Height="100" Width="100" IsActive="True"/>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </StackPanel>
-    </ScrollViewer>
+                <ListBox x:Name="connectDevices" ItemsSource="{Binding Source={StaticResource DeviceListSource}}"  Height="250" Visibility="Collapsed" Background="AliceBlue">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding InstanceId}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
 </Page>

@@ -7,7 +7,7 @@
   Copyright="Microsoft Corporation"
   Tag="">
   <Profiles>
-  
+
     <EventCollector Id="Traces_paged" Name="Event Collector Paged">
       <BufferSize Value="1024"/>
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
@@ -509,6 +509,11 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.LooselyCoupledDevices" Name="8A6767B6-D556-4AAA-8612-DD370FADA6A9" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
 
     <!-- Non Paged providers. They are kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="true">
@@ -634,6 +639,11 @@
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.HIDCLASS" Name="47c779cd-4efd-49d7-9b10-9f16e5c25d06" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Surface.OobAdaptationDriver" Name="C09E7A78-ECF1-4AA7-8CEA-1568E5054F4E" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
       </Keywords>
     </EventProvider>
 
@@ -861,6 +871,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -893,6 +904,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -901,7 +913,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT"/>
           </EventProviders>
         </EventCollectorId>
-        
+
       </Collectors>
     </Profile>
 
@@ -1008,6 +1020,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1040,6 +1053,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1048,7 +1062,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT"/>
           </EventProviders>
         </EventCollectorId>
-        
+
       </Collectors>
     </Profile>
 
@@ -1056,4 +1070,3 @@
     <!--<Profile Id="BluetoothStack.Verbose.Memory" Base="BluetoothStack.Verbose.File" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose"/>-->
   </Profiles>
 </WindowsPerformanceRecorder>
-

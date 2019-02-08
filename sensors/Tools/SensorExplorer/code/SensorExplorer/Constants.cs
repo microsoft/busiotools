@@ -4,7 +4,6 @@
 /* Copyright (c) Intel Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using System;
 using System.Collections.Generic;
 using Windows.UI;
 
@@ -140,7 +139,7 @@ namespace SensorExplorer
 
     public class ArduinoDevice
     {
-        public const UInt16 Vid = 0x2341;
-        public const UInt16 Pid = 0x0042;
+        public const ushort Vid = 0x2341;
+        public const ushort Pid = 0x0042;
     }
 }

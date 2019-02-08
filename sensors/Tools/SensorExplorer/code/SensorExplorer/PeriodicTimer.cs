@@ -13,6 +13,7 @@ namespace SensorExplorer
     {
         public static List<SensorData> sensorData = null;
         public static List<SensorDisplay> sensorDisplay = null;
+
         private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
         private static ThreadPoolTimer _periodicTimer = null;
         private static ThreadPoolTimer _periodicTimer2 = null;
@@ -73,6 +74,15 @@ namespace SensorExplorer
             {
                 _periodicTimer2.Cancel();
                 _periodicTimer2 = null;
+            }
+        }
+
+        public static void Cancel3()
+        {
+            if (_periodicTimer3 != null)
+            {
+                _periodicTimer3.Cancel();
+                _periodicTimer3 = null;
             }
         }
 
@@ -163,7 +173,7 @@ namespace SensorExplorer
         {
             await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                Scenario1View.Current.GetMALTData();
+                Scenario1View.Scenario1.GetMALTData();
             });
         }
     }

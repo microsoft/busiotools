@@ -1,8 +1,9 @@
-﻿using Windows.UI.Xaml;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
 
 using Windows.UI.Core;
 
@@ -12,12 +13,13 @@ namespace SensorExplorer
 
     public sealed partial class Scenario3DEO : Page
     {
-        private DisplayEnhancementOverride deo;
         public static Scenario3DEO Scenario3;
+
+        private DisplayEnhancementOverride deo;
 
         public Scenario3DEO()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             deo = DisplayEnhancementOverride.GetForCurrentView();
 

@@ -25,7 +25,6 @@ namespace SensorExplorer
         public const int ORIENTATIONSENSOR = 7;
         public const int ORIENTATIONRELATIVE = 8;
         public const int ORIENTATIONGEOMAGNETIC = 9;
-
         public const int ACTIVITYSENSOR = 10;
         public const int ALTIMETER = 11;
         public const int BAROMETER = 12;
@@ -33,7 +32,6 @@ namespace SensorExplorer
         public const int PEDOMETER = 14;
         public const int PROXIMITYSENSOR = 15;
         public const int SIMPLEORIENTATIONSENSOR = 16;
-
         public const int CO2SENSOR = 17;
         public const int HEARTRATESENSOR = 18;
         public const int HUMIDITYSENSOR = 19;
@@ -42,6 +40,8 @@ namespace SensorExplorer
 
         public const int ACTIVITYNONE = 2;
         public const int ACTIVITYNOTSUPPORTED = 3;
+
+        public static int currentId = -1;
 
         public static List<SensorData> sensorData;
         public static List<SensorDisplay> sensorDisplay;
@@ -105,9 +105,6 @@ namespace SensorExplorer
         public static bool OtherSensorFailed;
 
         private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
-        private const int MINIMUMREPORTINTERVAL = 16;
-
-        public static int currentId = -1;
 
         public static async Task<bool> GetDefault()
         {
@@ -179,7 +176,6 @@ namespace SensorExplorer
             {
                 OtherSensorFailed = false;
             }
-
             try
             {
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Standard), Constants.RequestedProperties);
@@ -1108,7 +1104,7 @@ namespace SensorExplorer
                 if (sensorData[currentId]._sensorType == LIGHTSENSOR)
                 {
                     LightSensorReading reading = e.Reading;
-                    Scenario1View.Current.LogDataLightSensor(reading);
+                    Scenario1View.Scenario1.LogDataLightSensor(reading);
 
                     // for color sensor
                     object x, y;

@@ -21,6 +21,7 @@ namespace SensorExplorer
     public class Scenario
     {
         public string Title { get; set; }
+
         public Type ClassType { get; set; }
     }
 }

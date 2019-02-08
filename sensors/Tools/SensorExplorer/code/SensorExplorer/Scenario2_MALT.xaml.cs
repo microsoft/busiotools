@@ -25,18 +25,19 @@ namespace SensorExplorer
     public sealed partial class Scenario2MALT : Page
     {
         public static Scenario2MALT Scenario2;
+
         private MainPage rootPage = MainPage.Current;
 
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
         private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";     
         private SuspendingEventHandler appSuspendEventHandler;
-        private EventHandler<Object> appResumeEventHandler;
+        private EventHandler<object> appResumeEventHandler;
         private ObservableCollection<DeviceListEntry> listOfDevices;
         private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
-        private Boolean watchersSuspended;
-        private Boolean watchersStarted;
-        private Boolean isAllDevicesEnumerated;
-        private Boolean IsNavigatedAway;
+        private bool watchersSuspended;
+        private bool watchersStarted;
+        private bool isAllDevicesEnumerated;
+        private bool IsNavigatedAway;
         private StorageFile tmp, file;
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
@@ -50,15 +51,15 @@ namespace SensorExplorer
 
         // Track Read Operation
         private CancellationTokenSource ReadCancellationTokenSource;
-        private Object ReadCancelLock = new Object();
+        private object ReadCancelLock = new object();
 
         // Track Write Operation
         private CancellationTokenSource WriteCancellationTokenSource;
-        private Object WriteCancelLock = new Object();
+        private object WriteCancelLock = new object();
 
         public Scenario2MALT()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Scenario2 = this;
 
             comboBox.ItemsSource = conversionValues;
@@ -86,8 +87,8 @@ namespace SensorExplorer
                 UpdateConnectDisconnectButtonsAndList(false);
 
                 // These notifications will occur if we are waiting to reconnect to device when we start the page
-                EventHandlerForDevice.Current.OnDeviceConnected = this.OnDeviceConnected;
-                EventHandlerForDevice.Current.OnDeviceClose = this.OnDeviceClosing;
+                EventHandlerForDevice.Current.OnDeviceConnected = OnDeviceConnected;
+                EventHandlerForDevice.Current.OnDeviceClose = OnDeviceClosing;
             }
             else
             {
@@ -151,7 +152,7 @@ namespace SensorExplorer
             }
         }
 
-        private async void ConnectToDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        private async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;
@@ -172,7 +173,7 @@ namespace SensorExplorer
 
                     // It is important that the FromIdAsync call is made on the UI thread because the consent prompt, when present,
                     // can only be displayed on the UI thread. Since this method is invoked by the UI, we are already in the UI thread.
-                    Boolean openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
+                    bool openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
 
                     // Disable connect button if we connected to the device
                     UpdateConnectDisconnectButtonsAndList(!openSuccess);
@@ -187,13 +188,13 @@ namespace SensorExplorer
             }
         }
 
-        private void ShowConnectionButton(Object sender, RoutedEventArgs eventArgs)
+        private void ShowConnectionButton(object sender, RoutedEventArgs eventArgs)
         {
             stackpanel2.Visibility = Visibility.Collapsed;
             stackpanel1.Visibility = Visibility.Visible;
         }
 
-        private void DisconnectFromDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        private void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;
@@ -231,8 +232,8 @@ namespace SensorExplorer
 
         private void StartHandlingAppEvents()
         {
-            appSuspendEventHandler = new SuspendingEventHandler(this.OnAppSuspension);
-            appResumeEventHandler = new EventHandler<Object>(this.OnAppResume);
+            appSuspendEventHandler = new SuspendingEventHandler(OnAppSuspension);
+            appResumeEventHandler = new EventHandler<object>(OnAppResume);
 
             // This event is raised when the app is exited and when the app is suspended
             Application.Current.Suspending += appSuspendEventHandler;
@@ -251,9 +252,9 @@ namespace SensorExplorer
         /// </summary>
         private void AddDeviceWatcher(DeviceWatcher deviceWatcher, string deviceSelector)
         {
-            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(this.OnDeviceAdded);
-            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(this.OnDeviceRemoved);
-            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>(this.OnDeviceEnumerationComplete);
+            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(OnDeviceAdded);
+            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(OnDeviceRemoved);
+            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, object>(OnDeviceEnumerationComplete);
             mapDeviceWatchersToDeviceSelector.Add(deviceWatcher, deviceSelector);
         }
 
@@ -350,7 +351,7 @@ namespace SensorExplorer
         /// We must stop the DeviceWatchers because device watchers will continue to raise events even if
         /// the app is in suspension, which is not desired (drains battery). We resume the device watcher once the app resumes again.
         /// </summary>
-        private void OnAppSuspension(Object sender, SuspendingEventArgs args)
+        private void OnAppSuspension(object sender, SuspendingEventArgs args)
         {
             if (watchersStarted)
             {
@@ -366,7 +367,7 @@ namespace SensorExplorer
         /// <summary>
         /// See OnAppSuspension for why we are starting the device watchers again
         /// </summary>
-        private void OnAppResume(Object sender, Object args)
+        private void OnAppResume(object sender, object args)
         {
             if (watchersSuspended)
             {
@@ -402,7 +403,7 @@ namespace SensorExplorer
         /// <summary>
         /// Notify the UI whether or not we are connected to a device
         /// </summary>
-        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, Object args)
+        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, object args)
         {
             await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
             {
@@ -500,7 +501,7 @@ namespace SensorExplorer
         /// <summary>
         /// When ButtonConnectToDevice is disabled, ConnectDevices list will also be disabled.
         /// </summary>
-        private void UpdateConnectDisconnectButtonsAndList(Boolean enableConnectButton)
+        private void UpdateConnectDisconnectButtonsAndList(bool enableConnectButton)
         {
             connectToDeviceButton.IsEnabled = enableConnectButton;
             disconnectFromDeviceButton.IsEnabled = !connectToDeviceButton.IsEnabled;
@@ -515,7 +516,7 @@ namespace SensorExplorer
 
                 char[] buffer = new char[textboxLIGHT.Text.Length];
                 textboxLIGHT.Text.CopyTo(0, buffer, 0, textboxLIGHT.Text.Length);
-                UInt32 lightLevel;
+                uint lightLevel;
                 try
                 {
                     lightLevel = Convert.ToUInt32(new string(buffer));
@@ -532,7 +533,7 @@ namespace SensorExplorer
             }
         }
 
-        private async Task SetLight(UInt32 lightLevel)
+        private async Task SetLight(uint lightLevel)
         {
             if (lightLevel > 2600)
             {
@@ -553,7 +554,7 @@ namespace SensorExplorer
             }
         }
 
-        private async Task SetConversionTime(UInt32 conversionTime)
+        private async Task SetConversionTime(uint conversionTime)
         {
             string command = "CONVERSIONTIME " + conversionTime + "\n";
             await WriteCommandAsync(command);
@@ -835,7 +836,6 @@ namespace SensorExplorer
             catch (Exception exception)
             {
                 output.Text = exception.Message;
-
                 rootPage.EnableScenarioSelect();
             }
         }

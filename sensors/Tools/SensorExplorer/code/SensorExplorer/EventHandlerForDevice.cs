@@ -26,16 +26,16 @@ namespace SensorExplorer
         private static EventHandlerForDevice eventHandlerForDevice;
 
         // Used to synchronize threads to avoid multiple instantiations of eventHandlerForDevice.
-        private static Object singletonCreationLock = new Object();
+        private static object singletonCreationLock = new Object();
 
         private DeviceWatcher deviceWatcher;
         private SuspendingEventHandler appSuspendEventHandler;
-        private EventHandler<Object> appResumeEventHandler;
+        private EventHandler<object> appResumeEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformation> deviceAddedEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> deviceRemovedEventHandler;
         private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
-        private Boolean watcherSuspended;
-        private Boolean watcherStarted;
+        private bool watcherSuspended;
+        private bool watcherStarted;
         private MainPage rootPage = MainPage.Current;
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace SensorExplorer
 
         public TypedEventHandler<EventHandlerForDevice, DeviceInformation> OnDeviceConnected { get; set; }
 
-        public Boolean IsDeviceConnected
+        public bool IsDeviceConnected
         {
             get
             {
@@ -107,7 +107,7 @@ namespace SensorExplorer
         /// <summary>
         /// True if EventHandlerForDevice will attempt to reconnect to the device once it is plugged into the computer again
         /// </summary>
-        public Boolean IsEnabledAutoReconnect { get; set; }
+        public bool IsEnabledAutoReconnect { get; set; }
 
         /// <summary>
         /// This method opens the device using the WinRT Serial API. After the device is opened, save the device
@@ -122,9 +122,9 @@ namespace SensorExplorer
         /// True if the device was successfully opened, false if the device could not be opened for well known reasons.
         /// An exception may be thrown if the device could not be opened for extraordinary reasons.
         /// </returns>
-        public async Task<Boolean> OpenDeviceAsync(DeviceInformation deviceInfo, string deviceSelector)
+        public async Task<bool> OpenDeviceAsync(DeviceInformation deviceInfo, string deviceSelector)
         {
-            Boolean successfullyOpenedDevice = false;
+            bool successfullyOpenedDevice = false;
             NotifyType notificationStatus;
             string notificationMessage = null;
 
@@ -385,7 +385,7 @@ namespace SensorExplorer
         /// We must stop the DeviceWatcher because it will continue to raise events even if
         /// the app is in suspension, which is not desired (drains battery). We resume the device watcher once the app resumes again.
         /// </summary>
-        private void OnAppSuspension(Object sender, SuspendingEventArgs args)
+        private void OnAppSuspension(object sender, SuspendingEventArgs args)
         {
             if (watcherStarted)
             {
@@ -407,7 +407,7 @@ namespace SensorExplorer
         /// 
         /// See OnAppSuspension for why we are starting the device watcher again
         /// </summary>
-        private void OnAppResume(Object sender, Object args)
+        private void OnAppResume(object sender, object args)
         {
             if (watcherSuspended)
             {

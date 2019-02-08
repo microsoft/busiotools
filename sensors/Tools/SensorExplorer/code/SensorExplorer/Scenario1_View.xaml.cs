@@ -30,36 +30,32 @@ namespace SensorExplorer
 {
     public sealed partial class Scenario1View : Page
     {
-        public static Scenario1View Current;
-        private MainPage rootPage = MainPage.Current;
+        public static Scenario1View Scenario1;
 
+        private MainPage rootPage = MainPage.Current;
         private List<SensorDisplay> _sensorDisplay;
         private List<SensorData> _sensorData;
-
-        private ApplicationDataContainer _localState = ApplicationData.Current.LocalSettings;
         private Popup settingsPopup; // This is the container that will hold our custom content
 
         // MALT
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
         private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
         private SuspendingEventHandler appSuspendEventHandler;
-        private EventHandler<Object> appResumeEventHandler;
+        private EventHandler<object> appResumeEventHandler;
         private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
-        private Boolean watchersSuspended;
-        private Boolean watchersStarted;
-        private Boolean isAllDevicesEnumerated;
-        private Boolean IsNavigatedAway;
-        private StorageFile tmp, file;
+        private bool watchersSuspended;
+        private bool watchersStarted;
+        private bool isAllDevicesEnumerated;
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
         private List<string> conversionValues = new List<string> { "100", "800" };
 
         public Scenario1View()
         {
-            this.InitializeComponent();
-            Current = this;
+            InitializeComponent();
+            Scenario1 = this;
 
-            this.SizeChanged += MainPageSizeChanged;
+            SizeChanged += MainPageSizeChanged;
 
             _sensorDisplay = new List<SensorDisplay>();
             _sensorData = new List<SensorData>();
@@ -81,6 +77,10 @@ namespace SensorExplorer
         {
             if (Sensor.currentId >= 0 && Sensor.currentId != PivotSensor.Items.Count - 1)
             {
+                if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
+                {
+                    DisconnectFromDeviceClick(null, null);
+                }
                 Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
             }
             rootPage.NotifyUser("", NotifyType.StatusMessage);
@@ -352,9 +352,16 @@ namespace SensorExplorer
                 }
                 else
                 {
-                    if (Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // diable previous sensor
+                    if (Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // disable previous sensor
                     {
-                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
+                        if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
+                        {
+                            DisconnectFromDeviceClick(null, null);
+                            rootPage.NotifyUser("", NotifyType.StatusMessage);
+                        }
+
+                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);   
+                        
                     }
                     Sensor.currentId = i;   // sensor being displayed
                     if (i != PivotSensor.Items.Count - 1)
@@ -369,6 +376,7 @@ namespace SensorExplorer
                     else
                     {
                         saveFileButton.IsEnabled = false;
+                        stackPanelMALTConnection.Visibility = Visibility.Collapsed;
                     }
                 }
             }
@@ -385,11 +393,11 @@ namespace SensorExplorer
         public void MALTButton(object sender, RoutedEventArgs e)
         {
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-            selected.MALTButton.Visibility = Visibility.Collapsed;
-            selected.stackPanelMALT.Visibility = Visibility.Visible;
-            connectDevices.Visibility = Visibility.Visible;
 
-            selected.listOfDevices = new ObservableCollection<DeviceListEntry>();
+            selected.MALTButton.Visibility = Visibility.Collapsed;
+            stackPanelMALTConnection.Visibility = Visibility.Visible;
+
+            selected.ListOfDevices = new ObservableCollection<DeviceListEntry>();
             mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
             watchersStarted = false;
             watchersSuspended = false;
@@ -405,7 +413,6 @@ namespace SensorExplorer
 
                 // These notifications will occur if we are waiting to reconnect to device when we start the page
                 EventHandlerForDevice.Current.OnDeviceConnected = this.OnDeviceConnected;
-                EventHandlerForDevice.Current.OnDeviceClose = this.OnDeviceClosing;
             }
             else
             {
@@ -419,10 +426,10 @@ namespace SensorExplorer
             InitializeDeviceWatchers();
             StartDeviceWatchers();
 
-            DeviceListSource.Source = selected.listOfDevices;
+            DeviceListSource.Source = selected.ListOfDevices;
         }
 
-        public async void ConnectToDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        public async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
@@ -441,21 +448,18 @@ namespace SensorExplorer
 
                     // Get notified when the device was successfully connected to or about to be closed
                     EventHandlerForDevice.Current.OnDeviceConnected = OnDeviceConnected;
-                    EventHandlerForDevice.Current.OnDeviceClose = OnDeviceClosing;
 
                     // It is important that the FromIdAsync call is made on the UI thread because the consent prompt, when present,
                     // can only be displayed on the UI thread. Since this method is invoked by the UI, we are already in the UI thread.
-                    Boolean openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
+                    bool openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
 
                     // Disable connect button if we connected to the device
                     UpdateConnectDisconnectButtonsAndList(!openSuccess);
 
                     if (openSuccess)
                     {
-                        selected.stackPanelMALT.Visibility = Visibility.Collapsed;
-                        connectDevices.Visibility = Visibility.Collapsed;
-                        //initialize();
-                        selected.stackPanelMALTData.Visibility = Visibility.Visible;
+                        stackPanelMALTConnection.Visibility = Visibility.Collapsed;
+                        selected.StackPanelMALTData.Visibility = Visibility.Visible;
                         PeriodicTimer.CreateScenario1();
                     }
                 }
@@ -622,74 +626,74 @@ namespace SensorExplorer
                 SensorDisplay selected = _sensorDisplay[Sensor.currentId];
                 if (selected._sensorType == Sensor.ACCELEROMETER)
                 {
-                    Sensor.AccelerometerStandardList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.AccelerometerStandardList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ACCELEROMETERLINEAR)
                 {
-                    Sensor.AccelerometerLinearList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.AccelerometerLinearList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ACCELEROMETERGRAVITY)
                 {
-                    Sensor.AccelerometerGravityList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.AccelerometerGravityList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 // ActivitySensor doesn't have ReportInterval
                 else if (selected._sensorType == Sensor.ALTIMETER)
                 {
-                    Sensor.Altimeter.ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.Altimeter.ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.BAROMETER)
                 {
-                    Sensor.BarometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.BarometerList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.COMPASS)
                 {
-                    Sensor.CompassList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.CompassList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.GYROMETER)
                 {
-                    Sensor.GyrometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.GyrometerList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.INCLINOMETER)
                 {
-                    Sensor.InclinometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.InclinometerList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.LIGHTSENSOR)
                 {
-                    Sensor.LightSensorList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.LightSensorList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.MAGNETOMETER)
                 {
-                    Sensor.MagnetometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.MagnetometerList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONSENSOR)
                 {
-                    Sensor.OrientationAbsoluteList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.OrientationAbsoluteList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONGEOMAGNETIC)
                 {
-                    Sensor.OrientationGeomagneticList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.OrientationGeomagneticList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.ORIENTATIONRELATIVE)
                 {
-                    Sensor.OrientationRelativeList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.OrientationRelativeList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 else if (selected._sensorType == Sensor.PEDOMETER)
                 {
-                    Sensor.PedometerList[selected._index].ReportInterval = uint.Parse(selected.textboxReportInterval.Text);
-                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.textboxReportInterval.Text));
+                    Sensor.PedometerList[selected._index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
+                    _sensorData[Sensor.currentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
                 }
                 //ProximitySensor doesn't have ReportInterval
                 //SimpleOrientationSensor doesn't have ReportInterval               
@@ -713,8 +717,8 @@ namespace SensorExplorer
 
         private void StartHandlingAppEvents()
         {
-            appSuspendEventHandler = new SuspendingEventHandler(this.OnAppSuspension);
-            appResumeEventHandler = new EventHandler<Object>(this.OnAppResume);
+            appSuspendEventHandler = new SuspendingEventHandler(OnAppSuspension);
+            appResumeEventHandler = new EventHandler<object>(OnAppResume);
 
             // This event is raised when the app is exited and when the app is suspended
             Application.Current.Suspending += appSuspendEventHandler;
@@ -733,9 +737,9 @@ namespace SensorExplorer
         /// </summary>
         private void AddDeviceWatcher(DeviceWatcher deviceWatcher, string deviceSelector)
         {
-            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(this.OnDeviceAdded);
-            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(this.OnDeviceRemoved);
-            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>(this.OnDeviceEnumerationComplete);
+            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(OnDeviceAdded);
+            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(OnDeviceRemoved);
+            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, object>(OnDeviceEnumerationComplete);
             mapDeviceWatchersToDeviceSelector.Add(deviceWatcher, deviceSelector);
         }
 
@@ -794,7 +798,7 @@ namespace SensorExplorer
                 match = new DeviceListEntry(deviceInformation, deviceSelector);
 
                 // Add the new element to the end of the list of devices
-                selected.listOfDevices.Add(match);
+                selected.ListOfDevices.Add(match);
             }
         }
 
@@ -805,14 +809,17 @@ namespace SensorExplorer
             // Removes the device entry from the interal list; therefore the UI
             var deviceEntry = FindDevice(deviceId);
 
-            selected.listOfDevices.Remove(deviceEntry);
+            selected.ListOfDevices.Remove(deviceEntry);
         }
 
         private void ClearDeviceEntries()
         {
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
-            selected.listOfDevices.Clear();
+            if (selected.ListOfDevices != null)
+            {
+                selected.ListOfDevices.Clear();
+            }
         }
 
         /// <summary>
@@ -824,7 +831,7 @@ namespace SensorExplorer
 
             if (deviceId != null)
             {
-                foreach (DeviceListEntry entry in selected.listOfDevices)
+                foreach (DeviceListEntry entry in selected.ListOfDevices)
                 {
                     if (entry.DeviceInformation.Id == deviceId)
                     {
@@ -856,7 +863,7 @@ namespace SensorExplorer
         /// <summary>
         /// See OnAppSuspension for why we are starting the device watchers again
         /// </summary>
-        private void OnAppResume(Object sender, Object args)
+        private void OnAppResume(object sender, object args)
         {
             if (watchersSuspended)
             {
@@ -892,7 +899,7 @@ namespace SensorExplorer
         /// <summary>
         /// Notify the UI whether or not we are connected to a device
         /// </summary>
-        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, Object args)
+        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, object args)
         {
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
@@ -905,7 +912,6 @@ namespace SensorExplorer
                 if (EventHandlerForDevice.Current.IsDeviceConnected)
                 {
                     SelectDeviceInList(EventHandlerForDevice.Current.DeviceInformation.Id);
-                    selected.disconnectFromDeviceButton.Content = buttonNameDisconnectFromDevice;
 
                     if (EventHandlerForDevice.Current.Device.PortName != "")
                     {
@@ -920,7 +926,6 @@ namespace SensorExplorer
                 else if (EventHandlerForDevice.Current.IsEnabledAutoReconnect && EventHandlerForDevice.Current.DeviceInformation != null)
                 {
                     // We will be reconnecting to a device
-                    selected.disconnectFromDeviceButton.Content = buttonNameDisableReconnectToDevice;
                     rootPage.NotifyUser("Waiting to reconnect to device -  " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
                 }
                 else
@@ -942,7 +947,6 @@ namespace SensorExplorer
             if (isAllDevicesEnumerated)
             {
                 SelectDeviceInList(EventHandlerForDevice.Current.DeviceInformation.Id);
-                selected.disconnectFromDeviceButton.Content = buttonNameDisconnectFromDevice;
             }
 
             if (EventHandlerForDevice.Current.Device.PortName != "")
@@ -957,24 +961,6 @@ namespace SensorExplorer
         }
 
         /// <summary>
-        /// The device was closed. If we will autoreconnect to the device, reflect that in the UI
-        /// </summary>
-        private async void OnDeviceClosing(EventHandlerForDevice sender, DeviceInformation deviceInformation)
-        {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
-            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
-            {
-                // We were connected to the device that was unplugged, so change the "Disconnect from device" button
-                // to "Do not reconnect to device"
-                if (selected.disconnectFromDeviceButton.IsEnabled && EventHandlerForDevice.Current.IsEnabledAutoReconnect)
-                {
-                    selected.disconnectFromDeviceButton.Content = buttonNameDisableReconnectToDevice;
-                }
-            }));
-        }
-
-        /// <summary>
         /// Selects the item in the UI's listbox that corresponds to the provided device id. If there are no
         /// matches, we will deselect anything that is selected.
         /// </summary>
@@ -985,9 +971,9 @@ namespace SensorExplorer
             // Don't select anything by default.
             connectDevices.SelectedIndex = -1;
 
-            for (int deviceListIndex = 0; deviceListIndex < selected.listOfDevices.Count; deviceListIndex++)
+            for (int deviceListIndex = 0; deviceListIndex < selected.ListOfDevices.Count; deviceListIndex++)
             {
-                if (selected.listOfDevices[deviceListIndex].DeviceInformation.Id == deviceIdToSelect)
+                if (selected.ListOfDevices[deviceListIndex].DeviceInformation.Id == deviceIdToSelect)
                 {
                     connectDevices.SelectedIndex = deviceListIndex;
                     break;
@@ -998,38 +984,41 @@ namespace SensorExplorer
         /// <summary>
         /// When ButtonConnectToDevice is disabled, ConnectDevices list will also be disabled.
         /// </summary>
-        private void UpdateConnectDisconnectButtonsAndList(Boolean enableConnectButton)
+        private void UpdateConnectDisconnectButtonsAndList(bool enableConnectButton)
         {
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
-            selected.connectToDeviceButton.IsEnabled = enableConnectButton;
-            selected.disconnectFromDeviceButton.IsEnabled = !selected.connectToDeviceButton.IsEnabled;
-            connectDevices.IsEnabled = selected.connectToDeviceButton.IsEnabled;
+            ConnectToDeviceButton.IsEnabled = enableConnectButton;
+            connectDevices.IsEnabled = ConnectToDeviceButton.IsEnabled;
         }
 
         public async void GetMALTData()
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
-            await WriteCommandAsync("READCOLORSENSOR 1\n");
-            string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
-            if (result != null && result.Length == 5)
+            try
             {
-                selected.textBlockMALTPropertyValue1[3].Text = result[1];
-                selected.textBlockMALTPropertyValue1[4].Text = result[2];
-                selected.textBlockMALTPropertyValue1[5].Text = result[3];
-                selected.textBlockMALTPropertyValue1[6].Text = result[4];
-            }
+                SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
-            await WriteCommandAsync("READCOLORSENSOR 2\n");
-            string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
-            if (result2 != null && result.Length == 5)
-            {
-                selected.textBlockMALTPropertyValue2[3].Text = result2[1];
-                selected.textBlockMALTPropertyValue2[4].Text = result2[2];
-                selected.textBlockMALTPropertyValue2[5].Text = result2[3];
-                selected.textBlockMALTPropertyValue2[6].Text = result2[4];
+                await WriteCommandAsync("READCOLORSENSOR 1\n");
+                string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
+                if (result != null && result.Length == 5)
+                {
+                    selected.TextBlockMALTPropertyValue1[3].Text = result[1];
+                    selected.TextBlockMALTPropertyValue1[4].Text = result[2];
+                    selected.TextBlockMALTPropertyValue1[5].Text = result[3];
+                    selected.TextBlockMALTPropertyValue1[6].Text = result[4];
+                }
+
+                await WriteCommandAsync("READCOLORSENSOR 2\n");
+                string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
+                if (result2 != null && result.Length == 5)
+                {
+                    selected.TextBlockMALTPropertyValue2[3].Text = result2[1];
+                    selected.TextBlockMALTPropertyValue2[4].Text = result2[2];
+                    selected.TextBlockMALTPropertyValue2[5].Text = result2[3];
+                    selected.TextBlockMALTPropertyValue2[6].Text = result2[4];
+                }
             }
+            catch { }
         }
 
         private async Task WriteCommandAsync(string command)
@@ -1065,24 +1054,65 @@ namespace SensorExplorer
 
         private async Task<string> ReadLines(int numLines)
         {
-            int newLines = 0;
-            string data = string.Empty;
-
-            DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
-            while (newLines != numLines)
+            try
             {
-                uint x = await DataReaderObject.LoadAsync(1);
-                string s = DataReaderObject.ReadString(1);
-                data += s;
-                if (s == "\n")
+                int newLines = 0;
+                string data = string.Empty;
+
+                DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
+                while (newLines != numLines)
                 {
-                    newLines++;
+                    uint x = await DataReaderObject.LoadAsync(1);
+                    string s = DataReaderObject.ReadString(1);
+                    data += s;
+                    if (s == "\n")
+                    {
+                        newLines++;
+                    }
+                }
+                DataReaderObject.DetachStream();
+                DataReaderObject = null;
+
+                return data;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public void HideMALTButton(object sender, RoutedEventArgs e)
+        {
+            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+
+            selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
+            selected.MALTButton.Visibility = Visibility.Visible;
+            DisconnectFromDeviceClick(null, null);
+        }
+
+        public void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
+        {
+            PeriodicTimer.Cancel3();
+
+            var selection = connectDevices.SelectedItems;
+            DeviceListEntry entry = null;
+
+            // Prevent auto reconnect because we are voluntarily closing it
+            // Re-enable the ConnectDevice list and ConnectToDevice button if the connected/opened device was removed.
+            EventHandlerForDevice.Current.IsEnabledAutoReconnect = false;
+
+            if (selection.Count > 0)
+            {
+                var obj = selection[0];
+                entry = (DeviceListEntry)obj;
+
+                if (entry != null)
+                {
+                    EventHandlerForDevice.Current.CloseDevice();
                 }
             }
-            DataReaderObject.DetachStream();
-            DataReaderObject = null;
 
-            return data;
+            UpdateConnectDisconnectButtonsAndList(true);
         }
     }
 }

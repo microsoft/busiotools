@@ -396,6 +396,7 @@ namespace SensorExplorer
 
             selected.MALTButton.Visibility = Visibility.Collapsed;
             stackPanelMALTConnection.Visibility = Visibility.Visible;
+            selected.stackPanelProperty.Visibility = Visibility.Collapsed;
 
             selected.ListOfDevices = new ObservableCollection<DeviceListEntry>();
             mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
@@ -998,24 +999,32 @@ namespace SensorExplorer
             {
                 SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
+                await WriteCommandAsync("READALSSENSOR 1\n");
+                double ambientLux = await ReadLightSensor("READALSSENSOR 1\n");
+                selected.TextBlockMALTPropertyValue1[0].Text = ((int)ambientLux).ToString();
+
                 await WriteCommandAsync("READCOLORSENSOR 1\n");
                 string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
                 if (result != null && result.Length == 5)
                 {
-                    selected.TextBlockMALTPropertyValue1[3].Text = result[1];
-                    selected.TextBlockMALTPropertyValue1[4].Text = result[2];
-                    selected.TextBlockMALTPropertyValue1[5].Text = result[3];
-                    selected.TextBlockMALTPropertyValue1[6].Text = result[4];
+                    selected.TextBlockMALTPropertyValue1[1].Text = result[1];
+                    selected.TextBlockMALTPropertyValue1[2].Text = result[2];
+                    selected.TextBlockMALTPropertyValue1[3].Text = result[3];
+                    selected.TextBlockMALTPropertyValue1[4].Text = result[4];
                 }
+
+                await WriteCommandAsync("READALSSENSOR 2\n");
+                double screenLux = await ReadLightSensor("READALSSENSOR 2\n");
+                selected.TextBlockMALTPropertyValue2[0].Text = ((int)screenLux).ToString();
 
                 await WriteCommandAsync("READCOLORSENSOR 2\n");
                 string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
                 if (result2 != null && result.Length == 5)
                 {
-                    selected.TextBlockMALTPropertyValue2[3].Text = result2[1];
-                    selected.TextBlockMALTPropertyValue2[4].Text = result2[2];
-                    selected.TextBlockMALTPropertyValue2[5].Text = result2[3];
-                    selected.TextBlockMALTPropertyValue2[6].Text = result2[4];
+                    selected.TextBlockMALTPropertyValue2[1].Text = result2[1];
+                    selected.TextBlockMALTPropertyValue2[2].Text = result2[2];
+                    selected.TextBlockMALTPropertyValue2[3].Text = result2[3];
+                    selected.TextBlockMALTPropertyValue2[4].Text = result2[4];
                 }
             }
             catch { }
@@ -1083,11 +1092,13 @@ namespace SensorExplorer
 
         public void HideMALTButton(object sender, RoutedEventArgs e)
         {
+            DisconnectFromDeviceClick(null, null);
+
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
             selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
             selected.MALTButton.Visibility = Visibility.Visible;
-            DisconnectFromDeviceClick(null, null);
+            selected.stackPanelProperty.Visibility = Visibility.Visible;
         }
 
         public void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
@@ -1113,6 +1124,29 @@ namespace SensorExplorer
             }
 
             UpdateConnectDisconnectButtonsAndList(true);
+        }
+
+        private async Task<double> ReadLightSensor(string command)
+        {
+            try
+            {
+                string data = await ReadLines(3);
+                data = data.Replace("\n", "");
+                string[] delim = new string[1] { "\r" };
+                string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+                //OutputError(command, split[0]);
+
+                return RawToLux(Convert.ToInt32(split[2]), Convert.ToInt32(split[1]));
+            }
+            catch { return -1; }
+        }
+
+        private double RawToLux(int result, int exponent)
+        {
+            // Formula to convert raw sensor output to lux is defined in the OPT 3001 spec.
+            // If you are using a different part, this calculation will be different.
+            double lsbSize = .01 * (Math.Pow(2, exponent));
+            return lsbSize * result;
         }
     }
 }

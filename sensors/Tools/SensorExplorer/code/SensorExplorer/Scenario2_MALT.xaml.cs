@@ -645,6 +645,10 @@ namespace SensorExplorer
 
         public async void GetMALTData()
         {
+            await WriteCommandAsync("READALSSENSOR 1\n");
+            double ambientLux = await ReadLightSensor("READALSSENSOR 1\n");
+            textblockLux2.Text = ((int)ambientLux).ToString();
+
             await WriteCommandAsync("READCOLORSENSOR 1\n");
             string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
             if (result != null && result.Length == 5)
@@ -663,6 +667,10 @@ namespace SensorExplorer
                 textblockChromaticityY2.Text = xyY[2].ToString();
                 */
             }
+
+            await WriteCommandAsync("READALSSENSOR 2\n");
+            double screenLux = await ReadLightSensor("READALSSENSOR 2\n");
+            textblockLux3.Text = ((int)screenLux).ToString();
 
             await WriteCommandAsync("READCOLORSENSOR 2\n");
             string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
@@ -701,6 +709,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
+                textblockLux.Text = reading.IlluminanceInLux.ToString();
                 textblockChromaticityx.Text = chromaticity_x.ToString();
                 textblockChromaticityy.Text = chromaticity_y.ToString();
             });

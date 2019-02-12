@@ -37,7 +37,7 @@ namespace SensorExplorer
         {
             if (_periodicTimer2 == null)
             {
-                _periodicTimer2 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback2), new TimeSpan(0, 0, 1));
+                _periodicTimer2 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback2), new TimeSpan(0, 0, 2));
             }
         }
 
@@ -45,7 +45,7 @@ namespace SensorExplorer
         {
             if (_periodicTimer3 == null)
             {
-                _periodicTimer3 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback3), new TimeSpan(0, 0, 1));
+                _periodicTimer3 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback3), new TimeSpan(0, 0, 2));
             }
         }
 

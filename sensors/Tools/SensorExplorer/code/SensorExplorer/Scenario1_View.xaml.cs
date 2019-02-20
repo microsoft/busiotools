@@ -49,6 +49,7 @@ namespace SensorExplorer
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
         private List<string> conversionValues = new List<string> { "100", "800" };
+        private bool cancel = false;
 
         public Scenario1View()
         {
@@ -79,7 +80,7 @@ namespace SensorExplorer
             {
                 if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                 {
-                    DisconnectFromDeviceClick(null, null);
+                    //DisconnectFromDeviceClick(null, null);
                 }
                 Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
             }
@@ -392,6 +393,8 @@ namespace SensorExplorer
 
         public void MALTButton(object sender, RoutedEventArgs e)
         {
+            cancel = false;
+
             SensorDisplay selected = _sensorDisplay[Sensor.currentId];
 
             selected.MALTButton.Visibility = Visibility.Collapsed;
@@ -1069,7 +1072,7 @@ namespace SensorExplorer
                 string data = string.Empty;
 
                 DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
-                while (newLines != numLines)
+                while (newLines != numLines && !cancel)
                 {
                     uint x = await DataReaderObject.LoadAsync(1);
                     string s = DataReaderObject.ReadString(1);
@@ -1103,7 +1106,16 @@ namespace SensorExplorer
 
         public void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
+            cancel = true;
+
             PeriodicTimer.Cancel3();
+
+            try
+            {
+                DataWriterObject.Dispose();
+                DataReaderObject.Dispose();
+            }
+            catch { }
 
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-
 using Windows.UI.Core;
 
 namespace SensorExplorer
@@ -33,26 +33,26 @@ namespace SensorExplorer
 
         #region DEO Callbacks   
 
-        private void Deo_DisplayEnhancementOverrideCapabilitiesChanged(DisplayEnhancementOverride sender, DisplayEnhancementOverrideCapabilitiesChangedEventArgs args)
+        private async void Deo_DisplayEnhancementOverrideCapabilitiesChanged(DisplayEnhancementOverride sender, DisplayEnhancementOverrideCapabilitiesChangedEventArgs args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrightnessPercentageSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessControlSupported ? "Yes" : "No";
                 BrightnessNitsSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessNitsControlSupported ? "Yes" : "No";
             });
         }
 
-        private void Deo_CanOverrideChanged(DisplayEnhancementOverride sender, object args)
+        private async void Deo_CanOverrideChanged(DisplayEnhancementOverride sender, object args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 CanOverrideActiveStateTextBlock.Text = sender.CanOverride ? "Yes" : "No";
             });
         }
 
-        private void Deo_IsOverrideActiveChanged(DisplayEnhancementOverride sender, object args)
+        private async void Deo_IsOverrideActiveChanged(DisplayEnhancementOverride sender, object args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 IsOverrideActiveStateTextBlock.Text = sender.IsOverrideActive ? "Yes" : "No";
             });
@@ -62,9 +62,9 @@ namespace SensorExplorer
 
         #region Brightness Settings
 
-        private void SetBrightnessPercentage(double level)
+        private async void SetBrightnessPercentage(double level)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrightnessSettingStateTextBlock.Text = level + "%";
             });
@@ -73,9 +73,9 @@ namespace SensorExplorer
             CheckOverrideToggleEnableState();
         }
 
-        private void SetBrightnessNits(float nits)
+        private async void SetBrightnessNits(float nits)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrightnessSettingStateTextBlock.Text = nits + " nits";
             });
@@ -84,7 +84,7 @@ namespace SensorExplorer
             CheckOverrideToggleEnableState();
         }
 
-        private void SetBrightnessScenario(DisplayBrightnessOverrideScenario scenario)
+        private async void SetBrightnessScenario(DisplayBrightnessOverrideScenario scenario)
         {
             string scenarioText = "";
             switch (scenario)
@@ -100,7 +100,7 @@ namespace SensorExplorer
                     break;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrightnessSettingStateTextBlock.Text = scenarioText;
             });
@@ -109,9 +109,9 @@ namespace SensorExplorer
             CheckOverrideToggleEnableState();
         }
 
-        private void SetNoBrightnessSettings()
+        private async void SetNoBrightnessSettings()
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrightnessSettingStateTextBlock.Text = "None";
             });
@@ -124,7 +124,7 @@ namespace SensorExplorer
 
         #region Color Settings
 
-        private void SetColorScenario(DisplayColorOverrideScenario scenario)
+        private async void SetColorScenario(DisplayColorOverrideScenario scenario)
         {
             string scenarioText = "";
             switch (scenario)
@@ -134,7 +134,7 @@ namespace SensorExplorer
                     break;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ColorSettingStateTextBlock.Text = scenarioText;
             });
@@ -143,9 +143,9 @@ namespace SensorExplorer
             CheckOverrideToggleEnableState();
         }
 
-        private void SetNoColorScenario()
+        private async void SetNoColorScenario()
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ColorSettingStateTextBlock.Text = "None";
             });
@@ -187,7 +187,6 @@ namespace SensorExplorer
 
         #region Color Controls
 
-
         private void AccurateColorScenarioButton_Click(object sender, RoutedEventArgs e)
         {
             SetColorScenario(DisplayColorOverrideScenario.Accurate);
@@ -202,7 +201,7 @@ namespace SensorExplorer
 
         #region General Controls
 
-        private void CheckOverrideToggleEnableState()
+        private async void CheckOverrideToggleEnableState()
         {
             string debuggerText = "";
 
@@ -217,7 +216,7 @@ namespace SensorExplorer
                 OverrideToggle.IsEnabled = false;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 DebugTextBlock.Text = debuggerText;
             });

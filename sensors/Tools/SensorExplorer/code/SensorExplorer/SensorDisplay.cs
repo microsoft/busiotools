@@ -50,7 +50,6 @@ namespace SensorExplorer
         //MALT
         public Button MALTButton = new Button() { Content = "Include MALT", Height = 50, Width = 200, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness() { Top = 50 }, FontSize = 20 };
         public StackPanel StackPanelMALTData = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 50 }, Background = new SolidColorBrush(Colors.AliceBlue), Visibility = Visibility.Collapsed };
-        public ObservableCollection<DeviceListEntry> ListOfDevices;
         public TextBlock[] TextBlockMALTPropertyValue1;
         public TextBlock[] TextBlockMALTPropertyValue2;
 

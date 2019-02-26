@@ -50,6 +50,7 @@ namespace SensorExplorer
         private DataWriter DataWriterObject = null;
         private List<string> conversionValues = new List<string> { "100", "800" };
         private bool cancel = false;
+        private ObservableCollection<DeviceListEntry> listOfDevices = new ObservableCollection<DeviceListEntry>();
 
         public Scenario1View()
         {
@@ -72,6 +73,45 @@ namespace SensorExplorer
             var resourceLoader = ResourceLoader.GetForCurrentView();
 
             saveFileButton.Click += SaveFileButtonClick;
+
+            // For MALT
+            mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
+            watchersStarted = false;
+            watchersSuspended = false;
+            isAllDevicesEnumerated = false;
+        }
+
+        /// <summary>
+        /// Invoked when this page is about to be displayed in a Frame.
+        /// Create the DeviceWatcher objects when the user navigates to this page so the UI list of devices is populated.
+        /// </summary>
+        protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
+        {
+            // If we are connected to the device or planning to reconnect, we should disable the list of devices
+            // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
+            if (EventHandlerForDevice.Current.IsDeviceConnected
+                || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
+                && EventHandlerForDevice.Current.DeviceInformation != null))
+            {
+                UpdateConnectDisconnectButtonsAndList(false);
+
+                // These notifications will occur if we are waiting to reconnect to device when we start the page
+                EventHandlerForDevice.Current.OnDeviceConnected = OnDeviceConnected;
+            }
+            else
+            {
+                UpdateConnectDisconnectButtonsAndList(true);
+            }
+
+            // Begin watching out for events
+            StartHandlingAppEvents();
+
+            // Initialize the desired device watchers so that we can watch for when devices are connected/removed
+            InitializeDeviceWatchers();
+            StartDeviceWatchers();
+
+            DeviceListSource.Source = listOfDevices;
+
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -80,11 +120,14 @@ namespace SensorExplorer
             {
                 if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                 {
-                    //DisconnectFromDeviceClick(null, null);
+                    DisconnectFromDeviceClick(null, null);
                 }
+
                 Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
             }
+
             rootPage.NotifyUser("", NotifyType.StatusMessage);
+            StopHandlingAppEvents();
         }
 
         private async void EnumerateSensors()
@@ -364,15 +407,22 @@ namespace SensorExplorer
                         Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);   
                         
                     }
+
                     Sensor.currentId = i;   // sensor being displayed
                     if (i != PivotSensor.Items.Count - 1)
                     {
                         _sensorDisplay[i].EnableSensor();
                     }
+                    
                     (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
+                    SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+                    selected.stackPanelProperty.Visibility = Visibility.Visible;
+
                     if ((PivotSensor.Items[i] as PivotItem).Header.ToString().Contains("LightSensor"))
                     {
                         saveFileButton.IsEnabled = true;
+                        selected.MALTButton.Visibility = Visibility.Visible;
+                        selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
@@ -400,37 +450,6 @@ namespace SensorExplorer
             selected.MALTButton.Visibility = Visibility.Collapsed;
             stackPanelMALTConnection.Visibility = Visibility.Visible;
             selected.stackPanelProperty.Visibility = Visibility.Collapsed;
-
-            selected.ListOfDevices = new ObservableCollection<DeviceListEntry>();
-            mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
-            watchersStarted = false;
-            watchersSuspended = false;
-            isAllDevicesEnumerated = false;
-
-            // If we are connected to the device or planning to reconnect, we should disable the list of devices
-            // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
-            if (EventHandlerForDevice.Current.IsDeviceConnected
-                || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
-                && EventHandlerForDevice.Current.DeviceInformation != null))
-            {
-                UpdateConnectDisconnectButtonsAndList(false);
-
-                // These notifications will occur if we are waiting to reconnect to device when we start the page
-                EventHandlerForDevice.Current.OnDeviceConnected = this.OnDeviceConnected;
-            }
-            else
-            {
-                UpdateConnectDisconnectButtonsAndList(true);
-            }
-
-            // Begin watching out for events
-            StartHandlingAppEvents();
-
-            // Initialize the desired device watchers so that we can watch for when devices are connected/removed
-            InitializeDeviceWatchers();
-            StartDeviceWatchers();
-
-            DeviceListSource.Source = selected.ListOfDevices;
         }
 
         public async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
@@ -770,15 +789,6 @@ namespace SensorExplorer
         /// </summary>
         private void StopDeviceWatchers()
         {
-            // Stop all device watchers
-            foreach (DeviceWatcher deviceWatcher in mapDeviceWatchersToDeviceSelector.Keys)
-            {
-                if ((deviceWatcher.Status == DeviceWatcherStatus.Started) || (deviceWatcher.Status == DeviceWatcherStatus.EnumerationCompleted))
-                {
-                    deviceWatcher.Stop();
-                }
-            }
-
             // Clear the list of devices so we don't have potentially disconnected devices around
             ClearDeviceEntries();
 
@@ -790,8 +800,6 @@ namespace SensorExplorer
         /// </summary>
         private void AddDeviceToList(DeviceInformation deviceInformation, string deviceSelector)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             // search the device list for a device with a matching interface ID
             var match = FindDevice(deviceInformation.Id);
 
@@ -802,27 +810,23 @@ namespace SensorExplorer
                 match = new DeviceListEntry(deviceInformation, deviceSelector);
 
                 // Add the new element to the end of the list of devices
-                selected.ListOfDevices.Add(match);
+                listOfDevices.Add(match);
             }
         }
 
         private void RemoveDeviceFromList(string deviceId)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             // Removes the device entry from the interal list; therefore the UI
             var deviceEntry = FindDevice(deviceId);
 
-            selected.ListOfDevices.Remove(deviceEntry);
+            listOfDevices.Remove(deviceEntry);
         }
 
         private void ClearDeviceEntries()
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
-            if (selected.ListOfDevices != null)
+            if (listOfDevices != null)
             {
-                selected.ListOfDevices.Clear();
+                listOfDevices.Clear();
             }
         }
 
@@ -831,11 +835,9 @@ namespace SensorExplorer
         /// </summary>
         private DeviceListEntry FindDevice(string deviceId)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             if (deviceId != null)
             {
-                foreach (DeviceListEntry entry in selected.ListOfDevices)
+                foreach (DeviceListEntry entry in listOfDevices)
                 {
                     if (entry.DeviceInformation.Id == deviceId)
                     {
@@ -851,7 +853,7 @@ namespace SensorExplorer
         /// We must stop the DeviceWatchers because device watchers will continue to raise events even if
         /// the app is in suspension, which is not desired (drains battery). We resume the device watcher once the app resumes again.
         /// </summary>
-        private void OnAppSuspension(Object sender, SuspendingEventArgs args)
+        private void OnAppSuspension(object sender, SuspendingEventArgs args)
         {
             if (watchersStarted)
             {
@@ -905,8 +907,6 @@ namespace SensorExplorer
         /// </summary>
         private async void OnDeviceEnumerationComplete(DeviceWatcher sender, object args)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
             {
                 isAllDevicesEnumerated = true;
@@ -970,14 +970,12 @@ namespace SensorExplorer
         /// </summary>
         private void SelectDeviceInList(string deviceIdToSelect)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             // Don't select anything by default.
             connectDevices.SelectedIndex = -1;
 
-            for (int deviceListIndex = 0; deviceListIndex < selected.ListOfDevices.Count; deviceListIndex++)
+            for (int deviceListIndex = 0; deviceListIndex < listOfDevices.Count; deviceListIndex++)
             {
-                if (selected.ListOfDevices[deviceListIndex].DeviceInformation.Id == deviceIdToSelect)
+                if (listOfDevices[deviceListIndex].DeviceInformation.Id == deviceIdToSelect)
                 {
                     connectDevices.SelectedIndex = deviceListIndex;
                     break;
@@ -990,8 +988,6 @@ namespace SensorExplorer
         /// </summary>
         private void UpdateConnectDisconnectButtonsAndList(bool enableConnectButton)
         {
-            SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-
             ConnectToDeviceButton.IsEnabled = enableConnectButton;
             connectDevices.IsEnabled = ConnectToDeviceButton.IsEnabled;
         }

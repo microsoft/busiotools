@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Resources;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
@@ -88,7 +87,8 @@ namespace SensorExplorer
         private TextBlock[] textBlockPropertyName;
         private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockPropertyValue;
-        public StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
+        private StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
+        private ScrollViewer scrollViewerProperty = new ScrollViewer() { MaxHeight = 280, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
         private Canvas canvasSensor = new Canvas();
 
         // MALT
@@ -113,6 +113,8 @@ namespace SensorExplorer
             _index = index;
             _totalIndex = totalIndex;
             _name = name;
+
+            scrollViewerProperty.Content = stackPanelProperty;
 
             string[] vAxisLabel = new string[scale + 1];
 
@@ -235,10 +237,10 @@ namespace SensorExplorer
                 stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
             }
 
+            stackPanelBottom.Children.Add(scrollViewerProperty);
+
             if (sensorType == Sensor.LIGHTSENSOR)
             {
-                stackPanelBottom.Children.Add(stackPanelProperty);
-
                 stackPanelBottomData.Children.Add(stackPanelDataName);
                 stackPanelBottomData.Children.Add(stackPanelValue);
                 stackPanelBottomData.Children.Add(stackPanelMinValue);
@@ -311,7 +313,6 @@ namespace SensorExplorer
             }
             else
             {
-                stackPanelBottom.Children.Add(stackPanelProperty);
                 stackPanelBottom.Children.Add(stackPanelDataName);
                 stackPanelBottom.Children.Add(stackPanelValue);
                 stackPanelBottom.Children.Add(stackPanelMinValue);

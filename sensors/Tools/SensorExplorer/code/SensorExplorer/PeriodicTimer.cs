@@ -155,7 +155,8 @@ namespace SensorExplorer
 
                         // Update UI
                         sensorDisplay[i].UpdateProperty(sensorData[i]._deviceId, sensorData[i]._deviceName, sensorData[i]._reportInterval, sensorData[i]._minReportInterval, sensorData[i]._reportLatency,
-                                                        sensorData[i]._category, sensorData[i]._persistentUniqueId, sensorData[i]._manufacturer, sensorData[i]._model, sensorData[i]._connectionType);
+                                                        sensorData[i]._category, sensorData[i]._persistentUniqueId, sensorData[i]._manufacturer, sensorData[i]._model, sensorData[i]._connectionType,
+                                                        sensorData[i]._isPrimary, sensorData[i]._vendorDefinedSubType, sensorData[i]._state);
                     }
                 }
             });

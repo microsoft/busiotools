@@ -43,6 +43,9 @@ namespace SensorExplorer
         public string _manufacturer;
         public string _model;
         public string _connectionType;
+        public string _isPrimary;
+        public string _vendorDefinedSubType;
+        public string _state;
 
         public SensorData(int sensorType, int count, string name, string[] property)
         {
@@ -54,8 +57,8 @@ namespace SensorExplorer
             _minValue = new double[_property.Length];
         }
 
-        public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
-                                string category, string persistentUniqueId, string manufacturer, string model, string connectionType)
+        public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency, string category, 
+                                string persistentUniqueId, string manufacturer, string model, string connectionType, string isPrimary, string vendorDefinedSubType, string state)
         {
             if (_defaultReportInterval == 0)
             {
@@ -72,6 +75,9 @@ namespace SensorExplorer
             _manufacturer = manufacturer;
             _model = model;
             _connectionType = connectionType;
+            _isPrimary = isPrimary;
+            _vendorDefinedSubType = vendorDefinedSubType;
+            _state = state;
         }
 
         public void UpdateReportInterval(uint reportInterval)

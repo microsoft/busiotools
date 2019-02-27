@@ -54,7 +54,7 @@ namespace SensorExplorer
 
         private int _totalIndex;
         private string _name;
-        private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "Device ID" };
+        private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", " Vendor Defined Sub-Type", "State", "Device ID" };
 
         private StackPanel stackPanelSwitch = new StackPanel();
         private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
@@ -87,7 +87,7 @@ namespace SensorExplorer
         private TextBlock[] textBlockPropertyName;
         private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockPropertyValue;
-        private StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
+        public StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { MaxHeight = 280, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
         private Canvas canvasSensor = new Canvas();
 
@@ -436,7 +436,8 @@ namespace SensorExplorer
         }
 
         public void UpdateProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
-                                   string category, string persistentUniqueId, string manufacturer, string model, string connectionType)
+                                   string category, string persistentUniqueId, string manufacturer, string model, string connectionType,
+                                   string isPrimary, string vendorDefinedSubType, string state)
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
@@ -446,7 +447,10 @@ namespace SensorExplorer
             textBlockPropertyValue[4].Text = "  " + manufacturer;
             textBlockPropertyValue[5].Text = "  " + model;
             textBlockPropertyValue[6].Text = "  " + connectionType;
-            textBlockPropertyValue[7].Text = $"{deviceId.Replace("{", "\r\n  {")}";
+            textBlockPropertyValue[7].Text = "  " + isPrimary;
+            textBlockPropertyValue[8].Text = "  " + vendorDefinedSubType;
+            textBlockPropertyValue[9].Text = "  " + state;
+            textBlockPropertyValue[10].Text = $"{deviceId.Replace("{", "\r\n  {")}";
         }
 
         public void UpdateText(SensorData sensorData)
@@ -457,7 +461,8 @@ namespace SensorExplorer
                 if (sensorData._count == Sensor.currentId)
                 {
                     UpdateProperty(sensorData._deviceId, sensorData._deviceName, sensorData._reportInterval, sensorData._minReportInterval, sensorData._reportLatency,
-                                   sensorData._category, sensorData._persistentUniqueId, sensorData._manufacturer, sensorData._model, sensorData._connectionType);
+                                   sensorData._category, sensorData._persistentUniqueId, sensorData._manufacturer, sensorData._model, sensorData._connectionType,
+                                   sensorData._isPrimary, sensorData._vendorDefinedSubType, sensorData._state);
                 }
 
                 if (StackPanelSensor.Visibility == Visibility.Visible)

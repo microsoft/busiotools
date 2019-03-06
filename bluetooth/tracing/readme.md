@@ -23,7 +23,7 @@ From an adminstrative PowerShell session:
 From an adminstrative PowerShell session:
     
     wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -UseBasicParsing -outfile .\BluetoothStack.wprp
-    wpr.exe -boottrace BluetoothStack.wprp!BluetoothStack -filemode
+    wpr.exe -boottrace -addboot BluetoothStack.wprp!BluetoothStack -filemode
     shutdown -r -f -t 0
   
 *Reproduce the issue*
@@ -32,7 +32,7 @@ From an adminstrative PowerShell session:
 
 From an adminstrative PowerShell session:
    
-    wpr.exe -stop BthTracing.etl
+    wpr.exe -boottrace -stopboot BthTracing.etl
 
 ## Verbose/Non-verbose logs
 The above collects Verbose logs by default. If you don't need verbose logs, replace "BluetoothStack.wprp!BluetoothStack" with "BluetoothStack.wprp!BluetoothStack.Light" in the above commands.

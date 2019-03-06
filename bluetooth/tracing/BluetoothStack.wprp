@@ -688,13 +688,13 @@
     <!-- Handsfree ETW providers. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Apps.CommsEnhancementRTProviders" Name="7665d4fd-30eb-4ddc-9dc1-4ebab74ed98e" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Shell.Components.Calling" Name="a5e3b77c-1a36-4f74-918e-9c928f7f0595" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
@@ -736,37 +736,37 @@
 
     <EventProvider Id="Microsoft.Windows.Apps.CallsRTProviders" Name="b8020478-a6a8-42bb-9ede-b2d3ebf8da7c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneProviders" Name="d7afa934-92e9-4f14-98f2-62f2486c39fb" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneService" Name="6892b716-cfea-4c82-9557-9c782e3f8c6c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneShellUi" Name="4be7b04b-179f-47cb-b6d9-b58ceef35be7" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneUtilsProviders" Name="cf82aecb-ffff-4049-bd5b-687734a5d519" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.TelephonyInteractiveUser" Name="1ac684f9-187b-400f-9cec-3ec143cc6610" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 

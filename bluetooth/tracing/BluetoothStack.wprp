@@ -688,85 +688,85 @@
     <!-- Handsfree ETW providers. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Apps.CommsEnhancementRTProviders" Name="7665d4fd-30eb-4ddc-9dc1-4ebab74ed98e" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Shell.Components.Calling" Name="a5e3b77c-1a36-4f74-918e-9c928f7f0595" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-CallingShellPresenters" Name="a5347b8a-3c9c-4f07-9440-1e0c5cfcc9d0" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneOm" Name="e08c85f4-c224-499d-b5b3-c1bce960f096" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneProviders" Name="1db8dad0-7ca6-4f18-b357-43bfdd8c9806" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneUtil" Name="04a490d4-84c6-4920-9c22-51c80825ff2c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneService" Name="cbbbc22d-2efe-4eae-9af5-f9c6cf113670" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-TelephonyInteractiveUser" Name="088a803b-578d-41b1-9402-92b7ceb380c8" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.CallsRTProviders" Name="b8020478-a6a8-42bb-9ede-b2d3ebf8da7c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneProviders" Name="d7afa934-92e9-4f14-98f2-62f2486c39fb" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneService" Name="6892b716-cfea-4c82-9557-9c782e3f8c6c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneShellUi" Name="4be7b04b-179f-47cb-b6d9-b58ceef35be7" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.PhoneUtilsProviders" Name="cf82aecb-ffff-4049-bd5b-687734a5d519" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft.Windows.Apps.TelephonyInteractiveUser" Name="1ac684f9-187b-400f-9cec-3ec143cc6610" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0x4ffffffffffd"/>
+        <Keyword Value="0xffffffffffffffff"/>
       </Keywords>
     </EventProvider>
 

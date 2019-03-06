@@ -700,37 +700,37 @@
 
     <EventProvider Id="Microsoft-Windows-Telephony-CallingShellPresenters" Name="a5347b8a-3c9c-4f07-9440-1e0c5cfcc9d0" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneOm" Name="e08c85f4-c224-499d-b5b3-c1bce960f096" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneProviders" Name="1db8dad0-7ca6-4f18-b357-43bfdd8c9806" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneUtil" Name="04a490d4-84c6-4920-9c22-51c80825ff2c" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-PhoneService" Name="cbbbc22d-2efe-4eae-9af5-f9c6cf113670" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 
     <EventProvider Id="Microsoft-Windows-Telephony-TelephonyInteractiveUser" Name="088a803b-578d-41b1-9402-92b7ceb380c8" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffd"/>
+        <Keyword Value="0x4ffffffffffd"/>
       </Keywords>
     </EventProvider>
 

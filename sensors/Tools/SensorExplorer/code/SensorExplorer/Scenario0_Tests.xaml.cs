@@ -29,7 +29,6 @@ namespace SensorExplorer
         public enum Directions { left, right, up, down, nothing }
         public List<int> SensorType;
         public Boolean IsSimpleOrientationSensor = false;
-
         private static readonly int countdownTime = 10; // In seconds
         private static readonly int testIterations = 8;
         private static readonly int numQuadrants = 4;
@@ -45,6 +44,7 @@ namespace SensorExplorer
             }; // In seconds
         private List<int> indices;
         private string testType;
+        private bool cancelButtonClicked;
         private List<double[]> dataList;
         private List<double> oriAngles;
         private List<DateTime> timestampList;
@@ -341,7 +341,8 @@ namespace SensorExplorer
                                        "Keep it in stationary state.";
                     break;
                 case "StaticAccuracy":
-                    instruction.Text = "Put device on a level surface with its Y axis pointing to the magnet north.";
+                    instruction.Text = "Put device on a level surface with its Y axis pointing to the magnet north.\n"+
+                                       "Suggest turn rotation lock on.";
                     break;
                 case "MagInterference":
                     instruction.Text = "Please move a magnet (~1G) pass the stationary device at a speed of approximately 0.25 m/s .\n" +
@@ -509,6 +510,7 @@ namespace SensorExplorer
             orientationSensorFirstMinuteDataList = new List<double[]>();
             orientationSensorLastMinuteDataList = new List<double[]>();
             timestampList = new List<DateTime>();
+            cancelButtonClicked = false;
             rootPage.NotifyUser("", NotifyType.StatusMessage);
             int count = 0;
             int type = SensorType[pivotSensor.SelectedIndex];
@@ -820,14 +822,30 @@ namespace SensorExplorer
         private void CalculateMagInterference()
         {
             int type = SensorType[pivotSensor.SelectedIndex];
-            double angleSum = 0;
             double result = 0;
             double[] expectedValue = { 1, 0, 0, 0 };
+            int globalStep = 0;
+            double temp = 0.0, maxE = 0, minE = 180, orientationError = 0;
             foreach (double[] array in dataList)
             {
-                angleSum += Angle4(array, expectedValue);
+                if (globalStep < 10)
+                {
+                    temp += Angle4(array, expectedValue);
+                    if (globalStep == 9)
+                    {
+                        temp /= 10;
+                        maxE = minE = temp;
+                    }
+                }
+                if (globalStep >= 10)
+                {
+                    orientationError = Angle4(array, expectedValue);
+                    maxE = Math.Max(maxE, orientationError);
+                    minE = Math.Min(minE, orientationError);
+                }
+                globalStep++;
             }
-            result = angleSum / dataList.Count;
+            result = Math.Max(maxE - temp, temp - minE);
             instruction.Text = "The result of Magnetic Interference is\n" + " " + result + " " + "degrees";
         }
         private void CalculateStaticAccuracy()
@@ -888,6 +906,7 @@ namespace SensorExplorer
         private async void CancelButton(object sender, RoutedEventArgs e)
         {
             int type = SensorType[pivotSensor.SelectedIndex];
+            cancelButtonClicked = true;
             if (type == Sensor.ACCELEROMETER)
             {
                 currentAccelerometer.ReadingChanged -= AccelerometerReadingChanged;
@@ -1618,6 +1637,7 @@ namespace SensorExplorer
         }
         private async void StaticAccuracyHandler()
         {
+            cancelButton.Visibility = Visibility.Visible;
             oriAngles = new List<double>();
             startTime = DateTime.Now;
             for (int i = 0; i < 15; i++)
@@ -1626,6 +1646,10 @@ namespace SensorExplorer
                 instruction.Text = "Orientation Sensor" + " " + testType + " Test in progress...";
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
                 dataList.Clear();
+                if (cancelButtonClicked)
+                {
+                    break;
+                }
                 for (int count = 10; count >= 0; count--)
                 {
                     if (i == 0 || i == 5 || i == 10 || i == 14) instruction.Text = "You have" + " " + count + " " + 
@@ -1637,19 +1661,42 @@ namespace SensorExplorer
                     else instruction.Text = "You have" + " " + count + " " + 
                             "seconds to rotate 90 degrees counterclockwise around the y axis and stop to a static position...";
                     await Task.Delay(1000);
+                    if (cancelButtonClicked)
+                    {
+                        timerLog.Text = "";
+                        instruction.Text = "";
+                        output.Text = "";
+                        break;
+                    }
                 }
                 startTime = DateTime.Now;
                 currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
                 for (int count = 5; count >= 0; count--)
                 {
                     instruction.Text = "Sampling data for" + " " + count + " " + "seconds...";
+                    if (cancelButtonClicked)
+                    {
+                        timerLog.Text = "";
+                        instruction.Text = "";
+                        output.Text = "";
+                        break;
+                    }
                     await Task.Delay(1000);
                 }
                 oriAngles.Add(OriAngleCalculate(i));
             }
-            countdown = new Countdown(testLength[testType], testType);
-            startTime = DateTime.Now;
-            instruction.Text = testType + " is ending...";
+            if (cancelButtonClicked)
+            {
+                timerLog.Text = "";
+                instruction.Text = "";
+                output.Text = "";
+            }
+            else
+            {
+                countdown = new Countdown(testLength[testType], testType);
+                startTime = DateTime.Now;
+                instruction.Text = testType + " is ending...";
+            }
         }
         private async void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
         {

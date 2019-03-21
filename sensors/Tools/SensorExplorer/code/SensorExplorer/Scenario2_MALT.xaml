@@ -54,9 +54,10 @@
             <StackPanel Orientation="Horizontal">
                 <StackPanel Margin="10,0,0,0">
                     <TextBlock Text="Run a Test" FontSize="20" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0" Click="ButtonAUTOCURVE"/>
-                        <Button x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>
+                    <StackPanel>
+                        <Button x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0" Click="ButtonAUTOCURVE" Width="300"/>
+                        <!--<Button x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>-->
+                        <Button x:Name="buttonIntervalExternal" Content="Internal vs external color sensor readings" Height="35" Margin="0,10,0,0" Click="ButtonInternalExternal" Width="300"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Margin="80,0,0,0">
@@ -92,8 +93,77 @@
             <TextBlock x:Name="output" TextWrapping="Wrap" Margin="0,10,0,0" FontSize="25"/>
             <Button x:Name="restartButton" Content="Restart" Click="RestartButton" Margin="30" Height="85" Width="150" FontSize="36" Visibility="Collapsed" HorizontalAlignment="Center"/>
             <StackPanel x:Name="stackpanelWaitTime1" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
-                <TextBox x:Name="textboxAUTOCURVE" Height="30" Width="150" TextWrapping="Wrap"/>
+                <TextBox x:Name="textboxAUTOCURVE" Height="32" Width="150" TextWrapping="Wrap"/>
                 <Button x:Name="buttonAUTOCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonAUTOCURVE2"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <StackPanel x:Name="stackpanel4" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock Text="Internal Light/Color Sensor" FontSize="20" Margin="10,20,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock Text="Lux" Width="120"/>
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock x:Name="textblockLux" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityx" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY" Width="120"/>
+                </StackPanel>
+                <TextBlock Text="MALT Light/Color Sensor (Ambient)" FontSize="20" Margin="10,40,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock Text="Lux" Width="120"/>
+                    <!--
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
+                    -->
+                    <TextBlock Text="Clear" Width="120" Foreground="DarkGray"/>
+                    <TextBlock Text="R" Width="120" Foreground="Red"/>
+                    <TextBlock Text="G" Width="120" Foreground="Green"/>
+                    <TextBlock Text="B" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock x:Name="textblockLux2" Width="120"/>
+                    <!--
+                    <TextBlock x:Name="textblockChromaticityx2" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy2"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY2" Width="120"/>
+                    -->
+                    <TextBlock x:Name="textblockClear2" Width="120" Foreground="DarkGray"/>
+                    <TextBlock x:Name="textblockR2"  Width="120" Foreground="Red"/>
+                    <TextBlock x:Name="textblockG2" Width="120" Foreground="Green"/>
+                    <TextBlock x:Name="textblockB2" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <TextBlock Text="MALT Light/Color Sensor (Screen)" FontSize="20" Margin="10,40,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock Text="Lux" Width="120"/>
+                    <!--
+                    <TextBlock Text="Chromaticity x" Width="120"/>
+                    <TextBlock Text="Chromaticity y" Width="120"/>
+                    <TextBlock Text="Chromaticity Y" Width="120"/>
+                    -->
+                    <TextBlock Text="Clear" Width="120" Foreground="DarkGray"/>
+                    <TextBlock Text="R" Width="120" Foreground="Red"/>
+                    <TextBlock Text="G" Width="120" Foreground="Green"/>
+                    <TextBlock Text="B" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,0">
+                    <TextBlock x:Name="textblockLux3" Width="120"/>
+                    <!--
+                    <TextBlock x:Name="textblockChromaticityx3" Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityy3"  Width="120"/>
+                    <TextBlock x:Name="textblockChromaticityY3" Width="120"/>
+                    -->
+                    <TextBlock x:Name="textblockClear3" Width="120" Foreground="DarkGray"/>
+                    <TextBlock x:Name="textblockR3"  Width="120" Foreground="Red"/>
+                    <TextBlock x:Name="textblockG3" Width="120" Foreground="Green"/>
+                    <TextBlock x:Name="textblockB3" Width="120" Foreground="Blue"/>
+                </StackPanel>
+                <Button x:Name="buttonBackToMenu" Margin="10,100,0,0" Height="32" Content="Back to main menu" Click="ButtonBackToMenu"/>
             </StackPanel>
         </StackPanel>
 

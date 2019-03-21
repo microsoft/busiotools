@@ -1,23 +1,27 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 
 namespace SensorExplorer
 {
+    using System.Collections.Generic;
     using Windows.Graphics.Display;
 
     public sealed partial class Scenario3DEO : Page
     {
-        private DisplayEnhancementOverride deo;
         public static Scenario3DEO Scenario3;
+
+        private DisplayEnhancementOverride deo;
+        private IReadOnlyList<NitRange> supportedNitRange;
 
         public Scenario3DEO()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             deo = DisplayEnhancementOverride.GetForCurrentView();
 
@@ -27,32 +31,81 @@ namespace SensorExplorer
             deo.IsOverrideActiveChanged += Deo_IsOverrideActiveChanged;
             deo.CanOverrideChanged += Deo_CanOverrideChanged;
             deo.DisplayEnhancementOverrideCapabilitiesChanged += Deo_DisplayEnhancementOverrideCapabilitiesChanged;
+
+            var inputTypes = new List<string>() { "Slider", "Specific value" };
+            comboBoxPercentage.ItemsSource = inputTypes;
+            comboBoxPercentage.SelectionChanged += OnSelectionChangedPercentage;
+        }
+
+        private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboBoxPercentage.SelectedItem != null)
+            {
+                string selected = comboBoxPercentage.SelectedItem.ToString();
+                if (selected != null)
+                {
+                    if (selected == "Slider")
+                    {
+                        percentageBrightnessSlider.Visibility = Visibility.Visible;
+                        stackPanelPercentageBrightness.Visibility = Visibility.Collapsed;
+                        textBlockPercentageInputError.Visibility = Visibility.Collapsed;
+                    }
+                    else if (selected == "Specific value")
+                    {
+                        percentageBrightnessSlider.Visibility = Visibility.Collapsed;
+                        stackPanelPercentageBrightness.Visibility = Visibility.Visible;
+                    }
+                }
+            }
         }
 
         #region DEO Callbacks   
 
-        private void Deo_DisplayEnhancementOverrideCapabilitiesChanged(DisplayEnhancementOverride sender, DisplayEnhancementOverrideCapabilitiesChangedEventArgs args)
+        private async void Deo_DisplayEnhancementOverrideCapabilitiesChanged(DisplayEnhancementOverride sender, DisplayEnhancementOverrideCapabilitiesChangedEventArgs args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                BrightnessPercentageSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessControlSupported ? "Yes" : "No";
-                BrightnessNitsSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessNitsControlSupported ? "Yes" : "No";
+                brightnessPercentageSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessControlSupported ? "Yes" : "No";
+                brightnessNitsSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessNitsControlSupported ? "Yes" : "No";
+                supportedNitRange = args.Capabilities.GetSupportedNitRanges();
+
+                if (args.Capabilities.IsBrightnessControlSupported)
+                {
+                    stackPanelComboBoxPercentage.Visibility = Visibility.Visible;
+                    textBlockPercentageBrightnessSettings.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    stackPanelComboBoxPercentage.Visibility = Visibility.Collapsed;
+                    textBlockPercentageBrightnessSettings.Visibility = Visibility.Visible;
+                }
+
+                if (args.Capabilities.IsBrightnessNitsControlSupported)
+                {
+                    stackPanelNitsBrightness.Visibility = Visibility.Visible;
+                    textBlockNitsBrightnessSettings.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    stackPanelNitsBrightness.Visibility = Visibility.Collapsed;
+                    textBlockNitsBrightnessSettings.Visibility = Visibility.Visible;
+                }
             });
         }
 
-        private void Deo_CanOverrideChanged(DisplayEnhancementOverride sender, object args)
+        private async void Deo_CanOverrideChanged(DisplayEnhancementOverride sender, object args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                CanOverrideActiveStateTextBlock.Text = sender.CanOverride ? "Yes" : "No";
+                canOverrideActiveStateTextBlock.Text = sender.CanOverride ? "Yes" : "No";
             });
         }
 
-        private void Deo_IsOverrideActiveChanged(DisplayEnhancementOverride sender, object args)
+        private async void Deo_IsOverrideActiveChanged(DisplayEnhancementOverride sender, object args)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                IsOverrideActiveStateTextBlock.Text = sender.IsOverrideActive ? "Yes" : "No";
+                isOverrideActiveStateTextBlock.Text = sender.IsOverrideActive ? "Yes" : "No";
             });
         }
 
@@ -60,29 +113,29 @@ namespace SensorExplorer
 
         #region Brightness Settings
 
-        private void SetBrightnessPercentage(double level)
+        private async void SetBrightnessPercentage(double level)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                BrightnessSettingStateTextBlock.Text = level + "%";
+                brightnessSettingStateTextBlock.Text = level + "%";
             });
 
             deo.BrightnessOverrideSettings = BrightnessOverrideSettings.CreateFromLevel(level / 100);
             CheckOverrideToggleEnableState();
         }
 
-        private void SetBrightnessNits(float nits)
+        private async void SetBrightnessNits(float nits)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                BrightnessSettingStateTextBlock.Text = nits + " nits";
+                brightnessSettingStateTextBlock.Text = nits + " nits";
             });
 
             deo.BrightnessOverrideSettings = BrightnessOverrideSettings.CreateFromNits(nits);
             CheckOverrideToggleEnableState();
         }
 
-        private void SetBrightnessScenario(DisplayBrightnessOverrideScenario scenario)
+        private async void SetBrightnessScenario(DisplayBrightnessOverrideScenario scenario)
         {
             string scenarioText = "";
             switch (scenario)
@@ -98,20 +151,20 @@ namespace SensorExplorer
                     break;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                BrightnessSettingStateTextBlock.Text = scenarioText;
+                brightnessSettingStateTextBlock.Text = scenarioText;
             });
 
             deo.BrightnessOverrideSettings = BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario(scenario);
             CheckOverrideToggleEnableState();
         }
 
-        private void SetNoBrightnessSettings()
+        private async void SetNoBrightnessSettings()
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                BrightnessSettingStateTextBlock.Text = "None";
+                brightnessSettingStateTextBlock.Text = "None";
             });
 
             deo.BrightnessOverrideSettings = null;
@@ -122,7 +175,7 @@ namespace SensorExplorer
 
         #region Color Settings
 
-        private void SetColorScenario(DisplayColorOverrideScenario scenario)
+        private async void SetColorScenario(DisplayColorOverrideScenario scenario)
         {
             string scenarioText = "";
             switch (scenario)
@@ -132,20 +185,20 @@ namespace SensorExplorer
                     break;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ColorSettingStateTextBlock.Text = scenarioText;
+                colorSettingStateTextBlock.Text = scenarioText;
             });
 
             deo.ColorOverrideSettings = ColorOverrideSettings.CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario.Accurate);
             CheckOverrideToggleEnableState();
         }
 
-        private void SetNoColorScenario()
+        private async void SetNoColorScenario()
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ColorSettingStateTextBlock.Text = "None";
+                colorSettingStateTextBlock.Text = "None";
             });
 
             deo.ColorOverrideSettings = null;
@@ -159,6 +212,64 @@ namespace SensorExplorer
         private void PercentageBrightnessSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             SetBrightnessPercentage(e.NewValue);
+        }
+
+        private void ButtonPercentageBrightness_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                double percentage = Convert.ToDouble(textBoxPercentageBrightness.Text);
+                
+                if(percentage >= 0 && percentage <= 100)
+                {
+                    SetBrightnessPercentage(percentage);
+                    textBlockPercentageInputError.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    textBlockPercentageInputError.Visibility = Visibility.Visible;
+                }
+            }
+            catch
+            {
+                textBlockPercentageInputError.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void NitsBrightnessSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            SetBrightnessNits((float)e.NewValue);
+        }
+
+        private void ButtonNitsBrightness_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                float nits = (float) Convert.ToDouble(textBoxNitsBrightness.Text);
+
+                // assuming single display
+                // TODO: multiple display support?
+                if (supportedNitRange.Count == 1)
+                {
+                    foreach (var nitRange in supportedNitRange)
+                    {
+                        if (nits >= nitRange.MinNits && nits <= nitRange.MaxNits)
+                        {
+                            SetBrightnessNits(nits);
+                            textBlockNitsInputError.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            textBlockNitsInputError.Visibility = Visibility.Visible;
+                            textBlockNitsInputError.Text = "Please enter a number between " + nitRange.MinNits + " and " + nitRange.MaxNits + ".";
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                textBlockNitsInputError.Visibility = Visibility.Visible;
+            }
         }
 
         private void FullBrightnessScenarioButton_Click(object sender, RoutedEventArgs e)
@@ -185,7 +296,6 @@ namespace SensorExplorer
 
         #region Color Controls
 
-
         private void AccurateColorScenarioButton_Click(object sender, RoutedEventArgs e)
         {
             SetColorScenario(DisplayColorOverrideScenario.Accurate);
@@ -200,24 +310,24 @@ namespace SensorExplorer
 
         #region General Controls
 
-        private void CheckOverrideToggleEnableState()
+        private async void CheckOverrideToggleEnableState()
         {
             string debuggerText = "";
 
-            if (((deo.ColorOverrideSettings != null) || (deo.BrightnessOverrideSettings != null)))
+            if ((deo.ColorOverrideSettings != null) || (deo.BrightnessOverrideSettings != null))
             {
                 debuggerText = "";
-                OverrideToggle.IsEnabled = true;
+                overrideToggle.IsEnabled = true;
             }
-            else if (!OverrideToggle.IsOn)
+            else if (!overrideToggle.IsOn)
             {
                 debuggerText = "Please select a brightness or color setting before requesting an override";
-                OverrideToggle.IsEnabled = false;
+                overrideToggle.IsEnabled = false;
             }
 
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                DebugTextBlock.Text = debuggerText;
+                debugTextBlock.Text = debuggerText;
             });
         }
 

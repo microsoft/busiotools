@@ -23,6 +23,7 @@ namespace SensorExplorer
         }
 
         public DeviceInformation DeviceInformation { get; }
+
         public string DeviceSelector { get; }
 
         /// <summary>

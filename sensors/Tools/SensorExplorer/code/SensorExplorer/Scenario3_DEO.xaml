@@ -14,34 +14,51 @@
     <Grid MaxWidth="500">
         <StackPanel>
             <controls:Expander Header="Percentage Brightness Settings">
-                <Grid Margin="10">
-                    <Slider x:Name="PercentageBrightnessSlider" MinWidth="300" ValueChanged="PercentageBrightnessSlider_ValueChanged" Minimum="0" Maximum="100" />
-                </Grid>
+                <StackPanel Margin="20">
+                    <StackPanel x:Name="stackPanelComboBoxPercentage" HorizontalAlignment="Center" Orientation="Horizontal" Visibility="Collapsed">
+                        <TextBlock Text="Set by" Margin="10,10,5,10" VerticalAlignment="Center"/>
+                        <ComboBox Name="comboBoxPercentage" Margin="10,10,0,10" Width="200"/>
+                    </StackPanel>
+                    <Slider x:Name="percentageBrightnessSlider" MinWidth="300" ValueChanged="PercentageBrightnessSlider_ValueChanged" Minimum="0" Maximum="100" Margin="10" Visibility="Collapsed"/>
+                    <StackPanel x:Name="stackPanelPercentageBrightness" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <TextBox x:Name="textBoxPercentageBrightness" Margin="10,10,5,10"/>
+                        <TextBlock x:Name="textBlockPercentageBrightness" Text="%" FontSize="18" VerticalAlignment="Center"/>
+                        <Button x:Name="buttonPercentageBrightness" Content="Set" Click="ButtonPercentageBrightness_Click" Margin="40,10,10,10"/>
+                    </StackPanel>
+                    <TextBlock x:Name="textBlockPercentageInputError" Text="Please enter a number between 0 and 100." Foreground="Red" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    <TextBlock x:Name="textBlockPercentageBrightnessSettings" Text="Brightness control is not supported on this device."/>
+                </StackPanel>
             </controls:Expander>
 
             <controls:Expander Header="Scenario Brightness Settings">
-                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="FullBrightnessScenarioButton" Click="FullBrightnessScenarioButton_Click" Margin="5">Full Brightness</Button>
-                    <Button x:Name="BarcodeBrightnessScenarioButton" Click="BarcodeBrightnessScenarioButton_Click" Margin="5">Barcode Brightness</Button>
-                    <Button x:Name="IdleBrightnessScenarioButton" Click="IdleBrightnessScenarioButton_Click" Margin="5">Idle Brightness</Button>
-                    <Button x:Name="NoneBrightnessScenarioButton" Click="NoneBrightnessScenarioButton_Click" Margin="5">None</Button>
+                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+                    <Button x:Name="fullBrightnessScenarioButton" Click="FullBrightnessScenarioButton_Click" Margin="5">Full Brightness</Button>
+                    <Button x:Name="barcodeBrightnessScenarioButton" Click="BarcodeBrightnessScenarioButton_Click" Margin="5">Barcode Brightness</Button>
+                    <Button x:Name="idleBrightnessScenarioButton" Click="IdleBrightnessScenarioButton_Click" Margin="5">Idle Brightness</Button>
+                    <Button x:Name="noneBrightnessScenarioButton" Click="NoneBrightnessScenarioButton_Click" Margin="5">None</Button>
                 </controls:WrapPanel>
             </controls:Expander>
 
             <controls:Expander Header="Nits Brightness Settings">
-                <Grid>
-                    <TextBlock>Support Coming Soon</TextBlock>
-                </Grid>
+                <StackPanel Margin="20">
+                    <StackPanel x:Name="stackPanelNitsBrightness" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <TextBox x:Name="textBoxNitsBrightness" Margin="10,10,5,10"/>
+                        <TextBlock x:Name="textBlockNitsBrightness" Text="nits" FontSize="18" VerticalAlignment="Center"/>
+                        <Button x:Name="buttonNitsBrightness" Content="Set" Click="ButtonNitsBrightness_Click" Margin="40,10,10,10"/>
+                    </StackPanel>
+                    <TextBlock x:Name="textBlockNitsInputError" Foreground="Red" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    <TextBlock x:Name="textBlockNitsBrightnessSettings" Text="Brightness control in nits is not supported on this device."/>
+                </StackPanel>
             </controls:Expander>
 
             <controls:Expander Header="Color Settings">
-                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="AccurateColorScenarioButton" Click="AccurateColorScenarioButton_Click" Margin="5">Accurate Colors</Button>
-                    <Button x:Name="NonColorScenarioButton" Click="NonColorScenarioButton_Click" Margin="5">None</Button>
+                <controls:WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+                    <Button x:Name="accurateColorScenarioButton" Click="AccurateColorScenarioButton_Click" Margin="5">Accurate Colors</Button>
+                    <Button x:Name="nonColorScenarioButton" Click="NonColorScenarioButton_Click" Margin="5">None</Button>
                 </controls:WrapPanel>
             </controls:Expander>
 
-            <Grid>
+            <Grid Margin="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -52,30 +69,27 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock x:Name="BrightnessPercentageSupportedLabelTextBlock">Brightess Percentage Support:</TextBlock>
-                    <TextBlock x:Name="BrightnessNitsSupportedLabelTextBlock">Brightness Nits Support:</TextBlock>
-                    <TextBlock x:Name="BrightnessSettingLabelTextBlock">Brightness Setting:</TextBlock>
-                    <TextBlock x:Name="ColorSettingLabelTextBlock">Color Setting:</TextBlock>
-                    <TextBlock x:Name="CanOverrideLabelTextBlock">Can Override:</TextBlock>
-                    <TextBlock x:Name="IsOverrideActiveLabelTextBlock">Override Active:</TextBlock>
-                    <TextBlock x:Name="OverrideRequestLabelTextBlock">Override Requested:</TextBlock>
+                    <TextBlock x:Name="brightnessPercentageSupportedLabelTextBlock">Brightness Percentage Support:</TextBlock>
+                    <TextBlock x:Name="brightnessNitsSupportedLabelTextBlock">Brightness Nits Support:</TextBlock>
+                    <TextBlock x:Name="brightnessSettingLabelTextBlock">Brightness Setting:</TextBlock>
+                    <TextBlock x:Name="colorSettingLabelTextBlock">Color Setting:</TextBlock>
+                    <TextBlock x:Name="canOverrideLabelTextBlock">Can Override:</TextBlock>
+                    <TextBlock x:Name="isOverrideActiveLabelTextBlock">Override Active:</TextBlock>
+                    <TextBlock x:Name="overrideRequestLabelTextBlock">Override Requested:</TextBlock>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock x:Name="BrightnessPercentageSupportedStateTextBlock">?</TextBlock>
-                    <TextBlock x:Name="BrightnessNitsSupportedStateTextBlock">?</TextBlock>
-                    <TextBlock x:Name="BrightnessSettingStateTextBlock">?</TextBlock>
-                    <TextBlock x:Name="ColorSettingStateTextBlock">?</TextBlock>
-                    <TextBlock x:Name="CanOverrideActiveStateTextBlock">?</TextBlock>
-                    <TextBlock x:Name="IsOverrideActiveStateTextBlock">?</TextBlock>
-                    <ToggleSwitch x:Name="OverrideToggle" OnContent="Requested" OffContent="Stopped" IsEnabled="False" Toggled="OverrideToggle_Toggled"/>
+                    <TextBlock x:Name="brightnessPercentageSupportedStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="brightnessNitsSupportedStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="brightnessSettingStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="colorSettingStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="canOverrideActiveStateTextBlock">?</TextBlock>
+                    <TextBlock x:Name="isOverrideActiveStateTextBlock">?</TextBlock>
+                    <ToggleSwitch x:Name="overrideToggle" OnContent="Requested" OffContent="Stopped" IsEnabled="False" Toggled="OverrideToggle_Toggled"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock x:Name="DebugTextBlock">Please select a brightness or color setting before requesting an override</TextBlock>
+                    <TextBlock x:Name="debugTextBlock">Please select a brightness or color setting before requesting an override</TextBlock>
                 </StackPanel>
             </Grid>
-
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10">
-            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

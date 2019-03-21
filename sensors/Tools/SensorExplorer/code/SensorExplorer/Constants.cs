@@ -4,7 +4,6 @@
 /* Copyright (c) Intel Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using System;
 using System.Collections.Generic;
 using Windows.UI;
 
@@ -25,7 +24,13 @@ namespace SensorExplorer
             { "Sensor_Manufacturer", "{D4247382-969D-4F24-BB14-FB9671870BBF} 7" },
             { "Sensor_Model", "{D4247382-969D-4F24-BB14-FB9671870BBF} 8" },
             { "Sensor_PersistentUniqueId", "{D4247382-969D-4F24-BB14-FB9671870BBF} 9" },
-            { "Sensor_VendorDefinedSubType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 10" }
+            { "Sensor_VendorDefinedSubType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 10" },
+            { "Sensor_State", "{D4247382-969D-4F24-BB14-FB9671870BBF} 20" },
+        };
+        public static Dictionary<string, string> LightSensorProperties = new Dictionary<string, string>() {
+            { "LightSensor_AutoBrightnessPreferred", "{D4247382-969D-4F24-BB14-FB9671870BBF} 31" },
+            { "LightSensor_ColorCapable", "{D4247382-969D-4F24-BB14-FB9671870BBF} 32" },
+            { "LightSensor_AdaptiveColorPreferred", "{D4247382-969D-4F24-BB14-FB9671870BBF} 33" },
         };
         public static Dictionary<string, string> SensorTypes = new Dictionary<string, string>() {
             { "C2FB0F5F-E2D2-4C78-BCD0-352A9582819D".ToLower(), "Accelerometer3D" },
@@ -45,7 +50,8 @@ namespace SensorExplorer
             { "5220DAE9-3179-4430-9F90-06266D2A34DE".ToLower(), "Proximity" },
             { "40993B51-4706-44DC-98D5-C920C037FFAB".ToLower(), "RelativeOrientation" },
             { "86A19291-0482-402C-BF4C-ADDAC52B1C39".ToLower(), "SimpleDeviceOrientation" },
-            { "04FD0EC4-D5DA-45FA-95A9-5DB38EE19306".ToLower(), "Temperature" }
+            { "04FD0EC4-D5DA-45FA-95A9-5DB38EE19306".ToLower(), "Temperature" },
+            { "82358065-F4C4-4DA1-B272-13C23332A207".ToLower(), "HingeAngle"}
         };
         public static Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
             { "C317C286-C468-4288-9975-D4C4587C442C".ToLower(), "All" },
@@ -67,10 +73,13 @@ namespace SensorExplorer
             Properties["Sensor_Type"],
             Properties["Sensor_Category"],
             Properties["Sensor_ConnectionType"],
+            Properties["Sensor_IsPrimary"],
             Properties["Sensor_Name"],
             Properties["Sensor_Manufacturer"],
             Properties["Sensor_Model"],
-            Properties["Sensor_PersistentUniqueId"]
+            Properties["Sensor_PersistentUniqueId"],
+            Properties["Sensor_VendorDefinedSubType"],
+            Properties["Sensor_State"]
         };
         public static Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
             { Sensor.ACCELEROMETER, new double[3] { 0, 0, -1 } },
@@ -140,7 +149,7 @@ namespace SensorExplorer
 
     public class ArduinoDevice
     {
-        public const UInt16 Vid = 0x2341;
-        public const UInt16 Pid = 0x0042;
+        public const ushort Vid = 0x2341;
+        public const ushort Pid = 0x0042;
     }
 }

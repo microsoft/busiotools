@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage.Pickers;
 using Windows.Storage;
+using Windows.Devices.Sensors;
 
 namespace SensorExplorer
 {
@@ -25,21 +26,23 @@ namespace SensorExplorer
     {
         public static Scenario2MALT Scenario2;
 
-        private const string buttonNameDisconnectFromDevice = "Disconnect from device";
-        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
         private MainPage rootPage = MainPage.Current;
+
+        private const string buttonNameDisconnectFromDevice = "Disconnect from device";
+        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";     
         private SuspendingEventHandler appSuspendEventHandler;
-        private EventHandler<Object> appResumeEventHandler;
+        private EventHandler<object> appResumeEventHandler;
         private ObservableCollection<DeviceListEntry> listOfDevices;
         private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
-        private Boolean watchersSuspended;
-        private Boolean watchersStarted;
-        private Boolean isAllDevicesEnumerated;
-        private Boolean IsNavigatedAway;
+        private bool watchersSuspended;
+        private bool watchersStarted;
+        private bool isAllDevicesEnumerated;
+        private bool IsNavigatedAway;
         private StorageFile tmp, file;
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
         private List<string> conversionValues = new List<string> { "100", "800" };
+        private LightSensor lightSensor;
 
         // MALTERROR
         private const int E_SUCCESS = 0;
@@ -48,15 +51,15 @@ namespace SensorExplorer
 
         // Track Read Operation
         private CancellationTokenSource ReadCancellationTokenSource;
-        private Object ReadCancelLock = new Object();
+        private object ReadCancelLock = new object();
 
         // Track Write Operation
         private CancellationTokenSource WriteCancellationTokenSource;
-        private Object WriteCancelLock = new Object();
+        private object WriteCancelLock = new object();
 
         public Scenario2MALT()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Scenario2 = this;
 
             comboBox.ItemsSource = conversionValues;
@@ -77,15 +80,15 @@ namespace SensorExplorer
         {
             // If we are connected to the device or planning to reconnect, we should disable the list of devices
             // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
-            if (EventHandlerForDevice.Current.IsDeviceConnected 
+            if (EventHandlerForDevice.Current.IsDeviceConnected
                 || (EventHandlerForDevice.Current.IsEnabledAutoReconnect
                 && EventHandlerForDevice.Current.DeviceInformation != null))
             {
                 UpdateConnectDisconnectButtonsAndList(false);
 
                 // These notifications will occur if we are waiting to reconnect to device when we start the page
-                EventHandlerForDevice.Current.OnDeviceConnected = this.OnDeviceConnected;
-                EventHandlerForDevice.Current.OnDeviceClose = this.OnDeviceClosing;
+                EventHandlerForDevice.Current.OnDeviceConnected = OnDeviceConnected;
+                EventHandlerForDevice.Current.OnDeviceClose = OnDeviceClosing;
             }
             else
             {
@@ -107,6 +110,12 @@ namespace SensorExplorer
         /// </summary>
         protected override void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
+            if(lightSensor != null)
+            {
+                lightSensor.ReadingChanged -= LightSensorReadingChanged;
+            }
+            PeriodicTimer.Cancel2();
+
             DisconnectFromDeviceClick(null, null);
 
             StopDeviceWatchers();
@@ -120,7 +129,7 @@ namespace SensorExplorer
             CancelAllIoTasks();
         }
 
-        private void initialize()
+        private async void initialize()
         {
             if (EventHandlerForDevice.Current.Device == null)
             {
@@ -135,9 +144,15 @@ namespace SensorExplorer
                 ResetReadCancellationTokenSource();
                 ResetWriteCancellationTokenSource();
             }
+
+            DeviceInformationCollection deviceInfoCollection = await DeviceInformation.FindAllAsync(LightSensor.GetDeviceSelector(), Constants.RequestedProperties);
+            foreach (DeviceInformation deviceInfo in deviceInfoCollection)
+            {
+                lightSensor = await LightSensor.FromIdAsync(deviceInfo.Id);
+            }
         }
 
-        private async void ConnectToDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        private async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;
@@ -158,12 +173,12 @@ namespace SensorExplorer
 
                     // It is important that the FromIdAsync call is made on the UI thread because the consent prompt, when present,
                     // can only be displayed on the UI thread. Since this method is invoked by the UI, we are already in the UI thread.
-                    Boolean openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
+                    bool openSuccess = await EventHandlerForDevice.Current.OpenDeviceAsync(entry.DeviceInformation, entry.DeviceSelector);
 
                     // Disable connect button if we connected to the device
                     UpdateConnectDisconnectButtonsAndList(!openSuccess);
 
-                    if(openSuccess)
+                    if (openSuccess)
                     {
                         stackpanel1.Visibility = Visibility.Collapsed;
                         initialize();
@@ -173,13 +188,13 @@ namespace SensorExplorer
             }
         }
 
-        private void ShowConnectionButton(Object sender, RoutedEventArgs eventArgs)
+        private void ShowConnectionButton(object sender, RoutedEventArgs eventArgs)
         {
             stackpanel2.Visibility = Visibility.Collapsed;
             stackpanel1.Visibility = Visibility.Visible;
         }
 
-        private void DisconnectFromDeviceClick(Object sender, RoutedEventArgs eventArgs)
+        private void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;
@@ -217,8 +232,8 @@ namespace SensorExplorer
 
         private void StartHandlingAppEvents()
         {
-            appSuspendEventHandler = new SuspendingEventHandler(this.OnAppSuspension);
-            appResumeEventHandler = new EventHandler<Object>(this.OnAppResume);
+            appSuspendEventHandler = new SuspendingEventHandler(OnAppSuspension);
+            appResumeEventHandler = new EventHandler<object>(OnAppResume);
 
             // This event is raised when the app is exited and when the app is suspended
             Application.Current.Suspending += appSuspendEventHandler;
@@ -237,9 +252,9 @@ namespace SensorExplorer
         /// </summary>
         private void AddDeviceWatcher(DeviceWatcher deviceWatcher, string deviceSelector)
         {
-            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(this.OnDeviceAdded);
-            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(this.OnDeviceRemoved);
-            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>(this.OnDeviceEnumerationComplete);
+            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(OnDeviceAdded);
+            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(OnDeviceRemoved);
+            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, object>(OnDeviceEnumerationComplete);
             mapDeviceWatchersToDeviceSelector.Add(deviceWatcher, deviceSelector);
         }
 
@@ -336,7 +351,7 @@ namespace SensorExplorer
         /// We must stop the DeviceWatchers because device watchers will continue to raise events even if
         /// the app is in suspension, which is not desired (drains battery). We resume the device watcher once the app resumes again.
         /// </summary>
-        private void OnAppSuspension(Object sender, SuspendingEventArgs args)
+        private void OnAppSuspension(object sender, SuspendingEventArgs args)
         {
             if (watchersStarted)
             {
@@ -352,7 +367,7 @@ namespace SensorExplorer
         /// <summary>
         /// See OnAppSuspension for why we are starting the device watchers again
         /// </summary>
-        private void OnAppResume(Object sender, Object args)
+        private void OnAppResume(object sender, object args)
         {
             if (watchersSuspended)
             {
@@ -388,7 +403,7 @@ namespace SensorExplorer
         /// <summary>
         /// Notify the UI whether or not we are connected to a device
         /// </summary>
-        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, Object args)
+        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, object args)
         {
             await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
             {
@@ -486,7 +501,7 @@ namespace SensorExplorer
         /// <summary>
         /// When ButtonConnectToDevice is disabled, ConnectDevices list will also be disabled.
         /// </summary>
-        private void UpdateConnectDisconnectButtonsAndList(Boolean enableConnectButton)
+        private void UpdateConnectDisconnectButtonsAndList(bool enableConnectButton)
         {
             connectToDeviceButton.IsEnabled = enableConnectButton;
             disconnectFromDeviceButton.IsEnabled = !connectToDeviceButton.IsEnabled;
@@ -501,7 +516,7 @@ namespace SensorExplorer
 
                 char[] buffer = new char[textboxLIGHT.Text.Length];
                 textboxLIGHT.Text.CopyTo(0, buffer, 0, textboxLIGHT.Text.Length);
-                UInt32 lightLevel;
+                uint lightLevel;
                 try
                 {
                     lightLevel = Convert.ToUInt32(new string(buffer));
@@ -518,7 +533,7 @@ namespace SensorExplorer
             }
         }
 
-        private async Task SetLight(UInt32 lightLevel)
+        private async Task SetLight(uint lightLevel)
         {
             if (lightLevel > 2600)
             {
@@ -533,13 +548,13 @@ namespace SensorExplorer
 
         private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(comboBox.SelectedValue != null)
+            if (comboBox.SelectedValue != null)
             {
                 await SetConversionTime(Convert.ToUInt32(comboBox.SelectedValue));
             }
         }
 
-        private async Task SetConversionTime(UInt32 conversionTime)
+        private async Task SetConversionTime(uint conversionTime)
         {
             string command = "CONVERSIONTIME " + conversionTime + "\n";
             await WriteCommandAsync(command);
@@ -586,7 +601,7 @@ namespace SensorExplorer
         // get ambient RGB
         private async void ButtonREADCOLORSENSOR1(object sender, RoutedEventArgs e)
         {
-            buttonREADALSSENSOR1.IsEnabled = false;
+            buttonREADCOLORSENSOR1.IsEnabled = false;
 
             string command = "READCOLORSENSOR 1\n";
             await WriteCommandAsync(command);
@@ -596,13 +611,13 @@ namespace SensorExplorer
                                          ", Green: " + result[3] +
                                          ", Blue: " + result[4];
 
-            buttonREADALSSENSOR1.IsEnabled = true;
+            buttonREADCOLORSENSOR1.IsEnabled = true;
         }
 
         // get screen RGB
         private async void ButtonREADCOLORSENSOR2(object sender, RoutedEventArgs e)
         {
-            buttonREADALSSENSOR2.IsEnabled = false;
+            buttonREADCOLORSENSOR2.IsEnabled = false;
 
             string command = "READCOLORSENSOR 2\n";
             await WriteCommandAsync(command);
@@ -612,7 +627,105 @@ namespace SensorExplorer
                                     ", Green: " + result[3] +
                                     ", Blue: " + result[4];
 
-            buttonREADALSSENSOR2.IsEnabled = true;
+            buttonREADCOLORSENSOR2.IsEnabled = true;
+        }
+
+        private void ButtonInternalExternal(object sender, RoutedEventArgs e)
+        {
+            stackpanel2.Visibility = Visibility.Collapsed;
+            stackpanel4.Visibility = Visibility.Visible;
+
+            if (lightSensor != null)
+            {
+                lightSensor.ReadingChanged += LightSensorReadingChanged;
+            }
+
+            PeriodicTimer.Create();
+        }
+
+        public async void GetMALTData()
+        {
+            await WriteCommandAsync("READALSSENSOR 1\n");
+            double ambientLux = await ReadLightSensor("READALSSENSOR 1\n");
+            textblockLux2.Text = ((int)ambientLux).ToString();
+
+            await WriteCommandAsync("READCOLORSENSOR 1\n");
+            string[] result = await ReadColorSensor("READCOLORSENSOR 1\n");
+            if (result != null && result.Length == 5)
+            {
+                textblockClear2.Text = result[1];
+                textblockR2.Text = result[2];
+                textblockG2.Text = result[3];
+                textblockB2.Text = result[4];
+
+                /*
+                double[] RGB = new double[] { Convert.ToDouble(result[2]), Convert.ToDouble(result[3]), Convert.ToDouble(result[4]) };
+                double[] XYZ = RGBToXYZ(RGB, redPrimary, greenPrimary, bluePrimary, white);
+                double[] xyY = XYZToxyY(XYZ);
+                textblockChromaticityx2.Text = xyY[0].ToString();
+                textblockChromaticityy2.Text = xyY[1].ToString();
+                textblockChromaticityY2.Text = xyY[2].ToString();
+                */
+            }
+
+            await WriteCommandAsync("READALSSENSOR 2\n");
+            double screenLux = await ReadLightSensor("READALSSENSOR 2\n");
+            textblockLux3.Text = ((int)screenLux).ToString();
+
+            await WriteCommandAsync("READCOLORSENSOR 2\n");
+            string[] result2 = await ReadColorSensor("READCOLORSENSOR 2\n");
+            if (result2 != null && result.Length == 5)
+            {
+                textblockClear3.Text = result2[1];
+                textblockR3.Text = result2[2];
+                textblockG3.Text = result2[3];
+                textblockB3.Text = result2[4];
+
+                /*
+                double[] RGB = new double[] { Convert.ToDouble(result2[2]), Convert.ToDouble(result2[3]), Convert.ToDouble(result2[4]) };
+                double[] XYZ = RGBToXYZ(RGB, redPrimary, greenPrimary, bluePrimary, white);
+                double[] xyY = XYZToxyY(XYZ);
+                textblockChromaticityx3.Text = xyY[0].ToString();
+                textblockChromaticityy3.Text = xyY[1].ToString();
+                textblockChromaticityY3.Text = xyY[2].ToString();
+                */
+            }
+        }
+
+        private async void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                LightSensorReading reading = e.Reading;
+                object x, y;
+                reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62", out x);
+                reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63", out y);
+
+                double chromaticity_x = -1, chromaticity_y = -1;
+                try
+                {
+                    chromaticity_x = double.Parse(x.ToString());
+                    chromaticity_y = double.Parse(y.ToString());
+                }
+                catch { }
+
+                textblockLux.Text = reading.IlluminanceInLux.ToString();
+                textblockChromaticityx.Text = chromaticity_x.ToString();
+                textblockChromaticityy.Text = chromaticity_y.ToString();
+            });
+        }
+
+        private void ButtonBackToMenu(object sender, RoutedEventArgs e)
+        {
+            if (lightSensor != null)
+            {
+                lightSensor.ReadingChanged -= LightSensorReadingChanged;
+            }
+
+            PeriodicTimer.Cancel2();
+
+            stackpanel4.Visibility = Visibility.Collapsed;
+            stackpanel2.Visibility = Visibility.Visible;
         }
 
         // get auto-brightness curve
@@ -629,11 +742,19 @@ namespace SensorExplorer
             savePicker.SuggestedFileName = "AutoCurve";
             file = await savePicker.PickSaveFileAsync();
 
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-            tmp = await storageFolder.CreateFileAsync("tmp.csv", CreationCollisionOption.ReplaceExisting);
+            if (file != null)
+            {
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+                tmp = await storageFolder.CreateFileAsync("tmp.csv", CreationCollisionOption.ReplaceExisting);
 
-            stackpanelWaitTime1.Visibility = Visibility.Visible;
-            output.Text = "Please specify the wait time (in seconds) before test begins.";
+                stackpanelWaitTime1.Visibility = Visibility.Visible;
+                output.Text = "Please specify the wait time (in seconds) before test begins.";
+            }
+            else
+            {
+                stackpanel3.Visibility = Visibility.Collapsed;
+                stackpanel2.Visibility = Visibility.Visible;
+            }
         }
 
         private async void ButtonAUTOCURVE2(object sender, RoutedEventArgs e)
@@ -658,9 +779,9 @@ namespace SensorExplorer
 
                 output.Text = "Preparation time...";
                 await SetLight(0);
-                await Task.Delay((int)waitTime*1000);
+                await Task.Delay((int)waitTime * 1000);
             }
-            
+
             double ambientLux1 = 0, ambientLux2 = 0, ambientLuxCurrent = 0;
             double screenLux1 = 0, screenLux2 = 0, screenLuxCurrent = 0;
 
@@ -724,7 +845,6 @@ namespace SensorExplorer
             catch (Exception exception)
             {
                 output.Text = exception.Message;
-
                 rootPage.EnableScenarioSelect();
             }
         }
@@ -797,7 +917,7 @@ namespace SensorExplorer
 
                 return split;
             }
-            catch { return new string []{ }; }
+            catch { return new string[] { }; }
         }
 
         private async Task ReadVersion(string command)
@@ -842,7 +962,6 @@ namespace SensorExplorer
 
         private void OutputError(string command, string data)
         {
-            
             if (data.Trim() == E_SUCCESS.ToString())
             {
                 if (command.Contains("LIGHT"))
@@ -970,6 +1089,74 @@ namespace SensorExplorer
                     rootPage.NotifyUser("Canceling Write... Please wait...", NotifyType.StatusMessage);
                 }
             }));
+        }
+
+        private double[] XYZToxyY(double[] XYZ)
+        {
+            double[] xyY = new double[3];
+            xyY[0] = XYZ[0] / (XYZ[0] + XYZ[1] + XYZ[2]);
+            xyY[1] = XYZ[1] / (XYZ[0] + XYZ[1] + XYZ[2]);
+            xyY[2] = XYZ[2];
+
+            return xyY;
+        }
+
+        // white is in XYZ
+        private double[] RGBToXYZ(double[] RGB, double[] redPrimary, double[] greenPrimary, double[] bluePrimary, double[] white)
+        {
+            double Xr = redPrimary[0] / redPrimary[1];
+            double Yr = 1.0;
+            double Zr = (1.0 - redPrimary[0] - redPrimary[1]) / redPrimary[1];
+            double Xg = greenPrimary[0] / greenPrimary[1];
+            double Yg = 1.0;
+            double Zg = (1.0 - greenPrimary[0] - greenPrimary[1]) / greenPrimary[1];
+            double Xb = bluePrimary[0] / bluePrimary[1];
+            double Yb = 1.0;
+            double Zb = (1.0 - bluePrimary[0] - bluePrimary[1]) / bluePrimary[1];
+
+            double determinant = (Xr * Yg * Zb) + (Xg * Yb * Zr) + (Xb * Yr * Zg) - (Xb * Yg * Zr) - (Xg * Yr * Zb) - (Xr * Yb * Zg);
+
+            //                      -1
+            // | Sr |   | Xr Xg Xb |   | Xw | 
+            // | Sg | = | Yr Yg Yb |   | Yw |
+            // | Sb |   | Zr Zg Zb |   | Zw |
+            // inv12 means first row second column of the inverse matrix
+            double inv11 = 1.0 / determinant * ((Yg * Zb) - (Yb * Zg));
+            double inv12 = 1.0 / determinant * ((Xb * Zg) - (Xg * Zb));
+            double inv13 = 1.0 / determinant * ((Xg * Yb) - (Xb * Yg));
+            double inv21 = 1.0 / determinant * ((Yb * Zr) - (Yr * Zb));
+            double inv22 = 1.0 / determinant * ((Xr * Zb) - (Xb * Zr));
+            double inv23 = 1.0 / determinant * ((Xb * Yr) - (Xr * Yb));
+            double inv31 = 1.0 / determinant * ((Yr * Zg) - (Yg * Zr));
+            double inv32 = 1.0 / determinant * ((Xg * Zr) - (Xr * Zg));
+            double inv33 = 1.0 / determinant * ((Xr * Yg) - (Xg * Yr));
+
+            double Sr = (inv11 * white[0]) + (inv12 * white[1]) + (inv13 * white[2]);
+            double Sg = (inv21 * white[0]) + (inv22 * white[1]) + (inv23 * white[2]);
+            double Sb = (inv31 * white[0]) + (inv32 * white[1]) + (inv33 * white[2]);
+
+            //       | M11 M12 M13 |   | SrXr SgXg SbXb |
+            // [M] = | M21 M22 M23 | = | SrYr SgYg SbYb |
+            //       | M31 M32 M33 |   | SrZr SgZg SbZb |
+            double M11 = Sr * Xr;
+            double M12 = Sg * Xg;
+            double M13 = Sb * Xb;
+            double M21 = Sr * Yr;
+            double M22 = Sg * Yg;
+            double M23 = Sb * Yb;
+            double M31 = Sr * Zr;
+            double M32 = Sg * Zg;
+            double M33 = Sb * Zb;
+
+            // | X |       | R |
+            // | Y | = [M] | G |
+            // | Z |       | B |
+            double[] XYZ = new double[3];
+            XYZ[0] = M11 * RGB[0] + M12 * RGB[1] + M13 * RGB[2];
+            XYZ[1] = M21 * RGB[0] + M22 * RGB[1] + M23 * RGB[2];
+            XYZ[2] = M31 * RGB[0] + M32 * RGB[1] + M33 * RGB[2];
+
+            return XYZ;
         }
     }
 }

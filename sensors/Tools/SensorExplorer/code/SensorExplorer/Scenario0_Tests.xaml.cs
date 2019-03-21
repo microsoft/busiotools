@@ -28,7 +28,7 @@ namespace SensorExplorer
         public MainPage rootPage = MainPage.Current;
         public enum Directions { left, right, up, down, nothing }
         public List<int> SensorType;
-        public Boolean IsSimpleOrientationSensor = false;
+        public bool IsSimpleOrientationSensor = false;
         private static readonly int countdownTime = 10; // In seconds
         private static readonly int testIterations = 8;
         private static readonly int numQuadrants = 4;
@@ -65,17 +65,17 @@ namespace SensorExplorer
         private List<double[]> orientationSensorFirstMinuteDataList;
         private List<double[]> orientationSensorLastMinuteDataList;
         private SimpleOrientationSensor currentSimpleOrientationSensor;
-        private Boolean accelerometerInitialized;
-        private Boolean inclinometerInitialized;
-        private Boolean orientationInitialized;
-        private Boolean orientationAmInitialized;
-        private Boolean simpleOrientationInitialized;
+        private bool accelerometerInitialized;
+        private bool inclinometerInitialized;
+        private bool orientationInitialized;
+        private bool orientationAmInitialized;
+        private bool simpleOrientationInitialized;
         private string sensorDataLog;
         private DateTime startTime;
 
         public Scenario0Tests()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Scenario0 = this;
             // disable screen display rotation during the test
             if (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")

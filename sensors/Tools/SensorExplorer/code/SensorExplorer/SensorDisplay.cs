@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.Resources;
@@ -90,6 +91,7 @@ namespace SensorExplorer
         public StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { MaxHeight = 280, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
         private Canvas canvasSensor = new Canvas();
+        private Expander expanderProperty = new Expander() { Header = "Properties" };
 
         // MALT
         private StackPanel stackPanelMALT2 = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness() { Left = 20, Top = 20 } };
@@ -114,6 +116,7 @@ namespace SensorExplorer
             _totalIndex = totalIndex;
             _name = name;
 
+            expanderProperty.Content = scrollViewerProperty;
             scrollViewerProperty.Content = stackPanelProperty;
 
             string[] vAxisLabel = new string[scale + 1];
@@ -237,7 +240,7 @@ namespace SensorExplorer
                 stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
             }
 
-            stackPanelBottom.Children.Add(scrollViewerProperty);
+            stackPanelBottom.Children.Add(expanderProperty);
 
             if (sensorType == Sensor.LIGHTSENSOR)
             {
@@ -298,6 +301,8 @@ namespace SensorExplorer
                     stackPanelMALTPropertyName2.Children.Add(textBlockMALTPropertyName2[i]);
                     stackPanelMALTPropertyValue2.Children.Add(TextBlockMALTPropertyValue2[i]);
                 }
+
+
 
                 StackPanelMALTData.Children.Add(textblockMALTData1);
                 StackPanelMALTData.Children.Add(stackPanelMALTPropertyName1);

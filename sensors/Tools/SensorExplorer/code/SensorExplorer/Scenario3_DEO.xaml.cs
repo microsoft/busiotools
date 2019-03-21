@@ -35,8 +35,6 @@ namespace SensorExplorer
             var inputTypes = new List<string>() { "Slider", "Specific value" };
             comboBoxPercentage.ItemsSource = inputTypes;
             comboBoxPercentage.SelectionChanged += OnSelectionChangedPercentage;
-            comboBoxNits.ItemsSource = inputTypes;
-            comboBoxNits.SelectionChanged += OnSelectionChangedNits;
         }
 
         private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)
@@ -56,28 +54,6 @@ namespace SensorExplorer
                     {
                         percentageBrightnessSlider.Visibility = Visibility.Collapsed;
                         stackPanelPercentageBrightness.Visibility = Visibility.Visible;
-                    }
-                }
-            }
-        }
-
-        private void OnSelectionChangedNits(object sender, SelectionChangedEventArgs e)
-        {
-            if (comboBoxNits.SelectedItem != null)
-            {
-                string selected = comboBoxNits.SelectedItem.ToString();
-                if (selected != null)
-                {
-                    if (selected == "Slider")
-                    {
-                        nitsBrightnessSlider.Visibility = Visibility.Visible;
-                        stackPanelNitsBrightness.Visibility = Visibility.Collapsed;
-                        textBlockNitsInputError.Visibility = Visibility.Collapsed;
-                    }
-                    else if (selected == "Specific value")
-                    {
-                        nitsBrightnessSlider.Visibility = Visibility.Collapsed;
-                        stackPanelNitsBrightness.Visibility = Visibility.Visible;
                     }
                 }
             }
@@ -106,12 +82,12 @@ namespace SensorExplorer
 
                 if (args.Capabilities.IsBrightnessNitsControlSupported)
                 {
-                    stackPanelComboBoxNits.Visibility = Visibility.Visible;
+                    stackPanelNitsBrightness.Visibility = Visibility.Visible;
                     textBlockNitsBrightnessSettings.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
-                    stackPanelComboBoxNits.Visibility = Visibility.Collapsed;
+                    stackPanelNitsBrightness.Visibility = Visibility.Collapsed;
                     textBlockNitsBrightnessSettings.Visibility = Visibility.Visible;
                 }
             });
@@ -277,7 +253,7 @@ namespace SensorExplorer
                 {
                     foreach (var nitRange in supportedNitRange)
                     {
-                        if (nits >= nitRange.MinNits && nits >= nitRange.MaxNits)
+                        if (nits >= nitRange.MinNits && nits <= nitRange.MaxNits)
                         {
                             SetBrightnessNits(nits);
                             textBlockNitsInputError.Visibility = Visibility.Collapsed;
@@ -285,6 +261,7 @@ namespace SensorExplorer
                         else
                         {
                             textBlockNitsInputError.Visibility = Visibility.Visible;
+                            textBlockNitsInputError.Text = "Please enter a number between " + nitRange.MinNits + " and " + nitRange.MaxNits + ".";
                         }
                     }
                 }

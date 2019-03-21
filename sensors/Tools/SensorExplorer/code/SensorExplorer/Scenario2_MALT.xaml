@@ -1,6 +1,6 @@
 ﻿<!--Copyright (c) Microsoft Corporation. All rights reserved.-->
 <!--Licensed under the MIT License.-->
-    
+
 <Page
     x:Class="SensorExplorer.Scenario2MALT"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,7 +14,7 @@
 
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel x:Name="stackpanel1" Margin="12,20,12,12">
-            <TextBlock Text="Device Selection" Margin="0,0,0,10"/>
+            <TextBlock Text="Device Selection" Margin="0,0,0,10" FontSize="20"/>
             <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
@@ -97,7 +97,7 @@
                 <Button x:Name="buttonAUTOCURVE2" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonAUTOCURVE2"/>
             </StackPanel>
         </StackPanel>
-        
+
         <StackPanel x:Name="stackpanel4" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
             <StackPanel>
                 <TextBlock Text="Internal Light/Color Sensor" FontSize="20" Margin="10,20,0,0"/>

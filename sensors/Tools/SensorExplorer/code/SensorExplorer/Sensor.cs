@@ -42,9 +42,10 @@ namespace SensorExplorer
         public const int ACTIVITYNOTSUPPORTED = 3;
 
         public static int currentId = -1;
-
         public static List<SensorData> sensorData;
         public static List<SensorDisplay> sensorDisplay;
+        public static DeviceInformationCollection SensorClassDevice;
+        public static int NumFailedEnumerations;
 
         public static List<Accelerometer> AccelerometerStandardList;
         public static List<DeviceInformation> AccelerometerStandardDeviceInfo;
@@ -80,10 +81,6 @@ namespace SensorExplorer
         public static List<DeviceInformation> ProximitySensorDeviceInfo;
         public static List<SimpleOrientationSensor> SimpleOrientationSensorList;
         public static List<DeviceInformation> SimpleOrientationSensorDeviceInfo;
-
-        public static DeviceInformationCollection SensorClassDevice;
-
-        public static int NumFailedEnumerations;
 
         public static bool AccelerometerStandardFailed;
         public static bool AccelerometerLinearFailed;
@@ -416,6 +413,7 @@ namespace SensorExplorer
             {
                 SimpleOrientationSensorFailed = false;
             }
+
             return true;
         }
 
@@ -2366,4 +2364,3 @@ namespace SensorExplorer
         }
     }
 }
- 

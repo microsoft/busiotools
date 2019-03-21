@@ -21,7 +21,7 @@ namespace SensorExplorer
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Suspending += OnSuspending;
         }
 

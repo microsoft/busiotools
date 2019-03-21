@@ -23,7 +23,7 @@ namespace SensorExplorer
 
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Current = this;
 
             try
@@ -75,7 +75,7 @@ namespace SensorExplorer
 
         public List<Scenario> Scenarios
         {
-            get { return this.scenarios; }
+            get { return scenarios; }
         }
 
         public void NotifyUser(string strMessage, NotifyType type)
@@ -140,6 +140,7 @@ namespace SensorExplorer
             ScenarioControl.IsEnabled = true;
         }
     }
+
     public enum NotifyType
     {
         StatusMessage,

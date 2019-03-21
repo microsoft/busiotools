@@ -29,6 +29,7 @@ namespace SensorExplorer
         public enum Directions { left, right, up, down, nothing }
         public List<int> SensorType;
         public bool IsSimpleOrientationSensor = false;
+
         private static readonly int countdownTime = 10; // In seconds
         private static readonly int testIterations = 8;
         private static readonly int numQuadrants = 4;
@@ -77,6 +78,7 @@ namespace SensorExplorer
         {
             InitializeComponent();
             Scenario0 = this;
+            
             // disable screen display rotation during the test
             if (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
             {
@@ -90,6 +92,7 @@ namespace SensorExplorer
                 instruction.FontSize = 20;
                 timerLog.FontSize = 20;
             }
+
             EnumerateSensors();
         }
 
@@ -368,8 +371,7 @@ namespace SensorExplorer
             Button packetLossTestButton = CreateTestButton("Packet Loss Test");
             Button staticAccuracyButton = CreateTestButton("Static Accuracy Test");
             Button magInterferenceButton = CreateTestButton("MagInterference Test", 28);
-            TextBlock noTestAvailable = new TextBlock();
-            noTestAvailable.Text = "No tests available for this sensor.";
+            TextBlock noTestAvailable = new TextBlock() { Text = "No tests available for this sensor." };
             pivotItemSensor.Header = Constants.SensorName[sensorType] + " " + (index + 1);
             if (sensorType == Sensor.ACCELEROMETER)
             {
@@ -752,6 +754,7 @@ namespace SensorExplorer
                 }
             }
         }
+
         public async void TestEnd()
         {
             int type = SensorType[pivotSensor.SelectedIndex];
@@ -783,11 +786,13 @@ namespace SensorExplorer
             {
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
             }
+
             cancelButton.Visibility = Visibility.Collapsed;
             instruction.Text = "Calculating result...";
             await Task.Delay(5000);
             output.Text = "";
             LogDataList();
+
             if (testType == "Frequency")
             {
                 CalculateFrequencyTest();
@@ -816,6 +821,7 @@ namespace SensorExplorer
             {
                 CalculateMagInterference();
             }
+
             DisplayRestart();
         }
 
@@ -848,6 +854,7 @@ namespace SensorExplorer
             result = Math.Max(maxE - temp, temp - minE);
             instruction.Text = "The result of Magnetic Interference is\n" + " " + result + " " + "degrees";
         }
+
         private void CalculateStaticAccuracy()
         {
             oriAngles.Sort();
@@ -855,6 +862,7 @@ namespace SensorExplorer
             double result = oriAngles[0];
             instruction.Text = "The result of Static Accuracy is\n" + " " + result + " " + "degrees";
         }
+
         private void LogDataList()
         {
             int type = SensorType[pivotSensor.SelectedIndex];
@@ -903,6 +911,7 @@ namespace SensorExplorer
             pivotSensor.Visibility = Visibility.Visible;
             rootPage.NotifyUser("Please select a test", NotifyType.StatusMessage);
         }
+
         private async void CancelButton(object sender, RoutedEventArgs e)
         {
             int type = SensorType[pivotSensor.SelectedIndex];
@@ -1590,6 +1599,7 @@ namespace SensorExplorer
             eulerAngle[2] = Math.Atan2(siny, cosy);
             return eulerAngle;
         }
+
         private double InnerProduct(double[] quaternionA, double[] quaternionB)
         {
             double inner = 0;
@@ -1599,6 +1609,7 @@ namespace SensorExplorer
             inner += quaternionA[3] * quaternionB[3];
             return inner;
         }
+
         private double Norm(double[] quaternion)
         {
             double sumOfSquares = 0;
@@ -1608,11 +1619,13 @@ namespace SensorExplorer
             sumOfSquares += quaternion[3] * quaternion[3];
             return Math.Sqrt(sumOfSquares);
         }
+
         private double Angle4(double[] current, double[] expected)
         {
             double value = InnerProduct(current, expected) / (Norm(current)) * (Norm(expected));
             return 2 * Math.Acos(value) * 180 / Math.PI;
         }
+
         private double OriAngleCalculate(int index)
         {
             int type = SensorType[pivotSensor.SelectedIndex];
@@ -1635,6 +1648,7 @@ namespace SensorExplorer
             if (Math.Abs(result) >= 30 && Math.Abs(result) <= 60) result = Math.Abs(45 - result);
             return result;
         }
+
         private async void StaticAccuracyHandler()
         {
             cancelButton.Visibility = Visibility.Visible;
@@ -1698,6 +1712,7 @@ namespace SensorExplorer
                 instruction.Text = testType + " is ending...";
             }
         }
+
         private async void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

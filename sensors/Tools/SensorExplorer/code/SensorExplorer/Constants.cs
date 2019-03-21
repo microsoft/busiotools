@@ -140,7 +140,7 @@ namespace SensorExplorer
         public static Color[] PedometerColors = new Color[] { Colors.DarkCyan, Colors.Black, Colors.Black };
         public static Color[] ProximitySensorColors = new Color[] { Colors.DarkOrange, Colors.Black };
         public static Color[] SimpleOrientationSensorColors = new Color[] { Colors.Lime };
-}
+    }
 
     public class DeviceProperties
     {

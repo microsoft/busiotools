@@ -32,8 +32,7 @@ namespace SensorExplorer
             deo.CanOverrideChanged += Deo_CanOverrideChanged;
             deo.DisplayEnhancementOverrideCapabilitiesChanged += Deo_DisplayEnhancementOverrideCapabilitiesChanged;
 
-            var inputTypes = new List<string>() { "Slider", "Specific value" };
-            comboBoxPercentage.ItemsSource = inputTypes;
+            comboBoxPercentage.ItemsSource = new List<string>() { "Slider", "Specific value" };
             comboBoxPercentage.SelectionChanged += OnSelectionChangedPercentage;
         }
 
@@ -42,19 +41,17 @@ namespace SensorExplorer
             if (comboBoxPercentage.SelectedItem != null)
             {
                 string selected = comboBoxPercentage.SelectedItem.ToString();
-                if (selected != null)
+                textBlockPercentageInputError.Visibility = Visibility.Collapsed;
+
+                if (selected == "Slider")
                 {
-                    if (selected == "Slider")
-                    {
-                        percentageBrightnessSlider.Visibility = Visibility.Visible;
-                        stackPanelPercentageBrightness.Visibility = Visibility.Collapsed;
-                        textBlockPercentageInputError.Visibility = Visibility.Collapsed;
-                    }
-                    else if (selected == "Specific value")
-                    {
-                        percentageBrightnessSlider.Visibility = Visibility.Collapsed;
-                        stackPanelPercentageBrightness.Visibility = Visibility.Visible;
-                    }
+                    percentageBrightnessSlider.Visibility = Visibility.Visible;
+                    stackPanelPercentageBrightness.Visibility = Visibility.Collapsed;
+                }
+                else if (selected == "Specific value")
+                {
+                    percentageBrightnessSlider.Visibility = Visibility.Collapsed;
+                    stackPanelPercentageBrightness.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -65,31 +62,16 @@ namespace SensorExplorer
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                brightnessPercentageSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessControlSupported ? "Yes" : "No";
-                brightnessNitsSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessNitsControlSupported ? "Yes" : "No";
                 supportedNitRange = args.Capabilities.GetSupportedNitRanges();
 
-                if (args.Capabilities.IsBrightnessControlSupported)
-                {
-                    stackPanelComboBoxPercentage.Visibility = Visibility.Visible;
-                    textBlockPercentageBrightnessSettings.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    stackPanelComboBoxPercentage.Visibility = Visibility.Collapsed;
-                    textBlockPercentageBrightnessSettings.Visibility = Visibility.Visible;
-                }
+                brightnessPercentageSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessControlSupported ? "Yes" : "No";
+                brightnessNitsSupportedStateTextBlock.Text = args.Capabilities.IsBrightnessNitsControlSupported ? "Yes" : "No";
 
-                if (args.Capabilities.IsBrightnessNitsControlSupported)
-                {
-                    stackPanelNitsBrightness.Visibility = Visibility.Visible;
-                    textBlockNitsBrightnessSettings.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    stackPanelNitsBrightness.Visibility = Visibility.Collapsed;
-                    textBlockNitsBrightnessSettings.Visibility = Visibility.Visible;
-                }
+                stackPanelComboBoxPercentage.Visibility = args.Capabilities.IsBrightnessControlSupported ? Visibility.Visible : Visibility.Collapsed;
+                textBlockPercentageBrightnessSettings.Visibility = args.Capabilities.IsBrightnessControlSupported ? Visibility.Collapsed : Visibility.Visible;
+
+                stackPanelNitsBrightness.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Visible : Visibility.Collapsed;
+                textBlockNitsBrightnessSettings.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Collapsed: Visibility.Visible;
             });
         }
 
@@ -236,11 +218,6 @@ namespace SensorExplorer
             }
         }
 
-        private void NitsBrightnessSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            SetBrightnessNits((float)e.NewValue);
-        }
-
         private void ButtonNitsBrightness_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -348,6 +325,5 @@ namespace SensorExplorer
         }
 
         #endregion // General Controls
-
     }
 }

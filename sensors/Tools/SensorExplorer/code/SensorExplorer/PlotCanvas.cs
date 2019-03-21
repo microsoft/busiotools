@@ -21,7 +21,6 @@ namespace SensorExplorer
         private int _maxValue = 0;
         private int _minValue = 0;
         private string[] _vAxisLabel;
-
         private Canvas _canvas;
         private Color[] _color;
         private List<int> _plotIndex = new List<int>();
@@ -41,12 +40,6 @@ namespace SensorExplorer
                     _plotIndex.Add(i);
                 }
             }
-        }
-
-        public void SetFrame(int frame)
-        {
-            _frame = frame;
-            _replotGrid = true;
         }
 
         public void SetHeight(double height)

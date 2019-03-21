@@ -320,16 +320,11 @@ namespace SensorExplorer
                 rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + (PivotSensor.Items.Count - 1) + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
                 ProgressRingSensor.IsActive = false;
 
-                if (PivotSensor.Items.Count > 0)
+                if (PivotSensor.Items.Count > 1)    // 1 for Summary Page which always exists
                 {
                     PivotSensor.SelectionChanged += PivotSensorSelectionChanged;
                     PivotSensor.SelectedIndex = 0;
                     PivotSensorSelectionChanged(null, null);
-                }
-                else
-                {
-                    TextBlockNoSensor.Text = resourceLoader.GetString("CannotFindSensor");
-                    return;
                 }
             }
             catch (Exception ex)

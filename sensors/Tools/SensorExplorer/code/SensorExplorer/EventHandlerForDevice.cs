@@ -26,7 +26,7 @@ namespace SensorExplorer
         private static EventHandlerForDevice eventHandlerForDevice;
 
         // Used to synchronize threads to avoid multiple instantiations of eventHandlerForDevice.
-        private static object singletonCreationLock = new Object();
+        private static object singletonCreationLock = new object();
 
         private DeviceWatcher deviceWatcher;
         private SuspendingEventHandler appSuspendEventHandler;

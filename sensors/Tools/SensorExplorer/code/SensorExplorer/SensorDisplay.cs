@@ -42,7 +42,6 @@ namespace SensorExplorer
         public int _sensorType;
         public int _index;
         public bool _isOn = false;
-
         public StackPanel StackPanelSensor = new StackPanel() { Orientation = Orientation.Vertical, Visibility = Visibility.Collapsed, Margin = new Thickness() { Right = 18, Bottom = 20, Top = 0 } };
         public PlotCanvas _plotCanvas;
         public TextBox TextboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness() { Left = 40, Right = 10, Top = 20, Bottom = 10 } };
@@ -56,7 +55,6 @@ namespace SensorExplorer
         private int _totalIndex;
         private string _name;
         private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", " Vendor Defined Sub-Type", "State", "Device ID" };
-
         private StackPanel stackPanelSwitch = new StackPanel();
         private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
         private Button buttonSensor = new Button();
@@ -70,11 +68,9 @@ namespace SensorExplorer
         private Image imageInclinometerRoll = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private Image imageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private TextBlock textBlockSensor = new TextBlock() { Foreground = new SolidColorBrush(Colors.Black), FontSize = 72 };
-
         private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomRightCol = new StackPanel() { Orientation = Orientation.Vertical };
-
         private StackPanel stackPanelDataName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(40, 0, 0, 0) };
         private TextBlock[] textBlockProperty;
         private StackPanel stackPanelValue = new StackPanel() { Orientation = Orientation.Vertical };
@@ -83,7 +79,6 @@ namespace SensorExplorer
         private TextBlock[] textBlockMinValue;
         private StackPanel stackPanelMaxValue = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockMaxValue;
-
         private StackPanel stackPanelPropertyName = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockPropertyName;
         private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical };
@@ -301,8 +296,6 @@ namespace SensorExplorer
                     stackPanelMALTPropertyName2.Children.Add(textBlockMALTPropertyName2[i]);
                     stackPanelMALTPropertyValue2.Children.Add(TextBlockMALTPropertyValue2[i]);
                 }
-
-
 
                 StackPanelMALTData.Children.Add(textblockMALTData1);
                 StackPanelMALTData.Children.Add(stackPanelMALTPropertyName1);

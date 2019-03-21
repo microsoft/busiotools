@@ -21,16 +21,12 @@ namespace SensorExplorer
         }
 
         public List<Reading> _reading = new List<Reading>();
-
         public int _sensorType = -1;
         public int _count = -1;
-
         public string _name = string.Empty;
         public string[] _property;
-
         public double[] _maxValue;
         public double[] _minValue;
-
         public uint _defaultReportInterval = 0;
         public string _deviceId;
         public string _deviceName;
@@ -127,6 +123,7 @@ namespace SensorExplorer
                 }
             }
             catch { }
+
             return false;
         }
 

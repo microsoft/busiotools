@@ -18,6 +18,7 @@ using Windows.Storage.Provider;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Navigation;
 
 namespace SensorExplorer
@@ -73,6 +74,8 @@ namespace SensorExplorer
         private bool simpleOrientationInitialized;
         private string sensorDataLog;
         private DateTime startTime;
+        private Run run = new Run();
+        private int staticAccuracyCount;
 
         public Scenario0Tests()
         {
@@ -94,6 +97,7 @@ namespace SensorExplorer
             }
 
             EnumerateSensors();
+            hyperlink.Inlines.Add(run);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -508,6 +512,7 @@ namespace SensorExplorer
 
         private void TestBegin()
         {
+            staticAccuracyCount = 0;
             dataList = new List<double[]>();
             orientationSensorFirstMinuteDataList = new List<double[]>();
             orientationSensorLastMinuteDataList = new List<double[]>();
@@ -843,7 +848,7 @@ namespace SensorExplorer
                         maxE = minE = temp;
                     }
                 }
-                if (globalStep >= 10)
+                else
                 {
                     orientationError = Angle4(array, expectedValue);
                     maxE = Math.Max(maxE, orientationError);
@@ -907,6 +912,7 @@ namespace SensorExplorer
             restartButtonOrientation.Visibility = Visibility.Collapsed;
             saveButtonOrientation.Visibility = Visibility.Collapsed;
             instruction.Text = "";
+            run.Text = "";
             output.Text = "";
             pivotSensor.Visibility = Visibility.Visible;
             rootPage.NotifyUser("Please select a test", NotifyType.StatusMessage);
@@ -942,6 +948,7 @@ namespace SensorExplorer
             rootPage.EnableScenarioSelect();
             timerLog.Text = "";
             instruction.Text = "";
+            run.Text = "";
             output.Text = "";
             pivotSensor.Visibility = Visibility.Visible;
             if (countdown != null)
@@ -956,9 +963,11 @@ namespace SensorExplorer
         private void CalculateFrequencyTest()
         {
             int type = SensorType[pivotSensor.SelectedIndex];
-            string str = Constants.SensorName[type] + " " + testType + " Test Result: " + (dataList.Count / testLength[testType]) + " Hz\n";
+            string str = Constants.SensorName[type] + " " + testType + " Test Result: " + (dataList.Count / testLength[testType]) + " Hz\n\n";
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+            run.Text = "https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit:";
         }
 
         private void CalculateOffsetTest()
@@ -1020,10 +1029,12 @@ namespace SensorExplorer
                 double avgErrorY = errorSum[2] / dataList.Count;
                 double avgErrorZ = errorSum[3] / dataList.Count;
                 double result = Math.Sqrt(avgErrorW * avgErrorW + avgErrorX * avgErrorX + avgErrorY * avgErrorY + avgErrorZ * avgErrorZ);
-                str = Constants.SensorName[type] + " " + testType + " Test Result: " + result + " Degrees\n";
+                str = Constants.SensorName[type] + " " + testType + " Test Result: " + result + " Degrees\n\n";
             }
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+            run.Text = "https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit:";
         }
 
         private void CalculateJitterTest()
@@ -1086,10 +1097,12 @@ namespace SensorExplorer
                       "--> Maximum difference in W: " + maxDifference[0] + " Degrees\n" +
                       "--> Maximum difference in X: " + maxDifference[1] + " Degrees\n" +
                       "--> Maximum difference in Y: " + maxDifference[2] + " Degrees\n" +
-                      "--> Maximum difference in Z: " + maxDifference[3] + " Degrees \n";
+                      "--> Maximum difference in Z: " + maxDifference[3] + " Degrees \n\n";
             }
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+            run.Text = "https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit:";
         }
 
         private void CalculateDriftTest()
@@ -1141,10 +1154,12 @@ namespace SensorExplorer
                   "--> Difference in W: " + (lastMinuteAvg[0] - firstMinuteAvg[0]) + " Degrees\n" +
                   "--> Difference in X: " + (lastMinuteAvg[1] - firstMinuteAvg[1]) + " Degrees\n" +
                   "--> Difference in Y: " + (lastMinuteAvg[2] - firstMinuteAvg[2]) + " Degrees\n" +
-                  "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + " Degrees\n";
+                  "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + " Degrees\n\n";
 
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+            run.Text = "https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit:";
         }
 
         private void CalculatePacketLossTest()
@@ -1176,9 +1191,11 @@ namespace SensorExplorer
                 reportInterval = currentOrientationSensor.ReportInterval;
             }
             double expectedNumData = testLength[testType] / (reportInterval / 1000.0);
-            string str = Constants.SensorName[type] + " " + testType + " Test Result: " + ((expectedNumData - dataList.Count) / expectedNumData) * 100 + " %\n";
+            string str = Constants.SensorName[type] + " " + testType + " Test Result: " + ((expectedNumData - dataList.Count) / expectedNumData) * 100 + " %\n\n";
             rootPage.loggingChannelTests.LogMessage(str);
-            instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
+            hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+            run.Text = "https://aka.ms/sensorexplorerblog";
+            instruction.Text = str + "For more information, please visit:";
         }
 
         private async void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
@@ -1653,64 +1670,75 @@ namespace SensorExplorer
         {
             cancelButton.Visibility = Visibility.Visible;
             oriAngles = new List<double>();
-            startTime = DateTime.Now;
+
             for (int i = 0; i < 15; i++)
             {
-
-                instruction.Text = "Orientation Sensor" + " " + testType + " Test in progress...";
                 currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
                 dataList.Clear();
                 if (cancelButtonClicked)
                 {
+                    currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
                     break;
                 }
                 for (int count = 10; count >= 0; count--)
                 {
-                    if (i == 0 || i == 5 || i == 10 || i == 14) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to rotate the device on a level surface with its y axis pointing to magnetic north...";
-                    else if (i < 5) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to rotate 90 degrees counterclockwise around the z axis and stop to a static position...";
-                    else if (i < 10) instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to rotate 90 degrees counterclockwise around the x axis and stop to a static position...";
-                    else instruction.Text = "You have" + " " + count + " " + 
-                            "seconds to rotate 90 degrees counterclockwise around the y axis and stop to a static position...";
+                    output.Text = "";
+                    if (i == 0 || i == 5 || i == 10 || i == 14)
+                    {
+                        instruction.Text = "You have " + count +
+                            " seconds to rotate the device on a level surface with its y axis pointing to magnetic north...";
+                    }
+                    else if (i < 5)
+                    {
+                        instruction.Text = "You have " + count +
+                            " seconds to rotate 90 degrees counterclockwise around the z axis and stop to a static position...";
+                    }
+                    else if (i < 10)
+                    {
+                        instruction.Text = "You have " + count +
+                            " seconds to rotate 90 degrees counterclockwise around the x axis and stop to a static position...";
+                    }
+                    else
+                    {
+                        instruction.Text = "You have " + count +
+                            " seconds to rotate 90 degrees counterclockwise around the y axis and stop to a static position...";
+                    }
+
                     await Task.Delay(1000);
+
                     if (cancelButtonClicked)
                     {
+                        currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
                         timerLog.Text = "";
                         instruction.Text = "";
                         output.Text = "";
                         break;
                     }
                 }
+
                 startTime = DateTime.Now;
                 currentOrientationSensor.ReadingChanged += OrientationSensorReadingChanged;
+
                 for (int count = 5; count >= 0; count--)
                 {
-                    instruction.Text = "Sampling data for" + " " + count + " " + "seconds...";
+                    instruction.Text = "Sampling data for " + count + " seconds...";
+
                     if (cancelButtonClicked)
                     {
+                        currentOrientationSensor.ReadingChanged -= OrientationSensorReadingChanged;
                         timerLog.Text = "";
                         instruction.Text = "";
                         output.Text = "";
                         break;
                     }
+
                     await Task.Delay(1000);
                 }
+
                 oriAngles.Add(OriAngleCalculate(i));
             }
-            if (cancelButtonClicked)
-            {
-                timerLog.Text = "";
-                instruction.Text = "";
-                output.Text = "";
-            }
-            else
-            {
-                countdown = new Countdown(testLength[testType], testType);
-                startTime = DateTime.Now;
-                instruction.Text = testType + " is ending...";
-            }
+
+            TestEnd();
         }
 
         private async void SimpleOrientationChangedOrientation(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
@@ -1816,7 +1844,9 @@ namespace SensorExplorer
             imgX.Visibility = Visibility.Collapsed;
 
             rootPage.loggingChannelTests.LogMessage("Orientation Test failed");
-            instruction.Text = "Orientation Test failed";
+            hyperlink.NavigateUri = new Uri("https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing");
+            run.Text = "https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing";
+            instruction.Text = "Orientation Test failed.\n\nFor more information on sensor testing, please refer to:";
             DisplayRestartOrientation();
         }
 
@@ -1949,6 +1979,7 @@ namespace SensorExplorer
         {
             timerLog.Text = "";
             instruction.Text = "";
+            run.Text = "";
         }
     }
 }

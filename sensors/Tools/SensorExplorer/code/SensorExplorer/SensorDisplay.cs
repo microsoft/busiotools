@@ -54,7 +54,7 @@ namespace SensorExplorer
 
         private int _totalIndex;
         private string _name;
-        private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", " Vendor Defined Sub-Type", "State", "Device ID" };
+        private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" };
         private StackPanel stackPanelSwitch = new StackPanel();
         private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
         private Button buttonSensor = new Button();

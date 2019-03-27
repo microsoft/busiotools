@@ -40,10 +40,10 @@ namespace SensorExplorer
                     Scenario0Tests.Scenario0.TestEnd();
                 }
             }
-            else if (Scenario0Tests.Scenario0.IsSimpleOrientationSensor)    
+            else if (Scenario0Tests.Scenario0.IsSimpleOrientationSensor)
             {
                 // check the current simple orientation every second
-                Scenario0Tests.Scenario0.CurrentSimpleOrientation();    
+                Scenario0Tests.Scenario0.CurrentSimpleOrientation();
             }
         }
 

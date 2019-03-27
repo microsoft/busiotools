@@ -73,6 +73,7 @@
 
             <!-- Other tests -->
             <TextBlock x:Name="instruction" FontSize="25" TextWrapping="Wrap" Margin="30,10,10,10"/>
+            <TextBlock FontSize="25" TextWrapping="Wrap" Margin="30,0,10,10"><Hyperlink x:Name="hyperlink"></Hyperlink></TextBlock>
             <Button x:Name="startButton" Content="Start" HorizontalAlignment="Center" Click="StartButton" Height="85" Width="150" FontSize="36" Visibility="Collapsed"/>
             <TextBlock x:Name="timerLog" FontSize="25" Margin="30,10,10,10"/>
             <TextBlock x:Name="output" Margin="30,10,10,10"/>

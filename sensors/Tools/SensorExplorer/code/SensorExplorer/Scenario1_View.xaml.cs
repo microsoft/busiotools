@@ -399,30 +399,29 @@ namespace SensorExplorer
                             rootPage.NotifyUser("", NotifyType.StatusMessage);
                         }
 
-                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);   
-                        
+                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);              
                     }
 
                     Sensor.currentId = i;   // sensor being displayed
+                    (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
+
                     if (i != PivotSensor.Items.Count - 1)
                     {
                         _sensorDisplay[i].EnableSensor();
-                    }
-                    
-                    (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
-                    SensorDisplay selected = _sensorDisplay[Sensor.currentId];
-                    selected.stackPanelProperty.Visibility = Visibility.Visible;
+                        SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+                        selected.stackPanelProperty.Visibility = Visibility.Visible;
 
-                    if ((PivotSensor.Items[i] as PivotItem).Header.ToString().Contains("LightSensor"))
-                    {
-                        saveFileButton.IsEnabled = true;
-                        selected.MALTButton.Visibility = Visibility.Visible;
-                        selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        saveFileButton.IsEnabled = false;
-                        stackPanelMALTConnection.Visibility = Visibility.Collapsed;
+                        if ((PivotSensor.Items[i] as PivotItem).Header.ToString().Contains("LightSensor"))
+                        {
+                            saveFileButton.IsEnabled = true;
+                            selected.MALTButton.Visibility = Visibility.Visible;
+                            selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            saveFileButton.IsEnabled = false;
+                            stackPanelMALTConnection.Visibility = Visibility.Collapsed;
+                        }
                     }
                 }
             }

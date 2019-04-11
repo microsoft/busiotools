@@ -20,8 +20,10 @@
     <EventProvider Id="CTRLGUID_EVR_WPP" Name="d3045008-e530-485e-81b7-c6d54dbd9044" />
     <EventProvider Id="DRMWMI" Name="6e03dd26-581b-4ec5-8f22-601a4de5f022" />
     <EventProvider Id="Fingerprint_CredProv" Name="0aba6892-455b-551d-7da8-3a8f85225e1a" />
+    <EventProvider Id="FsIsoTracelogProvider" Name="0a645885-cc18-4dec-ab0a-8aa890c13d3e" Level="5" />
     <EventProvider Id="Jedi" Name="e647b5bf-99a4-41fe-8789-56c6bb3fa9c8" Level="32" />
     <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" />
+    <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft_Windows_Devices_Background" Name="64ef2b1c-4ae1-4e64-8599-1636e441ec88" />
     <EventProvider Id="Microsoft-Apps-SkypeApp-UI" Name="edd0620d-036c-516e-dc22-564351a84725" />
     <EventProvider Id="Microsoft-Kinect-FrameProvide" Name="a0e3d8ea-c34f-4419-a1db-90435b8b21d0" />
@@ -119,6 +121,7 @@
         <Keyword Value="0x000000001FFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft-Windows-WdfCompanionFilter" Name="12ab1cf8-c42c-4b9a-bd9c-3fa45b42bdca" Level="5" />
     <EventProvider Id="Microsoft-Windows-WinBioDataModel" Name="63221d5a-4d00-4be3-9d38-de9aaf5d0258" />
     <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
     <EventProvider Id="Microsoft-Windows-WMP" Name="f3f14ff3-7b80-4868-91d0-d77e497b025e" />
@@ -130,6 +133,7 @@
     <EventProvider Id="Osiris" Name="7d40a645-bcab-5bb4-82f0-09a26f9af2ea" Level="32" />
     <EventProvider Id="PlayAudio" Name="ac239183-f48e-47b1-b70c-d028d24c2fb4" />
     <EventProvider Id="PlayReady-WPP" Name="00000000-7ac4-430a-94e4-b0dfd254650f" />
+    <EventProvider Id="Secure-ClearDMFT" Name="4280b01e-1f58-4e48-a282-20e609c8e528" Level="5" />
     <EventProvider Id="SSMFSOURCE" Name="8f55386b-eb37-4afc-88e0-c475b2fefd9a" />
     <EventProvider Id="TPM" Name="85be49ea-38f1-4547-a604-80060202fb27" />
     <EventProvider Id="UifEventSource" Name="b39b8cea-eaaa-5a74-5794-4948e222c663" />
@@ -163,8 +167,10 @@
             <EventProviderId Value="CTRLGUID_EVR_WPP" />
             <EventProviderId Value="DRMWMI" />
             <EventProviderId Value="Fingerprint_CredProv" />
+            <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="Jedi" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft_Windows_Devices_Background" />
             <EventProviderId Value="Microsoft-Apps-SkypeApp-UI" />
             <EventProviderId Value="Microsoft-Kinect-FrameProvide" />
@@ -254,6 +260,7 @@
             <EventProviderId Value="Microsoft-Windows-SocCaptureSim" />
             <EventProviderId Value="Microsoft-Windows-USBVideo" />
             <EventProviderId Value="Microsoft-Windows-VideoEditing" />
+            <EventProviderId Value="Microsoft-Windows-WdfCompanionFilter" />
             <EventProviderId Value="Microsoft-Windows-WinBioDataModel" />
             <EventProviderId Value="Microsoft-Windows-WinRT-Error" />
             <EventProviderId Value="Microsoft-Windows-WMP" />
@@ -265,6 +272,7 @@
             <EventProviderId Value="Osiris" />
             <EventProviderId Value="PlayAudio" />
             <EventProviderId Value="PlayReady-WPP" />
+            <EventProviderId Value="Secure-ClearDMFT" />
             <EventProviderId Value="SSMFSOURCE" />
             <EventProviderId Value="TPM" />
             <EventProviderId Value="UifEventSource" />

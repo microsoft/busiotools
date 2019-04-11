@@ -1,11 +1,18 @@
 # Windows Camera Tracing
 
-To collect traces:
+### How to collect traces
+#### Desktop:
 - Double-click on Trace.cmd.
 - Run your scenario when told.
 - Press Enter and wait for the script to complete.
 - The folder containing the traces will pop up.
 
+#### Tshell connected device:
+- Launch tshell and establish connection to device
+- run Trace.ps1
+- Run your scenario when told on a different tshell console
+- Press enter and wait for script to complete
+- The folder containing the traces will pop up.
 Email traces:
 Zip files (Right click > Send to > Compressed folder) and send.
 

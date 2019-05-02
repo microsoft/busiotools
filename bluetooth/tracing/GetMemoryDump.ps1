@@ -1,26 +1,41 @@
-$ServiceName = 'BthServ'
+$WerNativeMethods = [PSObject].Assembly.GetType('System.Management.Automation.WindowsErrorReporting').GetNestedType('NativeMethods', 'NonPublic')
+$MiniDumpWriteDump = $WerNativeMethods.GetMethod('MiniDumpWriteDump', ([Reflection.BindingFlags]'NonPublic, Static'))
 
-Trap [System.Management.Automation.ParameterBindingException] {
-  Write-Host "Could not find $ServiceName, it is likely not running." -ForegroundColor Red
-  Break }
-$Process = Get-Process -Id (Get-WmiObject -Class Win32_Service -Filter "Name LIKE '$ServiceName'" | Select-Object -ExpandProperty ProcessId)
+$ServiceNames = @('BthServ', 'Bluetooth%', 'BTAGService', 'BthAvctpSvc')
 
-$DumpFilePath = Join-Path $Env:Temp "$($ServiceName)_$($Process.Id).dmp"
-$DumpFile = New-Object IO.FileStream($DumpFilePath, [IO.FileMode]::Create)
+If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
 
-$WER = [PSObject].Assembly.GetType('System.Management.Automation.WindowsErrorReporting')
-$NativeMethods = $WER.GetNestedType('NativeMethods', 'NonPublic')
-$MiniDump = $NativeMethods.GetMethod('MiniDumpWriteDump', ([Reflection.BindingFlags]'NonPublic, Static'))
+    [Security.Principal.WindowsBuiltInRole] “Administrator”))
+{
+    Write-Error "Administrator rights are required to collect dumps."
+    Break
 
-$Result = $MiniDump.Invoke($null, @($Process.Handle, $Process.Id, $DumpFile.SafeFileHandle, [UInt32]0x2, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero))
+}
 
-$DumpFile.Close()
+$DumpFolder = Join-Path ($Env:Temp) (Get-Random -Minimum 1000)
+New-Item -Path $DumpFolder -Type Directory | Out-Null
 
-if (-not $Result) {
-    Write-Host "Failed to write dump file for service $ServiceName with PID $Process.Id."
-    Break }
+foreach ( $ServiceName in $ServiceNames ) {
+    Trap [System.Management.Automation.ParameterBindingException] {
+        Write-Warning "Could not find $ServiceName, it is likely not running."
+        Break }
+    $Process = Get-Process -Id (Get-WmiObject -Class Win32_Service -Filter "Name LIKE '$ServiceName'" | Select-Object -ExpandProperty ProcessId)
 
-Compress-Archive $DumpFilePath "$DumpFilePath.zip" -CompressionLevel Optimal -Force
-Trap {Continue} Remove-Item $DumpFilePath 
+    $DumpFilePath = Join-Path $DumpFolder "$($ServiceName)_$($Process.Id).dmp"
+    $DumpFile = New-Object IO.FileStream($DumpFilePath, [IO.FileMode]::Create)
 
-Write-Host "Dump successfully collected in $DumpFilePath.zip."
+    Write-Host "Dumping service $ServiceName with PID $($Process.Id)..."
+    $Result = $MiniDumpWriteDump.Invoke($null, @($Process.Handle, $Process.Id, $DumpFile.SafeFileHandle, [UInt32]0x2, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero))
+
+    $DumpFile.Close()
+
+    if (-not $Result) {
+        Write-Error "Failed to write dump file for service $ServiceName with PID $($Process.Id)."
+        Break }
+}
+
+if ((gci $DumpFolder).Count -gt 1) {
+  Compress-Archive $DumpFolder "$DumpFolder.zip" -CompressionLevel Optimal -Force
+  Write-Host "Dumps successfully stored in $DumpFolder.zip."
+}
+Trap {Continue} Remove-Item $DumpFolder -Force -Recurse

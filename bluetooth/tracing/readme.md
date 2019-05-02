@@ -51,3 +51,10 @@ wpr.exe /? will also give you more information.
 From PowerShell execute: 
   
     wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex
+
+# How to collect memory dump
+
+From elevated PowerShell execute: 
+  
+    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetMemoryDump.ps1 -UseBasicParsing | iex
+

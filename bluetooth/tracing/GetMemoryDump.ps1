@@ -2,7 +2,7 @@ $ServiceName = 'BthServ'
 
 Trap [System.Management.Automation.ParameterBindingException] {
   Write-Host "Could not find $ServiceName, it is likely not running." -ForegroundColor Red
-  Break}
+  Break }
 $Process = Get-Process -Id (Get-WmiObject -Class Win32_Service -Filter "Name LIKE '$ServiceName'" | Select-Object -ExpandProperty ProcessId)
 
 $DumpFilePath = Join-Path $pwd "$($ServiceName)_$($Process.Id).dmp"
@@ -16,10 +16,11 @@ $Result = $MiniDump.Invoke($null, @($Process.Handle, $Process.Id, $DumpFile.Safe
 
 $DumpFile.Close()
 
-if(-not $Result) {
+if (-not $Result) {
     Write-Host "Failed to write dump file for service $ServiceName with PID $Process.Id."
-    Trap {Continue} Remove-Item $DumpFilePath
-    return
-} else {
-    Write-Host "Dump successfully collected in $DumpFilePath."
-}
+    Break }
+
+Compress-Archive $DumpFilePath "$DumpFilePath.zip" -CompressionLevel Optimal -Force
+Trap {Continue} Remove-Item $DumpFilePath 
+
+Write-Host "Dump successfully collected in $DumpFilePath.zip."

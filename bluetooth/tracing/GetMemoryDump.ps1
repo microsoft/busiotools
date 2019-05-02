@@ -5,7 +5,7 @@ Trap [System.Management.Automation.ParameterBindingException] {
   Break }
 $Process = Get-Process -Id (Get-WmiObject -Class Win32_Service -Filter "Name LIKE '$ServiceName'" | Select-Object -ExpandProperty ProcessId)
 
-$DumpFilePath = Join-Path $pwd "$($ServiceName)_$($Process.Id).dmp"
+$DumpFilePath = Join-Path $Env:Temp "$($ServiceName)_$($Process.Id).dmp"
 $DumpFile = New-Object IO.FileStream($DumpFilePath, [IO.FileMode]::Create)
 
 $WER = [PSObject].Assembly.GetType('System.Management.Automation.WindowsErrorReporting')

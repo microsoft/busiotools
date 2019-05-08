@@ -118,7 +118,7 @@ namespace SensorExplorer
         {
             if (Sensor.currentId >= 0 && Sensor.currentId != PivotSensor.Items.Count - 1)
             {
-                if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
+                if (Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                 {
                     DisconnectFromDeviceClick(null, null);
                 }
@@ -134,7 +134,7 @@ namespace SensorExplorer
         {
             try
             {
-                await Sensor.GetDefault();
+                await Sensor.GetDefault(true);
                 int totalIndex = -1;
                 for (int index = 0; index < Sensor.AccelerometerStandardList.Count; index++)
                 {
@@ -393,13 +393,13 @@ namespace SensorExplorer
                 {
                     if (Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // disable previous sensor
                     {
-                        if(Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
+                        if (Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                         {
                             DisconnectFromDeviceClick(null, null);
                             rootPage.NotifyUser("", NotifyType.StatusMessage);
                         }
 
-                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);              
+                        Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
                     }
 
                     Sensor.currentId = i;   // sensor being displayed
@@ -534,7 +534,7 @@ namespace SensorExplorer
         {
             PivotItem PivotItemSensor = new PivotItem();
             ScrollViewer scrollViewerSensor = new ScrollViewer();
-            scrollViewerSensor.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scrollViewerSensor.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             scrollViewerSensor.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
 
             StackPanel stackpanel = new StackPanel();

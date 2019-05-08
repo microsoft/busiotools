@@ -43,6 +43,22 @@ namespace SensorExplorer
         public string _vendorDefinedSubType;
         public string _state;
 
+        public string _panelId;
+        public string _panelGroup;
+        public string _panelSide;
+        public string _panelWidth;
+        public string _panelHeight;
+        public string _panelLength;
+        public string _panelPositionX;
+        public string _panelPositionY;
+        public string _panelPositionZ;
+        public string _panelRotationX;
+        public string _panelRotationY;
+        public string _panelRotationZ;
+        public string _panelColor;
+        public string _panelShape;
+        public string _panelVisible;
+
         public SensorData(int sensorType, int count, string name, string[] property)
         {
             _sensorType = sensorType;
@@ -53,8 +69,7 @@ namespace SensorExplorer
             _minValue = new double[_property.Length];
         }
 
-        public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency, string category, 
-                                string persistentUniqueId, string manufacturer, string model, string connectionType, string isPrimary, string vendorDefinedSubType, string state)
+        public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency, string[] properties)
         {
             if (_defaultReportInterval == 0)
             {
@@ -66,14 +81,33 @@ namespace SensorExplorer
             _reportInterval = reportInterval;
             _minReportInterval = minReportInterval;
             _reportLatency = reportLatency;
-            _category = category;
-            _persistentUniqueId = persistentUniqueId;
-            _manufacturer = manufacturer;
-            _model = model;
-            _connectionType = connectionType;
-            _isPrimary = isPrimary;
-            _vendorDefinedSubType = vendorDefinedSubType;
-            _state = state;
+            _category = properties[0];
+            _persistentUniqueId = properties[1];
+            _manufacturer = properties[2];
+            _model = properties[3];
+            _connectionType = properties[4];
+            _isPrimary = properties[5];
+            _vendorDefinedSubType = properties[6];
+            _state = properties[7];
+        }
+
+        public void AddPLDProperty(string[] PLD)
+        {
+            _panelId = PLD[0];
+            _panelGroup = PLD[1];
+            _panelSide = PLD[2];
+            _panelWidth = PLD[3];
+            _panelHeight = PLD[4];
+            _panelLength = PLD[5];
+            _panelPositionX = PLD[6];
+            _panelPositionY = PLD[7];
+            _panelPositionZ = PLD[8];
+            _panelRotationX = PLD[9];
+            _panelRotationY = PLD[10];
+            _panelRotationZ = PLD[11];
+            _panelColor = PLD[12];
+            _panelShape = PLD[13];
+            _panelVisible = PLD[14];
         }
 
         public void UpdateReportInterval(uint reportInterval)

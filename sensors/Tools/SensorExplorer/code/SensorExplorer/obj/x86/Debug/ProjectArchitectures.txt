@@ -1,0 +1,1 @@
+C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\SensorExplorer.csproj;x86

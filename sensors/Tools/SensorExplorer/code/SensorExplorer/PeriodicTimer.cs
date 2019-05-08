@@ -70,7 +70,7 @@ namespace SensorExplorer
 
         public static void Cancel2()
         {
-            if ( _periodicTimer2 != null)
+            if (_periodicTimer2 != null)
             {
                 _periodicTimer2.Cancel();
                 _periodicTimer2 = null;
@@ -157,6 +157,9 @@ namespace SensorExplorer
                         sensorDisplay[i].UpdateProperty(sensorData[i]._deviceId, sensorData[i]._deviceName, sensorData[i]._reportInterval, sensorData[i]._minReportInterval, sensorData[i]._reportLatency,
                                                         sensorData[i]._category, sensorData[i]._persistentUniqueId, sensorData[i]._manufacturer, sensorData[i]._model, sensorData[i]._connectionType,
                                                         sensorData[i]._isPrimary, sensorData[i]._vendorDefinedSubType, sensorData[i]._state);
+                        sensorDisplay[i].UpdatePLDProperty(sensorData[i]._panelId, sensorData[i]._panelGroup, sensorData[i]._panelSide, sensorData[i]._panelWidth, sensorData[i]._panelHeight, sensorData[i]._panelLength,
+                                                           sensorData[i]._panelPositionX, sensorData[i]._panelPositionY, sensorData[i]._panelPositionZ, sensorData[i]._panelRotationX, sensorData[i]._panelRotationY,
+                                                           sensorData[i]._panelRotationZ, sensorData[i]._panelColor, sensorData[i]._panelShape, sensorData[i]._panelVisible);
                     }
                 }
             });

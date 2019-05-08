@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\obj\project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\jialzhu\.nuget\packages\;C:\Program Files (x86)\Microsoft SDKs\UWPNuGetPackages\</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">4.9.3</NuGetToolVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-x86.Microsoft.Net.UWPCoreRuntimeSdk.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-x86.Microsoft.Net.UWPCoreRuntimeSdk.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-x86.Microsoft.Net.Native.SharedLibrary.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-x86.Microsoft.Net.Native.SharedLibrary.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.native.compiler\2.2.3\build\runtime.win10-x86.Microsoft.Net.Native.Compiler.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x86.microsoft.net.native.compiler\2.2.3\build\runtime.win10-x86.Microsoft.Net.Native.Compiler.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-x64.Microsoft.Net.UWPCoreRuntimeSdk.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-x64.Microsoft.Net.UWPCoreRuntimeSdk.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-x64.Microsoft.Net.Native.SharedLibrary.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-x64.Microsoft.Net.Native.SharedLibrary.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.native.compiler\2.2.3\build\runtime.win10-x64.Microsoft.Net.Native.Compiler.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-x64.microsoft.net.native.compiler\2.2.3\build\runtime.win10-x64.Microsoft.Net.Native.Compiler.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-arm64.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-arm64.Microsoft.Net.Native.SharedLibrary.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-arm64.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-arm64.Microsoft.Net.Native.SharedLibrary.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-arm64.microsoft.net.native.compiler\2.2.3\build\runtime.win10-arm64.Microsoft.Net.Native.Compiler.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-arm64.microsoft.net.native.compiler\2.2.3\build\runtime.win10-arm64.Microsoft.Net.Native.Compiler.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-arm.Microsoft.Net.UWPCoreRuntimeSdk.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\runtime.win10-arm.Microsoft.Net.UWPCoreRuntimeSdk.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-arm.Microsoft.Net.Native.SharedLibrary.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.native.sharedlibrary\2.2.3\build\runtime.win10-arm.Microsoft.Net.Native.SharedLibrary.props')" />
+    <Import Project="$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.native.compiler\2.2.3\build\runtime.win10-arm.Microsoft.Net.Native.Compiler.props" Condition="Exists('$(NuGetPackageRoot)runtime.win10-arm.microsoft.net.native.compiler\2.2.3\build\runtime.win10-arm.Microsoft.Net.Native.Compiler.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.uwpcoreruntimesdk\2.2.8\build\Microsoft.Net.UWPCoreRuntimeSdk.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.uwpcoreruntimesdk\2.2.8\build\Microsoft.Net.UWPCoreRuntimeSdk.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.compiler\2.2.3\build\Microsoft.Net.Native.Compiler.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.compiler\2.2.3\build\Microsoft.Net.Native.Compiler.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.netcore.universalwindowsplatform\6.2.8\build\Microsoft.NETCore.UniversalWindowsPlatform.props" Condition="Exists('$(NuGetPackageRoot)microsoft.netcore.universalwindowsplatform\6.2.8\build\Microsoft.NETCore.UniversalWindowsPlatform.props')" />
+  </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Pkgruntime_win10-x86_Microsoft_Net_UWPCoreRuntimeSdk Condition=" '$(Pkgruntime_win10-x86_Microsoft_Net_UWPCoreRuntimeSdk)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8</Pkgruntime_win10-x86_Microsoft_Net_UWPCoreRuntimeSdk>
+    <Pkgruntime_win10-x86_Microsoft_Net_Native_SharedLibrary Condition=" '$(Pkgruntime_win10-x86_Microsoft_Net_Native_SharedLibrary)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x86.microsoft.net.native.sharedlibrary\2.2.3</Pkgruntime_win10-x86_Microsoft_Net_Native_SharedLibrary>
+    <Pkgruntime_win10-x86_Microsoft_Net_Native_Compiler Condition=" '$(Pkgruntime_win10-x86_Microsoft_Net_Native_Compiler)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x86.microsoft.net.native.compiler\2.2.3</Pkgruntime_win10-x86_Microsoft_Net_Native_Compiler>
+    <Pkgruntime_win10-x64_Microsoft_Net_UWPCoreRuntimeSdk Condition=" '$(Pkgruntime_win10-x64_Microsoft_Net_UWPCoreRuntimeSdk)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8</Pkgruntime_win10-x64_Microsoft_Net_UWPCoreRuntimeSdk>
+    <Pkgruntime_win10-x64_Microsoft_Net_Native_SharedLibrary Condition=" '$(Pkgruntime_win10-x64_Microsoft_Net_Native_SharedLibrary)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x64.microsoft.net.native.sharedlibrary\2.2.3</Pkgruntime_win10-x64_Microsoft_Net_Native_SharedLibrary>
+    <Pkgruntime_win10-x64_Microsoft_Net_Native_Compiler Condition=" '$(Pkgruntime_win10-x64_Microsoft_Net_Native_Compiler)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-x64.microsoft.net.native.compiler\2.2.3</Pkgruntime_win10-x64_Microsoft_Net_Native_Compiler>
+    <Pkgruntime_win10-arm64_Microsoft_Net_Native_SharedLibrary Condition=" '$(Pkgruntime_win10-arm64_Microsoft_Net_Native_SharedLibrary)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-arm64.microsoft.net.native.sharedlibrary\2.2.3</Pkgruntime_win10-arm64_Microsoft_Net_Native_SharedLibrary>
+    <Pkgruntime_win10-arm64_Microsoft_Net_Native_Compiler Condition=" '$(Pkgruntime_win10-arm64_Microsoft_Net_Native_Compiler)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-arm64.microsoft.net.native.compiler\2.2.3</Pkgruntime_win10-arm64_Microsoft_Net_Native_Compiler>
+    <Pkgruntime_win10-arm_Microsoft_Net_UWPCoreRuntimeSdk Condition=" '$(Pkgruntime_win10-arm_Microsoft_Net_UWPCoreRuntimeSdk)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8</Pkgruntime_win10-arm_Microsoft_Net_UWPCoreRuntimeSdk>
+    <Pkgruntime_win10-arm_Microsoft_Net_Native_SharedLibrary Condition=" '$(Pkgruntime_win10-arm_Microsoft_Net_Native_SharedLibrary)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-arm.microsoft.net.native.sharedlibrary\2.2.3</Pkgruntime_win10-arm_Microsoft_Net_Native_SharedLibrary>
+    <Pkgruntime_win10-arm_Microsoft_Net_Native_Compiler Condition=" '$(Pkgruntime_win10-arm_Microsoft_Net_Native_Compiler)' == '' ">C:\Users\jialzhu\.nuget\packages\runtime.win10-arm.microsoft.net.native.compiler\2.2.3</Pkgruntime_win10-arm_Microsoft_Net_Native_Compiler>
+    <PkgNewtonsoft_Json Condition=" '$(PkgNewtonsoft_Json)' == '' ">C:\Users\jialzhu\.nuget\packages\newtonsoft.json\10.0.3</PkgNewtonsoft_Json>
+    <PkgMicrosoft_Toolkit_Uwp_UI_Controls Condition=" '$(PkgMicrosoft_Toolkit_Uwp_UI_Controls)' == '' ">C:\Users\jialzhu\.nuget\packages\microsoft.toolkit.uwp.ui.controls\5.1.1</PkgMicrosoft_Toolkit_Uwp_UI_Controls>
+    <PkgMicrosoft_Net_UWPCoreRuntimeSdk Condition=" '$(PkgMicrosoft_Net_UWPCoreRuntimeSdk)' == '' ">C:\Users\jialzhu\.nuget\packages\microsoft.net.uwpcoreruntimesdk\2.2.8</PkgMicrosoft_Net_UWPCoreRuntimeSdk>
+    <PkgMicrosoft_Net_Native_Compiler Condition=" '$(PkgMicrosoft_Net_Native_Compiler)' == '' ">C:\Users\jialzhu\.nuget\packages\microsoft.net.native.compiler\2.2.3</PkgMicrosoft_Net_Native_Compiler>
+  </PropertyGroup>
+</Project>

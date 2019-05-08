@@ -49,38 +49,55 @@ namespace SensorExplorer
 
         public static List<Accelerometer> AccelerometerStandardList;
         public static List<DeviceInformation> AccelerometerStandardDeviceInfo;
+        public static List<string[]> AccelerometerStandardPLD;
         public static List<Accelerometer> AccelerometerLinearList;
         public static List<DeviceInformation> AccelerometerLinearDeviceInfo;
+        public static List<string[]> AccelerometerLinearPLD;
         public static List<Accelerometer> AccelerometerGravityList;
         public static List<DeviceInformation> AccelerometerGravityDeviceInfo;
+        public static List<string[]> AccelerometerGravityPLD;
         public static List<ActivitySensor> ActivitySensorList;
         public static List<DeviceInformation> ActivitySensorDeviceInfo;
+        public static List<string[]> ActivitySensorPLD;
         public static Altimeter Altimeter;
         public static DeviceInformation AltimeterDeviceInfo;
+        public static string[] AltimeterPLD;
         public static List<Barometer> BarometerList;
         public static List<DeviceInformation> BarometerDeviceInfo;
+        public static List<string[]> BarometerPLD;
         public static List<Compass> CompassList;
         public static List<DeviceInformation> CompassDeviceInfo;
+        public static List<string[]> CompassPLD;
         public static List<Gyrometer> GyrometerList;
         public static List<DeviceInformation> GyrometerDeviceInfo;
+        public static List<string[]> GyrometerPLD;
         public static List<Inclinometer> InclinometerList;
         public static List<DeviceInformation> InclinometerDeviceInfo;
+        public static List<string[]> InclinometerPLD;
         public static List<LightSensor> LightSensorList;
         public static List<DeviceInformation> LightSensorDeviceInfo;
+        public static List<string[]> LightSensorPLD;
         public static List<Magnetometer> MagnetometerList;
         public static List<DeviceInformation> MagnetometerDeviceInfo;
+        public static List<string[]> MagnetometerPLD;
         public static List<OrientationSensor> OrientationAbsoluteList;
         public static List<DeviceInformation> OrientationAbsoluteDeviceInfo;
+        public static List<string[]> OrientationAbsolutePLD;
         public static List<OrientationSensor> OrientationGeomagneticList;
         public static List<DeviceInformation> OrientationGeomagneticDeviceInfo;
+        public static List<string[]> OrientationGeomagneticPLD;
         public static List<OrientationSensor> OrientationRelativeList;
         public static List<DeviceInformation> OrientationRelativeDeviceInfo;
+        public static List<string[]> OrientationRelativePLD;
         public static List<Pedometer> PedometerList;
         public static List<DeviceInformation> PedometerDeviceInfo;
+        public static List<string[]> PedometerPLD;
         public static List<ProximitySensor> ProximitySensorList;
         public static List<DeviceInformation> ProximitySensorDeviceInfo;
+        public static List<string[]> ProximitySensorPLD;
         public static List<SimpleOrientationSensor> SimpleOrientationSensorList;
         public static List<DeviceInformation> SimpleOrientationSensorDeviceInfo;
+        public static List<string[]> SimpleOrientationSensorPLD;
 
         public static bool AccelerometerStandardFailed;
         public static bool AccelerometerLinearFailed;
@@ -103,40 +120,200 @@ namespace SensorExplorer
 
         private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
 
-        public static async Task<bool> GetDefault()
+        public static string[] GetProperties(DeviceInformation deviceInfo)
+        {
+            string[] properties = new string[8];
+            try
+            {
+                properties[0] = Constants.SensorCategories[deviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()];
+            }
+            catch { }
+            try
+            {
+                properties[1] = deviceInfo.Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
+            }
+            catch { }
+            try
+            {
+                properties[2] = deviceInfo.Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
+            }
+            catch { }
+            try
+            {
+                properties[3] = deviceInfo.Properties[Constants.Properties["Sensor_Model"]].ToString();
+            }
+            catch { }
+            try
+            {
+                properties[4] = Constants.SensorConnectionTypes[int.Parse(deviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
+            }
+            catch { }
+            try
+            {
+                properties[5] = deviceInfo.Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
+            }
+            catch { }
+            try
+            {
+                properties[6] = deviceInfo.Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
+            }
+            catch { }
+            try
+            {
+                properties[7] = deviceInfo.Properties[Constants.Properties["Sensor_State"]].ToString();
+            }
+            catch { }
+
+            return properties;
+        }
+
+        public static async Task<string[]> GetPLDInformation(string deviceInstanceId)
+        {
+            string[] pld = new string[15];
+            try
+            {
+                DeviceInformation pldPanelId = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelId"] }, DeviceInformationKind.Device);
+                pld[0] = pldPanelId.Properties[Constants.PLD["Device_PanelId"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelGroup = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelGroup"] }, DeviceInformationKind.Device);
+                pld[1] = pldPanelGroup.Properties[Constants.PLD["Device_PanelGroup"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelSide = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelSide"] }, DeviceInformationKind.Device);
+                pld[2] = pldPanelSide.Properties[Constants.PLD["Device_PanelSide"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelWidth = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelWidth"] }, DeviceInformationKind.Device);
+                pld[3] = pldPanelWidth.Properties[Constants.PLD["Device_PanelWidth"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelHeight = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelHeight"] }, DeviceInformationKind.Device);
+                pld[4] = pldPanelHeight.Properties[Constants.PLD["Device_PanelHeight"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelLength = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelLength"] }, DeviceInformationKind.Device);
+                pld[5] = pldPanelLength.Properties[Constants.PLD["Device_PanelLength"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelPositionX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionX"] }, DeviceInformationKind.Device);
+                pld[6] = pldPanelPositionX.Properties[Constants.PLD["Device_PanelPositionX"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelPositionY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionY"] }, DeviceInformationKind.Device);
+                pld[7] = pldPanelPositionY.Properties[Constants.PLD["Device_PanelPositionY"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelPositionZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionZ"] }, DeviceInformationKind.Device);
+                pld[8] = pldPanelPositionZ.Properties[Constants.PLD["Device_PanelPositionZ"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelRotationX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationX"] }, DeviceInformationKind.Device);
+                pld[9] = pldPanelRotationX.Properties[Constants.PLD["Device_PanelRotationX"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelRotationY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPosiRotationY"] }, DeviceInformationKind.Device);
+                pld[10] = pldPanelRotationY.Properties[Constants.PLD["Device_PanelRotationY"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelRotationZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationZ"] }, DeviceInformationKind.Device);
+                pld[11] = pldPanelRotationZ.Properties[Constants.PLD["Device_PanelRotationZ"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelColor = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelColor"] }, DeviceInformationKind.Device);
+                pld[12] = pldPanelColor.Properties[Constants.PLD["Device_PanelColor"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelShape = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelShape"] }, DeviceInformationKind.Device);
+                pld[13] = pldPanelShape.Properties[Constants.PLD["Device_PanelShape"]].ToString();
+            }
+            catch { }
+            try
+            {
+                DeviceInformation pldPanelVisible = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelVisible"] }, DeviceInformationKind.Device);
+                pld[14] = pldPanelVisible.Properties[Constants.PLD["Device_PanelVisible"]].ToString();
+            }
+            catch { }
+
+            return pld;
+        }
+
+        public static async Task<bool> GetDefault(bool getPLD)
         {
             AccelerometerStandardList = new List<Accelerometer>();
             AccelerometerStandardDeviceInfo = new List<DeviceInformation>();
+            AccelerometerStandardPLD = new List<string[]>();
             AccelerometerLinearList = new List<Accelerometer>();
             AccelerometerLinearDeviceInfo = new List<DeviceInformation>();
+            AccelerometerLinearPLD = new List<string[]>();
             AccelerometerGravityList = new List<Accelerometer>();
             AccelerometerGravityDeviceInfo = new List<DeviceInformation>();
+            AccelerometerGravityPLD = new List<string[]>();
             ActivitySensorList = new List<ActivitySensor>();
             ActivitySensorDeviceInfo = new List<DeviceInformation>();
+            ActivitySensorPLD = new List<string[]>();
             BarometerList = new List<Barometer>();
             BarometerDeviceInfo = new List<DeviceInformation>();
+            BarometerPLD = new List<string[]>();
             CompassList = new List<Compass>();
             CompassDeviceInfo = new List<DeviceInformation>();
+            CompassPLD = new List<string[]>();
             GyrometerList = new List<Gyrometer>();
             GyrometerDeviceInfo = new List<DeviceInformation>();
+            GyrometerPLD = new List<string[]>();
             InclinometerList = new List<Inclinometer>();
             InclinometerDeviceInfo = new List<DeviceInformation>();
+            InclinometerPLD = new List<string[]>();
             LightSensorList = new List<LightSensor>();
             LightSensorDeviceInfo = new List<DeviceInformation>();
+            LightSensorPLD = new List<string[]>();
             MagnetometerList = new List<Magnetometer>();
             MagnetometerDeviceInfo = new List<DeviceInformation>();
+            MagnetometerPLD = new List<string[]>();
             OrientationAbsoluteList = new List<OrientationSensor>();
             OrientationAbsoluteDeviceInfo = new List<DeviceInformation>();
+            OrientationAbsolutePLD = new List<string[]>();
             OrientationGeomagneticList = new List<OrientationSensor>();
             OrientationGeomagneticDeviceInfo = new List<DeviceInformation>();
+            OrientationGeomagneticPLD = new List<string[]>();
             OrientationRelativeList = new List<OrientationSensor>();
             OrientationRelativeDeviceInfo = new List<DeviceInformation>();
+            OrientationRelativePLD = new List<string[]>();
             PedometerList = new List<Pedometer>();
             PedometerDeviceInfo = new List<DeviceInformation>();
+            PedometerPLD = new List<string[]>();
             ProximitySensorList = new List<ProximitySensor>();
             ProximitySensorDeviceInfo = new List<DeviceInformation>();
+            ProximitySensorPLD = new List<string[]>();
             SimpleOrientationSensorList = new List<SimpleOrientationSensor>();
             SimpleOrientationSensorDeviceInfo = new List<DeviceInformation>();
+            SimpleOrientationSensorPLD = new List<string[]>();
 
             NumFailedEnumerations = 0;
 
@@ -181,6 +358,12 @@ namespace SensorExplorer
                     Accelerometer accelerometer = await Accelerometer.FromIdAsync(deviceInfo.Id);
                     AccelerometerStandardList.Add(accelerometer);
                     AccelerometerStandardDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        AccelerometerStandardPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -195,6 +378,12 @@ namespace SensorExplorer
                     Accelerometer accelerometer = await Accelerometer.FromIdAsync(deviceInfo.Id);
                     AccelerometerLinearList.Add(accelerometer);
                     AccelerometerLinearDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        AccelerometerLinearPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -209,6 +398,12 @@ namespace SensorExplorer
                     Accelerometer accelerometer = await Accelerometer.FromIdAsync(deviceInfo.Id);
                     AccelerometerGravityList.Add(accelerometer);
                     AccelerometerGravityDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        AccelerometerGravityPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -223,6 +418,12 @@ namespace SensorExplorer
                     ActivitySensor activitySensor = await ActivitySensor.FromIdAsync(deviceInfo.Id);
                     ActivitySensorList.Add(activitySensor);
                     ActivitySensorDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        ActivitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -239,6 +440,12 @@ namespace SensorExplorer
                 {
                     Altimeter = Altimeter.GetDefault();
                     AltimeterDeviceInfo = deviceInfo;
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        AltimeterPLD = await GetPLDInformation(deviceInstanceId);
+                    }
                 }
             }
             catch
@@ -253,6 +460,12 @@ namespace SensorExplorer
                     Barometer barometer = await Barometer.FromIdAsync(deviceInfo.Id);
                     BarometerList.Add(barometer);
                     BarometerDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        BarometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -267,6 +480,12 @@ namespace SensorExplorer
                     Compass compass = await Compass.FromIdAsync(deviceInfo.Id);
                     CompassList.Add(compass);
                     CompassDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        CompassPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -281,6 +500,12 @@ namespace SensorExplorer
                     Gyrometer gyrometer = await Gyrometer.FromIdAsync(deviceInfo.Id);
                     GyrometerList.Add(gyrometer);
                     GyrometerDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        GyrometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -295,6 +520,12 @@ namespace SensorExplorer
                     Inclinometer inclinometer = await Inclinometer.FromIdAsync(deviceInfo.Id);
                     InclinometerList.Add(inclinometer);
                     InclinometerDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        InclinometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -309,6 +540,12 @@ namespace SensorExplorer
                     LightSensor lightSensor = await LightSensor.FromIdAsync(deviceInfo.Id);
                     LightSensorList.Add(lightSensor);
                     LightSensorDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        LightSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -323,6 +560,12 @@ namespace SensorExplorer
                     Magnetometer magnetometer = await Magnetometer.FromIdAsync(deviceInfo.Id);
                     MagnetometerList.Add(magnetometer);
                     MagnetometerDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        MagnetometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -337,6 +580,12 @@ namespace SensorExplorer
                     OrientationSensor orientationSensor = await OrientationSensor.FromIdAsync(deviceInfo.Id);
                     OrientationAbsoluteList.Add(orientationSensor);
                     OrientationAbsoluteDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        OrientationAbsolutePLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -351,6 +600,12 @@ namespace SensorExplorer
                     OrientationSensor orientationSensor = await OrientationSensor.FromIdAsync(deviceInfo.Id);
                     OrientationGeomagneticList.Add(orientationSensor);
                     OrientationGeomagneticDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        OrientationGeomagneticPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -365,6 +620,12 @@ namespace SensorExplorer
                     OrientationSensor orientationSensor = await OrientationSensor.FromIdAsync(deviceInfo.Id);
                     OrientationRelativeList.Add(orientationSensor);
                     OrientationRelativeDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        OrientationRelativePLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -379,6 +640,12 @@ namespace SensorExplorer
                     Pedometer pedometer = await Pedometer.FromIdAsync(deviceInfo.Id);
                     PedometerList.Add(pedometer);
                     PedometerDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        PedometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -393,6 +660,12 @@ namespace SensorExplorer
                     ProximitySensor proximitySensor = ProximitySensor.FromId(deviceInfo.Id);
                     ProximitySensorList.Add(proximitySensor);
                     ProximitySensorDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -407,6 +680,12 @@ namespace SensorExplorer
                     SimpleOrientationSensor simpleOrientationSensor = await SimpleOrientationSensor.FromIdAsync(deviceInfo.Id);
                     SimpleOrientationSensorList.Add(simpleOrientationSensor);
                     SimpleOrientationSensorDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        SimpleOrientationSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
                 }
             }
             catch
@@ -482,14 +761,7 @@ namespace SensorExplorer
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
                 uint reportLatency = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
+
                 try
                 {
                     deviceId = AccelerometerStandardList[index].DeviceId;
@@ -510,49 +782,9 @@ namespace SensorExplorer
                     reportLatency = AccelerometerStandardList[index].ReportLatency;
                 }
                 catch { };
-                try
-                {
-                    category = Constants.SensorCategories[AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    manufacturer = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    isPrimary = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = AccelerometerStandardDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency,
-                                                   category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerStandardDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(AccelerometerStandardPLD[index]);
                 AccelerometerStandardList[index].ReadingChanged += Accelerometer_ReadingChanged;
             }
         }
@@ -596,14 +828,6 @@ namespace SensorExplorer
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
                 uint reportLatency = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -625,47 +849,9 @@ namespace SensorExplorer
                     reportLatency = AccelerometerLinearList[index].ReportLatency;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = AccelerometerLinearDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerLinearDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(AccelerometerLinearPLD[index]);
                 AccelerometerLinearList[index].ReadingChanged += AccelerometerLinear_ReadingChanged;
             }
         }
@@ -709,14 +895,6 @@ namespace SensorExplorer
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
                 uint reportLatency = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -738,48 +916,9 @@ namespace SensorExplorer
                     reportLatency = AccelerometerGravityList[index].ReportLatency;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = AccelerometerGravityDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerGravityDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(AccelerometerGravityPLD[index]);
                 AccelerometerGravityList[index].ReadingChanged += AccelerometerGravity_ReadingChanged;
             }
         }
@@ -822,14 +961,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -841,53 +972,9 @@ namespace SensorExplorer
                     reportInterval = CompassList[index].ReportInterval;
                 }
                 catch { }
-                try
-                {
-                    minimumReportInterval = CompassList[index].MinimumReportInterval;
-                }
-                catch { }
-                try
-                {
-                    category = Constants.SensorCategories[CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = CompassDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
                 CompassList[index].ReadingChanged += Compass_ReadingChanged;
             }
         }
@@ -932,14 +1019,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -956,48 +1035,9 @@ namespace SensorExplorer
                     minimumReportInterval = GyrometerList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = GyrometerDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(GyrometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(GyrometerPLD[index]);
                 GyrometerList[index].ReadingChanged += Gyrometer_ReadingChanged;
             }
         }
@@ -1040,14 +1080,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1064,48 +1096,9 @@ namespace SensorExplorer
                     minimumReportInterval = InclinometerList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = InclinometerDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(InclinometerPLD[index]);
                 InclinometerList[index].ReadingChanged += Inclinometer_ReadingChanged;
             }
         }
@@ -1151,14 +1144,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1175,48 +1160,9 @@ namespace SensorExplorer
                     minimumReportInterval = LightSensorList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = LightSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(LightSensorPLD[index]);
                 LightSensorList[index].ReadingChanged += LightSensor_ReadingChanged;
             }
         }
@@ -1274,14 +1220,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1298,48 +1236,9 @@ namespace SensorExplorer
                     minimumReportInterval = OrientationAbsoluteList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = OrientationAbsoluteDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationAbsoluteDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(OrientationAbsolutePLD[index]);
                 OrientationAbsoluteList[index].ReadingChanged += OrientationSensor_ReadingChanged;
             }
         }
@@ -1394,14 +1293,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1418,48 +1309,9 @@ namespace SensorExplorer
                     minimumReportInterval = OrientationRelativeList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = OrientationRelativeDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationRelativeDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(OrientationRelativePLD[index]);
                 OrientationRelativeList[totalIndex].ReadingChanged += RelativeOrientationSensor_ReadingChanged;
             }
         }
@@ -1514,14 +1366,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1538,48 +1382,9 @@ namespace SensorExplorer
                     minimumReportInterval = OrientationGeomagneticList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = OrientationGeomagneticDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationGeomagneticDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(OrientationGeomagneticPLD[index]);
                 OrientationGeomagneticList[totalIndex].ReadingChanged += OrientationGeomagnetic_ReadingChanged;
             }
         }
@@ -1633,14 +1438,6 @@ namespace SensorExplorer
                 string deviceId = string.Empty;
                 string deviceName = string.Empty;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1652,48 +1449,8 @@ namespace SensorExplorer
                     minimumReportInterval = ActivitySensorList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = ActivitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, GetProperties(ActivitySensorDeviceInfo[index]));
 
                 // subscribe to all supported activities
                 foreach (ActivityType activityType in ActivitySensorList[index].SupportedActivities)
@@ -1701,6 +1458,7 @@ namespace SensorExplorer
                     ActivitySensorList[index].SubscribedActivities.Add(activityType);
                 }
 
+                sensorData[totalIndex].AddPLDProperty(ActivitySensorPLD[index]);
                 ActivitySensorList[index].ReadingChanged += ActivitySensor_ReadingChanged;
             }
         }
@@ -1750,14 +1508,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1774,48 +1524,9 @@ namespace SensorExplorer
                     minimumReportInterval = Altimeter.MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = AltimeterDeviceInfo.Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(AltimeterDeviceInfo));
+                sensorData[totalIndex].AddPLDProperty(AltimeterPLD);
                 Altimeter.ReadingChanged += Altimeter_ReadingChanged;
             }
         }
@@ -1858,14 +1569,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1882,48 +1585,9 @@ namespace SensorExplorer
                     minimumReportInterval = BarometerList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = BarometerDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(BarometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(BarometerPLD[index]);
                 BarometerList[index].ReadingChanged += Barometer_ReadingChanged;
             }
         }
@@ -1966,14 +1630,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -1990,48 +1646,9 @@ namespace SensorExplorer
                     minimumReportInterval = MagnetometerList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = MagnetometerDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(MagnetometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(MagnetometerPLD[index]);
                 MagnetometerList[index].ReadingChanged += Magnetometer_ReadingChanged;
             }
         }
@@ -2074,14 +1691,6 @@ namespace SensorExplorer
                 string deviceName = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
@@ -2098,48 +1707,9 @@ namespace SensorExplorer
                     minimumReportInterval = PedometerList[index].MinimumReportInterval;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = PedometerDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(PedometerDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(PedometerPLD[index]);
                 PedometerList[index].ReadingChanged += Pedometer_ReadingChanged;
             }
         }
@@ -2180,62 +1750,15 @@ namespace SensorExplorer
             {
                 string deviceId = string.Empty;
                 string deviceName = string.Empty;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
                     deviceId = ProximitySensorList[index].DeviceId;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = ProximitySensorDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(ProximitySensorDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(ProximitySensorPLD[index]);
                 ProximitySensorList[totalIndex].ReadingChanged += ProximitySensor_ReadingChanged;
             }
         }
@@ -2276,62 +1799,15 @@ namespace SensorExplorer
             {
                 string deviceId = string.Empty;
                 string deviceName = string.Empty;
-                string category = string.Empty;
-                string persistentUniqueId = string.Empty;
-                string manufacturer = string.Empty;
-                string model = string.Empty;
-                string connectionType = string.Empty;
-                string isPrimary = string.Empty;
-                string vendorDefinedSubType = string.Empty;
-                string state = string.Empty;
 
                 try
                 {
                     deviceId = SimpleOrientationSensorList[index].DeviceId;
                 }
                 catch { }
-                try
-                {
-                    category = Constants.SensorCategories[SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Category"]].ToString()];
-                }
-                catch { }
-                try
-                {
-                    persistentUniqueId = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    manufacturer = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Manufacturer"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    model = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_Model"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    connectionType = Constants.SensorConnectionTypes[int.Parse(SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())];
-                }
-                catch { }
-                try
-                {
-                    isPrimary = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    vendorDefinedSubType = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
-                }
-                catch { }
-                try
-                {
-                    state = SimpleOrientationSensorDeviceInfo[index].Properties[Constants.Properties["Sensor_State"]].ToString();
-                }
-                catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, category, persistentUniqueId, manufacturer, model, connectionType, isPrimary, vendorDefinedSubType, state);
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(SimpleOrientationSensorDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(SimpleOrientationSensorPLD[index]);
                 SimpleOrientationSensorList[index].OrientationChanged += SimpleOrientationSensor_OrientationChanged;
             }
         }

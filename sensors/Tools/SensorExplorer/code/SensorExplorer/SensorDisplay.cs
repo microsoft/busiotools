@@ -55,6 +55,7 @@ namespace SensorExplorer
         private int _totalIndex;
         private string _name;
         private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" };
+        private string[] _pld = new string[] { "Panel Id", "Panel Group", "Panel Side", "Panel Width (mm)", "Panel Height (mm)", "Panel Length (mm)", "Panel PositionX", "Panel PositionY", "Panel PositionZ", "Panel RotationX", "Panel RotationY", "Panel RotationZ", "Panel Color", "Panel Shape", "Panel Visible" };
         private StackPanel stackPanelSwitch = new StackPanel();
         private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
         private Button buttonSensor = new Button();
@@ -68,6 +69,7 @@ namespace SensorExplorer
         private Image imageInclinometerRoll = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private Image imageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private TextBlock textBlockSensor = new TextBlock() { Foreground = new SolidColorBrush(Colors.Black), FontSize = 72 };
+        private StackPanel stackPanelExpander = new StackPanel() { Orientation = Orientation.Vertical };
         private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomRightCol = new StackPanel() { Orientation = Orientation.Vertical };
@@ -79,14 +81,24 @@ namespace SensorExplorer
         private TextBlock[] textBlockMinValue;
         private StackPanel stackPanelMaxValue = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockMaxValue;
-        private StackPanel stackPanelPropertyName = new StackPanel() { Orientation = Orientation.Vertical };
+        private StackPanel stackPanelPropertyName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 10, Top = 10, Bottom = 10 } };
         private TextBlock[] textBlockPropertyName;
-        private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical };
+        private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
         private TextBlock[] textBlockPropertyValue;
         public StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
-        private ScrollViewer scrollViewerProperty = new ScrollViewer() { MaxHeight = 280, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private Canvas canvasSensor = new Canvas();
+        private ScrollViewer scrollViewerProperty = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
+        private Canvas canvasSensorProperty = new Canvas();
         private Expander expanderProperty = new Expander() { Header = "Properties" };
+
+        // PLD
+        private StackPanel stackPanelPLDName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 10, Top = 10, Bottom = 10 } };
+        private TextBlock[] textBlockPLDName;
+        private StackPanel stackPanelPLDValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
+        private TextBlock[] textBlockPLDValue;
+        public StackPanel stackPanelPLD = new StackPanel() { Orientation = Orientation.Horizontal };
+        private ScrollViewer scrollViewerPLD = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
+        private Canvas canvasSensorPLD = new Canvas();
+        private Expander expanderPLD = new Expander() { Header = "Physical Location of Device" };
 
         // MALT
         private StackPanel stackPanelMALT2 = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness() { Left = 20, Top = 20 } };
@@ -114,6 +126,9 @@ namespace SensorExplorer
             expanderProperty.Content = scrollViewerProperty;
             scrollViewerProperty.Content = stackPanelProperty;
 
+            expanderPLD.Content = scrollViewerPLD;
+            scrollViewerPLD.Content = stackPanelPLD;
+
             string[] vAxisLabel = new string[scale + 1];
 
             for (int i = 0; i <= scale; i++)
@@ -139,7 +154,7 @@ namespace SensorExplorer
                 }
             }
 
-            _plotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensor, vAxisLabel);
+            _plotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensorProperty, vAxisLabel);
             stackPanelSwitch.Children.Add(buttonSensor);
 
             if (sensorType == Sensor.ACCELEROMETER || sensorType == Sensor.ACCELEROMETERLINEAR || sensorType == Sensor.ACCELEROMETERGRAVITY)
@@ -235,7 +250,9 @@ namespace SensorExplorer
                 stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
             }
 
-            stackPanelBottom.Children.Add(expanderProperty);
+            stackPanelExpander.Children.Add(expanderProperty);
+            stackPanelExpander.Children.Add(expanderPLD);
+            stackPanelBottom.Children.Add(stackPanelExpander);
 
             if (sensorType == Sensor.LIGHTSENSOR)
             {
@@ -347,8 +364,23 @@ namespace SensorExplorer
             stackPanelProperty.Children.Add(stackPanelPropertyName);
             stackPanelProperty.Children.Add(stackPanelPropertyValue);
 
+            textBlockPLDName = new TextBlock[_pld.Length];
+            textBlockPLDValue = new TextBlock[textBlockPLDName.Length];
+
+            for (int i = 0; i < _pld.Length; i++)
+            {
+                textBlockPLDName[i] = SetTextStyle(_pld[i], HorizontalAlignment.Left);
+                textBlockPLDValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
+                stackPanelPLDName.Children.Add(textBlockPLDName[i]);
+                stackPanelPLDValue.Children.Add(textBlockPLDValue[i]);
+            }
+
+            stackPanelPLD.Children.Add(stackPanelPLDName);
+            stackPanelPLD.Children.Add(stackPanelPLDValue);
+
             StackPanelSensor.Children.Add(stackPanelTop);
-            StackPanelSensor.Children.Add(canvasSensor);
+            StackPanelSensor.Children.Add(canvasSensorProperty);
+            StackPanelSensor.Children.Add(canvasSensorPLD);
             StackPanelSensor.Children.Add(stackPanelBottom);
         }
 
@@ -385,7 +417,10 @@ namespace SensorExplorer
 
             SetFontSize(fontSize);
             SetHeight(height * 0.2);
-            canvasSensor.Width = width * 0.7;
+            canvasSensorProperty.Width = width * 0.5;
+            scrollViewerProperty.MaxWidth = width * 0.5;
+            canvasSensorPLD.Width = width * 0.5;
+            scrollViewerPLD.MaxWidth = width * 0.5;
 
             return actualWidth;
         }
@@ -406,17 +441,28 @@ namespace SensorExplorer
                 textBlockPropertyValue[i].FontSize = fontSize;
             }
 
+            for (int i = 0; i < textBlockPLDName.Length; i++)
+            {
+                textBlockPLDName[i].FontSize = fontSize;
+                textBlockPLDValue[i].FontSize = fontSize;
+            }
+
             TextBlock textBlock = new TextBlock();
             textBlock.Text = "00000000";
             textBlock.FontSize = fontSize;
             textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
-            canvasSensor.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
+            canvasSensorProperty.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
+            canvasSensorPLD.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
             _plotCanvas.SetFontSize(fontSize);
         }
 
         public void SetHeight(double height)
         {
             _plotCanvas.SetHeight(height);
+            canvasSensorProperty.Width = height;
+            scrollViewerProperty.MaxHeight = height;
+            canvasSensorPLD.Width = height;
+            scrollViewerPLD.MaxHeight = height;
         }
 
         public void EnableSensor()
@@ -437,7 +483,6 @@ namespace SensorExplorer
                                    string category, string persistentUniqueId, string manufacturer, string model, string connectionType,
                                    string isPrimary, string vendorDefinedSubType, string state)
         {
-            var resourceLoader = ResourceLoader.GetForCurrentView();
             textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
             textBlockPropertyValue[1].Text = string.Format("  {0}", minReportInterval != 0 ? minReportInterval.ToString() : "-");
             textBlockPropertyValue[2].Text = "  " + category;
@@ -451,6 +496,27 @@ namespace SensorExplorer
             textBlockPropertyValue[10].Text = $"{deviceId.Replace("{", "\r\n  {")}";
         }
 
+        public void UpdatePLDProperty(string panelId, string panelGroup, string panelSide, string panelWidth, string panelHeight, string panelLength,
+                                      string panelPositionX, string panelPositionY, string panelPositionZ, string panelRotationX, string panelRotationY,
+                                      string panelRotationZ, string panelColor, string panelShape, string panelVisible)
+        {
+            textBlockPLDValue[0].Text = panelId == null ? "null" : panelId;
+            textBlockPLDValue[1].Text = panelGroup == null ? "null" : panelGroup;
+            textBlockPLDValue[2].Text = panelSide == null ? "null" : Constants.PanelSide[panelSide];
+            textBlockPLDValue[3].Text = panelWidth == null ? "null" : panelWidth;
+            textBlockPLDValue[4].Text = panelHeight == null ? "null" : panelHeight;
+            textBlockPLDValue[5].Text = panelLength == null ? "null" : panelLength;
+            textBlockPLDValue[6].Text = panelPositionX == null ? "null" : panelPositionX;
+            textBlockPLDValue[7].Text = panelPositionY == null ? "null" : panelPositionY;
+            textBlockPLDValue[8].Text = panelPositionZ == null ? "null" : panelPositionZ;
+            textBlockPLDValue[9].Text = panelRotationX == null ? "null" : panelRotationX;
+            textBlockPLDValue[10].Text = panelRotationY == null ? "null" : panelRotationY;
+            textBlockPLDValue[11].Text = panelRotationZ == null ? "null" : panelRotationZ;
+            textBlockPLDValue[12].Text = panelColor == null ? "null" : panelColor;
+            textBlockPLDValue[13].Text = panelShape == null ? "null" : Constants.PanelShape[panelShape];
+            textBlockPLDValue[14].Text = panelVisible == null ? "null" : panelVisible;
+        }
+
         public void UpdateText(SensorData sensorData)
         {
             try
@@ -461,6 +527,9 @@ namespace SensorExplorer
                     UpdateProperty(sensorData._deviceId, sensorData._deviceName, sensorData._reportInterval, sensorData._minReportInterval, sensorData._reportLatency,
                                    sensorData._category, sensorData._persistentUniqueId, sensorData._manufacturer, sensorData._model, sensorData._connectionType,
                                    sensorData._isPrimary, sensorData._vendorDefinedSubType, sensorData._state);
+                    UpdatePLDProperty(sensorData._panelId, sensorData._panelGroup, sensorData._panelSide, sensorData._panelWidth, sensorData._panelHeight, sensorData._panelLength,
+                                      sensorData._panelPositionX, sensorData._panelPositionY, sensorData._panelPositionZ, sensorData._panelRotationX, sensorData._panelRotationY,
+                                      sensorData._panelRotationZ, sensorData._panelColor, sensorData._panelShape, sensorData._panelVisible);
                 }
 
                 if (StackPanelSensor.Visibility == Visibility.Visible)

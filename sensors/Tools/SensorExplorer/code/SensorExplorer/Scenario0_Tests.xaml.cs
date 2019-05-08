@@ -109,7 +109,7 @@ namespace SensorExplorer
         {
             try
             {
-                await Sensor.GetDefault();
+                await Sensor.GetDefault(false);
                 int totalIndex = -1;
                 SensorType = new List<int>();
                 indices = new List<int>();
@@ -375,22 +375,22 @@ namespace SensorExplorer
             Button packetLossTestButton = CreateTestButton("Packet Loss Test");
             Button staticAccuracyButton = CreateTestButton("Static Accuracy Test");
             Button magInterferenceButton = CreateTestButton("MagInterference Test", 28);
-            TextBlock noTestAvailable = new TextBlock() { Text = "No tests available for this sensor." };
+            TextBlock noTestAvailable = new TextBlock() { Text = "No tests available for this sensor.", FontSize = 20, Margin = new Thickness(50), HorizontalAlignment = HorizontalAlignment.Center};
             pivotItemSensor.Header = Constants.SensorName[sensorType] + " " + (index + 1);
             if (sensorType == Sensor.ACCELEROMETER)
             {
-                stackPanel.Children.Add(orientationTestButton);
                 stackPanel.Children.Add(frequencyTestButton);
-                stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(offsetTestButton);
+                stackPanel.Children.Add(orientationTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.GYROMETER)
             {
-                stackPanel.Children.Add(frequencyTestButton);
-                stackPanel.Children.Add(offsetTestButton);
-                stackPanel.Children.Add(jitterTestButton);
                 stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(frequencyTestButton);
+                stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.INCLINOMETER)
@@ -400,8 +400,8 @@ namespace SensorExplorer
             else if (sensorType == Sensor.LIGHTSENSOR)
             {
                 stackPanel.Children.Add(frequencyTestButton);
-                stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(offsetTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
             }
             else if (sensorType == Sensor.MAGNETOMETER)
@@ -411,38 +411,38 @@ namespace SensorExplorer
             }
             else if (sensorType == Sensor.ORIENTATIONSENSOR)
             {
-                stackPanel.Children.Add(orientationTestButton);
-                stackPanel.Children.Add(frequencyTestButton);
-                stackPanel.Children.Add(offsetTestButton);
-                stackPanel.Children.Add(jitterTestButton);
                 stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(frequencyTestButton);
+                stackPanel.Children.Add(jitterTestButton);
+                stackPanel.Children.Add(magInterferenceButton);
+                stackPanel.Children.Add(offsetTestButton);
+                stackPanel.Children.Add(orientationTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
                 stackPanel.Children.Add(staticAccuracyButton);
-                stackPanel.Children.Add(magInterferenceButton);
             }
             else if (sensorType == Sensor.ORIENTATIONRELATIVE)
             {
-                stackPanel.Children.Add(orientationTestButton);
+                stackPanel.Children.Add(driftTestButton);
                 stackPanel.Children.Add(frequencyTestButton);
                 stackPanel.Children.Add(jitterTestButton);
-                stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(magInterferenceButton);
+                stackPanel.Children.Add(orientationTestButton);
                 stackPanel.Children.Add(packetLossTestButton);
                 stackPanel.Children.Add(staticAccuracyButton);
+            }
+            else if (sensorType == Sensor.ORIENTATIONGEOMAGNETIC)
+            {
+                stackPanel.Children.Add(driftTestButton);
+                stackPanel.Children.Add(frequencyTestButton);
+                stackPanel.Children.Add(jitterTestButton);
                 stackPanel.Children.Add(magInterferenceButton);
+                stackPanel.Children.Add(offsetTestButton);
+                stackPanel.Children.Add(packetLossTestButton);
+                stackPanel.Children.Add(staticAccuracyButton);
             }
             else if (sensorType == Sensor.SIMPLEORIENTATIONSENSOR)
             {
                 stackPanel.Children.Add(orientationTestButton);
-            }
-            else if (sensorType == Sensor.ORIENTATIONGEOMAGNETIC)
-            {
-                stackPanel.Children.Add(frequencyTestButton);
-                stackPanel.Children.Add(offsetTestButton);
-                stackPanel.Children.Add(jitterTestButton);
-                stackPanel.Children.Add(driftTestButton);
-                stackPanel.Children.Add(packetLossTestButton);
-                stackPanel.Children.Add(staticAccuracyButton);
-                stackPanel.Children.Add(magInterferenceButton);
             }
             else
             {
@@ -1342,51 +1342,6 @@ namespace SensorExplorer
             {
                 timerLog.Text = "Time remaining: " + remainingTime + " seconds";
             }
-        }
-
-        private void LogProperties(DeviceInformation deviceInfo, string deviceId, string minReportInterval, string reportInterval, string eventName)
-        {
-            LoggingFields loggingFields = new LoggingFields();
-            try
-            {
-                loggingFields.AddString("Sensor_Type", Constants.SensorTypes[deviceInfo.Properties[Constants.Properties["Sensor_Type"]].ToString()]);
-            }
-            catch { }
-            loggingFields.AddString("Sensor_Device_ID", deviceId);
-            try
-            {
-                loggingFields.AddString("Sensor_Category", Constants.SensorCategories[deviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()]);
-            }
-            catch { }
-            try
-            {
-                loggingFields.AddString("Sensor_PersistentUniqueId", deviceInfo.Properties[Constants.Properties["Sensor_PersistentUniqueId"]].ToString());
-            }
-            catch { }
-            try
-            {
-                loggingFields.AddString("Sensor_Manufacturer", deviceInfo.Properties[Constants.Properties["Sensor_Manufacturer"]].ToString());
-            }
-            catch { }
-            try
-            {
-                loggingFields.AddString("Sensor_Model", deviceInfo.Properties[Constants.Properties["Sensor_Model"]].ToString());
-            }
-            catch { }
-            try
-            {
-                loggingFields.AddString("Sensor_ConnectionType", Constants.SensorConnectionTypes[int.Parse(deviceInfo.Properties[Constants.Properties["Sensor_ConnectionType"]].ToString())]);
-            }
-            catch { }
-            try
-            {
-                loggingFields.AddString("Sensor_Name", deviceInfo.Properties[Constants.Properties["Sensor_Name"]].ToString());
-            }
-            catch { }
-            loggingFields.AddString("Sensor_Min_Report_Interval", minReportInterval);
-            loggingFields.AddString("Sensor_Report_Interval", reportInterval);
-
-            rootPage.loggingChannelTests.LogEvent(eventName, loggingFields);
         }
 
         private void LogTestSuccess(LoggingFields loggingFields, int testNumber, string direction, string eventName)

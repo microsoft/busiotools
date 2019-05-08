@@ -1,0 +1,46 @@
+﻿<!--Copyright (c) Microsoft Corporation. All rights reserved.-->
+<!--Licensed under the MIT License.-->
+
+<Page
+    x:Class="SensorExplorer.Scenario1View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <CollectionViewSource x:ConnectionId='2' x:Name="DeviceListSource"/>
+    </Page.Resources>
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button x:ConnectionId='9' x:Name="feedbackButton"                       >
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE939;" FontFamily="Segoe MDL2 Assets"/>
+                    <TextBlock Text="Feedback" Margin="8,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:ConnectionId='10' x:Name="saveFileButton" Margin="10,0,10,0" Content="Save Log"                             IsEnabled="False"/>
+        </StackPanel>
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid>
+                <Pivot x:ConnectionId='7' x:Name="PivotSensor" IsTextScaleFactorEnabled="False"/>
+                <ProgressRing x:ConnectionId='8' x:Name="ProgressRingSensor" Height="100" Width="100" IsActive="True"/>
+            </Grid>
+        </Grid>
+        <StackPanel x:ConnectionId='3' x:Name="stackPanelMALTConnection" Visibility="Collapsed" Background="AliceBlue" Margin="20,10,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="MALT Device Selection" Margin="10" FontSize="18"/>
+                <Button x:ConnectionId='6' x:Name="ConnectToDeviceButton" Content="Connect to device"                              Margin="10"/>
+            </StackPanel>
+            <ListBox x:ConnectionId='4' x:Name="connectDevices" ItemsSource="{Binding Source={StaticResource DeviceListSource}}"  Height="250" Background="AliceBlue">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding InstanceId}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </StackPanel>
+</Page>
+

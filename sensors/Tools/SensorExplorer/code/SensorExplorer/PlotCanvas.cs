@@ -42,6 +42,16 @@ namespace SensorExplorer
             }
         }
 
+        public void HideCanvas()
+        {
+            _canvas.Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowCanvas()
+        {
+            _canvas.Visibility = Visibility.Visible;
+        }
+
         public void SetHeight(double height)
         {
             _height = height;
@@ -174,10 +184,7 @@ namespace SensorExplorer
                     PathGeometry pathGeometry = new PathGeometry();
                     pathGeometry.Figures.Add(pathFigure[i]);
 
-                    path[i] = new Path();
-                    path[i].Data = pathGeometry;
-                    path[i].Stroke = new SolidColorBrush(_color[i]);
-                    path[i].StrokeThickness = 2;
+                    path[i] = new Path() { Data = pathGeometry, Stroke = new SolidColorBrush(_color[i]), StrokeThickness = 2 };
                 }
             }
             catch { }
@@ -214,13 +221,11 @@ namespace SensorExplorer
 
                     if (_frame < 15 || i % 5 == 0)
                     {
-                        TextBlock textBlock = new TextBlock();
-                        textBlock.Text = (-i).ToString();
-                        textBlock.FontSize = _fontSize;
+                        TextBlock textBlock = new TextBlock() { Text = (-i).ToString(), FontSize = _fontSize };
                         textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
                         textBlock.Width = textBlock.DesiredSize.Width;
                         textBlock.Height = textBlock.DesiredSize.Height;
-                        textBlock.Margin = new Thickness() { Top = vLine.Y2 + 5, Left = vLine.X2 - textBlock.Width / 2 };
+                        textBlock.Margin = new Thickness(vLine.X2 - textBlock.Width / 2, vLine.Y2 + 5, 0, 0);
                         _canvas.Children.Add(textBlock);
                     }
                 }
@@ -248,13 +253,11 @@ namespace SensorExplorer
                     // Add the path to the Canvas
                     _canvas.Children.Add(hLine);
 
-                    TextBlock textBlock = new TextBlock();
-                    textBlock.Text = _vAxisLabel[i];
-                    textBlock.FontSize = _fontSize;
+                    TextBlock textBlock = new TextBlock() { Text = _vAxisLabel[i], FontSize = _fontSize };
                     textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
                     textBlock.Width = textBlock.DesiredSize.Width;
                     textBlock.Height = textBlock.DesiredSize.Height;
-                    textBlock.Margin = new Thickness() { Top = hLine.Y1 - textBlock.Height / 2, Left = -textBlock.Width - 5 };
+                    textBlock.Margin = new Thickness(-textBlock.Width - 5, hLine.Y1 - textBlock.Height / 2, 0, 0);
                     _canvas.Children.Add(textBlock);
                 }
             }

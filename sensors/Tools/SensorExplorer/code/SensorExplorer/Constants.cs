@@ -32,14 +32,19 @@ namespace SensorExplorer
             { "Device_PanelShape", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 15" },
             { "Device_PanelVisible", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 16" }
         };
-        public static Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
-            { "0", "Top" },
-            { "1", "Bottom" },
-            { "2", "Left" },
-            { "3", "Right" },
-            { "4", "Front" },
-            { "5", "Back" },
-            { "6", "Unknown" }
+        public static Dictionary<string, string> PanelGroup = new Dictionary<string, string>() {
+            { "0", "Right Panel" },
+            { "1", "Left Panel" }
+        };
+        public static Dictionary<string, string> PanelRotation = new Dictionary<string, string>() {
+            { "0", "0°" },
+            { "1", "45°" },
+            { "2", "90°" },
+            { "3", "135°" },
+            { "4", "180°" },
+            { "5", "225°" },
+            { "6", "270" },
+            { "7", "315°" }
         };
         public static Dictionary<string, string> PanelShape = new Dictionary<string, string>() {
             { "0", "Round" },
@@ -51,6 +56,15 @@ namespace SensorExplorer
             { "6", "Horizontal Trapezoid" },
             { "7", "Unknown" },
             { "8", "Chamfered" }
+        };
+        public static Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
+            { "0", "Top" },
+            { "1", "Bottom" },
+            { "2", "Left" },
+            { "3", "Right" },
+            { "4", "Front" },
+            { "5", "Back" },
+            { "6", "Unknown" }
         };
         public static Dictionary<string, string> Properties = new Dictionary<string, string>() {
             { "Sensor_Type", "{D4247382-969D-4F24-BB14-FB9671870BBF} 2" },

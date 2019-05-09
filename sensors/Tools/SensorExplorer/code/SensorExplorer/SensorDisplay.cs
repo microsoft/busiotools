@@ -42,13 +42,14 @@ namespace SensorExplorer
         public int _sensorType;
         public int _index;
         public bool _isOn = false;
-        public StackPanel StackPanelSensor = new StackPanel() { Orientation = Orientation.Vertical, Visibility = Visibility.Collapsed, Margin = new Thickness() { Right = 18, Bottom = 20, Top = 0 } };
+        public StackPanel StackPanelSensor = new StackPanel() { Orientation = Orientation.Vertical, Visibility = Visibility.Collapsed, Margin = new Thickness(0, 0, 18, 20) };
         public PlotCanvas _plotCanvas;
-        public TextBox TextboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness() { Left = 40, Right = 10, Top = 20, Bottom = 10 } };
+        public TextBox TextboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness(40, 20, 10, 10) };
+        public StackPanel stackPanelTop = new StackPanel() { Orientation = Orientation.Horizontal, Height = 100, HorizontalAlignment = HorizontalAlignment.Center };
 
         //MALT
-        public Button MALTButton = new Button() { Content = "Include MALT", Height = 50, Width = 200, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness() { Top = 50 }, FontSize = 20 };
-        public StackPanel StackPanelMALTData = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 50 }, Background = new SolidColorBrush(Colors.AliceBlue), Visibility = Visibility.Collapsed };
+        public Button MALTButton = new Button() { Content = "Include MALT", Height = 50, Width = 200, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 50, 0, 0), FontSize = 20 };
+        public StackPanel StackPanelMALTData = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(50, 0, 0, 0), Background = new SolidColorBrush(Colors.AliceBlue), Visibility = Visibility.Collapsed };
         public TextBlock[] TextBlockMALTPropertyValue1;
         public TextBlock[] TextBlockMALTPropertyValue2;
 
@@ -57,9 +58,8 @@ namespace SensorExplorer
         private string[] _properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" };
         private string[] _pld = new string[] { "Panel Id", "Panel Group", "Panel Side", "Panel Width (mm)", "Panel Height (mm)", "Panel Length (mm)", "Panel PositionX", "Panel PositionY", "Panel PositionZ", "Panel RotationX", "Panel RotationY", "Panel RotationZ", "Panel Color", "Panel Shape", "Panel Visible" };
         private StackPanel stackPanelSwitch = new StackPanel();
-        private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness() { Left = 10, Right = 10, Top = 20, Bottom = 10 } };
+        private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness(0, 20, 10, 10) };
         private Button buttonSensor = new Button();
-        private StackPanel stackPanelTop = new StackPanel() { Orientation = Orientation.Horizontal, Height = 100, HorizontalAlignment = HorizontalAlignment.Center };
         private Ellipse ellipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
         private Image imageCompass = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Compass.png")) };
         private Image imageGyrometerX = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Gyrometer.png")) };
@@ -81,41 +81,40 @@ namespace SensorExplorer
         private TextBlock[] textBlockMinValue;
         private StackPanel stackPanelMaxValue = new StackPanel() { Orientation = Orientation.Vertical };
         private TextBlock[] textBlockMaxValue;
-        private StackPanel stackPanelPropertyName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 10, Top = 10, Bottom = 10 } };
+        private StackPanel stackPanelPropertyName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 10, 0, 10) };
         private TextBlock[] textBlockPropertyName;
         private StackPanel stackPanelPropertyValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
         private TextBlock[] textBlockPropertyValue;
         public StackPanel stackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private Canvas canvasSensorProperty = new Canvas();
+        private Canvas canvasSensor = new Canvas();
         private Expander expanderProperty = new Expander() { Header = "Properties" };
 
         // PLD
-        private StackPanel stackPanelPLDName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness() { Left = 10, Top = 10, Bottom = 10 } };
+        private StackPanel stackPanelPLDName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 10, 0, 10) };
         private TextBlock[] textBlockPLDName;
         private StackPanel stackPanelPLDValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
         private TextBlock[] textBlockPLDValue;
         public StackPanel stackPanelPLD = new StackPanel() { Orientation = Orientation.Horizontal };
         private ScrollViewer scrollViewerPLD = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private Canvas canvasSensorPLD = new Canvas();
-        private Expander expanderPLD = new Expander() { Header = "Physical Location of Device" };
+        private Expander expanderPLD = new Expander() { Header = "Physical Location of Device (PLD)" };
 
         // MALT
-        private StackPanel stackPanelMALT2 = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness() { Left = 20, Top = 20 } };
-        private TextBlock textblockMALTData1 = new TextBlock() { Text = "MALT Light/Color Sensor (Ambient)", FontSize = 20, Margin = new Thickness() { Left = 20, Top = 10 } };
-        private StackPanel stackPanelMALTPropertyName1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        private StackPanel stackPanelMALT2 = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(20, 20, 0, 0) };
+        private TextBlock textblockMALTData1 = new TextBlock() { Text = "MALT Light/Color Sensor (Ambient)", FontSize = 20, Margin = new Thickness(20, 10, 0, 0) };
+        private StackPanel stackPanelMALTPropertyName1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness(20, 20, 0, 0) };
         private TextBlock[] textBlockMALTPropertyName1;
-        private StackPanel stackPanelMALTPropertyValue1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        private StackPanel stackPanelMALTPropertyValue1 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness(20, 20, 0, 0) };
         private TextBlock textblockMALTData2 = new TextBlock() { Text = "MALT Light/Color Sensor (Screen)", FontSize = 20, Margin = new Thickness() { Left = 20, Top = 10 } };
-        private StackPanel stackPanelMALTPropertyName2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10 } };
+        private StackPanel stackPanelMALTPropertyName2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness(20, 20, 0, 0) };
         private TextBlock[] textBlockMALTPropertyName2;
-        private StackPanel stackPanelMALTPropertyValue2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness() { Left = 20, Top = 10, Bottom = 20 } };
+        private StackPanel stackPanelMALTPropertyValue2 = new StackPanel() { Orientation = Orientation.Horizontal, Background = new SolidColorBrush(Colors.AliceBlue), Margin = new Thickness(20, 20, 0, 0) };
         private Button hideMALTButton = new Button() { Content = "Hide", Margin = new Thickness(20) };
 
         public SensorDisplay(int sensorType, int index, int totalIndex, string name, int minValue, int maxValue, int scale, Color[] color)
         {
-            var resourceLoader = ResourceLoader.GetForCurrentView();
-
+            string[] vAxisLabel = new string[scale + 1];
+            var resourceLoader = ResourceLoader.GetForCurrentView();          
             StackPanelSensor.Children.Clear();
 
             _sensorType = sensorType;
@@ -125,11 +124,8 @@ namespace SensorExplorer
 
             expanderProperty.Content = scrollViewerProperty;
             scrollViewerProperty.Content = stackPanelProperty;
-
             expanderPLD.Content = scrollViewerPLD;
             scrollViewerPLD.Content = stackPanelPLD;
-
-            string[] vAxisLabel = new string[scale + 1];
 
             for (int i = 0; i <= scale; i++)
             {
@@ -154,7 +150,7 @@ namespace SensorExplorer
                 }
             }
 
-            _plotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensorProperty, vAxisLabel);
+            _plotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensor, vAxisLabel);
             stackPanelSwitch.Children.Add(buttonSensor);
 
             if (sensorType == Sensor.ACCELEROMETER || sensorType == Sensor.ACCELEROMETERLINEAR || sensorType == Sensor.ACCELEROMETERGRAVITY)
@@ -379,8 +375,7 @@ namespace SensorExplorer
             stackPanelPLD.Children.Add(stackPanelPLDValue);
 
             StackPanelSensor.Children.Add(stackPanelTop);
-            StackPanelSensor.Children.Add(canvasSensorProperty);
-            StackPanelSensor.Children.Add(canvasSensorPLD);
+            StackPanelSensor.Children.Add(canvasSensor);
             StackPanelSensor.Children.Add(stackPanelBottom);
         }
 
@@ -416,10 +411,9 @@ namespace SensorExplorer
             }
 
             SetFontSize(fontSize);
-            SetHeight(height * 0.2);
-            canvasSensorProperty.Width = width * 0.5;
+            SetHeight(height * 0.5);
+            canvasSensor.Width = width * 0.7;
             scrollViewerProperty.MaxWidth = width * 0.5;
-            canvasSensorPLD.Width = width * 0.5;
             scrollViewerPLD.MaxWidth = width * 0.5;
 
             return actualWidth;
@@ -447,21 +441,17 @@ namespace SensorExplorer
                 textBlockPLDValue[i].FontSize = fontSize;
             }
 
-            TextBlock textBlock = new TextBlock();
-            textBlock.Text = "00000000";
-            textBlock.FontSize = fontSize;
+            TextBlock textBlock = new TextBlock() { Text = "00000000" , FontSize = fontSize };
             textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
-            canvasSensorProperty.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
-            canvasSensorPLD.Margin = new Thickness() { Left = textBlock.DesiredSize.Width, Top = textBlock.DesiredSize.Height, Bottom = textBlock.DesiredSize.Height * 2 };
+            canvasSensor.Margin = new Thickness(textBlock.DesiredSize.Width, textBlock.DesiredSize.Height, 0, textBlock.DesiredSize.Height * 2 );
             _plotCanvas.SetFontSize(fontSize);
         }
 
         public void SetHeight(double height)
         {
-            _plotCanvas.SetHeight(height);
-            canvasSensorProperty.Width = height;
+            _plotCanvas.SetHeight(height*0.4);
+            canvasSensor.Width = height;
             scrollViewerProperty.MaxHeight = height;
-            canvasSensorPLD.Width = height;
             scrollViewerPLD.MaxHeight = height;
         }
 
@@ -501,7 +491,7 @@ namespace SensorExplorer
                                       string panelRotationZ, string panelColor, string panelShape, string panelVisible)
         {
             textBlockPLDValue[0].Text = panelId == null ? "null" : panelId;
-            textBlockPLDValue[1].Text = panelGroup == null ? "null" : panelGroup;
+            textBlockPLDValue[1].Text = panelGroup == null ? "null" : Constants.PanelGroup[panelGroup];
             textBlockPLDValue[2].Text = panelSide == null ? "null" : Constants.PanelSide[panelSide];
             textBlockPLDValue[3].Text = panelWidth == null ? "null" : panelWidth;
             textBlockPLDValue[4].Text = panelHeight == null ? "null" : panelHeight;
@@ -509,10 +499,16 @@ namespace SensorExplorer
             textBlockPLDValue[6].Text = panelPositionX == null ? "null" : panelPositionX;
             textBlockPLDValue[7].Text = panelPositionY == null ? "null" : panelPositionY;
             textBlockPLDValue[8].Text = panelPositionZ == null ? "null" : panelPositionZ;
-            textBlockPLDValue[9].Text = panelRotationX == null ? "null" : panelRotationX;
-            textBlockPLDValue[10].Text = panelRotationY == null ? "null" : panelRotationY;
-            textBlockPLDValue[11].Text = panelRotationZ == null ? "null" : panelRotationZ;
-            textBlockPLDValue[12].Text = panelColor == null ? "null" : panelColor;
+            textBlockPLDValue[9].Text = panelRotationX == null ? "null" : Constants.PanelRotation[panelRotationX];
+            textBlockPLDValue[10].Text = panelRotationY == null ? "null" : Constants.PanelRotation[panelRotationY];
+            textBlockPLDValue[11].Text = panelRotationZ == null ? "null" : Constants.PanelRotation[panelRotationZ];
+
+            try
+            {
+                textBlockPLDValue[12].Text = panelColor == null ? "null" : "0x" + long.Parse(panelColor).ToString("X");    // convert to hex
+            }
+            catch { }
+
             textBlockPLDValue[13].Text = panelShape == null ? "null" : Constants.PanelShape[panelShape];
             textBlockPLDValue[14].Text = panelVisible == null ? "null" : panelVisible;
         }
@@ -552,20 +548,20 @@ namespace SensorExplorer
                         {
                             switch (displayInformation.CurrentOrientation)
                             {
-                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
-                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
-                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
+                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness(margin * x, 0, 0, margin * y); break;
+                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * y, 0, 0, -margin * x ); break;
+                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * x, 0, 0, -margin * y); break;
+                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * y, 0, 0, margin * x ); break;
                             }
                         }
                         else if (displayInformation.NativeOrientation == DisplayOrientations.Portrait)
                         {
                             switch (displayInformation.CurrentOrientation)
                             {
-                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * y, Bottom = margin * x }; break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness() { Left = margin * x, Bottom = margin * y }; break;
-                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = margin * y, Bottom = -margin * x }; break;
-                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness() { Left = -margin * x, Bottom = -margin * y }; break;
+                                case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness(-margin * y, 0, 0, margin * x); break;
+                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * x, 0, 0, margin * y ); break;
+                                case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness(margin * y, 0, 0, -margin * x); break;
+                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * x, 0, 0, -margin * y); break;
                             }
                         }
                     }
@@ -576,6 +572,7 @@ namespace SensorExplorer
                         textBlockValue[i].Text = string.Format("        {0,5:0.00}", sensorData._reading[index].value[i]);
                         textBlockMinValue[i].Text = string.Format("        {0,5:0.0}", sensorData._minValue[i]);
                         textBlockMaxValue[i].Text = string.Format("        {0,5:0.0}", sensorData._maxValue[i]);
+
                         if (sensorData._property[i].StartsWith("MagneticNorth"))
                         {
                             RotateTransform rotateCompass = new RotateTransform();

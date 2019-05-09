@@ -21,6 +21,8 @@
                 </StackPanel>
             </Button>
             <Button x:Name="saveFileButton" Margin="10,0,10,0" Content="Save Log" Click="SaveFileButtonClick" IsEnabled="False"/>
+            <Button x:Name="hidePlotButton" Margin="10,0,10,0" Content="Hide Plot" Click="HidePlotButton" IsEnabled="True"/>
+            <Button x:Name="showPlotButton" Margin="10,0,10,0" Content="Show Plot" Click="ShowPlotButton" IsEnabled="False"/>
         </StackPanel>
         <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <Grid>

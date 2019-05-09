@@ -75,7 +75,6 @@ namespace SensorExplorer
         private string sensorDataLog;
         private DateTime startTime;
         private Run run = new Run();
-        private int staticAccuracyCount;
 
         public Scenario0Tests()
         {
@@ -86,14 +85,10 @@ namespace SensorExplorer
             if (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
-                instruction.FontSize = 30;
-                timerLog.FontSize = 30;
             }
             else if (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-                instruction.FontSize = 20;
-                timerLog.FontSize = 20;
             }
 
             EnumerateSensors();
@@ -512,7 +507,6 @@ namespace SensorExplorer
 
         private void TestBegin()
         {
-            staticAccuracyCount = 0;
             dataList = new List<double[]>();
             orientationSensorFirstMinuteDataList = new List<double[]>();
             orientationSensorLastMinuteDataList = new List<double[]>();

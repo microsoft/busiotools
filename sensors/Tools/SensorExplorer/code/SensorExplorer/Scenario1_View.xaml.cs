@@ -51,6 +51,8 @@ namespace SensorExplorer
         private List<string> conversionValues = new List<string> { "100", "800" };
         private bool cancel = false;
         private ObservableCollection<DeviceListEntry> listOfDevices = new ObservableCollection<DeviceListEntry>();
+        private double windowWidth;
+        private double windowHeight;
 
         public Scenario1View()
         {
@@ -338,9 +340,7 @@ namespace SensorExplorer
         private void AddPivotItem(int sensorType, int index, int totalIndex)
         {
             PivotItem PivotItemSensor = new PivotItem();
-            ScrollViewer scrollViewerSensor = new ScrollViewer();
-            scrollViewerSensor.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scrollViewerSensor.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            ScrollViewer scrollViewerSensor = new ScrollViewer() { VerticalScrollBarVisibility = ScrollBarVisibility.Visible, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible };
 
             PivotItemSensor.Header = _sensorData[totalIndex]._name + " " + (index + 1);
             scrollViewerSensor.Content = _sensorDisplay[totalIndex].StackPanelSensor;
@@ -348,8 +348,7 @@ namespace SensorExplorer
             PivotSensor.Items.Add(PivotItemSensor);
         }
 
-        /// <summary>
-        /// This the event handler for the "Defaults" button added to the settings charm. This method
+        /// <summary>        /// This the event handler for the "Defaults" button added to the settings charm. This method
         /// is responsible for creating the Popup window will use as the container for our settings Flyout.
         /// The reason we use a Popup is that it gives us the "light dismiss" behavior that when a user clicks away 
         /// from our custom UI it just dismisses.  This is a principle in the Settings experience and you see the
@@ -374,13 +373,15 @@ namespace SensorExplorer
         void MainPageSizeChanged(object sender, SizeChangedEventArgs e)
         {
             double width = e.NewSize.Width - 50;
+            windowWidth = e.NewSize.Width;
+            windowHeight = e.NewSize.Height;
             double actualWidth = 0;
             for (int i = 0; i < _sensorDisplay.Count; i++)
             {
                 actualWidth = _sensorDisplay[i].SetWidth(e.NewSize.Width, e.NewSize.Height);
             }
         }
-
+         
         private void PivotSensorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             for (int i = 0; i < PivotSensor.Items.Count; i++)
@@ -393,6 +394,7 @@ namespace SensorExplorer
                 {
                     if (Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // disable previous sensor
                     {
+                        ShowPlotButton(null, null);
                         if (Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                         {
                             DisconnectFromDeviceClick(null, null);
@@ -530,6 +532,32 @@ namespace SensorExplorer
             }
         }
 
+        private void HidePlotButton(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+                selected._plotCanvas.HideCanvas();
+                selected.stackPanelTop.Visibility = Visibility.Collapsed;
+                hidePlotButton.IsEnabled = false;
+                showPlotButton.IsEnabled = true;
+            }
+            catch { }
+        }
+
+        private void ShowPlotButton(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SensorDisplay selected = _sensorDisplay[Sensor.currentId];
+                selected._plotCanvas.ShowCanvas();
+                selected.stackPanelTop.Visibility = Visibility.Visible;
+                hidePlotButton.IsEnabled = true;
+                showPlotButton.IsEnabled = false;
+            }
+            catch { }
+        }
+
         private void AddSummaryPage()
         {
             PivotItem PivotItemSensor = new PivotItem();
@@ -557,7 +585,7 @@ namespace SensorExplorer
                 stackpanelValue.Children.Add(TextBlockValues[i]);
 
                 TextBlockFailed[i] = new TextBlock();
-                TextBlockFailed[i].Margin = new Thickness() { Left = 20 };
+                TextBlockFailed[i].Margin = new Thickness(20, 0, 0, 0);
                 TextBlockFailed[i].FontSize = 20;
                 TextBlockFailed[i].HorizontalAlignment = HorizontalAlignment.Center;
                 stackpanelFailed.Children.Add(TextBlockFailed[i]);
@@ -1047,7 +1075,6 @@ namespace SensorExplorer
                 data = data.Replace("\n", "");
                 string[] delim = new string[1] { "\r" };
                 string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-                //OutputError(command, split[0]);
 
                 return split;
             }
@@ -1136,7 +1163,6 @@ namespace SensorExplorer
                 data = data.Replace("\n", "");
                 string[] delim = new string[1] { "\r" };
                 string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-                //OutputError(command, split[0]);
 
                 return RawToLux(Convert.ToInt32(split[2]), Convert.ToInt32(split[1]));
             }

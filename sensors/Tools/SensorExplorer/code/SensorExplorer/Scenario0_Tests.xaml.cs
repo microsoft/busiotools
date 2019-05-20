@@ -40,10 +40,10 @@ namespace SensorExplorer
                 { "Offset", 60 },
                 { "Jitter", 60*15 },
                 { "Drift", 60*15 },
-                { "GyroDrift",60 },
-                { "PacketLoss", 60*5 },
-                { "StaticAccuracy", 5 },
-                { "MagInterference", 30 }
+                { "GyroDrift",60},
+                { "PacketLoss", 60*5},
+                { "StaticAccuracy", 5},
+                { "MagInterference", 30}
             }; // In seconds
         private List<int> indices;
         private string testType;
@@ -260,6 +260,7 @@ namespace SensorExplorer
 
         private void TestButtonClick(object sender, RoutedEventArgs e)
         {
+            int type = SensorType[pivotSensor.SelectedIndex];
             switch (((Button)sender).Content)
             {
                 case "Orientation Test":
@@ -293,6 +294,7 @@ namespace SensorExplorer
                     break;
                 case "Drift Test":
                     testType = "Drift";
+                    if (type == Sensor.GYROMETER) testType = "GyroDrift";
                     DisplayPrecondition();
                     break;
                 case "Packet Loss Test":
@@ -344,6 +346,10 @@ namespace SensorExplorer
                     }
                     break;
                 case "Drift":
+                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                       "Keep it in stationary state.";
+                    break;
+                case "GyroDrift":
                     instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
                                        "Keep it in stationary state.";
                     break;
@@ -583,20 +589,10 @@ namespace SensorExplorer
                     {
                         gyrometerInitialReading = currentGyrometer.GetCurrentReading();
                     }
-                    if (testType == "Drift")
-                    {
-                        countdown = new Countdown(testLength["GyroDrift"], "GyroDrift");
-                        startTime = DateTime.Now;
-                        currentGyrometer.ReadingChanged += GyrometerReadingChanged;
-                        instruction.Text = "Gyrometer " + testType + " Test in progress...";
-                    }
-                    else
-                    {
-                        countdown = new Countdown(testLength[testType], testType);
-                        startTime = DateTime.Now;
-                        currentGyrometer.ReadingChanged += GyrometerReadingChanged;
-                        instruction.Text = "Gyrometer " + testType + " Test in progress...";
-                    }
+                    countdown = new Countdown(testLength[testType], testType);
+                    startTime = DateTime.Now;
+                    currentGyrometer.ReadingChanged += GyrometerReadingChanged;
+                    instruction.Text = "Gyrometer " + testType + " Test in progress...";
                 }
             }
             else if (type == Sensor.LIGHTSENSOR)
@@ -860,7 +856,7 @@ namespace SensorExplorer
             {
                 CalculateJitterTest();
             }
-            else if (testType == "Drift")
+            else if (testType == "Drift" || testType == "GyroDrift")
             {
                 CalculateDriftTest();
             }
@@ -1237,10 +1233,10 @@ namespace SensorExplorer
                 lastMinuteAvg[3] = lastMinuteSum[3] / orientationSensorLastMinuteDataList.Count;
 
                 str = Constants.SensorName[type] + " " + testType + " Test Result: \n" +
-                      "--> Difference in W: " + (lastMinuteAvg[0] - firstMinuteAvg[0]) + "\n" +
-                      "--> Difference in X: " + (lastMinuteAvg[1] - firstMinuteAvg[1]) + "\n" +
-                      "--> Difference in Y: " + (lastMinuteAvg[2] - firstMinuteAvg[2]) + "\n" +
-                      "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + "\n";
+                      "--> Difference in W: " + (lastMinuteAvg[0] - firstMinuteAvg[0]) + " Degrees\n" +
+                      "--> Difference in X: " + (lastMinuteAvg[1] - firstMinuteAvg[1]) + " Degrees\n" +
+                      "--> Difference in Y: " + (lastMinuteAvg[2] - firstMinuteAvg[2]) + " Degrees\n" +
+                      "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + " Degrees\n";
 
                 rootPage.loggingChannelTests.LogMessage(str);
                 instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";

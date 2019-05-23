@@ -561,6 +561,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose" Name="1a973eb5-9862-46f0-a54b-ad8a6221654e" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthPort" Name="d88ace07-cac0-11d8-a4c6-000d560bcba5" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -1032,7 +1037,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPort.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.RFCOMM"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BtAmPm"/>

@@ -561,9 +561,9 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose" Name="1a973eb5-9862-46f0-a54b-ad8a6221654e" Level="5" NonPagedMemory="true">
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose" Name="1a973eb5-9862-46f0-a54b-ad8a6221654e" Level="7" NonPagedMemory="true">
       <Keywords>
-        <Keyword Value="0x7fffffff"/>
+        <Keyword Value="0xffffffff"/>
       </Keywords>
     </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthPort" Name="d88ace07-cac0-11d8-a4c6-000d560bcba5" Level="4" NonPagedMemory="true">

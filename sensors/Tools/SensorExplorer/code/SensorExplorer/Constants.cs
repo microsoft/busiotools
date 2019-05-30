@@ -140,6 +140,7 @@ namespace SensorExplorer
             { Sensor.ALTIMETER, "Altimeter" },
             { Sensor.BAROMETER, "Barometer" },
             { Sensor.COMPASS, "Compass" },
+            { Sensor.CUSTOMSENSOR, "Custom Sensor" },
             { Sensor.GYROMETER, "Gyrometer" },
             { Sensor.INCLINOMETER, "Inclinometer" },
             { Sensor.LIGHTSENSOR, "Light Sensor" },
@@ -156,6 +157,7 @@ namespace SensorExplorer
         public static string[] AltimeterPropertyTitles = new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" };
         public static string[] BarometerPropertyTitles = new string[] { "Pressure (hPa)" };
         public static string[] CompassPropertyTitles = new string[] { "MagneticNorth (°)", "TrueNorth (°)", "HeadingAccuracy" };
+        public static string[] CustomSensorPropertyTitles = new string[0];
         public static string[] GyrometerPropertyTitles = new string[] { "AngularVelocityX (°/s)", "AngularVelocityY (°/s)", "AngularVelocityZ (°/s)" };
         public static string[] InclinometerPropertyTitles = new string[] { "Pitch (°)", "Roll (°)", "Yaw (°)", "YawAccuracy" };
         public static string[] LightSensorPropertyTitles = new string[] { "Illuminance (lux)" };
@@ -172,6 +174,7 @@ namespace SensorExplorer
         public static Color[] AltimeterColors = new Color[] { Colors.DarkRed };
         public static Color[] BarometerColors = new Color[] { Colors.Lime };
         public static Color[] CompassColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
+        public static Color[] CustomSensorColors = new Color[0];
         public static Color[] GyrometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
         public static Color[] InclinometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.Black };
         public static Color[] LightSensorColors = new Color[] { Colors.DarkOrange };

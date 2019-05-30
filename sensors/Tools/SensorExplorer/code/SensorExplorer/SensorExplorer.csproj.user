@@ -18,7 +18,7 @@
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <RemoteDebugMachine>10.229.211.132</RemoteDebugMachine>
+    <RemoteDebugMachine>10.225.47.89</RemoteDebugMachine>
     <AuthenticationMode>Universal</AuthenticationMode>
     <RemoteDebugEnabled>true</RemoteDebugEnabled>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>

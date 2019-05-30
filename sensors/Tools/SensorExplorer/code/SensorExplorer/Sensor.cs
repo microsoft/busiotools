@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Custom;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
+using Windows.Devices.Sensors.Custom;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 
@@ -37,6 +38,7 @@ namespace SensorExplorer
         public const int HUMIDITYSENSOR = 19;
         public const int UVSENSOR = 20;
         public const int TEMPERATURESENSOR = 21;
+        public const int CUSTOMSENSOR = 22;
 
         public const int ACTIVITYNONE = 2;
         public const int ACTIVITYNOTSUPPORTED = 3;
@@ -68,6 +70,9 @@ namespace SensorExplorer
         public static List<Compass> CompassList;
         public static List<DeviceInformation> CompassDeviceInfo;
         public static List<string[]> CompassPLD;
+        public static List<CustomSensor> CustomSensorList;
+        public static List<DeviceInformation> CustomSensorDeviceInfo;
+        public static List<string[]> CustomSensorPLD;
         public static List<Gyrometer> GyrometerList;
         public static List<DeviceInformation> GyrometerDeviceInfo;
         public static List<string[]> GyrometerPLD;
@@ -106,6 +111,7 @@ namespace SensorExplorer
         public static bool AltimeterFailed;
         public static bool BarometerFailed;
         public static bool CompassFailed;
+        public static bool CustomSensorFailed;
         public static bool GyrometerFailed;
         public static bool InclinometerFailed;
         public static bool LightSensorFailed;
@@ -284,6 +290,9 @@ namespace SensorExplorer
             CompassList = new List<Compass>();
             CompassDeviceInfo = new List<DeviceInformation>();
             CompassPLD = new List<string[]>();
+            CustomSensorList = new List<CustomSensor>();
+            CustomSensorDeviceInfo = new List<DeviceInformation>();
+            CustomSensorPLD = new List<string[]>();
             GyrometerList = new List<Gyrometer>();
             GyrometerDeviceInfo = new List<DeviceInformation>();
             GyrometerPLD = new List<string[]>();
@@ -324,6 +333,7 @@ namespace SensorExplorer
             AltimeterFailed = false;
             BarometerFailed = false;
             CompassFailed = false;
+            CustomSensorFailed = false;
             GyrometerFailed = false;
             InclinometerFailed = false;
             LightSensorFailed = false;
@@ -352,6 +362,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Accelerometer3D = {C2FB0F5F-E2D2-4C78-BCD0-352A9582819D}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Standard), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -372,6 +383,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_LinearAccelerometer = {038B0283-97B4-41C8-BC24-5FF1AA48FEC7}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Linear), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -392,6 +404,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_GravityVector = {03B52C73-BB76-463F-9524-38DE76EB700B}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Gravity), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -412,6 +425,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_ActivityDetection = {9D9E0118-1807-4F2E-96E4-2CE57142E196}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(ActivitySensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -432,18 +446,15 @@ namespace SensorExplorer
             }
             try
             {
-                // No GetDeviceSelector() for altimeter
-                Guid altimeterGuid = new Guid("{0E903829-FF8A-4A93-97DF-3DCBDE402288}");
-                string altimeterDeviceSelector = CustomDevice.GetDeviceSelector(altimeterGuid);
-                deviceInfoCollection = await DeviceInformation.FindAllAsync(altimeterDeviceSelector, Constants.RequestedProperties);
-                foreach (DeviceInformation deviceInfo in deviceInfoCollection)
+                Altimeter = Altimeter.GetDefault();
+
+                if (Altimeter != null)
                 {
-                    Altimeter = Altimeter.GetDefault();
-                    AltimeterDeviceInfo = deviceInfo;
+                    AltimeterDeviceInfo = await DeviceInformation.CreateFromIdAsync(Altimeter.DeviceId);
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        string deviceInstanceId = AltimeterDeviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
                         AltimeterPLD = await GetPLDInformation(deviceInstanceId);
                     }
                 }
@@ -454,6 +465,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Barometer = {0E903829-FF8A-4A93-97DF-3DCBDE402288}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Barometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -474,6 +486,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Compass.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -494,6 +507,28 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Custom = {E83AF229-8640-4D18-A213-E22675EBB2C3}
+                deviceInfoCollection = await DeviceInformation.FindAllAsync(CustomSensor.GetDeviceSelector(new Guid("E83AF229-8640-4D18-A213-E22675EBB2C3")), Constants.RequestedProperties);
+                foreach (DeviceInformation deviceInfo in deviceInfoCollection)
+                {
+                    Compass compass = await Compass.FromIdAsync(deviceInfo.Id);
+                    CompassList.Add(compass);
+                    CompassDeviceInfo.Add(deviceInfo);
+
+                    if (getPLD)
+                    {
+                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                        CompassPLD.Add(await GetPLDInformation(deviceInstanceId));
+                    }
+                }
+            }
+            catch
+            {
+                CompassFailed = false;
+            }
+            try
+            {
+                //GUID_SensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Gyrometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -514,6 +549,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Inclinometer.GetDeviceSelector(SensorReadingType.Absolute), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -534,6 +570,7 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_AmbientLight = {97F115C8-599A-4153-8894-D2D12899918A}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(LightSensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -554,6 +591,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Magnetometer3D = {55E5EFFB-15C7-40df-8698-A84B7C863C53}
+                string s = Magnetometer.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Magnetometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -574,6 +613,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
+                string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -594,6 +635,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
+                string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute, SensorOptimizationGoal.PowerEfficiency), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -614,6 +657,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_RelativeOrientation = {40993B51-4706-44DC-98D5-C920C037FFAB}
+                string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Relative);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Relative), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -634,6 +679,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Pedometer = {B19F89AF-E3EB-444B-8DEA-202575A71599}
+                string s = Pedometer.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Pedometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -654,6 +701,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_Proximity = {5220DAE9-3179-4430-9F90-06266D2A34DE}
+                string s = ProximitySensor.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(ProximitySensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -674,6 +723,8 @@ namespace SensorExplorer
             }
             try
             {
+                //GUID_SensorType_SimpleDeviceOrientation = {86A19291-0482-402C-BF4C-ADDAC52B1C39}
+                string s = SimpleOrientationSensor.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(SimpleOrientationSensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -709,6 +760,7 @@ namespace SensorExplorer
                     case ALTIMETER: EnableAltimeter(totalIndex); break;
                     case BAROMETER: EnableBarometer(index, totalIndex); break;
                     case COMPASS: EnableCompass(index, totalIndex); break;
+                    case CUSTOMSENSOR: EnableCustomSensor(index, totalIndex); break;
                     case GYROMETER: EnableGyrometer(index, totalIndex); break;
                     case INCLINOMETER: EnableInclinometer(index, totalIndex); break;
                     case LIGHTSENSOR: EnableLightSensor(index, totalIndex); break;
@@ -737,6 +789,7 @@ namespace SensorExplorer
                     case ALTIMETER: DisableAltimeter(); break;
                     case BAROMETER: DisableBarometer(index); break;
                     case COMPASS: DisableCompass(index); break;
+                    case CUSTOMSENSOR: DisableCustomSensor(index); break;
                     case GYROMETER: DisableGyrometer(index); break;
                     case INCLINOMETER: DisableInclinometer(index); break;
                     case LIGHTSENSOR: DisableLightSensor(index); break;
@@ -997,6 +1050,62 @@ namespace SensorExplorer
                     if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.HeadingMagneticNorth),
                                                                                                        Convert.ToDouble(reading.HeadingTrueNorth),
                                                                                                        (int)reading.HeadingAccuracy }))
+                    {
+                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            if (currentId < sensorData.Count)
+                            {
+                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                            }
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void EnableCustomSensor(int index, int totalIndex)
+        {
+            if (CustomSensorList[index] != null)
+            {
+                string deviceId = string.Empty;
+                string deviceName = string.Empty;
+                uint reportInterval = 0;
+                uint minimumReportInterval = 0;
+
+                try
+                {
+                    deviceId = CustomSensorList[index].DeviceId;
+                }
+                catch { }
+                try
+                {
+                    reportInterval = CustomSensorList[index].ReportInterval;
+                }
+                catch { }
+
+                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
+                sensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
+                CustomSensorList[index].ReadingChanged += CustomSensor_ReadingChanged;
+            }
+        }
+
+        private static void DisableCustomSensor(int index)
+        {
+            if (CustomSensorList[index] != null)
+            {
+                CustomSensorList[index].ReadingChanged -= CustomSensor_ReadingChanged;
+            }
+        }
+
+        private async static void CustomSensor_ReadingChanged(object sender, CustomSensorReadingChangedEventArgs e)
+        {
+            try
+            {
+                if (sensorData[currentId]._sensorType == CUSTOMSENSOR)
+                {
+                    CustomSensorReading reading = e.Reading;
+                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[0]))
                     {
                         await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {

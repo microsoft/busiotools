@@ -41,12 +41,17 @@
 
             <controls:Expander Header="Nits Brightness Settings">
                 <StackPanel Margin="20">
+                    <StackPanel x:Name="stackPanelComboBoxNits" HorizontalAlignment="Center" Orientation="Horizontal" Visibility="Collapsed">
+                        <TextBlock Text="Set by" Margin="10,10,5,10" VerticalAlignment="Center"/>
+                        <ComboBox Name="comboBoxNits" Margin="10,10,0,10" Width="200"/>
+                    </StackPanel>
+                    <Slider x:Name="nitsBrightnessSlider" MinWidth="300" ValueChanged="NitsBrightnessSlider_ValueChanged" Minimum="0" Maximum="100" Margin="10" Visibility="Collapsed"/>
                     <StackPanel x:Name="stackPanelNitsBrightness" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Collapsed">
                         <TextBox x:Name="textBoxNitsBrightness" Margin="10,10,5,10"/>
                         <TextBlock x:Name="textBlockNitsBrightness" Text="nits" FontSize="18" VerticalAlignment="Center"/>
                         <Button x:Name="buttonNitsBrightness" Content="Set" Click="ButtonNitsBrightness_Click" Margin="40,10,10,10"/>
                     </StackPanel>
-                    <TextBlock x:Name="textBlockNitsInputError" Foreground="Red" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    <TextBlock x:Name="textBlockNitsInputError" Text="Please enter a number between 0 and 100." Foreground="Red" VerticalAlignment="Center" Visibility="Collapsed"/>
                     <TextBlock x:Name="textBlockNitsBrightnessSettings" Text="Brightness control in nits is not supported on this device."/>
                 </StackPanel>
             </controls:Expander>

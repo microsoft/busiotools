@@ -34,6 +34,9 @@ namespace SensorExplorer
 
             comboBoxPercentage.ItemsSource = new List<string>() { "Slider", "Specific value" };
             comboBoxPercentage.SelectionChanged += OnSelectionChangedPercentage;
+
+            comboBoxNits.ItemsSource = new List<string>() { "Slider", "Specific value" };
+            comboBoxNits.SelectionChanged += OnSelectionChangedNits;
         }
 
         private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)
@@ -56,6 +59,26 @@ namespace SensorExplorer
             }
         }
 
+        private void OnSelectionChangedNits(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboBoxNits.SelectedItem != null)
+            {
+                string selected = comboBoxNits.SelectedItem.ToString();
+                textBlockNitsInputError.Visibility = Visibility.Collapsed;
+
+                if (selected == "Slider")
+                {
+                    nitsBrightnessSlider.Visibility = Visibility.Visible;
+                    stackPanelNitsBrightness.Visibility = Visibility.Collapsed;
+                }
+                else if (selected == "Specific value")
+                {
+                    nitsBrightnessSlider.Visibility = Visibility.Collapsed;
+                    stackPanelNitsBrightness.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
         #region DEO Callbacks   
 
         private async void Deo_DisplayEnhancementOverrideCapabilitiesChanged(DisplayEnhancementOverride sender, DisplayEnhancementOverrideCapabilitiesChangedEventArgs args)
@@ -70,8 +93,19 @@ namespace SensorExplorer
                 stackPanelComboBoxPercentage.Visibility = args.Capabilities.IsBrightnessControlSupported ? Visibility.Visible : Visibility.Collapsed;
                 textBlockPercentageBrightnessSettings.Visibility = args.Capabilities.IsBrightnessControlSupported ? Visibility.Collapsed : Visibility.Visible;
 
-                stackPanelNitsBrightness.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Visible : Visibility.Collapsed;
+                stackPanelComboBoxNits.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Visible : Visibility.Collapsed;
                 textBlockNitsBrightnessSettings.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Collapsed: Visibility.Visible;
+
+                if (supportedNitRange.Count >= 1)
+                {
+                    textBlockNitsInputError.Text = "Please enter a number between " + supportedNitRange[0].MinNits + " and " + supportedNitRange[supportedNitRange.Count - 1].MaxNits + ".";
+                    nitsBrightnessSlider.Minimum = supportedNitRange[0].MinNits;
+                    nitsBrightnessSlider.Maximum = supportedNitRange[supportedNitRange.Count - 1].MaxNits;
+                }
+                else
+                {
+                    textBlockNitsInputError.Text = "No nit ranges on nits system!";
+                }
             });
         }
 
@@ -218,28 +252,28 @@ namespace SensorExplorer
             }
         }
 
+        private void NitsBrightnessSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            SetBrightnessNits((float) e.NewValue);
+        }
+
         private void ButtonNitsBrightness_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 float nits = (float) Convert.ToDouble(textBoxNitsBrightness.Text);
 
-                // assuming single display
-                // TODO: multiple display support?
-                if (supportedNitRange.Count == 1)
+                if (supportedNitRange.Count >= 1)
                 {
-                    foreach (var nitRange in supportedNitRange)
+                    if (nits >= supportedNitRange[0].MinNits && nits <= supportedNitRange[supportedNitRange.Count - 1].MaxNits)
                     {
-                        if (nits >= nitRange.MinNits && nits <= nitRange.MaxNits)
-                        {
-                            SetBrightnessNits(nits);
-                            textBlockNitsInputError.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            textBlockNitsInputError.Visibility = Visibility.Visible;
-                            textBlockNitsInputError.Text = "Please enter a number between " + nitRange.MinNits + " and " + nitRange.MaxNits + ".";
-                        }
+                        SetBrightnessNits(nits);
+                        textBlockNitsInputError.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        textBlockNitsInputError.Visibility = Visibility.Visible;
+                        textBlockNitsInputError.Text = "Please enter a number between " + supportedNitRange[0].MinNits + " and " + supportedNitRange[supportedNitRange.Count - 1].MaxNits + ".";
                     }
                 }
             }

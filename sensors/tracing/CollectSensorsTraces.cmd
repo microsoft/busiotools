@@ -56,7 +56,7 @@ echo Now collecting DispDiag
 rem Collecting DispDiag
 dispdiag
 
-rem copying the WUDF traces
+rem copying the WUDF traces and DispDiag
 copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %SystemRoot%\Tracing >nul 2>&1
 copy %ProgramData%\Microsoft\WDF\*.dmp %SystemRoot%\Tracing >nul 2>&1
 copy %SYSTEMROOT%\system32\DispDiag*.dat %SystemRoot%\Tracing >nul 2>&1

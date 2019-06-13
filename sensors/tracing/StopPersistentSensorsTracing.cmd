@@ -43,3 +43,9 @@ copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %SystemRoot%\Tracing >nul 2>&1
 copy %ProgramData%\Microsoft\WDF\*.dmp %SystemRoot%\Tracing >nul 2>&1
 
 )
+
+echo Now collecting DispDiag
+rem Collecting DispDiag
+dispdiag
+
+copy %SYSTEMROOT%\system32\DispDiag*.dat %SystemRoot%\Tracing >nul 2>&1

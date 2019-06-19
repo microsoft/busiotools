@@ -34,6 +34,10 @@
  .EXAMPLE
  .\Trace.ps1 -List -Detailed
  Shows information about the supported scenarios, including providers used.
+
+ .EXAMPLE
+ .\Trace.ps1 -Start
+ Start tracing without stopping
 #>
 
 [CmdletBinding(DefaultParameterSetName = "Common")]
@@ -43,6 +47,16 @@ param(
     [String]
     $Output,
 
+    [Parameter(ParameterSetName = "Common", ValueFromPipeline = $true)]
+    [Switch]
+    [Alias("start")]
+    $StartBootTrace,
+
+    [Parameter(ParameterSetName = "StopBootTrace", ValueFromPipeline = $true)]
+    [ValidateNotNullOrEmpty()]
+    [Alias("stop")]
+    [String]
+    $StopBootTrace,
     [Parameter(ParameterSetName = "Help")]
     [Alias("h", "?")]
     [Switch]
@@ -95,7 +109,7 @@ $BackgroundJobs        = New-Object System.Collections.ArrayList
 #>
 function Main {
     [CmdletBinding()]
-    [OutputType([void])]
+    [OutputType([String])]
     param()
 
     begin {
@@ -118,6 +132,12 @@ function Main {
         $script:ToolsetType        = Read-TraceToolsetType        "WPR"
         $script:PostProcessingType = Read-TracePostProcessingType "None"
 
+        $IsStopBootTrace = $false
+        if([String]::IsNullOrEmpty($StopBootTrace) -eq $false)
+        {
+            $IsStopBootTrace = $true
+        }
+
         #
         # Make sure the script is running elevated.
         #
@@ -133,47 +153,107 @@ function Main {
         $tracingStarted = $false
 
         try {
-            Write-Host "Looking for the logging scenarios..."
-            #$script:ScenariosData = Get-Scenario $Scenario
+            if($IsStopBootTrace)
+            {
+                Write-Host "Gathering system information..."
+                Get-EnvironmentInformation
 
-            Write-Host "Gathering system information..."
-            Get-EnvironmentInformation
+                $script:StopScripts = @(Get-ChildItem -Path $path -Filter *_stop.cmd | select -ExpandProperty FullName)
 
-            Write-Host "Preparing local system..."
-            Prepare-Local
+                # Put scripts on device, if needed.
+                Write-Host "Preparing target system..."
+                Prepare-Target
 
-            # If the user wants us to generate scripts, but not to run them.
-            Write-Host "Preparing target system..."
-            Prepare-Target
+                if ($TargetType -ne [Tracing.TargetType]::Local) {
+                    PutFile-Target -Local "$($EnvironmentInfo.TraceScriptsPathLocal)\*" -Target $EnvironmentInfo.TraceScriptsPathTarget -TargetType $TargetType
 
-            Write-Host "Saving target system details..."
-            Save-TargetDetailsOnStart
+                    # Modify locations of the start/stop scripts, as they are on a remote device now.
+                    # NOTE: Don't do anything with the post-processing scripts, because they are run locally.
+                    $script:StartScripts = $script:StartScripts | % { "$($EnvironmentInfo.TraceScriptsPathTarget)\$((Get-Item $_).Name)" }
+                    $script:StopScripts  = $script:StopScripts  | % { "$($EnvironmentInfo.TraceScriptsPathTarget)\$((Get-Item $_).Name)" }
+                }
 
-            Write-Host "Creating tracing scripts..."
-            Create-Scripts
+                Write-Host "Stopping tracing and merging results..."
+                Stop-Tracing -DownloadFiles
+                $tracingStarted = $false
 
-            Write-Host "Starting tracing..."
-            $tracingStarted = $true
-            Start-Tracing
+                Write-Host "Saving target system details..."
+                Save-TargetDetailsOnStop
 
-            # Wait for user input, or for background tasks to finish.
-            Wait-ForStop
+                # Decide if the post-processing is needed.
+                if (($OperationModeType -ne [Tracing.OperationMode]::NoPostProcessing) -and ($PostProcessingType -ne [Tracing.PostProcessingType]::None)) {
+                    Write-Host "Post-processing..."
 
-            Write-Host "Stopping tracing and merging results..."
-            Stop-Tracing -DownloadFiles
-            $tracingStarted = $false
+                    if (Test-DomainNetworkAvailable) {
+                        Start-PostProcessing
+                    } else {
+                        Write-Host "Post-processing skipped, domain resources not available" -ForegroundColor Yellow
+                    }
+                } else {
+                    Write-Host "Post-processing skipped per user request" -ForegroundColor Yellow
+                }
 
-            Write-Host "Saving target system details..."
-            Save-TargetDetailsOnStop
+                Write-Host "Waiting for the background jobs to complete..."
+                Wait-ForBackgroundJobs
 
-            Write-Host "Waiting for the background jobs to complete..."
-            Wait-ForBackgroundJobs
+                Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+    
+            }
+            else
+            {
+                Write-Host "Looking for the logging scenarios..."
+                #$script:ScenariosData = Get-Scenario $Scenario
 
-            Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+                Write-Host "Gathering system information..."
+                Get-EnvironmentInformation
 
-            Compress-Archive -Path $($EnvironmentInfo.TracePathLocal) -DestinationPath $($EnvironmentInfo.TracePathLocal)
-            
+                Write-Host "Preparing local system..."
+                Prepare-Local
 
+                # If the user wants us to generate scripts, but not to run them.
+                Write-Host "Preparing target system..."
+                Prepare-Target
+
+                Write-Host "Saving target system details..."
+                Save-TargetDetailsOnStart
+
+                Write-Host "Creating tracing scripts..."
+                Create-Scripts -bootTrace:$StartBootTrace
+
+                Write-Host "Starting tracing..."
+                $tracingStarted = $true
+                Start-Tracing
+
+                if ($StartBootTrace)
+                {
+                    # retain tracing between reboot
+                    Write-Host "Waiting for the background jobs to complete..."
+                    Wait-ForBackgroundJobs
+
+                    Write-Host "To stop active trace"
+                    Write-Host "    Trace.ps1 -stopbootTrace $($EnvironmentInfo.TracePathLocal)" 
+                    return $EnvironmentInfo.TracePathLocal
+                }
+                else
+                {
+                    # Wait for user input, or for background tasks to finish.
+                    Wait-ForStop
+
+                    Write-Host "Stopping tracing and merging results..."
+                    Stop-Tracing -DownloadFiles
+                    $tracingStarted = $false
+
+                    Write-Host "Saving target system details..."
+                    Save-TargetDetailsOnStop
+
+                    Write-Host "Waiting for the background jobs to complete..."
+                    Wait-ForBackgroundJobs
+
+                    Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+
+                    Compress-Archive -Path $($EnvironmentInfo.TracePathLocal) -DestinationPath $($EnvironmentInfo.TracePathLocal)
+                }
+            }
         } catch {
             Write-Error "Unexpected error: $_"
         } finally {
@@ -182,7 +262,7 @@ function Main {
                 Start-Process ($EnvironmentInfo.TracePathLocal) > $null
             }
 
-            if ($tracingStarted) {
+            if ($tracingStarted -and (-not $StartBootTrace)) {
                 # No need to download files in case we were interrupted.
                 Stop-Tracing -DownloadFiles:$false
             }

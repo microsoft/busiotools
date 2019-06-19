@@ -246,7 +246,11 @@ function Prepare-Target {
 function Create-Scripts {
     [CmdletBinding()]
     [OutputType([void])]
-    param()
+    param(
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $bootTrace
+    )
 
     begin {
         Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
@@ -271,7 +275,7 @@ function Create-Scripts {
                 break
             }
             ([Tracing.ToolsetType]::Wpr) {
-                Create-Scripts-Tracing-WPR
+                Create-Scripts-Tracing-WPR -bootTrace:$bootTrace
                 break
             }
             default {
@@ -621,7 +625,11 @@ function Create-Scripts-Tracing-XPERF {
 function Create-Scripts-Tracing-WPR {
     [CmdletBinding()]
     [OutputType([void])]
-    param()
+    param(
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $bootTrace
+        )
 
     begin {
         Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
@@ -682,9 +690,16 @@ function Create-Scripts-Tracing-WPR {
 
         [void]$startScript.AppendLine("%WPR_LOCAL% -flush        >nul 2>&1")
         [void]$startScript.AppendLine("%WPR_LOCAL% -resetprofint >nul 2>&1")
-        [void]$startScript.AppendLine("%WPR_LOCAL% -start `"%~dp0\$wprpFileName`" -filemode")
+        if($bootTrace)
+        {
+            
+            [void]$startScript.AppendLine("%WPR_LOCAL% -boottrace -addboot  `"%~dp0\$wprpFileName`" -filemode")
+        }
+        else
+        {
+            [void]$startScript.AppendLine("%WPR_LOCAL% -start `"%~dp0\$wprpFileName`" -filemode")
+        }
 
-        
         Write-Verbose "[Create-Scripts-Tracing-WPR] Start script: $startScriptPath"
         $startScript.ToString() | Set-Content $startScriptPath -Encoding Ascii
         [void]$StartScripts.Add($startScriptPath)
@@ -706,8 +721,15 @@ function Create-Scripts-Tracing-WPR {
 
         [void]$stopScript.AppendLine("ECHO Stopping the WPR session...")
         [void]$stopScript.AppendLine("%WPR_LOCAL% -flush >nul 2>&1")
-        [void]$stopScript.AppendLine("%WPR_LOCAL% -stop `"%~dp0\..\$mergedFileName`"")
 
+        if($bootTrace)
+        {
+            [void]$stopScript.AppendLine("%WPR_LOCAL% -boottrace -stopboot `"%~dp0\..\$mergedFileName`"")
+        }
+        else
+        {
+            [void]$stopScript.AppendLine("%WPR_LOCAL% -stop `"%~dp0\..\$mergedFileName`"")
+        }
 
         Write-Verbose "[Create-Scripts-Tracing-WPR] Stop  script: $stopScriptPath"
         $stopScript.ToString()  | Set-Content $stopScriptPath  -Encoding Ascii     

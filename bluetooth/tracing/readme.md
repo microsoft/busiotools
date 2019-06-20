@@ -1,7 +1,7 @@
 # How to collect Bluetooth logs
 
 ## Collecting logs
-From an adminstrative PowerShell session:
+From an administrative PowerShell session:
     
     wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
     wpr.exe -start BluetoothStack.wprp!BluetoothStack -filemode
@@ -13,7 +13,7 @@ Ensure the device reconnects either:
     
 *Reproduce the issue.*
 
-From an adminstrative PowerShell session:
+From an administrative PowerShell session:
    
     wpr.exe -stop BthTracing.etl
 

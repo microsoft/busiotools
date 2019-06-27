@@ -519,7 +519,7 @@
         <Keyword Value="0xffffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.WLAN.WDI" Name="8A6767B6-D556-4AAA-8612-DD370FADA6A9" Level="4" NonPagedMemory="false">
+    <EventProvider Id="Microsoft.Windows.WLAN.WDI" Name="21ba7b61-05f8-41f1-9048-c09493dcfe38" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -887,6 +887,8 @@
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1036,6 +1038,8 @@
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
           </EventProviders>
         </EventCollectorId>
 

@@ -22,6 +22,7 @@ namespace SensorExplorer
         public Scenario3DEO()
         {
             InitializeComponent();
+            Scenario3 = this;
 
             deo = DisplayEnhancementOverride.GetForCurrentView();
 
@@ -37,6 +38,8 @@ namespace SensorExplorer
 
             comboBoxNits.ItemsSource = new List<string>() { "Slider", "Specific value" };
             comboBoxNits.SelectionChanged += OnSelectionChangedNits;
+
+            PeriodicTimer.CreateScenario3();
         }
 
         private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)
@@ -185,6 +188,17 @@ namespace SensorExplorer
 
             deo.BrightnessOverrideSettings = null;
             CheckOverrideToggleEnableState();
+        }
+
+        public void BrightnessLevelChanged()
+        {
+            try
+            {
+                BrightnessOverride bo = BrightnessOverride.GetForCurrentView();
+                double value = bo.GetLevelForScenario(DisplayBrightnessScenario.DefaultBrightness);
+                currentBrightnessPercentageValueTextBlock.Text = value * 100 + " %";
+            }
+            catch { }
         }
 
         #endregion // Brightness Settings

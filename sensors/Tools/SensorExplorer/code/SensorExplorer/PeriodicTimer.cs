@@ -18,6 +18,7 @@ namespace SensorExplorer
         private static ThreadPoolTimer _periodicTimer = null;
         private static ThreadPoolTimer _periodicTimer2 = null;
         private static ThreadPoolTimer _periodicTimer3 = null;
+        private static ThreadPoolTimer _periodicTimer4 = null;
 
         /// <summary>
         /// Create a periodic timer that fires every time the period elapses.
@@ -46,6 +47,14 @@ namespace SensorExplorer
             if (_periodicTimer3 == null)
             {
                 _periodicTimer3 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback3), new TimeSpan(0, 0, 2));
+            }
+        }
+
+        public static void CreateScenario3()
+        {
+            if (_periodicTimer4 == null)
+            {
+                _periodicTimer4 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback4), new TimeSpan(0, 0, 1));
             }
         }
 
@@ -83,6 +92,15 @@ namespace SensorExplorer
             {
                 _periodicTimer3.Cancel();
                 _periodicTimer3 = null;
+            }
+        }
+
+        public static void Cancel4()
+        {
+            if (_periodicTimer4 != null)
+            {
+                _periodicTimer4.Cancel();
+                _periodicTimer4 = null;
             }
         }
 
@@ -170,6 +188,14 @@ namespace SensorExplorer
             await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 Scenario1View.Scenario1.GetMALTData();
+            });
+        }
+
+        private async static void PeriodicTimerCallback4(ThreadPoolTimer timer)
+        {
+            await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Scenario3DEO.Scenario3.BrightnessLevelChanged();
             });
         }
     }

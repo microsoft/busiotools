@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
@@ -76,6 +77,8 @@ namespace SensorExplorer
 
             saveFileButton.Click += SaveFileButtonClick;
 
+            rootPage.NotifyUser("Enumerating sensors...", NotifyType.StatusMessage);
+
             // For MALT
             mapDeviceWatchersToDeviceSelector = new Dictionary<DeviceWatcher, string>();
             watchersStarted = false;
@@ -88,7 +91,7 @@ namespace SensorExplorer
         /// Create the DeviceWatcher objects when the user navigates to this page so the UI list of devices is populated.
         /// </summary>
         protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
-        {
+        {            
             // If we are connected to the device or planning to reconnect, we should disable the list of devices
             // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
             if (EventHandlerForDevice.Current.IsDeviceConnected
@@ -113,12 +116,12 @@ namespace SensorExplorer
             StartDeviceWatchers();
 
             DeviceListSource.Source = listOfDevices;
-
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (Sensor.currentId >= 0 && Sensor.currentId != PivotSensor.Items.Count - 1)
+            if (Sensor.sensorDisplay != null && Sensor.sensorDisplay.Count > 0 
+                && Sensor.currentId >= 0 && Sensor.currentId != PivotSensor.Items.Count - 1)
             {
                 if (Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                 {
@@ -136,7 +139,10 @@ namespace SensorExplorer
         {
             try
             {
+                rootPage.DisableScenarioSelect();
                 await Sensor.GetDefault(true);
+                rootPage.EnableScenarioSelect();
+
                 int totalIndex = -1;
                 for (int index = 0; index < Sensor.AccelerometerStandardList.Count; index++)
                 {
@@ -401,13 +407,13 @@ namespace SensorExplorer
                 }
                 else
                 {
-                    if (Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // disable previous sensor
+                    if (Sensor.sensorDisplay != null && Sensor.sensorDisplay.Count > 0 &&
+                        Sensor.currentId != -1 && Sensor.currentId != PivotSensor.Items.Count - 1) // disable previous sensor
                     {
                         ShowPlotButton(null, null);
                         if (Sensor.sensorDisplay[Sensor.currentId]._sensorType == Sensor.LIGHTSENSOR)
                         {
                             DisconnectFromDeviceClick(null, null);
-                            rootPage.NotifyUser("", NotifyType.StatusMessage);
                         }
 
                         Sensor.DisableSensor(Sensor.sensorDisplay[Sensor.currentId]._sensorType, Sensor.sensorDisplay[Sensor.currentId]._index);
@@ -416,7 +422,7 @@ namespace SensorExplorer
                     Sensor.currentId = i;   // sensor being displayed
                     (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
 
-                    if (i != PivotSensor.Items.Count - 1)
+                    if (Sensor.sensorDisplay != null && Sensor.sensorDisplay.Count > 0 &&  i != PivotSensor.Items.Count - 1)
                     {
                         _sensorDisplay[i].EnableSensor();
                         SensorDisplay selected = _sensorDisplay[Sensor.currentId];
@@ -801,7 +807,6 @@ namespace SensorExplorer
         {
             deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(OnDeviceAdded);
             deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(OnDeviceRemoved);
-            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, object>(OnDeviceEnumerationComplete);
             mapDeviceWatchersToDeviceSelector.Add(deviceWatcher, deviceSelector);
         }
 
@@ -938,43 +943,6 @@ namespace SensorExplorer
             {
                 rootPage.NotifyUser("Device added - " + deviceInformation.Id, NotifyType.StatusMessage);
                 AddDeviceToList(deviceInformation, mapDeviceWatchersToDeviceSelector[sender]);
-            }));
-        }
-
-        /// <summary>
-        /// Notify the UI whether or not we are connected to a device
-        /// </summary>
-        private async void OnDeviceEnumerationComplete(DeviceWatcher sender, object args)
-        {
-            await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
-            {
-                isAllDevicesEnumerated = true;
-
-                // If we finished enumerating devices and the device has not been connected yet, the OnDeviceConnected method
-                // is responsible for selecting the device in the device list (UI); otherwise, this method does that.
-                if (EventHandlerForDevice.Current.IsDeviceConnected)
-                {
-                    SelectDeviceInList(EventHandlerForDevice.Current.DeviceInformation.Id);
-
-                    if (EventHandlerForDevice.Current.Device.PortName != "")
-                    {
-                        rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.Device.PortName + " - " +
-                                            EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
-                    }
-                    else
-                    {
-                        rootPage.NotifyUser("Connected to - " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
-                    }
-                }
-                else if (EventHandlerForDevice.Current.IsEnabledAutoReconnect && EventHandlerForDevice.Current.DeviceInformation != null)
-                {
-                    // We will be reconnecting to a device
-                    rootPage.NotifyUser("Waiting to reconnect to device -  " + EventHandlerForDevice.Current.DeviceInformation.Id, NotifyType.StatusMessage);
-                }
-                else
-                {
-                    rootPage.NotifyUser("No device is currently connected", NotifyType.StatusMessage);
-                }
             }));
         }
 

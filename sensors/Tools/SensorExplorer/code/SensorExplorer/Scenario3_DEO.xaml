@@ -74,6 +74,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="currentBrightnessPercentageTextBlock">Current Brightness Level (Default):</TextBlock>
                     <TextBlock x:Name="brightnessPercentageSupportedLabelTextBlock">Brightness Percentage Support:</TextBlock>
                     <TextBlock x:Name="brightnessNitsSupportedLabelTextBlock">Brightness Nits Support:</TextBlock>
                     <TextBlock x:Name="brightnessSettingLabelTextBlock">Brightness Setting:</TextBlock>
@@ -83,6 +84,7 @@
                     <TextBlock x:Name="overrideRequestLabelTextBlock">Override Requested:</TextBlock>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="currentBrightnessPercentageValueTextBlock">?</TextBlock>
                     <TextBlock x:Name="brightnessPercentageSupportedStateTextBlock">?</TextBlock>
                     <TextBlock x:Name="brightnessNitsSupportedStateTextBlock">?</TextBlock>
                     <TextBlock x:Name="brightnessSettingStateTextBlock">?</TextBlock>

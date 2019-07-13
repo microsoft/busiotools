@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Devices.Enumeration;
@@ -84,7 +85,7 @@ namespace SensorExplorer
         {
             InitializeComponent();
             Scenario0 = this;
-            
+
             // disable screen display rotation during the test
             if (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
             {
@@ -97,6 +98,8 @@ namespace SensorExplorer
 
             EnumerateSensors();
             hyperlink.Inlines.Add(run);
+
+            rootPage.NotifyUser("Enumerating sensors...", NotifyType.StatusMessage);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -108,7 +111,10 @@ namespace SensorExplorer
         {
             try
             {
+                rootPage.DisableScenarioSelect();
                 await Sensor.GetDefault(false);
+                rootPage.EnableScenarioSelect();
+
                 int totalIndex = -1;
                 SensorType = new List<int>();
                 indices = new List<int>();
@@ -233,9 +239,7 @@ namespace SensorExplorer
                 }
 
                 var resourceLoader = ResourceLoader.GetForCurrentView();
-                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + 
-                    pivotSensor.Items.Count + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, 
-                    NotifyType.StatusMessage);
+                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + pivotSensor.Items.Count + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
                 if (pivotSensor.Items.Count > 0)
                 {
                     pivotSensor.SelectionChanged += PivotSensorSelectionChanged;

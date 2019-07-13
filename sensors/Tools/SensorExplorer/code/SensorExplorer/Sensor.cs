@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Custom;
 using Windows.Devices.Enumeration;
@@ -270,7 +271,7 @@ namespace SensorExplorer
             return pld;
         }
 
-        public static async Task<bool> GetDefault(bool getPLD)
+        private static void InitializeLists()
         {
             AccelerometerStandardList = new List<Accelerometer>();
             AccelerometerStandardDeviceInfo = new List<DeviceInformation>();
@@ -323,7 +324,10 @@ namespace SensorExplorer
             SimpleOrientationSensorList = new List<SimpleOrientationSensor>();
             SimpleOrientationSensorDeviceInfo = new List<DeviceInformation>();
             SimpleOrientationSensorPLD = new List<string[]>();
+        }
 
+        private static void InitializeVariables()
+        {
             NumFailedEnumerations = 0;
 
             AccelerometerStandardFailed = false;
@@ -345,6 +349,12 @@ namespace SensorExplorer
             ProximitySensorFailed = false;
             SimpleOrientationSensorFailed = false;
             OtherSensorFailed = false;
+        }
+
+        public static async Task<bool> GetDefault(bool getPLD)
+        {
+            InitializeLists();
+            InitializeVariables();
 
             DeviceInformationCollection deviceInfoCollection;
 

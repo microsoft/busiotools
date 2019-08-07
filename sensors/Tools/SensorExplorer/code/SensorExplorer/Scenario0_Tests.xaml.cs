@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Devices.Enumeration;
@@ -27,14 +26,15 @@ namespace SensorExplorer
     public sealed partial class Scenario0Tests : Page
     {
         public static Scenario0Tests Scenario0;
-        public MainPage rootPage = MainPage.Current;
+
+        public bool IsSimpleOrientationSensor = false;
         public enum Directions { left, right, up, down, nothing }
         public List<int> SensorType;
-        public bool IsSimpleOrientationSensor = false;
+        public MainPage rootPage = MainPage.Current;
 
         private static readonly int countdownTime = 10; // In seconds
-        private static readonly int testIterations = 8;
         private static readonly int numQuadrants = 4;
+        private static readonly int testIterations = 8;
         private static readonly Dictionary<string, int> testLength =
             new Dictionary<string, int> {
                 { "Frequency", 60 },
@@ -46,16 +46,13 @@ namespace SensorExplorer
                 { "StaticAccuracy", 5},
                 { "MagInterference", 30}
             }; // In seconds
-        private List<int> indices;
-        private string testType;
+
         private bool cancelButtonClicked;
-        private List<double[]> dataList;
-        private List<double> oriAngles;
-        private List<DateTime> timestampList;
-        private Countdown countdown;
-        private int[] quadrants = new int[numQuadrants]; // Number of tests completed in each quadrant
-        private int testsCompleted;
-        private int arrowDir;  // The direction the arrow is currently pointing in
+        private bool accelerometerInitialized;
+        private bool inclinometerInitialized;
+        private bool orientationInitialized;
+        private bool orientationAmInitialized;
+        private bool simpleOrientationInitialized;
         private Accelerometer currentAccelerometer;
         private DeviceInformation currentAccInfo;
         private AccelerometerReading accelerometerInitialReading;
@@ -72,14 +69,18 @@ namespace SensorExplorer
         private List<double[]> orientationSensorFirstMinuteDataList;
         private List<double[]> orientationSensorLastMinuteDataList;
         private SimpleOrientationSensor currentSimpleOrientationSensor;
-        private bool accelerometerInitialized;
-        private bool inclinometerInitialized;
-        private bool orientationInitialized;
-        private bool orientationAmInitialized;
-        private bool simpleOrientationInitialized;
-        private string sensorDataLog;
+        private List<DateTime> timestampList;
+        private Countdown countdown;
         private DateTime startTime;
+        private int arrowDir;  // The direction the arrow is currently pointing in
+        private int testsCompleted;
+        private int[] quadrants = new int[numQuadrants]; // Number of tests completed in each quadrant
+        private List<double[]> dataList;
+        private List<double> oriAngles;
+        private List<int> indices;
         private Run run = new Run();
+        private string sensorDataLog;
+        private string testType;
 
         public Scenario0Tests()
         {
@@ -919,23 +920,23 @@ namespace SensorExplorer
             {
                 if (type == Sensor.ACCELEROMETER)
                 {
-                    rootPage.loggingChannelTests.LogMessage(timestampList[i] + ": AccelerationX=" + dataList[i][0] + ", AccelerationY=" + dataList[i][1] + ", AccelerationZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": AccelerationX=" + dataList[i][0] + ", AccelerationY=" + dataList[i][1] + ", AccelerationZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.GYROMETER)
                 {
-                    rootPage.loggingChannelTests.LogMessage(timestampList[i] + ": AngularVelocityX=" + dataList[i][0] + ", AngularVelocityY=" + dataList[i][1] + ", AngularVelocityZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": AngularVelocityX=" + dataList[i][0] + ", AngularVelocityY=" + dataList[i][1] + ", AngularVelocityZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.LIGHTSENSOR)
                 {
-                    rootPage.loggingChannelTests.LogMessage(timestampList[i] + ": IlluminanceInLux" + dataList[i][0]);
+                    rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": IlluminanceInLux" + dataList[i][0]);
                 }
                 else if (type == Sensor.MAGNETOMETER)
                 {
-                    rootPage.loggingChannelTests.LogMessage(timestampList[i] + ": MagneticFieldX=" + dataList[i][0] + ", MagneticFieldY=" + dataList[i][1] + ", MagneticFieldZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": MagneticFieldX=" + dataList[i][0] + ", MagneticFieldY=" + dataList[i][1] + ", MagneticFieldZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.ORIENTATIONSENSOR)
                 {
-                    rootPage.loggingChannelTests.LogMessage(timestampList[i] + ": QuaternionW=" + dataList[i][0] + ", QuaternionX=" + dataList[i][1] + ", QuaternionY=" + dataList[i][2] + ", QuaternionZ=" + dataList[i][3]);
+                    rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": QuaternionW=" + dataList[i][0] + ", QuaternionX=" + dataList[i][1] + ", QuaternionY=" + dataList[i][2] + ", QuaternionZ=" + dataList[i][3]);
                 }
             }
         }
@@ -1008,7 +1009,7 @@ namespace SensorExplorer
         {
             int type = SensorType[pivotSensor.SelectedIndex];
             string str = Constants.SensorName[type] + " " + testType + " Test Result: " + (dataList.Count / testLength[testType]) + " Hz\n\n";
-            rootPage.loggingChannelTests.LogMessage(str);
+            rootPage.LoggingChannelView.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1088,7 +1089,7 @@ namespace SensorExplorer
                 double result = Math.Sqrt(avgErrorW * avgErrorW + avgErrorX * avgErrorX + avgErrorY * avgErrorY + avgErrorZ * avgErrorZ);
                 str = Constants.SensorName[type] + " " + testType + " Test Result: " + result + " Degrees\n\n";
             }
-            rootPage.loggingChannelTests.LogMessage(str);
+            rootPage.LoggingChannelView.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1156,7 +1157,7 @@ namespace SensorExplorer
                       "--> Maximum difference in Y: " + maxDifference[2] + " Degrees\n" +
                       "--> Maximum difference in Z: " + maxDifference[3] + " Degrees \n\n";
             }
-            rootPage.loggingChannelTests.LogMessage(str);
+            rootPage.LoggingChannelView.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1183,7 +1184,7 @@ namespace SensorExplorer
                       "--> Difference in Z: " + (drift[2]) + " Degrees\n"+
                       "--> Total: " + (Math.Sqrt(drift[1] * drift[1] + drift[2] * drift[2] + drift[0] * drift[0])) + " Degrees\n";
 
-                rootPage.loggingChannelTests.LogMessage(str);
+                rootPage.LoggingChannelView.LogMessage(str);
                 instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
 
             }
@@ -1236,7 +1237,7 @@ namespace SensorExplorer
                       "--> Difference in Y: " + (lastMinuteAvg[2] - firstMinuteAvg[2]) + "\n" +
                       "--> Difference in Z: " + (lastMinuteAvg[3] - firstMinuteAvg[3]) + "\n";
 
-                rootPage.loggingChannelTests.LogMessage(str);
+                rootPage.LoggingChannelView.LogMessage(str);
                 instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
             }
         }
@@ -1275,7 +1276,7 @@ namespace SensorExplorer
             }
             double expectedNumData = testLength[testType] / (reportInterval / 1000.0);
             string str = Constants.SensorName[type] + " " + testType + " Test Result: " + ((expectedNumData - dataList.Count) / expectedNumData) * 100 + " %\n\n";
-            rootPage.loggingChannelTests.LogMessage(str);
+            rootPage.LoggingChannelView.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1398,7 +1399,7 @@ namespace SensorExplorer
             if (file != null)
             {
                 CachedFileManager.DeferUpdates(file);
-                StorageFile logFileGenerated = await rootPage.loggingSessionTests.CloseAndSaveToFileAsync();
+                StorageFile logFileGenerated = await rootPage.LoggingSessionTests.CloseAndSaveToFileAsync();
                 await logFileGenerated.CopyAndReplaceAsync(file);
                 FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
                 if (status == FileUpdateStatus.Complete)
@@ -1423,8 +1424,8 @@ namespace SensorExplorer
             saveButtonOrientation.IsEnabled = false;
 
             // start a new loging session
-            rootPage.loggingSessionTests = new FileLoggingSession("SensorExplorerLogTestsNew");
-            rootPage.loggingSessionTests.AddLoggingChannel(rootPage.loggingChannelTests);
+            rootPage.LoggingSessionTests = new FileLoggingSession("SensorExplorerLogTestsNew");
+            rootPage.LoggingSessionTests.AddLoggingChannel(rootPage.LoggingChannelView);
         }
 
         public void DisplayCountdown(int remainingTime)
@@ -1444,7 +1445,7 @@ namespace SensorExplorer
             loggingFields.AddInt64("Test Number", testNumber);
             loggingFields.AddString("Arrow Direction", direction);
             loggingFields.AddString("Test Result", "Success");
-            rootPage.loggingChannelTests.LogEvent(eventName, loggingFields);
+            rootPage.LoggingChannelView.LogEvent(eventName, loggingFields);
         }
 
         private void LogTestFailure(int testNumber, string direction, string eventName)
@@ -1453,7 +1454,7 @@ namespace SensorExplorer
             loggingFields.AddInt64("Test Number", testNumber);
             loggingFields.AddString("Arrow Direction", direction);
             loggingFields.AddString("Reading", sensorDataLog);
-            rootPage.loggingChannelTests.LogEvent(eventName, loggingFields);
+            rootPage.LoggingChannelView.LogEvent(eventName, loggingFields);
         }
 
         private LoggingFields LogAccelerometerReading(AccelerometerReading reading)
@@ -1527,7 +1528,7 @@ namespace SensorExplorer
                     {
                         accelerometerInitialized = true;
                         LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
-                        rootPage.loggingChannelTests.LogEvent("AccelerometerInitialized", loggingFields);
+                        rootPage.LoggingChannelView.LogEvent("AccelerometerInitialized", loggingFields);
                     }
                     else if ((e.Reading.AccelerationX < -0.9 && arrowDir == (int)Directions.left) ||
                              (e.Reading.AccelerationX > 0.9 && arrowDir == (int)Directions.right) ||
@@ -1566,7 +1567,7 @@ namespace SensorExplorer
                     {
                         inclinometerInitialized = true;
                         LoggingFields loggingFields = LogInclinometerReading(e.Reading);
-                        rootPage.loggingChannelTests.LogEvent("InclinometerInitialized", loggingFields);
+                        rootPage.LoggingChannelView.LogEvent("InclinometerInitialized", loggingFields);
                     }
                     else if ((e.Reading.RollDegrees > 80 && e.Reading.RollDegrees < 100 && arrowDir == (int)Directions.right) ||
                              (e.Reading.RollDegrees > -100 && e.Reading.RollDegrees < -80 && arrowDir == (int)Directions.left) ||
@@ -1617,7 +1618,7 @@ namespace SensorExplorer
                         orientationInitialized = true;
                         orientationAmInitialized = true;
                         LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
-                        rootPage.loggingChannelTests.LogEvent("OrientationSensorInitialized", loggingFields);
+                        rootPage.LoggingChannelView.LogEvent("OrientationSensorInitialized", loggingFields);
                     }
                     else
                     {
@@ -1804,7 +1805,7 @@ namespace SensorExplorer
                     {
                         simpleOrientationInitialized = true;
                         LoggingFields loggingFields = LogSimpleOrientationSensorReading(e.Orientation);
-                        rootPage.loggingChannelTests.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
+                        rootPage.LoggingChannelView.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
                     }
                 }
             });
@@ -1859,7 +1860,7 @@ namespace SensorExplorer
         // All orientation tests success
         private void Success()
         {
-            rootPage.loggingChannelTests.LogMessage("Orientation Test successfully completed");
+            rootPage.LoggingChannelView.LogMessage("Orientation Test successfully completed");
             instruction.Text = "Orientation Test successfully completed";
             DisplayRestartOrientation();
         }
@@ -1893,7 +1894,7 @@ namespace SensorExplorer
             await Task.Delay(2000);
             imgX.Visibility = Visibility.Collapsed;
 
-            rootPage.loggingChannelTests.LogMessage("Orientation Test failed");
+            rootPage.LoggingChannelView.LogMessage("Orientation Test failed");
             hyperlink.NavigateUri = new Uri("https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing");
             run.Text = "https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing";
             instruction.Text = "Orientation Test failed.\n\nFor more information on sensor testing, please refer to:";

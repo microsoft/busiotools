@@ -10,112 +10,111 @@ namespace SensorExplorer
     {
         public class Reading
         {
-            public DateTime timestamp;
-            public double[] value;
+            public DateTime Timestamp;
+            public double[] Value;
 
             public Reading(DateTime timestamp, double[] value)
             {
-                this.timestamp = timestamp;
-                this.value = value;
+                Timestamp = timestamp;
+                Value = value;
             }
         }
 
-        public List<Reading> _reading = new List<Reading>();
-        public int _sensorType = -1;
-        public int _count = -1;
-        public string _name = string.Empty;
-        public string[] _property;
-        public double[] _maxValue;
-        public double[] _minValue;
-        public uint _defaultReportInterval = 0;
-        public string _deviceId;
-        public string _deviceName;
-        public uint _reportInterval = 0;
-        public uint _minReportInterval = 0;
-        public uint _reportLatency = 0;
-        public bool _reportIntervalChanged = false;
-        public string _category;
-        public string _persistentUniqueId;
-        public string _manufacturer;
-        public string _model;
-        public string _connectionType;
-        public string _isPrimary;
-        public string _vendorDefinedSubType;
-        public string _state;
-
-        public string _panelId;
-        public string _panelGroup;
-        public string _panelSide;
-        public string _panelWidth;
-        public string _panelHeight;
-        public string _panelLength;
-        public string _panelPositionX;
-        public string _panelPositionY;
-        public string _panelPositionZ;
-        public string _panelRotationX;
-        public string _panelRotationY;
-        public string _panelRotationZ;
-        public string _panelColor;
-        public string _panelShape;
-        public string _panelVisible;
+        public bool ReportIntervalChanged = false;
+        public double[] MaxValue;
+        public double[] MinValue;
+        public int Count = -1;
+        public int SensorType = -1;
+        public List<Reading> Readings = new List<Reading>();
+        public string Category;
+        public string ConnectionType;
+        public string DeviceId;
+        public string DeviceName;
+        public string IsPrimary;
+        public string Manufacturer;
+        public string Model;
+        public string Name = string.Empty;
+        public string PanelColor;
+        public string PanelGroup;
+        public string PanelHeight;
+        public string PanelId;
+        public string PanelLength;
+        public string PanelPositionX;
+        public string PanelPositionY;
+        public string PanelPositionZ;
+        public string PanelRotationX;
+        public string PanelRotationY;
+        public string PanelRotationZ;
+        public string PanelShape;
+        public string PanelSide;
+        public string PanelVisible;
+        public string PanelWidth;
+        public string PersistentUniqueId;
+        public string[] Property;
+        public string State;
+        public string VendorDefinedSubType;
+        public uint DefaultReportInterval = 0;
+        public uint ReportInterval = 0;
+        public uint MinReportInterval = 0;
+        public uint ReportLatency = 0;
 
         public SensorData(int sensorType, int count, string name, string[] property)
         {
-            _sensorType = sensorType;
-            _count = count;
-            _name = name;
-            _property = property;
-            _maxValue = new double[_property.Length];
-            _minValue = new double[_property.Length];
+            SensorType = sensorType;
+            Count = count;
+            Name = name;
+            Property = property;
+            MaxValue = new double[Property.Length];
+            MinValue = new double[Property.Length];
         }
 
         public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency, string[] properties)
         {
-            if (_defaultReportInterval == 0)
+            if (DefaultReportInterval == 0)
             {
-                _defaultReportInterval = reportInterval;
+                DefaultReportInterval = reportInterval;
             }
 
-            _deviceId = deviceId;
-            _deviceName = deviceName;
-            _reportInterval = reportInterval;
-            _minReportInterval = minReportInterval;
-            _reportLatency = reportLatency;
-            _category = properties[0];
-            _persistentUniqueId = properties[1];
-            _manufacturer = properties[2];
-            _model = properties[3];
-            _connectionType = properties[4];
-            _isPrimary = properties[5];
-            _vendorDefinedSubType = properties[6];
-            _state = properties[7];
+            DeviceId = deviceId;
+            DeviceName = deviceName;
+            ReportInterval = reportInterval;
+            MinReportInterval = minReportInterval;
+            ReportLatency = reportLatency;
+            Category = properties[0];
+            PersistentUniqueId = properties[1];
+            Manufacturer = properties[2];
+            Model = properties[3];
+            ConnectionType = properties[4];
+            IsPrimary = properties[5];
+            VendorDefinedSubType = properties[6];
+            State = properties[7];
         }
 
         public void AddPLDProperty(string[] PLD)
         {
-            _panelId = PLD[0];
-            _panelGroup = PLD[1];
-            _panelSide = PLD[2];
-            _panelWidth = PLD[3];
-            _panelHeight = PLD[4];
-            _panelLength = PLD[5];
-            _panelPositionX = PLD[6];
-            _panelPositionY = PLD[7];
-            _panelPositionZ = PLD[8];
-            _panelRotationX = PLD[9];
-            _panelRotationY = PLD[10];
-            _panelRotationZ = PLD[11];
-            _panelColor = PLD[12];
-            _panelShape = PLD[13];
-            _panelVisible = PLD[14];
+            PanelId = PLD[0];
+            PanelGroup = PLD[1];
+            PanelSide = PLD[2];
+            PanelWidth = PLD[3];
+            PanelHeight = PLD[4];
+            PanelLength = PLD[5];
+            PanelPositionX = PLD[6];
+            PanelPositionY = PLD[7];
+            PanelPositionZ = PLD[8];
+            PanelRotationX = PLD[9];
+            PanelRotationY = PLD[10];
+            PanelRotationZ = PLD[11];
+            PanelColor = PLD[12];
+            PanelShape = PLD[13];
+            PanelVisible = PLD[14];
         }
 
         public void UpdateReportInterval(uint reportInterval)
         {
-            if (reportInterval != _reportInterval)
+            if (reportInterval != ReportInterval)
             {
-                _reportInterval = reportInterval;
-                _reportIntervalChanged = true;
+                ReportInterval = reportInterval;
+                ReportIntervalChanged = true;
             }
         }
 
@@ -123,35 +122,35 @@ namespace SensorExplorer
         {
             try
             {
-                int count = _reading.Count;
+                int count = Readings.Count;
 
                 if (count == 0)
                 {
                     for (int i = 0; i < value.Length; i++)
                     {
-                        _maxValue[i] = value[i];
-                        _minValue[i] = value[i];
+                        MaxValue[i] = value[i];
+                        MinValue[i] = value[i];
                     }
                 }
                 else
                 {
                     for (int i = 0; i < value.Length; i++)
                     {
-                        if (value[i] > _maxValue[i])
+                        if (value[i] > MaxValue[i])
                         {
-                            _maxValue[i] = value[i];
+                            MaxValue[i] = value[i];
                         }
-                        else if (value[i] < _minValue[i])
+                        else if (value[i] < MinValue[i])
                         {
-                            _minValue[i] = value[i];
+                            MinValue[i] = value[i];
                         }
                     }
                 }
 
-                if (count == 0 || (timestamp - _reading[count - 1].timestamp).TotalMilliseconds >= _reportInterval)
+                if (count == 0 || (timestamp - Readings[count - 1].Timestamp).TotalMilliseconds >= ReportInterval)
                 {
                     Reading reading = new Reading(timestamp, value);
-                    _reading.Add(reading);
+                    Readings.Add(reading);
 
                     return true;
                 }
@@ -163,11 +162,11 @@ namespace SensorExplorer
 
         public void ClearReading()
         {
-            _reading = new List<Reading>();
-            for (int i = 0; i < _property.Length; i++)
+            Readings = new List<Reading>();
+            for (int i = 0; i < Property.Length; i++)
             {
-                _maxValue[i] = 0;
-                _minValue[i] = 0;
+                MaxValue[i] = 0;
+                MinValue[i] = 0;
             }
         }
     }

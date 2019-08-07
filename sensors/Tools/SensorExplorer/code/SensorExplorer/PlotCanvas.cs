@@ -14,93 +14,93 @@ namespace SensorExplorer
 {
     class PlotCanvas
     {
-        private bool _replotGrid = true;
-        private double _fontSize = 11;
-        private double _height = 100;
-        private int _frame = 10;
-        private int _maxValue = 0;
-        private int _minValue = 0;
-        private string[] _vAxisLabel;
-        private Canvas _canvas;
-        private Color[] _color;
-        private List<int> _plotIndex = new List<int>();
+        private bool replotGrid = true;
+        private Canvas canvas;
+        private Color[] color;
+        private double fontSize = 11;
+        private double height = 100;
+        private int frame = 10;
+        private int maxValue = 0;
+        private int minValue = 0;
+        private List<int> plotIndex = new List<int>();
+        private string[] vAxisLabel;
 
         public PlotCanvas(int minValue, int maxValue, Color[] color, Canvas canvas, string[] vAxisLabel)
         {
-            _minValue = minValue;
-            _maxValue = maxValue;
-            _color = color;
-            _canvas = canvas;
-            _vAxisLabel = vAxisLabel;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.color = color;
+            this.canvas = canvas;
+            this.vAxisLabel = vAxisLabel;
 
-            for (int i = 0; i < _color.Length; i++)
+            for (int i = 0; i < color.Length; i++)
             {
-                if (_color[i] != Colors.Black)
+                if (color[i] != Colors.Black)
                 {
-                    _plotIndex.Add(i);
+                    plotIndex.Add(i);
                 }
             }
         }
 
         public void HideCanvas()
         {
-            _canvas.Visibility = Visibility.Collapsed;
+            canvas.Visibility = Visibility.Collapsed;
         }
 
         public void ShowCanvas()
         {
-            _canvas.Visibility = Visibility.Visible;
+            canvas.Visibility = Visibility.Visible;
         }
 
         public void SetHeight(double height)
         {
-            _height = height;
-            _replotGrid = true;
+            this.height = height;
+            replotGrid = true;
         }
 
         public void SetFontSize(double fontSize)
         {
-            _fontSize = fontSize;
-            _replotGrid = true;
+            this.fontSize = fontSize;
+            replotGrid = true;
         }
 
         public void SetRange(int maxValue, int minValue)
         {
-            for (int i = 0; i < _vAxisLabel.Length; i++)
+            for (int i = 0; i < vAxisLabel.Length; i++)
             {
-                _vAxisLabel[i] = (maxValue - Convert.ToDouble(i) / (_vAxisLabel.Length - 1) * (maxValue - minValue)).ToString();
+                vAxisLabel[i] = (maxValue - Convert.ToDouble(i) / (vAxisLabel.Length - 1) * (maxValue - minValue)).ToString();
             }
 
-            _maxValue = maxValue;
-            _minValue = minValue;
-            _replotGrid = true;
+            this.maxValue = maxValue;
+            this.minValue = minValue;
+            replotGrid = true;
         }
 
         public void Plot(SensorData sensorData)
         {
             try
             {
-                if (_replotGrid)
+                if (replotGrid)
                 {
-                    _canvas.Children.Clear();
-                    _canvas.Height = _height;
+                    canvas.Children.Clear();
+                    canvas.Height = height;
 
-                    PlotGrid(_maxValue, _minValue, Colors.Black);
+                    PlotGrid(maxValue, minValue, Colors.Black);
 
-                    _replotGrid = false;
+                    replotGrid = false;
                 }
                 else
                 {
-                    int index = _canvas.Children.Count;
+                    int index = canvas.Children.Count;
 
-                    for (int i = 0; i < _plotIndex.Count; i++)
+                    for (int i = 0; i < plotIndex.Count; i++)
                     {
                         index--;
-                        _canvas.Children.RemoveAt(index);
+                        canvas.Children.RemoveAt(index);
                     }
                 }
 
-                PathFigure[] pathFigure = new PathFigure[_plotIndex.Count];
+                PathFigure[] pathFigure = new PathFigure[plotIndex.Count];
 
                 for (int i = 0; i < pathFigure.Length; i++)
                 {
@@ -109,25 +109,25 @@ namespace SensorExplorer
 
                 DateTime now = DateTime.UtcNow;
 
-                for (int i = sensorData._reading.Count - 1; i >= 0; i--)
+                for (int i = sensorData.Readings.Count - 1; i >= 0; i--)
                 {
-                    if (sensorData._reading[i].timestamp < now)
+                    if (sensorData.Readings[i].Timestamp < now)
                     {
                         if (i >= 0)
                         {
-                            for (int j = 0; j < _plotIndex.Count; j++)
+                            for (int j = 0; j < plotIndex.Count; j++)
                             {
-                                int index = _plotIndex[j];
-                                AddLineSegmentToPathFigure(ref pathFigure[index], 0, sensorData._reading[i].value[index], (sensorData._reading[i].timestamp - now).TotalSeconds, sensorData._reading[i].value[index]);
+                                int index = plotIndex[j];
+                                AddLineSegmentToPathFigure(ref pathFigure[index], 0, sensorData.Readings[i].Value[index], (sensorData.Readings[i].Timestamp - now).TotalSeconds, sensorData.Readings[i].Value[index]);
                             }
                         }
 
-                        for (; i > 0 && sensorData._reading[i].timestamp > now.AddSeconds(-_frame); i--)
+                        for (; i > 0 && sensorData.Readings[i].Timestamp > now.AddSeconds(-frame); i--)
                         {
-                            for (int j = 0; j < _plotIndex.Count; j++)
+                            for (int j = 0; j < plotIndex.Count; j++)
                             {
-                                int index = _plotIndex[j];
-                                AddLineSegmentToPathFigure(ref pathFigure[index], (sensorData._reading[i].timestamp - now).TotalSeconds, sensorData._reading[i - 1].value[index], (sensorData._reading[i - 1].timestamp - now).TotalSeconds, sensorData._reading[i - 1].value[index]);
+                                int index = plotIndex[j];
+                                AddLineSegmentToPathFigure(ref pathFigure[index], (sensorData.Readings[i].Timestamp - now).TotalSeconds, sensorData.Readings[i - 1].Value[index], (sensorData.Readings[i - 1].Timestamp - now).TotalSeconds, sensorData.Readings[i - 1].Value[index]);
                             }
                         }
 
@@ -139,7 +139,7 @@ namespace SensorExplorer
 
                 for (int i = 0; i < path.Length; i++)
                 {
-                    _canvas.Children.Add(path[i]);
+                    canvas.Children.Add(path[i]);
                 }
             }
             catch { }
@@ -151,15 +151,15 @@ namespace SensorExplorer
             {
                 LineSegment lineSegment;
 
-                double currX = Math.Max(Math.Min(_canvas.Width * -currTimestamp / _frame, _canvas.Width), 0);
-                double currY = Math.Max(Math.Min(_canvas.Height * (_maxValue - currValue) / (_maxValue - _minValue), _canvas.Height), 0);
+                double currX = Math.Max(Math.Min(canvas.Width * -currTimestamp / frame, canvas.Width), 0);
+                double currY = Math.Max(Math.Min(canvas.Height * (maxValue - currValue) / (maxValue - minValue), canvas.Height), 0);
 
                 lineSegment = new LineSegment();
                 lineSegment.Point = new Point(currX, currY);
                 pathFigure.Segments.Add(lineSegment);
 
-                double prevX = Math.Max(Math.Min(_canvas.Width * -prevTimestamp / _frame, _canvas.Width), 0);
-                double prevY = Math.Max(Math.Min(_canvas.Height * (_maxValue - prevValue) / (_maxValue - _minValue), _canvas.Height), 0);
+                double prevX = Math.Max(Math.Min(canvas.Width * -prevTimestamp / frame, canvas.Width), 0);
+                double prevY = Math.Max(Math.Min(canvas.Height * (maxValue - prevValue) / (maxValue - minValue), canvas.Height), 0);
 
                 lineSegment = new LineSegment();
                 lineSegment.Point = new Point(prevX, prevY);
@@ -184,7 +184,7 @@ namespace SensorExplorer
                     PathGeometry pathGeometry = new PathGeometry();
                     pathGeometry.Figures.Add(pathFigure[i]);
 
-                    path[i] = new Path() { Data = pathGeometry, Stroke = new SolidColorBrush(_color[i]), StrokeThickness = 2 };
+                    path[i] = new Path() { Data = pathGeometry, Stroke = new SolidColorBrush(color[i]), StrokeThickness = 2 };
                 }
             }
             catch { }
@@ -196,14 +196,14 @@ namespace SensorExplorer
         {
             try
             {
-                for (int i = 0; i <= _frame; i++)
+                for (int i = 0; i <= frame; i++)
                 {
                     Line vLine = new Line();
 
-                    vLine.X1 = i * _canvas.Width / _frame;
+                    vLine.X1 = i * canvas.Width / frame;
                     vLine.Y1 = 0;
                     vLine.X2 = vLine.X1;
-                    vLine.Y2 = _canvas.Height;
+                    vLine.Y2 = canvas.Height;
 
                     vLine.Stroke = new SolidColorBrush(color);
 
@@ -217,31 +217,31 @@ namespace SensorExplorer
                     }
 
                     // Add the path to the Canvas
-                    _canvas.Children.Add(vLine);
+                    canvas.Children.Add(vLine);
 
-                    if (_frame < 15 || i % 5 == 0)
+                    if (frame < 15 || i % 5 == 0)
                     {
-                        TextBlock textBlock = new TextBlock() { Text = (-i).ToString(), FontSize = _fontSize };
+                        TextBlock textBlock = new TextBlock() { Text = (-i).ToString(), FontSize = fontSize };
                         textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
                         textBlock.Width = textBlock.DesiredSize.Width;
                         textBlock.Height = textBlock.DesiredSize.Height;
                         textBlock.Margin = new Thickness(vLine.X2 - textBlock.Width / 2, vLine.Y2 + 5, 0, 0);
-                        _canvas.Children.Add(textBlock);
+                        canvas.Children.Add(textBlock);
                     }
                 }
 
-                for (int i = 0; i < _vAxisLabel.Length; i++)
+                for (int i = 0; i < vAxisLabel.Length; i++)
                 {
                     Line hLine = new Line();
 
                     hLine.X1 = 0;
-                    hLine.Y1 = i * _canvas.Height / (_vAxisLabel.Length - 1);
-                    hLine.X2 = _canvas.Width;
+                    hLine.Y1 = i * canvas.Height / (vAxisLabel.Length - 1);
+                    hLine.X2 = canvas.Width;
                     hLine.Y2 = hLine.Y1;
 
                     hLine.Stroke = new SolidColorBrush(color);
 
-                    if (i < _vAxisLabel.Length - 1)
+                    if (i < vAxisLabel.Length - 1)
                     {
                         hLine.StrokeThickness = 1;
                     }
@@ -251,14 +251,14 @@ namespace SensorExplorer
                     }
 
                     // Add the path to the Canvas
-                    _canvas.Children.Add(hLine);
+                    canvas.Children.Add(hLine);
 
-                    TextBlock textBlock = new TextBlock() { Text = _vAxisLabel[i], FontSize = _fontSize };
+                    TextBlock textBlock = new TextBlock() { Text = vAxisLabel[i], FontSize = fontSize };
                     textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
                     textBlock.Width = textBlock.DesiredSize.Width;
                     textBlock.Height = textBlock.DesiredSize.Height;
                     textBlock.Margin = new Thickness(-textBlock.Width - 5, hLine.Y1 - textBlock.Height / 2, 0, 0);
-                    _canvas.Children.Add(textBlock);
+                    canvas.Children.Add(textBlock);
                 }
             }
             catch { }

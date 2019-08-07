@@ -3,9 +3,9 @@
 
 using System;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
-using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -28,15 +28,15 @@ namespace SensorExplorer
         // Used to synchronize threads to avoid multiple instantiations of eventHandlerForDevice.
         private static object singletonCreationLock = new object();
 
+        private bool watcherStarted;
+        private bool watcherSuspended;
         private DeviceWatcher deviceWatcher;
-        private SuspendingEventHandler appSuspendEventHandler;
         private EventHandler<object> appResumeEventHandler;
+        private MainPage rootPage = MainPage.Current;
+        private SuspendingEventHandler appSuspendEventHandler;
+        private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformation> deviceAddedEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> deviceRemovedEventHandler;
-        private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
-        private bool watcherSuspended;
-        private bool watcherStarted;
-        private MainPage rootPage = MainPage.Current;
 
         /// <summary>
         /// Enforces the singleton pattern so that there is only one object handling app events

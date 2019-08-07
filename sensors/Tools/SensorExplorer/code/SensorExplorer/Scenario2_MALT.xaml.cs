@@ -1,24 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Windows.ApplicationModel;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Windows.Devices.Enumeration;
-using Windows.Devices.SerialCommunication;
-using System.Threading;
-using Windows.Storage.Streams;
-using System.Threading.Tasks;
 using System.IO;
-using Windows.Storage.Pickers;
-using Windows.Storage;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
+using Windows.Devices.SerialCommunication;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace SensorExplorer
 {
@@ -26,22 +26,23 @@ namespace SensorExplorer
     {
         public static Scenario2MALT Scenario2;
 
-        private MainPage rootPage = MainPage.Current;
+        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
-        private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";     
-        private SuspendingEventHandler appSuspendEventHandler;
-        private EventHandler<object> appResumeEventHandler;
-        private ObservableCollection<DeviceListEntry> listOfDevices;
-        private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
-        private bool watchersSuspended;
-        private bool watchersStarted;
+
         private bool isAllDevicesEnumerated;
         private bool IsNavigatedAway;
-        private StorageFile tmp, file;
+        private bool watchersStarted;
+        private bool watchersSuspended;
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
-        private List<string> conversionValues = new List<string> { "100", "800" };
+        private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
+        private EventHandler<object> appResumeEventHandler;
         private LightSensor lightSensor;
+        private List<string> conversionValues = new List<string> { "100", "800" };
+        private MainPage rootPage = MainPage.Current;
+        private ObservableCollection<DeviceListEntry> listOfDevices;
+        private StorageFile tmp, file;  
+        private SuspendingEventHandler appSuspendEventHandler;
 
         // MALTERROR
         private const int E_SUCCESS = 0;

@@ -2,16 +2,15 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
+using Windows.UI.Core;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Core;
 
 namespace SensorExplorer
 {
-    using System.Collections.Generic;
-    using Windows.Graphics.Display;
-
     public sealed partial class Scenario3DEO : Page
     {
         public static Scenario3DEO Scenario3;

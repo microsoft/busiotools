@@ -16,10 +16,11 @@ namespace SensorExplorer
     public sealed partial class MainPage : Page
     {
         public static MainPage Current;
-        public FileLoggingSession loggingSessionTests;
-        public LoggingChannel loggingChannelTests;
-        public FileLoggingSession loggingSessionView;
-        public LoggingChannel loggingChannelView;
+
+        public FileLoggingSession LoggingSessionTests;
+        public FileLoggingSession LoggingSessionView;
+        public LoggingChannel LoggingChannelTests;
+        public LoggingChannel LoggingChannelView;
 
         public MainPage()
         {
@@ -28,13 +29,13 @@ namespace SensorExplorer
 
             try
             { 
-                loggingSessionTests = new FileLoggingSession("SensorExplorerLogTests");
-                loggingChannelTests = new LoggingChannel("SensorExplorerLogTests", null);
-                loggingSessionTests.AddLoggingChannel(loggingChannelTests);
+                LoggingSessionTests = new FileLoggingSession("SensorExplorerLogTests");
+                LoggingChannelTests = new LoggingChannel("SensorExplorerLogTests", null);
+                LoggingSessionTests.AddLoggingChannel(LoggingChannelTests);
 
-                loggingSessionView = new FileLoggingSession("SensorExplorerLogView");
-                loggingChannelView = new LoggingChannel("SensorExplorerLogView", null);
-                loggingSessionView.AddLoggingChannel(loggingChannelView);
+                LoggingSessionView = new FileLoggingSession("SensorExplorerLogView");
+                LoggingChannelView = new LoggingChannel("SensorExplorerLogView", null);
+                LoggingSessionView.AddLoggingChannel(LoggingChannelView);
             }
             catch (Exception e)
             {

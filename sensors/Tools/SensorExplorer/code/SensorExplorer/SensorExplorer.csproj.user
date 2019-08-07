@@ -18,10 +18,16 @@
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <RemoteDebugMachine>10.225.47.89</RemoteDebugMachine>
+    <RemoteDebugMachine>10.193.44.53</RemoteDebugMachine>
     <AuthenticationMode>Universal</AuthenticationMode>
-    <RemoteDebugEnabled>false</RemoteDebugEnabled>
-    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <BackgroundTaskDebugEngines>{3B476D35-A401-11D2-AAD4-00C04F990171}</BackgroundTaskDebugEngines>
+    <RemoteDebugEnabled>true</RemoteDebugEnabled>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <BackgroundTaskDebugEngines>
+    </BackgroundTaskDebugEngines>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <RemoteDebugMachine>10.193.44.53</RemoteDebugMachine>
+    <AuthenticationMode>Universal</AuthenticationMode>
+    <RemoteDebugEnabled>true</RemoteDebugEnabled>
   </PropertyGroup>
 </Project>

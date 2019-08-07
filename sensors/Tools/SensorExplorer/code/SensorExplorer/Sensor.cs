@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Custom;
 using Windows.Devices.Enumeration;
@@ -44,11 +43,30 @@ namespace SensorExplorer
         public const int ACTIVITYNONE = 2;
         public const int ACTIVITYNOTSUPPORTED = 3;
 
-        public static int currentId = -1;
-        public static List<SensorData> sensorData;
-        public static List<SensorDisplay> sensorDisplay;
         public static DeviceInformationCollection SensorClassDevice;
+        public static bool AccelerometerStandardFailed;
+        public static bool AccelerometerLinearFailed;
+        public static bool AccelerometerGravityFailed;
+        public static bool ActivitySensorFailed;
+        public static bool AltimeterFailed;
+        public static bool BarometerFailed;
+        public static bool CompassFailed;
+        public static bool CustomSensorFailed;
+        public static bool GyrometerFailed;
+        public static bool InclinometerFailed;
+        public static bool LightSensorFailed;
+        public static bool MagnetometerFailed;
+        public static bool OrientationAbsoluteFailed;
+        public static bool OrientationGeomagneticFailed;
+        public static bool OrientationRelativeFailed;
+        public static bool PedometerFailed;
+        public static bool ProximitySensorFailed;
+        public static bool SimpleOrientationSensorFailed;
+        public static bool OtherSensorFailed;
+        public static int CurrentId = -1;
         public static int NumFailedEnumerations;
+        public static List<SensorData> SensorData;
+        public static List<SensorDisplay> SensorDisplay;
 
         public static List<Accelerometer> AccelerometerStandardList;
         public static List<DeviceInformation> AccelerometerStandardDeviceInfo;
@@ -105,27 +123,7 @@ namespace SensorExplorer
         public static List<DeviceInformation> SimpleOrientationSensorDeviceInfo;
         public static List<string[]> SimpleOrientationSensorPLD;
 
-        public static bool AccelerometerStandardFailed;
-        public static bool AccelerometerLinearFailed;
-        public static bool AccelerometerGravityFailed;
-        public static bool ActivitySensorFailed;
-        public static bool AltimeterFailed;
-        public static bool BarometerFailed;
-        public static bool CompassFailed;
-        public static bool CustomSensorFailed;
-        public static bool GyrometerFailed;
-        public static bool InclinometerFailed;
-        public static bool LightSensorFailed;
-        public static bool MagnetometerFailed;
-        public static bool OrientationAbsoluteFailed;
-        public static bool OrientationGeomagneticFailed;
-        public static bool OrientationRelativeFailed;
-        public static bool PedometerFailed;
-        public static bool ProximitySensorFailed;
-        public static bool SimpleOrientationSensorFailed;
-        public static bool OtherSensorFailed;
-
-        private static CoreDispatcher _cd = Window.Current.CoreWindow.Dispatcher;
+        private static CoreDispatcher cd = Window.Current.CoreWindow.Dispatcher;
 
         public static string[] GetProperties(DeviceInformation deviceInfo)
         {
@@ -167,7 +165,7 @@ namespace SensorExplorer
             catch { }
             try
             {
-                properties[7] = deviceInfo.Properties[Constants.Properties["Sensor_State"]].ToString();
+                properties[7] = deviceInfo.Properties[Constants.Properties["SensorState"]].ToString();
             }
             catch { }
 
@@ -372,7 +370,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Accelerometer3D = {C2FB0F5F-E2D2-4C78-BCD0-352A9582819D}
+                //GUIDSensorType_Accelerometer3D = {C2FB0F5F-E2D2-4C78-BCD0-352A9582819D}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Standard), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -393,7 +391,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_LinearAccelerometer = {038B0283-97B4-41C8-BC24-5FF1AA48FEC7}
+                //GUIDSensorType_LinearAccelerometer = {038B0283-97B4-41C8-BC24-5FF1AA48FEC7}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Linear), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -414,7 +412,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_GravityVector = {03B52C73-BB76-463F-9524-38DE76EB700B}
+                //GUIDSensorType_GravityVector = {03B52C73-BB76-463F-9524-38DE76EB700B}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Accelerometer.GetDeviceSelector(AccelerometerReadingType.Gravity), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -435,7 +433,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_ActivityDetection = {9D9E0118-1807-4F2E-96E4-2CE57142E196}
+                //GUIDSensorType_ActivityDetection = {9D9E0118-1807-4F2E-96E4-2CE57142E196}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(ActivitySensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -475,7 +473,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Barometer = {0E903829-FF8A-4A93-97DF-3DCBDE402288}
+                //GUIDSensorType_Barometer = {0E903829-FF8A-4A93-97DF-3DCBDE402288}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Barometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -496,7 +494,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
+                //GUIDSensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Compass.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -517,7 +515,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Custom = {E83AF229-8640-4D18-A213-E22675EBB2C3}
+                //GUIDSensorType_Custom = {E83AF229-8640-4D18-A213-E22675EBB2C3}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(CustomSensor.GetDeviceSelector(new Guid("E83AF229-8640-4D18-A213-E22675EBB2C3")), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -538,7 +536,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
+                //GUIDSensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Gyrometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -559,7 +557,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
+                //GUIDSensorType_Gyrometer3D = {09485F5A-759E-42C2-BD4B-A349B75C8643}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Inclinometer.GetDeviceSelector(SensorReadingType.Absolute), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -580,7 +578,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_AmbientLight = {97F115C8-599A-4153-8894-D2D12899918A}
+                //GUIDSensorType_AmbientLight = {97F115C8-599A-4153-8894-D2D12899918A}
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(LightSensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
@@ -601,7 +599,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Magnetometer3D = {55E5EFFB-15C7-40df-8698-A84B7C863C53}
+                //GUIDSensorType_Magnetometer3D = {55E5EFFB-15C7-40df-8698-A84B7C863C53}
                 string s = Magnetometer.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Magnetometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -623,7 +621,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
+                //GUIDSensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
                 string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -645,7 +643,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
+                //GUIDSensorType_Orientation = {CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E}
                 string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Absolute, SensorOptimizationGoal.PowerEfficiency), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -667,7 +665,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_RelativeOrientation = {40993B51-4706-44DC-98D5-C920C037FFAB}
+                //GUIDSensorType_RelativeOrientation = {40993B51-4706-44DC-98D5-C920C037FFAB}
                 string s = OrientationSensor.GetDeviceSelector(SensorReadingType.Relative);
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(OrientationSensor.GetDeviceSelector(SensorReadingType.Relative), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -689,7 +687,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Pedometer = {B19F89AF-E3EB-444B-8DEA-202575A71599}
+                //GUIDSensorType_Pedometer = {B19F89AF-E3EB-444B-8DEA-202575A71599}
                 string s = Pedometer.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Pedometer.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -711,7 +709,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_Proximity = {5220DAE9-3179-4430-9F90-06266D2A34DE}
+                //GUIDSensorType_Proximity = {5220DAE9-3179-4430-9F90-06266D2A34DE}
                 string s = ProximitySensor.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(ProximitySensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -733,7 +731,7 @@ namespace SensorExplorer
             }
             try
             {
-                //GUID_SensorType_SimpleDeviceOrientation = {86A19291-0482-402C-BF4C-ADDAC52B1C39}
+                //GUIDSensorTypeSimpleDeviceOrientation = {86A19291-0482-402C-BF4C-ADDAC52B1C39}
                 string s = SimpleOrientationSensor.GetDeviceSelector();
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(SimpleOrientationSensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
@@ -846,9 +844,9 @@ namespace SensorExplorer
                 }
                 catch { };
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerStandardDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(AccelerometerStandardPLD[index]);
-                AccelerometerStandardList[index].ReadingChanged += Accelerometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerStandardDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(AccelerometerStandardPLD[index]);
+                AccelerometerStandardList[index].ReadingChanged += AccelerometerReadingChanged;
             }
         }
 
@@ -856,24 +854,24 @@ namespace SensorExplorer
         {
             if (AccelerometerStandardList[index] != null)
             {
-                AccelerometerStandardList[index].ReadingChanged -= Accelerometer_ReadingChanged;
+                AccelerometerStandardList[index].ReadingChanged -= AccelerometerReadingChanged;
             }
         }
 
-        private async static void Accelerometer_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        private async static void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ACCELEROMETER)
+                if (SensorData[CurrentId].SensorType == ACCELEROMETER)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -913,9 +911,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerLinearDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(AccelerometerLinearPLD[index]);
-                AccelerometerLinearList[index].ReadingChanged += AccelerometerLinear_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerLinearDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(AccelerometerLinearPLD[index]);
+                AccelerometerLinearList[index].ReadingChanged += AccelerometerLinearReadingChanged;
             }
         }
 
@@ -923,24 +921,24 @@ namespace SensorExplorer
         {
             if (AccelerometerLinearList[index] != null)
             {
-                AccelerometerLinearList[index].ReadingChanged -= AccelerometerLinear_ReadingChanged;
+                AccelerometerLinearList[index].ReadingChanged -= AccelerometerLinearReadingChanged;
             }
         }
 
-        private async static void AccelerometerLinear_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        private async static void AccelerometerLinearReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ACCELEROMETERLINEAR)
+                if (SensorData[CurrentId].SensorType == ACCELEROMETERLINEAR)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -980,9 +978,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerGravityDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(AccelerometerGravityPLD[index]);
-                AccelerometerGravityList[index].ReadingChanged += AccelerometerGravity_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, reportLatency, GetProperties(AccelerometerGravityDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(AccelerometerGravityPLD[index]);
+                AccelerometerGravityList[index].ReadingChanged += AccelerometerGravityReadingChanged;
             }
         }
 
@@ -990,24 +988,24 @@ namespace SensorExplorer
         {
             if (AccelerometerGravityList[index] != null)
             {
-                AccelerometerGravityList[index].ReadingChanged -= AccelerometerGravity_ReadingChanged;
+                AccelerometerGravityList[index].ReadingChanged -= AccelerometerGravityReadingChanged;
             }
         }
 
-        private async static void AccelerometerGravity_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        private async static void AccelerometerGravityReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ACCELEROMETERGRAVITY)
+                if (SensorData[CurrentId].SensorType == ACCELEROMETERGRAVITY)
                 {
                     AccelerometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AccelerationX, reading.AccelerationY, reading.AccelerationZ }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1036,9 +1034,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
-                CompassList[index].ReadingChanged += Compass_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
+                CompassList[index].ReadingChanged += CompassReadingChanged;
             }
         }
 
@@ -1046,26 +1044,26 @@ namespace SensorExplorer
         {
             if (CompassList[index] != null)
             {
-                CompassList[index].ReadingChanged -= Compass_ReadingChanged;
+                CompassList[index].ReadingChanged -= CompassReadingChanged;
             }
         }
 
-        private async static void Compass_ReadingChanged(object sender, CompassReadingChangedEventArgs e)
+        private async static void CompassReadingChanged(object sender, CompassReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == COMPASS)
+                if (SensorData[CurrentId].SensorType == COMPASS)
                 {
                     CompassReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.HeadingMagneticNorth),
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.HeadingMagneticNorth),
                                                                                                        Convert.ToDouble(reading.HeadingTrueNorth),
                                                                                                        (int)reading.HeadingAccuracy }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1094,9 +1092,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
-                CustomSensorList[index].ReadingChanged += CustomSensor_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(CompassDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
+                CustomSensorList[index].ReadingChanged += CustomSensorReadingChanged;
             }
         }
 
@@ -1104,24 +1102,24 @@ namespace SensorExplorer
         {
             if (CustomSensorList[index] != null)
             {
-                CustomSensorList[index].ReadingChanged -= CustomSensor_ReadingChanged;
+                CustomSensorList[index].ReadingChanged -= CustomSensorReadingChanged;
             }
         }
 
-        private async static void CustomSensor_ReadingChanged(object sender, CustomSensorReadingChangedEventArgs e)
+        private async static void CustomSensorReadingChanged(object sender, CustomSensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == CUSTOMSENSOR)
+                if (SensorData[CurrentId].SensorType == CUSTOMSENSOR)
                 {
                     CustomSensorReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[0]))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[0]))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1155,9 +1153,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(GyrometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(GyrometerPLD[index]);
-                GyrometerList[index].ReadingChanged += Gyrometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(GyrometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(GyrometerPLD[index]);
+                GyrometerList[index].ReadingChanged += GyrometerReadingChanged;
             }
         }
 
@@ -1165,24 +1163,24 @@ namespace SensorExplorer
         {
             if (GyrometerList[index] != null)
             {
-                GyrometerList[index].ReadingChanged -= Gyrometer_ReadingChanged;
+                GyrometerList[index].ReadingChanged -= GyrometerReadingChanged;
             }
         }
 
-        private async static void Gyrometer_ReadingChanged(object sender, GyrometerReadingChangedEventArgs e)
+        private async static void GyrometerReadingChanged(object sender, GyrometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == GYROMETER)
+                if (SensorData[CurrentId].SensorType == GYROMETER)
                 {
                     GyrometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AngularVelocityX, reading.AngularVelocityY, reading.AngularVelocityZ }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AngularVelocityX, reading.AngularVelocityY, reading.AngularVelocityZ }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1216,9 +1214,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(InclinometerPLD[index]);
-                InclinometerList[index].ReadingChanged += Inclinometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(InclinometerPLD[index]);
+                InclinometerList[index].ReadingChanged += InclinometerReadingChanged;
             }
         }
 
@@ -1226,27 +1224,27 @@ namespace SensorExplorer
         {
             if (InclinometerList[index] != null)
             {
-                InclinometerList[index].ReadingChanged -= Inclinometer_ReadingChanged;
+                InclinometerList[index].ReadingChanged -= InclinometerReadingChanged;
             }
         }
 
-        private async static void Inclinometer_ReadingChanged(object sender, InclinometerReadingChangedEventArgs e)
+        private async static void InclinometerReadingChanged(object sender, InclinometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == INCLINOMETER)
+                if (SensorData[CurrentId].SensorType == INCLINOMETER)
                 {
                     InclinometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.PitchDegrees,
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.PitchDegrees,
                                                                                                        reading.RollDegrees,
                                                                                                        reading.YawDegrees,
                                                                                                        (int)reading.YawAccuracy }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1280,9 +1278,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(LightSensorPLD[index]);
-                LightSensorList[index].ReadingChanged += LightSensor_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(InclinometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(LightSensorPLD[index]);
+                LightSensorList[index].ReadingChanged += LightSensorReadingChanged;
             }
         }
 
@@ -1290,15 +1288,15 @@ namespace SensorExplorer
         {
             if (LightSensorList[index] != null)
             {
-                LightSensorList[index].ReadingChanged -= LightSensor_ReadingChanged;
+                LightSensorList[index].ReadingChanged -= LightSensorReadingChanged;
             }
         }
 
-        private async static void LightSensor_ReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
+        private async static void LightSensorReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == LIGHTSENSOR)
+                if (SensorData[CurrentId].SensorType == LIGHTSENSOR)
                 {
                     LightSensorReading reading = e.Reading;
                     Scenario1View.Scenario1.LogDataLightSensor(reading);
@@ -1308,21 +1306,21 @@ namespace SensorExplorer
                     reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62", out x);
                     reading.Properties.TryGetValue("{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63", out y);
 
-                    double chromaticity_x = -1, chromaticity_y = -1;
+                    double chromaticityX = -1, chromaticityY = -1;
                     try
                     {
-                        chromaticity_x = double.Parse(x.ToString());
-                        chromaticity_y = double.Parse(y.ToString());
+                        chromaticityX = double.Parse(x.ToString());
+                        chromaticityY = double.Parse(y.ToString());
                     }
                     catch { }
 
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.IlluminanceInLux, chromaticity_x, chromaticity_y }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.IlluminanceInLux, chromaticityX, chromaticityY }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1356,9 +1354,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationAbsoluteDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(OrientationAbsolutePLD[index]);
-                OrientationAbsoluteList[index].ReadingChanged += OrientationSensor_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationAbsoluteDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(OrientationAbsolutePLD[index]);
+                OrientationAbsoluteList[index].ReadingChanged += OrientationSensorReadingChanged;
             }
         }
 
@@ -1366,18 +1364,18 @@ namespace SensorExplorer
         {
             if (OrientationAbsoluteList[index] != null)
             {
-                OrientationAbsoluteList[index].ReadingChanged -= OrientationSensor_ReadingChanged;
+                OrientationAbsoluteList[index].ReadingChanged -= OrientationSensorReadingChanged;
             }
         }
 
-        private async static void OrientationSensor_ReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
+        private async static void OrientationSensorReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ORIENTATIONSENSOR)
+                if (SensorData[CurrentId].SensorType == ORIENTATIONSENSOR)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1391,11 +1389,11 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1429,9 +1427,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationRelativeDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(OrientationRelativePLD[index]);
-                OrientationRelativeList[totalIndex].ReadingChanged += RelativeOrientationSensor_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationRelativeDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(OrientationRelativePLD[index]);
+                OrientationRelativeList[totalIndex].ReadingChanged += RelativeOrientationSensorReadingChanged;
             }
         }
 
@@ -1439,18 +1437,18 @@ namespace SensorExplorer
         {
             if (OrientationRelativeList[index] != null)
             {
-                OrientationRelativeList[index].ReadingChanged -= RelativeOrientationSensor_ReadingChanged;
+                OrientationRelativeList[index].ReadingChanged -= RelativeOrientationSensorReadingChanged;
             }
         }
 
-        private async static void RelativeOrientationSensor_ReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
+        private async static void RelativeOrientationSensorReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ORIENTATIONRELATIVE)
+                if (SensorData[CurrentId].SensorType == ORIENTATIONRELATIVE)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1464,11 +1462,11 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1502,9 +1500,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationGeomagneticDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(OrientationGeomagneticPLD[index]);
-                OrientationGeomagneticList[totalIndex].ReadingChanged += OrientationGeomagnetic_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(OrientationGeomagneticDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(OrientationGeomagneticPLD[index]);
+                OrientationGeomagneticList[totalIndex].ReadingChanged += OrientationGeomagneticReadingChanged;
             }
         }
 
@@ -1512,18 +1510,18 @@ namespace SensorExplorer
         {
             if (OrientationGeomagneticList[index] != null)
             {
-                OrientationGeomagneticList[index].ReadingChanged -= OrientationGeomagnetic_ReadingChanged;
+                OrientationGeomagneticList[index].ReadingChanged -= OrientationGeomagneticReadingChanged;
             }
         }
 
-        private async static void OrientationGeomagnetic_ReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
+        private async static void OrientationGeomagneticReadingChanged(object sender, OrientationSensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ORIENTATIONRELATIVE)
+                if (SensorData[CurrentId].SensorType == ORIENTATIONRELATIVE)
                 {
                     OrientationSensorReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.Quaternion.X,
                                                                                                        reading.Quaternion.Y,
                                                                                                        reading.Quaternion.Z,
                                                                                                        reading.Quaternion.W,
@@ -1537,11 +1535,11 @@ namespace SensorExplorer
                                                                                                        reading.RotationMatrix.M32,
                                                                                                        reading.RotationMatrix.M33 }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1569,7 +1567,7 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, GetProperties(ActivitySensorDeviceInfo[index]));
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, minimumReportInterval, 0, GetProperties(ActivitySensorDeviceInfo[index]));
 
                 // subscribe to all supported activities
                 foreach (ActivityType activityType in ActivitySensorList[index].SupportedActivities)
@@ -1577,8 +1575,8 @@ namespace SensorExplorer
                     ActivitySensorList[index].SubscribedActivities.Add(activityType);
                 }
 
-                sensorData[totalIndex].AddPLDProperty(ActivitySensorPLD[index]);
-                ActivitySensorList[index].ReadingChanged += ActivitySensor_ReadingChanged;
+                SensorData[totalIndex].AddPLDProperty(ActivitySensorPLD[index]);
+                ActivitySensorList[index].ReadingChanged += ActivitySensorReadingChanged;
             }
         }
 
@@ -1586,31 +1584,31 @@ namespace SensorExplorer
         {
             if (ActivitySensorList[index] != null)
             {
-                ActivitySensorList[index].ReadingChanged -= ActivitySensor_ReadingChanged;
+                ActivitySensorList[index].ReadingChanged -= ActivitySensorReadingChanged;
             }
         }
 
-        private async static void ActivitySensor_ReadingChanged(object sender, ActivitySensorReadingChangedEventArgs e)
+        private async static void ActivitySensorReadingChanged(object sender, ActivitySensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ACCELEROMETER)
+                if (SensorData[CurrentId].SensorType == ACCELEROMETER)
                 {
                     ActivitySensorReading reading = e.Reading;
                     double[] activitySensorReadingConfidence = new double[] { ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED, ACTIVITYNOTSUPPORTED };
-                    foreach (ActivityType activityType in ActivitySensorList[currentId].SupportedActivities)
+                    foreach (ActivityType activityType in ActivitySensorList[CurrentId].SupportedActivities)
                     {
                         activitySensorReadingConfidence[Convert.ToInt32(activityType)] = ACTIVITYNONE;
                     }
                     activitySensorReadingConfidence[Convert.ToInt32(reading.Activity)] = Convert.ToDouble(reading.Confidence);
 
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, activitySensorReadingConfidence))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, activitySensorReadingConfidence))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1644,9 +1642,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(AltimeterDeviceInfo));
-                sensorData[totalIndex].AddPLDProperty(AltimeterPLD);
-                Altimeter.ReadingChanged += Altimeter_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(AltimeterDeviceInfo));
+                SensorData[totalIndex].AddPLDProperty(AltimeterPLD);
+                Altimeter.ReadingChanged += AltimeterReadingChanged;
             }
         }
 
@@ -1654,24 +1652,24 @@ namespace SensorExplorer
         {
             if (Altimeter != null)
             {
-                Altimeter.ReadingChanged -= Altimeter_ReadingChanged;
+                Altimeter.ReadingChanged -= AltimeterReadingChanged;
             }
         }
 
-        private async static void Altimeter_ReadingChanged(object sender, AltimeterReadingChangedEventArgs e)
+        private async static void AltimeterReadingChanged(object sender, AltimeterReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == ALTIMETER)
+                if (SensorData[CurrentId].SensorType == ALTIMETER)
                 {
                     AltimeterReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AltitudeChangeInMeters }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.AltitudeChangeInMeters }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1705,9 +1703,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(BarometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(BarometerPLD[index]);
-                BarometerList[index].ReadingChanged += Barometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(BarometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(BarometerPLD[index]);
+                BarometerList[index].ReadingChanged += BarometerReadingChanged;
             }
         }
 
@@ -1715,24 +1713,24 @@ namespace SensorExplorer
         {
             if (BarometerList[index] != null)
             {
-                BarometerList[index].ReadingChanged -= Barometer_ReadingChanged;
+                BarometerList[index].ReadingChanged -= BarometerReadingChanged;
             }
         }
 
-        private async static void Barometer_ReadingChanged(object sender, BarometerReadingChangedEventArgs e)
+        private async static void BarometerReadingChanged(object sender, BarometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == BAROMETER)
+                if (SensorData[CurrentId].SensorType == BAROMETER)
                 {
                     BarometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.StationPressureInHectopascals }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.StationPressureInHectopascals }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1766,9 +1764,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(MagnetometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(MagnetometerPLD[index]);
-                MagnetometerList[index].ReadingChanged += Magnetometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(MagnetometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(MagnetometerPLD[index]);
+                MagnetometerList[index].ReadingChanged += MagnetometerReadingChanged;
             }
         }
 
@@ -1776,24 +1774,24 @@ namespace SensorExplorer
         {
             if (MagnetometerList[index] != null)
             {
-                MagnetometerList[index].ReadingChanged -= Magnetometer_ReadingChanged;
+                MagnetometerList[index].ReadingChanged -= MagnetometerReadingChanged;
             }
         }
 
-        private async static void Magnetometer_ReadingChanged(object sender, MagnetometerReadingChangedEventArgs e)
+        private async static void MagnetometerReadingChanged(object sender, MagnetometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == MAGNETOMETER)
+                if (SensorData[CurrentId].SensorType == MAGNETOMETER)
                 {
                     MagnetometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.MagneticFieldX, reading.MagneticFieldY, reading.MagneticFieldZ }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.MagneticFieldX, reading.MagneticFieldY, reading.MagneticFieldZ }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1827,9 +1825,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(PedometerDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(PedometerPLD[index]);
-                PedometerList[index].ReadingChanged += Pedometer_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, GetProperties(PedometerDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(PedometerPLD[index]);
+                PedometerList[index].ReadingChanged += PedometerReadingChanged;
             }
         }
 
@@ -1837,24 +1835,24 @@ namespace SensorExplorer
         {
             if (PedometerList[index] != null)
             {
-                PedometerList[index].ReadingChanged -= Pedometer_ReadingChanged;
+                PedometerList[index].ReadingChanged -= PedometerReadingChanged;
             }
         }
 
-        private async static void Pedometer_ReadingChanged(object sender, PedometerReadingChangedEventArgs e)
+        private async static void PedometerReadingChanged(object sender, PedometerReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == PEDOMETER)
+                if (SensorData[CurrentId].SensorType == PEDOMETER)
                 {
                     PedometerReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.CumulativeSteps, reading.CumulativeStepsDuration.Seconds, Convert.ToDouble(reading.StepKind) }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { reading.CumulativeSteps, reading.CumulativeStepsDuration.Seconds, Convert.ToDouble(reading.StepKind) }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1876,9 +1874,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(ProximitySensorDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(ProximitySensorPLD[index]);
-                ProximitySensorList[totalIndex].ReadingChanged += ProximitySensor_ReadingChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(ProximitySensorDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(ProximitySensorPLD[index]);
+                ProximitySensorList[totalIndex].ReadingChanged += ProximitySensorReadingChanged;
             }
         }
 
@@ -1886,24 +1884,24 @@ namespace SensorExplorer
         {
             if (ProximitySensorList[index] != null)
             {
-                ProximitySensorList[index].ReadingChanged -= ProximitySensor_ReadingChanged;
+                ProximitySensorList[index].ReadingChanged -= ProximitySensorReadingChanged;
             }
         }
 
-        private async static void ProximitySensor_ReadingChanged(object sender, ProximitySensorReadingChangedEventArgs e)
+        private async static void ProximitySensorReadingChanged(object sender, ProximitySensorReadingChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == PROXIMITYSENSOR)
+                if (SensorData[CurrentId].SensorType == PROXIMITYSENSOR)
                 {
                     ProximitySensorReading reading = e.Reading;
-                    if (sensorData[currentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.IsDetected), Convert.ToDouble(reading.DistanceInMillimeters) }))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.IsDetected), Convert.ToDouble(reading.DistanceInMillimeters) }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            if (currentId < sensorData.Count)
+                            if (CurrentId < SensorData.Count)
                             {
-                                sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                             }
                         });
                     }
@@ -1925,9 +1923,9 @@ namespace SensorExplorer
                 }
                 catch { }
 
-                sensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(SimpleOrientationSensorDeviceInfo[index]));
-                sensorData[totalIndex].AddPLDProperty(SimpleOrientationSensorPLD[index]);
-                SimpleOrientationSensorList[index].OrientationChanged += SimpleOrientationSensor_OrientationChanged;
+                SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, GetProperties(SimpleOrientationSensorDeviceInfo[index]));
+                SensorData[totalIndex].AddPLDProperty(SimpleOrientationSensorPLD[index]);
+                SimpleOrientationSensorList[index].OrientationChanged += SimpleOrientationSensorOrientationChanged;
             }
         }
 
@@ -1935,22 +1933,21 @@ namespace SensorExplorer
         {
             if (SimpleOrientationSensorList[index] != null)
             {
-                SimpleOrientationSensorList[index].OrientationChanged -= SimpleOrientationSensor_OrientationChanged;
+                SimpleOrientationSensorList[index].OrientationChanged -= SimpleOrientationSensorOrientationChanged;
             }
         }
 
-        private async static void SimpleOrientationSensor_OrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs e)
+        private async static void SimpleOrientationSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs e)
         {
             try
             {
-                if (sensorData[currentId]._sensorType == SIMPLEORIENTATIONSENSOR)
+                if (SensorData[CurrentId].SensorType == SIMPLEORIENTATIONSENSOR)
                 {
-                    SimpleOrientation reading = e.Orientation;
-                    if (sensorData[currentId].AddReading(DateTime.UtcNow, new double[] { Convert.ToDouble(reading) }))
+                    if (SensorData[CurrentId].AddReading(DateTime.UtcNow, new double[] { Convert.ToDouble(e.Orientation) }))
                     {
-                        await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                            sensorDisplay[currentId].UpdateText(sensorData[currentId]);
+                            SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
                         });
                     }
                 }

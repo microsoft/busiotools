@@ -705,6 +705,38 @@
       </Keywords>
     </EventProvider>
 
+    <!-- Input pipeline providers. Kept separate for readability -->
+    <EventProvider Name="5FB75EAC-9F0B-550C-339F-FC21FDE966CD" Id="Microsoft.Windows.InputCore.TraceLogging.UIF" NonPagedMemory="true" Level="4">
+      <CaptureStateOnSave>
+        <Keyword Value="0x0"/>
+      </CaptureStateOnSave>
+    </EventProvider>
+    <EventProvider Name="8C416C79-D49B-4F01-A467-E56D3AA8234C" Id="Microsoft.Windows.Win32k.UIF" NonPagedMemory="true">
+      <Keywords>
+        <Keyword      Value="0xA04526A000"/>
+        <!-- <Keyword       Value="0x2000"/> Focus -->
+        <!-- <Keyword       Value="0x8000"/> win32Power -->
+        <!-- <Keyword      Value="0x20000"/> UserActivity -->
+        <!-- <Keyword      Value="0x40000"/> UIUnresponsiveness -->
+        <!-- <Keyword     Value="0x200000"/> ThreadInfo -->
+        <!-- <Keyword    Value="0x1000000"/> TouchInput -->
+        <!-- <Keyword   Value="0x04000000"/> PointerInput -->
+        <!-- <Keyword   Value="0x40000000"/> ComponentHosting -->
+        <!-- <Keyword Value="0x2000000000"/> UserCrit telemetry -->
+        <!-- <Keyword Value="0x8000000000"/> DCompInput (RS5) -->
+      </Keywords>
+      <CaptureStateOnStart>
+        <Keyword      Value="0xC0000"/>
+        <!-- <Keyword Value="0x40000"/> UIUnresponsiveness -->
+        <!-- <Keyword Value="0x80000"/> ThreadRundown -->
+      </CaptureStateOnStart>
+      <CaptureStateOnSave>
+        <Keyword      Value="0xC0000"/>
+        <!-- <Keyword Value="0x40000"/> UIUnresponsiveness -->
+        <!-- <Keyword Value="0x80000"/> ThreadRundown -->
+      </CaptureStateOnSave>
+    </EventProvider>
+
     <!-- Handsfree ETW providers. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Apps.CommsEnhancementRTProviders" Name="7665d4fd-30eb-4ddc-9dc1-4ebab74ed98e" Level="5" NonPagedMemory="false">
       <Keywords>

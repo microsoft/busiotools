@@ -697,6 +697,32 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.HfEnum" Name="9680893F-0696-4EC0-9AF5-65974897C9D4" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.HfAud" Name="8D87AA29-0EBE-41AF-B3C4-F56CE668BD22" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.BthEnum" Name="8C8349A2-F297-4178-80A5-0810A56C9DFB" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.AVCTP" Name="B20C600F-AA2F-4574-BE01-F9FB7D773E67" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.AVRCP" Name="E7A5F875-1FEE-4113-BDCC-348D56ABBA84" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
+
 
     <!-- BthPort ETW provider. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHPORT" Name="8a1f9517-3a8c-4a9e-a018-4f17a200f277" Level="4" NonPagedMemory="true">

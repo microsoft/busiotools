@@ -952,6 +952,11 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HfEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AVCTP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AVRCP"/>
             <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
           </EventProviders>
         </EventCollectorId>
@@ -1103,6 +1108,11 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HfEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AVCTP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AVRCP"/>
             <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
           </EventProviders>
         </EventCollectorId>

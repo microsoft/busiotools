@@ -916,7 +916,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.QuickPair"/>
-			<EventProviderId Value="Microsoft.Windows.Bluetooth.Telephony.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telephony.AsyncPhoneController"/>
           </EventProviders>
         </EventCollectorId>
 

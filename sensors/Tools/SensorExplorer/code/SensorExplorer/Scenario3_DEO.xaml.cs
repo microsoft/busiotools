@@ -41,6 +41,15 @@ namespace SensorExplorer
             PeriodicTimer.CreateScenario3();
         }
 
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            deo.StopOverride();
+
+            deo.IsOverrideActiveChanged -= Deo_IsOverrideActiveChanged;
+            deo.CanOverrideChanged -= Deo_CanOverrideChanged;
+            deo.DisplayEnhancementOverrideCapabilitiesChanged -= Deo_DisplayEnhancementOverrideCapabilitiesChanged;
+        }
+
         private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)
         {
             if (comboBoxPercentage.SelectedItem != null)

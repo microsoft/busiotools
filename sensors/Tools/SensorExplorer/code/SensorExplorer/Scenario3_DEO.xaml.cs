@@ -8,6 +8,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Navigation;
 
 namespace SensorExplorer
 {
@@ -39,6 +40,15 @@ namespace SensorExplorer
             comboBoxNits.SelectionChanged += OnSelectionChangedNits;
 
             PeriodicTimer.CreateScenario3();
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            deo.StopOverride();
+
+            deo.IsOverrideActiveChanged -= Deo_IsOverrideActiveChanged;
+            deo.CanOverrideChanged -= Deo_CanOverrideChanged;
+            deo.DisplayEnhancementOverrideCapabilitiesChanged -= Deo_DisplayEnhancementOverrideCapabilitiesChanged;
         }
 
         private void OnSelectionChangedPercentage(object sender, SelectionChangedEventArgs e)

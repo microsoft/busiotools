@@ -1,9 +1,10 @@
 # USB, HID and SPB Diagnostics
 
 ## Review blog posts and documentation
-Before filing a bug report please review existing blog posts and documentation. They cover a variety of common problems including troubleshooting HLK failures.
-[USB Blog](https://techcommunity.microsoft.com/t5/Microsoft-USB-Blog/bg-p/MicrosoftUSBBlog) and 
-[Docs](https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon)
+Before filing a bug report please review existing [blog posts](https://techcommunity.microsoft.com/t5/Microsoft-USB-Blog/bg-p/MicrosoftUSBBlog) and [documentation](https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon). They cover a variety of common problems including troubleshooting HLK failures.
+
+See [USB Blog](https://techcommunity.microsoft.com/t5/Microsoft-USB-Blog/bg-p/MicrosoftUSBBlog) and [Docs](https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon)
+
 If these topics do not cover what you're looking for **please include all of the following** in your bug report.
 
 ### 1. Traces

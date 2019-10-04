@@ -1,6 +1,6 @@
 # USB, HID and SPB Diagnostics
 
-## Review Blogs and Documentation
+## Review blog posts and documentation
 Before filing a bug report please review existing blog posts and documentation. They cover a variety of common problems including troubleshooting HLK failures.
 [USB Blog](https://techcommunity.microsoft.com/t5/Microsoft-USB-Blog/bg-p/MicrosoftUSBBlog) and 
 [Docs](https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon)

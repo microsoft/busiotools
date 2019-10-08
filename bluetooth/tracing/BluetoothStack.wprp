@@ -531,12 +531,12 @@
         <Keyword Value="0x0"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="4" NonPagedMemory="true">
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp.AudioClassDriver" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x0"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp.Verbose" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="5" NonPagedMemory="true">
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BthA2dp.AudioClassDriver.Verbose" Name="ddb6da39-08a7-4579-8d0c-68011146e205" Level="5" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x0"/>
       </Keywords>
@@ -881,7 +881,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.AudioClassDriver"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
@@ -1041,7 +1041,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHUSB"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHMINI"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHMINI"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.AudioClassDriver.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose"/>

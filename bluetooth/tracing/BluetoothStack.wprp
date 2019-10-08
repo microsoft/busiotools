@@ -1072,7 +1072,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfAud"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HFP"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Telemetry.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>

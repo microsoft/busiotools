@@ -20,17 +20,17 @@
 
     <EventCollector Id="Traces_paged_verbose" Name="Event Collector Paged (Verbose)">
       <BufferSize Value="1024"/>
-	    <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
+      <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
     </EventCollector>
 
     <EventCollector Id="Traces_nonpaged_verbose" Name="Event Collector NonPaged (Verbose)">
       <BufferSize Value="1024"/>
-	    <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
+      <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
     </EventCollector>
 
     <EventCollector Id="Bthport_ETW" Name="Event Collector Bthport ETW">
       <BufferSize Value="1024"/>
-	    <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
+      <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64" />
     </EventCollector>
 
     <!-- Paged providers. They are kept separate for readability -->

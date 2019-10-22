@@ -68,8 +68,7 @@ namespace SensorExplorer
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
         private string name;
         private string[] pld = new string[] { "Panel Id", "Panel Group", "Panel Side", "Panel Width (mm)", "Panel Height (mm)", "Panel Length (mm)", "Panel PositionX", "Panel PositionY", "Panel PositionZ", "Panel RotationX", "Panel RotationY", "Panel RotationZ", "Panel Color", "Panel Shape", "Panel Visible" };
-        private string[] properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" };
-        private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
+        private string[] properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "ACPI Object Name", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" }; private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomRightCol = new StackPanel() { Orientation = Orientation.Vertical };
         private StackPanel stackPanelDataName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(40, 0, 0, 0) };
@@ -454,19 +453,20 @@ namespace SensorExplorer
 
         public void UpdateProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
                                    string category, string persistentUniqueId, string manufacturer, string model, string connectionType,
-                                   string isPrimary, string vendorDefinedSubType, string state)
+                                   string isPrimary, string vendorDefinedSubType, string state, string objectHierarchy)
         {
             textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
             textBlockPropertyValue[1].Text = string.Format("  {0}", minReportInterval != 0 ? minReportInterval.ToString() : "-");
             textBlockPropertyValue[2].Text = "  " + category;
             textBlockPropertyValue[3].Text = "  " + persistentUniqueId;
-            textBlockPropertyValue[4].Text = "  " + manufacturer;
-            textBlockPropertyValue[5].Text = "  " + model;
-            textBlockPropertyValue[6].Text = "  " + connectionType;
-            textBlockPropertyValue[7].Text = "  " + isPrimary;
-            textBlockPropertyValue[8].Text = "  " + vendorDefinedSubType;
-            textBlockPropertyValue[9].Text = "  " + state;
-            textBlockPropertyValue[10].Text = $"{deviceId.Replace("{", "\r\n  {")}";
+            textBlockPropertyValue[4].Text = " " + objectHierarchy;
+            textBlockPropertyValue[5].Text = "  " + manufacturer;
+            textBlockPropertyValue[6].Text = "  " + model;
+            textBlockPropertyValue[7].Text = "  " + connectionType;
+            textBlockPropertyValue[8].Text = "  " + isPrimary;
+            textBlockPropertyValue[9].Text = "  " + vendorDefinedSubType;
+            textBlockPropertyValue[10].Text = "  " + state;
+            textBlockPropertyValue[11].Text = $"{deviceId.Replace("{", "\r\n  {")}";
         }
 
         public void UpdatePLDProperty(string panelId, string panelGroup, string panelSide, string panelWidth, string panelHeight, string panelLength,
@@ -505,7 +505,7 @@ namespace SensorExplorer
                 {
                     UpdateProperty(sensorData.DeviceId, sensorData.DeviceName, sensorData.ReportInterval, sensorData.MinReportInterval, sensorData.ReportLatency,
                                    sensorData.Category, sensorData.PersistentUniqueId, sensorData.Manufacturer, sensorData.Model, sensorData.ConnectionType,
-                                   sensorData.IsPrimary, sensorData.VendorDefinedSubType, sensorData.State);
+                                   sensorData.IsPrimary, sensorData.VendorDefinedSubType, sensorData.State, sensorData.ObjectHierarchy);
                     UpdatePLDProperty(sensorData.PanelId, sensorData.PanelGroup, sensorData.PanelSide, sensorData.PanelWidth, sensorData.PanelHeight, sensorData.PanelLength,
                                       sensorData.PanelPositionX, sensorData.PanelPositionY, sensorData.PanelPositionZ, sensorData.PanelRotationX, sensorData.PanelRotationY,
                                       sensorData.PanelRotationZ, sensorData.PanelColor, sensorData.PanelShape, sensorData.PanelVisible);

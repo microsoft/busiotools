@@ -53,6 +53,7 @@ namespace SensorExplorer
         public string[] Property;
         public string State;
         public string VendorDefinedSubType;
+        public string ObjectHierarchy;
         public uint DefaultReportInterval = 0;
         public uint ReportInterval = 0;
         public uint MinReportInterval = 0;
@@ -88,6 +89,7 @@ namespace SensorExplorer
             IsPrimary = properties[5];
             VendorDefinedSubType = properties[6];
             State = properties[7];
+            ObjectHierarchy = properties[8];
         }
 
         public void AddPLDProperty(string[] PLD)

@@ -11,6 +11,12 @@ namespace SensorExplorer
 {
     public static class Constants
     {
+        public static Dictionary<string, string> DeviceProperties = new Dictionary<string, string>() {
+            { "BiosDeviceName", "{540b947e-8b40-45bc-a8a2-6a0b894cbda2} 10" },
+            { "DeviceAddress", "{a45c254e-df1c-4efd-8020-67d146a850e0} 30" },
+            { "ParentDevice", "{4340a6c5-93fa-4706-972c-7b648008a5a7} 8" }
+        };
+
         public static Dictionary<string, string> ColorSensorReading = new Dictionary<string, string>() {
             { "Chromaticity_X", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62" },
             { "Chromaticity_Y", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63" },

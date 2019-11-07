@@ -41,6 +41,25 @@ The above collects Verbose logs by default. If you don't need verbose logs, repl
 * Attach c:\windows\inf\setupapi.*.log and c:\Windows\Panther\setupact.log and c:\windows\logs\windowsupdate\* to the bug.
 * Attach Microsoft-Windows-Kernel-PnP%4Configuration.evtx (In event viewer as Microsoft-Windows-Kernel-PnP\Configuration).
 
+## Collecting logs for performance issues
+From an administrative PowerShell session:
+    
+    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
+    wpr.exe -start BluetoothStack.wprp!BluetoothStack.Light -start CPU -filemode
+
+Ensure the device reconnects either:
+
+* Toggle the Bluetooth radio off-on via the quick action menu.
+* Force a power cycle of the remote device.
+    
+*Reproduce the issue.*
+
+From an administrative PowerShell session:
+   
+    wpr.exe -stop BthTracing_CPU.etl
+
+*Note: This will not continue tracing after a reboot*
+
 ## More info on WPR
 wpr.exe is available on all version of windows. More details can be found [here.](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/hh448229%28v%3dwin.10%29)
 

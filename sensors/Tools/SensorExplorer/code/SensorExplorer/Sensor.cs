@@ -22,7 +22,6 @@ namespace SensorExplorer
         public const int GYROMETER = 4;
         public const int INCLINOMETER = 5;
         public const int LIGHTSENSOR = 6;
-        public const int COLORSENSOR = 22;
         public const int ORIENTATIONSENSOR = 7;
         public const int ORIENTATIONRELATIVE = 8;
         public const int ORIENTATIONGEOMAGNETIC = 9;
@@ -1188,7 +1187,7 @@ namespace SensorExplorer
 
                 var deviceProperties = await GetProperties(CustomSensorDeviceInfo[index]);
                 SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, deviceProperties);
-                SensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
+                SensorData[totalIndex].AddPLDProperty(CustomSensorPLD[index]);
                 CustomSensorList[index].ReadingChanged += CustomSensorReadingChanged;
             }
         }
@@ -1529,7 +1528,7 @@ namespace SensorExplorer
                 var deviceProperties = await GetProperties(OrientationRelativeDeviceInfo[index]);
                 SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(OrientationRelativePLD[index]);
-                OrientationRelativeList[totalIndex].ReadingChanged += RelativeOrientationSensorReadingChanged;
+                OrientationRelativeList[index].ReadingChanged += RelativeOrientationSensorReadingChanged;
             }
         }
 
@@ -1603,7 +1602,7 @@ namespace SensorExplorer
                 var deviceProperties = await GetProperties(OrientationGeomagneticDeviceInfo[index]);
                 SensorData[totalIndex].AddProperty(deviceId, deviceName, reportInterval, minimumReportInterval, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(OrientationGeomagneticPLD[index]);
-                OrientationGeomagneticList[totalIndex].ReadingChanged += OrientationGeomagneticReadingChanged;
+                OrientationGeomagneticList[index].ReadingChanged += OrientationGeomagneticReadingChanged;
             }
         }
 
@@ -1983,7 +1982,7 @@ namespace SensorExplorer
                 var deviceProperties = await GetProperties(ProximitySensorDeviceInfo[index]);
                 SensorData[totalIndex].AddProperty(deviceId, deviceName, 0, 0, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(ProximitySensorPLD[index]);
-                ProximitySensorList[totalIndex].ReadingChanged += ProximitySensorReadingChanged;
+                ProximitySensorList[index].ReadingChanged += ProximitySensorReadingChanged;
             }
         }
 

@@ -328,7 +328,7 @@ namespace SensorExplorer
                     SensorDisplay simpleOrientationSensorDisplay = new SensorDisplay(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex, "SimpleOrientationSensor", 0, 5, 5, new Color[] { Colors.Lime });
                     sensorDisplay.Add(simpleOrientationSensorDisplay);
                     sensorData.Add(simpleOrientationSensorData);
-                    AddPivotItem(Sensor.PROXIMITYSENSOR, index, totalIndex);
+                    AddPivotItem(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex);
                 }
 
                 AddSummaryPage();

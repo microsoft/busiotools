@@ -15,7 +15,7 @@ namespace SensorExplorer
         public static List<SensorDisplay> SensorDisplay = null;
 
         private static CoreDispatcher cd = Window.Current.CoreWindow.Dispatcher;
-        private static ThreadPoolTimer periodicTimer = null;
+        private static ThreadPoolTimer periodicTimer1 = null;
         private static ThreadPoolTimer periodicTimer2 = null;
         private static ThreadPoolTimer periodicTimer3 = null;
         private static ThreadPoolTimer periodicTimer4 = null;
@@ -28,9 +28,9 @@ namespace SensorExplorer
         public static void Create(int index)
         {
             SensorData[index].ClearReading();
-            if (periodicTimer == null)
+            if (periodicTimer1 == null)
             {
-                periodicTimer = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback), new TimeSpan(0, 0, 1));
+                periodicTimer1 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallback), new TimeSpan(0, 0, 1));
             }
         }
 
@@ -70,10 +70,10 @@ namespace SensorExplorer
                 }
             }
 
-            if (allOff && periodicTimer != null)
+            if (allOff && periodicTimer1 != null)
             {
-                periodicTimer.Cancel();
-                periodicTimer = null;
+                periodicTimer1.Cancel();
+                periodicTimer1 = null;
             }
         }
 
@@ -126,15 +126,15 @@ namespace SensorExplorer
                                 Sensor.AccelerometerStandardList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
                                 SensorData[i].ReportInterval = Sensor.AccelerometerStandardList[SensorData[i].Count].ReportInterval;
                             }
-                            else if (SensorData[i].SensorType == Sensor.ACCELEROMETERLINEAR)
-                            {
-                                Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
-                                SensorData[i].ReportInterval = Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval;
-                            }
                             else if (SensorData[i].SensorType == Sensor.ACCELEROMETERGRAVITY)
                             {
                                 Sensor.AccelerometerGravityList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
                                 SensorData[i].ReportInterval = Sensor.AccelerometerGravityList[SensorData[i].Count].ReportInterval;
+                            }
+                            else if (SensorData[i].SensorType == Sensor.ACCELEROMETERLINEAR)
+                            {
+                                Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
+                                SensorData[i].ReportInterval = Sensor.AccelerometerLinearList[SensorData[i].Count].ReportInterval;
                             }
                             else if (SensorData[i].SensorType == Sensor.COMPASS)
                             {
@@ -160,6 +160,11 @@ namespace SensorExplorer
                             {
                                 Sensor.OrientationAbsoluteList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
                                 SensorData[i].ReportInterval = Sensor.OrientationAbsoluteList[SensorData[i].Count].ReportInterval;
+                            }
+                            else if (SensorData[i].SensorType == Sensor.ORIENTATIONGEOMAGNETIC)
+                            {
+                                Sensor.OrientationGeomagneticList[SensorData[i].Count].ReportInterval = SensorData[i].ReportInterval;
+                                SensorData[i].ReportInterval = Sensor.OrientationGeomagneticList[SensorData[i].Count].ReportInterval;
                             }
                             else if (SensorData[i].SensorType == Sensor.ORIENTATIONRELATIVE)
                             {

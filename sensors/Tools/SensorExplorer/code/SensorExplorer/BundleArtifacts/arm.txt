@@ -1,6 +1,6 @@
-MainPackage=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.12.0_ARM.msix
-SymbolPackage=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\AppPackages\SensorExplorer_1.0.12.0_Test\SensorExplorer_1.0.12.0_ARM.appxsym
-ResourcePack=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.12.0_scale-100.msix
-ResourcePack=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.12.0_scale-125.msix
-ResourcePack=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.12.0_scale-150.msix
-ResourcePack=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.12.0_scale-400.msix
+MainPackage=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.16.0_ARM.msix
+SymbolPackage=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\AppPackages\SensorExplorer_1.0.16.0_Test\SensorExplorer_1.0.16.0_ARM.appxsym
+ResourcePack=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.16.0_scale-100.msix
+ResourcePack=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.16.0_scale-125.msix
+ResourcePack=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.16.0_scale-150.msix
+ResourcePack=C:\Users\jialzhu\Desktop\Tasks\SensorExplorer_GitHub\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.16.0_scale-400.msix

@@ -11,18 +11,13 @@ namespace SensorExplorer
 {
     public static class Constants
     {
-        public static Dictionary<string, string> DeviceProperties = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> DeviceProperties = new Dictionary<string, string>() {
             { "BiosDeviceName", "{540b947e-8b40-45bc-a8a2-6a0b894cbda2} 10" },
             { "DeviceAddress", "{a45c254e-df1c-4efd-8020-67d146a850e0} 30" },
             { "ParentDevice", "{4340a6c5-93fa-4706-972c-7b648008a5a7} 8" }
         };
 
-        public static Dictionary<string, string> ColorSensorReading = new Dictionary<string, string>() {
-            { "Chromaticity_X", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 62" },
-            { "Chromaticity_Y", "{C458F8A7-4AE8-4777-9607-2E9BDD65110A} 63" },
-        };
-
-        public static Dictionary<string, string> PLD = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> PLD = new Dictionary<string, string>() {
             { "Device_PanelId", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 2" },
             { "Device_PanelGroup", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 3" },
             { "Device_PanelSide", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 4" },
@@ -40,12 +35,12 @@ namespace SensorExplorer
             { "Device_PanelVisible", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 16" }
         };
 
-        public static Dictionary<string, string> PanelGroup = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> PanelGroup = new Dictionary<string, string>() {
             { "0", "Right Panel" },
             { "1", "Left Panel" }
         };
 
-        public static Dictionary<string, string> PanelRotation = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> PanelRotation = new Dictionary<string, string>() {
             { "0", "0°" },
             { "1", "45°" },
             { "2", "90°" },
@@ -56,7 +51,7 @@ namespace SensorExplorer
             { "7", "315°" }
         };
 
-        public static Dictionary<string, string> PanelShape = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> PanelShape = new Dictionary<string, string>() {
             { "0", "Round" },
             { "1", "Oval" },
             { "2", "Square" },
@@ -68,7 +63,7 @@ namespace SensorExplorer
             { "8", "Chamfered" }
         };
 
-        public static Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
             { "0", "Top" },
             { "1", "Bottom" },
             { "2", "Left" },
@@ -78,7 +73,7 @@ namespace SensorExplorer
             { "6", "Unknown" }
         };
 
-        public static Dictionary<string, string> Properties = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> Properties = new Dictionary<string, string>() {
             { "Sensor_Type", "{D4247382-969D-4F24-BB14-FB9671870BBF} 2" },
             { "Sensor_Category", "{D4247382-969D-4F24-BB14-FB9671870BBF} 3" },
             { "Sensor_ConnectionType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 4" },
@@ -92,28 +87,7 @@ namespace SensorExplorer
             { "DEVPKEY_Device_InstanceId", "{78C34FC8-104A-4ACA-9EA4-524D52996E57} 256" }
         };
 
-        public static Dictionary<string, string> SensorTypes = new Dictionary<string, string>() {
-            { "C2FB0F5F-E2D2-4C78-BCD0-352A9582819D".ToLower(), "Accelerometer3D" },
-            { "9D9E0118-1807-4F2E-96E4-2CE57142E196".ToLower(), "ActivityDetection" },
-            { "97F115C8-599A-4153-8894-D2D12899918A".ToLower(), "AmbientLight" },
-            { "0E903829-FF8A-4A93-97DF-3DCBDE402288".ToLower(), "Barometer" },
-            { "E83AF229-8640-4D18-A213-E22675EBB2C3".ToLower(), "Custom" },
-            { "ADE4987F-7AC4-4DFA-9722-0A027181C747".ToLower(), "FloorElevation" },
-            { "E77195F8-2D1F-4823-971B-1C4467556C9D".ToLower(), "GeomagneticOrientation" },
-            { "03B52C73-BB76-463F-9524-38DE76EB700B".ToLower(), "GravityVector" },
-            { "09485F5A-759E-42C2-BD4B-A349B75C8643".ToLower(), "Gyrometer3D" },
-            { "5C72BF67-BD7E-4257-990B-98A3BA3B400A".ToLower(), "Humidity" },
-            { "038B0283-97B4-41C8-BC24-5FF1AA48FEC7".ToLower(), "LinearAccelerometer" },
-            { "55E5EFFB-15C7-40df-8698-A84B7C863C53".ToLower(), "Magnetometer3D" },
-            { "CDB5D8F7-3CFD-41C8-8542-CCE622CF5D6E".ToLower(), "Orientation" },
-            { "B19F89AF-E3EB-444B-8DEA-202575A71599".ToLower(), "Pedometer" },
-            { "5220DAE9-3179-4430-9F90-06266D2A34DE".ToLower(), "Proximity" },
-            { "40993B51-4706-44DC-98D5-C920C037FFAB".ToLower(), "RelativeOrientation" },
-            { "86A19291-0482-402C-BF4C-ADDAC52B1C39".ToLower(), "SimpleDeviceOrientation" },
-            { "04FD0EC4-D5DA-45FA-95A9-5DB38EE19306".ToLower(), "Temperature" }
-        };
-
-        public static Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
+        public static readonly Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
             { "C317C286-C468-4288-9975-D4C4587C442C".ToLower(), "All" },
             { "CA19690F-A2C7-477D-A99E-99EC6E2B5648".ToLower(), "Biometric" },
             { "FB73FCD8-FC4A-483C-AC58-27B691C6BEFF".ToLower(), "Electrical" },
@@ -129,9 +103,9 @@ namespace SensorExplorer
             { "2BEAE7FA-19B0-48C5-A1F6-B5480DC206B0".ToLower(), "Unsupported" }
         };
 
-        public static string[] SensorConnectionTypes = new string[] { "Integrated", "Attached", "External" };
+        public static readonly string[] SensorConnectionTypes = new string[] { "Integrated", "Attached", "External" };
 
-        public static string[] RequestedProperties = new string[] {
+        public static readonly string[] RequestedProperties = new string[] {
             Properties["Sensor_Type"],
             Properties["Sensor_Category"],
             Properties["Sensor_ConnectionType"],
@@ -141,7 +115,7 @@ namespace SensorExplorer
             Properties["Sensor_PersistentUniqueId"]
         };
 
-        public static Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
+        public static readonly Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
             { Sensor.ACCELEROMETER, new double[3] { 0, 0, -1 } },
             { Sensor.GYROMETER, new double[3] { 0, 0, 0 } },
             { Sensor.LIGHTSENSOR, new double[1] { 0 } },
@@ -149,8 +123,7 @@ namespace SensorExplorer
             { Sensor.ORIENTATIONGEOMAGNETIC, new double[4] { 0, 0, 0, 1 } }
         };
 
-        public static Dictionary<int, string> SensorName = new Dictionary<int, string>()
-        {
+        public static readonly Dictionary<int, string> SensorName = new Dictionary<int, string>() {
             { Sensor.ACCELEROMETER, "Accelerometer (Standard)" },
             { Sensor.ACCELEROMETERGRAVITY, "Accelerometer (Gravity)" },
             { Sensor.ACCELEROMETERLINEAR, "Accelerometer (Linear)" },
@@ -171,40 +144,145 @@ namespace SensorExplorer
             { Sensor.SIMPLEORIENTATIONSENSOR, "Simple Orientation Sensor" }
         };
 
-        public static string[] AccelerometerPropertyTitles = new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" };
-        public static string[] ActivitySensorPropertyTitles = new string[] { "Unknown", "Idle", "Stationary", "Fidgeting", "Walking", "Running", "InVehicle", "Biking" };
-        public static string[] AltimeterPropertyTitles = new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" };
-        public static string[] BarometerPropertyTitles = new string[] { "Pressure (hPa)" };
-        public static string[] CompassPropertyTitles = new string[] { "MagneticNorth (°)", "TrueNorth (°)", "HeadingAccuracy" };
-        public static string[] CustomSensorPropertyTitles = new string[0];
-        public static string[] GyrometerPropertyTitles = new string[] { "AngularVelocityX (°/s)", "AngularVelocityY (°/s)", "AngularVelocityZ (°/s)" };
-        public static string[] InclinometerPropertyTitles = new string[] { "Pitch (°)", "Roll (°)", "Yaw (°)", "YawAccuracy" };
-        public static string[] LightSensorPropertyTitles = new string[] { "Illuminance (lux)" };
-        public static string[] MagnetometerPropertyTitles = new string[] { "MagneticFieldX (µT)", "MagneticFieldY (µT)", "MagneticFieldZ (µT)" };
-        public static string[] OrientationSensorPropertyTitles = new string[] { "QuaternionX", "QuaternionY", "QuaternionZ", "QuaternionW",
-                                                                                "RotationMatrixM11", "RotationMatrixM12", "RotationMatrixM13",
-                                                                                "RotationMatrixM21", "RotationMatrixM22", "RotationMatrixM23",
-                                                                                "RotationMatrixM31", "RotationMatrixM32", "RotationMatrixM33" };
-        public static string[] PedometerPropertyTitles = new string[] { "CumulativeSteps", "CumulativeStepsDuration (s)", "StepKind" };
-        public static string[] ProximitySensorPropertyTitles = new string[] { "IsDetected", "Distance (mm)" };
-        public static string[] SimpleOrientationSensorPropertyTitles = new string[] { "SimpleOrientation" };
-        public static Color[] AccelerometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
-        public static Color[] ActivitySensorColors = new Color[] { Colors.Gray, Colors.Brown, Colors.DarkRed, Colors.Orange, Colors.DarkOrange, Colors.Lime, Colors.DarkCyan, Colors.DarkViolet };
-        public static Color[] AltimeterColors = new Color[] { Colors.DarkRed };
-        public static Color[] BarometerColors = new Color[] { Colors.Lime };
-        public static Color[] CompassColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
-        public static Color[] CustomSensorColors = new Color[0];
-        public static Color[] GyrometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
-        public static Color[] InclinometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.Black };
-        public static Color[] LightSensorColors = new Color[] { Colors.DarkOrange };
-        public static Color[] MagnetometerColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan };
-        public static Color[] OrientationSensorColors = new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.DarkViolet,
-                                                                      Colors.Black, Colors.Black, Colors.Black,
-                                                                      Colors.Black, Colors.Black, Colors.Black,
-                                                                      Colors.Black, Colors.Black, Colors.Black };
-        public static Color[] PedometerColors = new Color[] { Colors.DarkCyan, Colors.Black, Colors.Black };
-        public static Color[] ProximitySensorColors = new Color[] { Colors.DarkOrange, Colors.Black };
-        public static Color[] SimpleOrientationSensorColors = new Color[] { Colors.Lime };
+        public static readonly string[] AccelerometerPropertyTitles = new string[] {
+            "AccelerationX (g)",
+            "AccelerationY (g)",
+            "AccelerationZ (g)"
+        };
+        public static readonly string[] ActivitySensorPropertyTitles = new string[] {
+            "Activity",
+            "Confidence"
+        };
+        public static readonly string[] AltimeterPropertyTitles = new string[] {
+            "Altitude Change (m)"
+        };
+        public static readonly string[] BarometerPropertyTitles = new string[] {
+            "Pressure (hPa)"
+        };
+        public static readonly string[] CompassPropertyTitles = new string[] {
+            "MagneticNorth (°)",
+            "TrueNorth (°)",
+            "HeadingAccuracy"
+        };
+        public static readonly string[] CustomSensorPropertyTitles = new string[0];
+        public static readonly string[] GyrometerPropertyTitles = new string[] {
+            "AngularVelocityX (°/s)",
+            "AngularVelocityY (°/s)",
+            "AngularVelocityZ (°/s)"
+        };
+        public static readonly string[] InclinometerPropertyTitles = new string[] {
+            "Pitch (°)",
+            "Roll (°)",
+            "Yaw (°)",
+            "YawAccuracy"
+        };
+        public static readonly string[] LightSensorPropertyTitles = new string[] {
+            "Illuminance (lux)",
+            "Chromaticity X",
+            "Chromaticity Y"
+        };
+        public static readonly string[] MagnetometerPropertyTitles = new string[] {
+            "MagneticFieldX (µT)",
+            "MagneticFieldY (µT)",
+            "MagneticFieldZ (µT)"
+        };
+        public static readonly string[] OrientationSensorPropertyTitles = new string[] {
+            "QuaternionX",
+            "QuaternionY",
+            "QuaternionZ",
+            "QuaternionW",
+            "RotationMatrixM11",
+            "RotationMatrixM12",
+            "RotationMatrixM13",
+            "RotationMatrixM21",
+            "RotationMatrixM22",
+            "RotationMatrixM23",
+            "RotationMatrixM31",
+            "RotationMatrixM32",
+            "RotationMatrixM33"
+        };
+        public static readonly string[] PedometerPropertyTitles = new string[] {
+            "CumulativeSteps",
+            "CumulativeStepsDuration (s)",
+            "StepKind"
+        };
+        public static readonly string[] ProximitySensorPropertyTitles = new string[] {
+            "IsDetected",
+            "Distance (mm)"
+        };
+        public static readonly string[] SimpleOrientationSensorPropertyTitles = new string[] {
+            "SimpleOrientation"
+        };
+
+        public static readonly Color[] AccelerometerColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] ActivitySensorColors = new Color[] {
+            Colors.Gray,
+            Colors.Brown
+        };
+        public static readonly Color[] AltimeterColors = new Color[] {
+            Colors.DarkRed
+        };
+        public static readonly Color[] BarometerColors = new Color[] {
+            Colors.Lime
+        };
+        public static readonly Color[] CompassColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] CustomSensorColors = new Color[0];
+        public static readonly Color[] GyrometerColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] InclinometerColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan,
+            Colors.Black
+        };
+        public static readonly Color[] LightSensorColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] MagnetometerColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] OrientationSensorColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan,
+            Colors.DarkViolet,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black,
+            Colors.Black
+        };
+        public static readonly Color[] PedometerColors = new Color[] {
+            Colors.DarkRed,
+            Colors.DarkOrange,
+            Colors.DarkCyan
+        };
+        public static readonly Color[] ProximitySensorColors = new Color[] {
+            Colors.DarkOrange,
+            Colors.Black
+        };
+        public static readonly Color[] SimpleOrientationSensorColors = new Color[] {
+            Colors.Lime
+        };
     }
     public class DeviceProperties
     {

@@ -29,6 +29,11 @@ namespace SensorExplorer
         private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
 
+        // MALTERROR
+        private const int E_SUCCESS = 0;
+        private const int E_INVALID_PARAM = 1;
+        private const int E_UNRECOGNIZED_COMMAND = 2;
+
         private bool isAllDevicesEnumerated;
         private bool IsNavigatedAway;
         private bool watchersStarted;
@@ -43,11 +48,6 @@ namespace SensorExplorer
         private ObservableCollection<DeviceListEntry> listOfDevices;
         private StorageFile tmp, file;  
         private SuspendingEventHandler appSuspendEventHandler;
-
-        // MALTERROR
-        private const int E_SUCCESS = 0;
-        private const int E_INVALID_PARAM = 1;
-        private const int E_UNRECOGNIZED_COMMAND = 2;
 
         // Track Read Operation
         private CancellationTokenSource ReadCancellationTokenSource;
@@ -134,7 +134,7 @@ namespace SensorExplorer
             if (EventHandlerForDevice.Current.Device == null)
             {
                 stackpanel2.Visibility = Visibility.Collapsed;
-                MainPage.Current.NotifyUser("Device is not connected", NotifyType.ErrorMessage);
+                rootPage.NotifyUser("Device is not connected", NotifyType.ErrorMessage);
             }
             else
             {

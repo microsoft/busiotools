@@ -20,7 +20,6 @@ namespace SensorExplorer
 {
     class SensorDisplay
     {
-        public bool IsOn = false;
         public static Dictionary<ActivityType, string> DictionaryActivity = new Dictionary<ActivityType, string>
         {
             { ActivityType.Unknown,    "❓" },
@@ -38,6 +37,8 @@ namespace SensorExplorer
             { PedometerStepKind.Walking, "🚶" },
             { PedometerStepKind.Running, "🏃" },
         };
+
+        public bool IsOn = false;
         public int Index;
         public int SensorType;
         public PlotCanvas PlotCanvas;
@@ -66,7 +67,6 @@ namespace SensorExplorer
         private Image imageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private int totalIndex;
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private string name;
         private string[] pld = new string[] { "Panel Id", "Panel Group", "Panel Side", "Panel Width (mm)", "Panel Height (mm)", "Panel Length (mm)", "Panel PositionX", "Panel PositionY", "Panel PositionZ", "Panel RotationX", "Panel RotationY", "Panel RotationZ", "Panel Color", "Panel Shape", "Panel Visible" };
         private string[] properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "ACPI Object Name", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" }; private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
@@ -108,16 +108,15 @@ namespace SensorExplorer
         private TextBlock[] textBlockMALTPropertyName1;
         private TextBlock[] textBlockMALTPropertyName2;
 
-        public SensorDisplay(int sensorType, int index, int totalIndex, string name, int minValue, int maxValue, int scale, Color[] color)
+        public SensorDisplay(int sensorType, int index, int totalIndex, int minValue, int maxValue, int scale, Color[] color)
         {
-            string[] vAxisLabel = new string[scale + 1];
-            var resourceLoader = ResourceLoader.GetForCurrentView();          
-            StackPanelSensor.Children.Clear();
-
             SensorType = sensorType;
             Index = index;
             this.totalIndex = totalIndex;
-            this.name = name;
+
+            string[] vAxisLabel = new string[scale + 1];
+            var resourceLoader = ResourceLoader.GetForCurrentView();          
+            StackPanelSensor.Children.Clear();
 
             expanderProperty.Content = scrollViewerProperty;
             scrollViewerProperty.Content = StackPanelProperty;
@@ -150,7 +149,7 @@ namespace SensorExplorer
             PlotCanvas = new PlotCanvas(minValue, maxValue, color, canvasSensor, vAxisLabel);
             stackPanelSwitch.Children.Add(buttonSensor);
 
-            if (sensorType == Sensor.ACCELEROMETER || sensorType == Sensor.ACCELEROMETERLINEAR || sensorType == Sensor.ACCELEROMETERGRAVITY)
+            if (sensorType == Sensor.ACCELEROMETER || sensorType == Sensor.ACCELEROMETERGRAVITY || sensorType == Sensor.ACCELEROMETERLINEAR)
             {
                 Grid gridAccelerometer = new Grid();
                 gridAccelerometer.Children.Add(new Ellipse() { Width = 100, Height = 100, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 });
@@ -212,33 +211,33 @@ namespace SensorExplorer
             textBlockMinValue = new TextBlock[textBlockProperty.Length];
             textBlockMaxValue = new TextBlock[textBlockProperty.Length];
 
-            textBlockProperty[color.Length] = SetTextStyle("", HorizontalAlignment.Center);
+            textBlockProperty[color.Length] = new TextBlock() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
             stackPanelDataName.Children.Add(textBlockProperty[color.Length]);
 
-            textBlockValue[color.Length] = SetTextStyle(resourceLoader.GetString("Value"), HorizontalAlignment.Center);
+            textBlockValue[color.Length] = new TextBlock() { Text = resourceLoader.GetString("Value"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
             stackPanelValue.Children.Add(textBlockValue[color.Length]);
 
-            textBlockMinValue[color.Length] = SetTextStyle(resourceLoader.GetString("Min"), HorizontalAlignment.Center);
+            textBlockMinValue[color.Length] = new TextBlock() { Text = resourceLoader.GetString("Min"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
             stackPanelMinValue.Children.Add(textBlockMinValue[color.Length]);
 
-            textBlockMaxValue[color.Length] = SetTextStyle(resourceLoader.GetString("Max"), HorizontalAlignment.Center);
+            textBlockMaxValue[color.Length] = new TextBlock() { Text = resourceLoader.GetString("Max"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
             stackPanelMaxValue.Children.Add(textBlockMaxValue[color.Length]);
 
             for (int i = 0; i < color.Length; i++)
             {
-                textBlockProperty[i] = SetTextStyle("", HorizontalAlignment.Left);
+                textBlockProperty[i] = new TextBlock() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
                 textBlockProperty[i].Foreground = new SolidColorBrush(color[i]);
                 stackPanelDataName.Children.Add(textBlockProperty[i]);
 
-                textBlockValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                textBlockValue[i] = new TextBlock() { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
                 textBlockValue[i].Foreground = new SolidColorBrush(color[i]);
                 stackPanelValue.Children.Add(textBlockValue[i]);
 
-                textBlockMinValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                textBlockMinValue[i] = new TextBlock() { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
                 textBlockMinValue[i].Foreground = new SolidColorBrush(color[i]);
                 stackPanelMinValue.Children.Add(textBlockMinValue[i]);
 
-                textBlockMaxValue[i] = SetTextStyle("", HorizontalAlignment.Right);
+                textBlockMaxValue[i] = new TextBlock() { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
                 textBlockMaxValue[i].Foreground = new SolidColorBrush(color[i]);
                 stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
             }
@@ -258,34 +257,7 @@ namespace SensorExplorer
                 stackPanelBottomRightCol.Children.Add(MALTButton);
                 MALTButton.Click += Scenario1View.Scenario1.MALTButton;
 
-                textBlockMALTPropertyName1 = new TextBlock[5];
-                TextBlockMALTPropertyValue1 = new TextBlock[5];
-                textBlockMALTPropertyName2 = new TextBlock[5];
-                TextBlockMALTPropertyValue2 = new TextBlock[5];
-
-                textBlockMALTPropertyName1[0] = new TextBlock() { Text = "Lux", Width = 120 };
-                textBlockMALTPropertyName1[1] = new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
-                textBlockMALTPropertyName1[2] = new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
-                textBlockMALTPropertyName1[3] = new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
-                textBlockMALTPropertyName1[4] = new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
-
-                TextBlockMALTPropertyValue1[0] = new TextBlock() { Width = 120 };
-                TextBlockMALTPropertyValue1[1] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
-                TextBlockMALTPropertyValue1[2] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
-                TextBlockMALTPropertyValue1[3] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
-                TextBlockMALTPropertyValue1[4] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
-
-                textBlockMALTPropertyName2[0] = new TextBlock() { Text = "Lux", Width = 120 };
-                textBlockMALTPropertyName2[1] = new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
-                textBlockMALTPropertyName2[2] = new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
-                textBlockMALTPropertyName2[3] = new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
-                textBlockMALTPropertyName2[4] = new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
-
-                TextBlockMALTPropertyValue2[0] = new TextBlock() { Width = 120 };
-                TextBlockMALTPropertyValue2[1] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) };
-                TextBlockMALTPropertyValue2[2] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) };
-                TextBlockMALTPropertyValue2[3] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) };
-                TextBlockMALTPropertyValue2[4] = new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) };
+                MALTDisplayInitialization();
 
                 for (int i = 0; i < textBlockMALTPropertyName1.Length - 3; i++)
                 {
@@ -320,8 +292,8 @@ namespace SensorExplorer
 
             for (int i = 0; i < properties.Length; i++)
             {
-                textBlockPropertyName[i] = SetTextStyle(properties[i], HorizontalAlignment.Left);
-                textBlockPropertyValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
+                textBlockPropertyName[i] = new TextBlock() { Text = properties[i], HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+                textBlockPropertyValue[i] = new TextBlock() { Text = (i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
                 stackPanelPropertyName.Children.Add(textBlockPropertyName[i]);
 
                 if (i == 0)
@@ -350,8 +322,8 @@ namespace SensorExplorer
 
             for (int i = 0; i < pld.Length; i++)
             {
-                textBlockPLDName[i] = SetTextStyle(pld[i], HorizontalAlignment.Left);
-                textBlockPLDValue[i] = SetTextStyle((i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment.Left);
+                textBlockPLDName[i] = new TextBlock() { Text = pld[i], HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+                textBlockPLDValue[i] = new TextBlock() { Text = (i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
                 stackPanelPLDName.Children.Add(textBlockPLDName[i]);
                 stackPanelPLDValue.Children.Add(textBlockPLDValue[i]);
             }
@@ -364,19 +336,44 @@ namespace SensorExplorer
             StackPanelSensor.Children.Add(stackPanelBottom);
         }
 
-        private TextBlock SetTextStyle(string text, HorizontalAlignment horizontalAlignment)
+        private void MALTDisplayInitialization()
         {
-            TextBlock textBlock = new TextBlock() { HorizontalAlignment = horizontalAlignment, VerticalAlignment = VerticalAlignment.Center, Text = text };
-
-            return textBlock;
+            textBlockMALTPropertyName1 = new TextBlock[]
+                                            {
+                                              new TextBlock() { Text = "Lux", Width = 120 },
+                                              new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) },
+                                              new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) },
+                                              new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) },
+                                              new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) }
+                                            };
+            TextBlockMALTPropertyValue1 = new TextBlock[]
+                                            {
+                                                new TextBlock() { Width = 120 },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) }
+                                            };
+            textBlockMALTPropertyName2 = new TextBlock[]
+                                            {
+                                                new TextBlock() { Text = "Lux", Width = 120 },
+                                                new TextBlock() { Text = "Clear", Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) },
+                                                new TextBlock() { Text = "R", Width = 120, Foreground = new SolidColorBrush(Colors.Red) },
+                                                new TextBlock() { Text = "G", Width = 120, Foreground = new SolidColorBrush(Colors.Green) },
+                                                new TextBlock() { Text = "B", Width = 120, Foreground = new SolidColorBrush(Colors.Blue) }
+                                            };
+            TextBlockMALTPropertyValue2 = new TextBlock[]
+                                            {
+                                                new TextBlock() { Width = 120 },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.DarkGray) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Red) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Green) },
+                                                new TextBlock() { Width = 120, Foreground = new SolidColorBrush(Colors.Blue) }
+                                            };
         }
 
-        public double SetWidth(double width, double height)
+        public void SetWidth(double width, double height)
         {
-            double actualWidth = 0;
-            double stackPanelMinWidth = StackPanelSensor.Margin.Left + stackPanelDataName.Width + stackPanelValue.Width + StackPanelSensor.Margin.Right;
-            double stackPanelTextWidth = stackPanelMinWidth + stackPanelMinValue.Width + stackPanelMaxValue.Width;
-
             double fontSize = 11;
 
             if (width > 1366)
@@ -397,8 +394,6 @@ namespace SensorExplorer
             canvasSensor.Width = width * 0.7;
             scrollViewerProperty.MaxWidth = width * 0.5;
             scrollViewerPLD.MaxWidth = width * 0.5;
-
-            return actualWidth;
         }
 
         private void SetFontSize(double fontSize)
@@ -440,60 +435,53 @@ namespace SensorExplorer
         public void EnableSensor()
         {
             buttonSensor.IsEnabled = true;
-            buttonSensor.Opacity = 1;
-            buttonSensor.SetValue(AutomationProperties.NameProperty, "x");
-
             IsOn = !IsOn;
             buttonSensor.SetValue(AutomationProperties.NameProperty, "");
             StackPanelSensor.Visibility = Visibility.Visible;
-            StackPanelSensor.Opacity = 1;
+            StackPanelProperty.Visibility = Visibility.Visible;
             PeriodicTimer.Create(totalIndex);
             Sensor.EnableSensor(SensorType, Index, totalIndex);
         }
 
-        public void UpdateProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency,
-                                   string category, string persistentUniqueId, string manufacturer, string model, string connectionType,
-                                   string isPrimary, string vendorDefinedSubType, string state, string objectHierarchy)
+        public void UpdateProperty(SensorData sensorData)
         {
-            textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", reportInterval != 0 ? reportInterval.ToString() : "-");
-            textBlockPropertyValue[1].Text = string.Format("  {0}", minReportInterval != 0 ? minReportInterval.ToString() : "-");
-            textBlockPropertyValue[2].Text = "  " + category;
-            textBlockPropertyValue[3].Text = "  " + persistentUniqueId;
-            textBlockPropertyValue[4].Text = " " + objectHierarchy;
-            textBlockPropertyValue[5].Text = "  " + manufacturer;
-            textBlockPropertyValue[6].Text = "  " + model;
-            textBlockPropertyValue[7].Text = "  " + connectionType;
-            textBlockPropertyValue[8].Text = "  " + isPrimary;
-            textBlockPropertyValue[9].Text = "  " + vendorDefinedSubType;
-            textBlockPropertyValue[10].Text = "  " + state;
-            textBlockPropertyValue[11].Text = $"{deviceId.Replace("{", "\r\n  {")}";
+            textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", sensorData.ReportInterval != 0 ? sensorData.ReportInterval.ToString() : "-");
+            textBlockPropertyValue[1].Text = string.Format("  {0}", sensorData.MinReportInterval != 0 ? sensorData.MinReportInterval.ToString() : "-");
+            textBlockPropertyValue[2].Text = "  " + sensorData.Category;
+            textBlockPropertyValue[3].Text = "  " + sensorData.PersistentUniqueId;
+            textBlockPropertyValue[4].Text = "  " + sensorData.ObjectHierarchy;
+            textBlockPropertyValue[5].Text = "  " + sensorData.Manufacturer;
+            textBlockPropertyValue[6].Text = "  " + sensorData.Model;
+            textBlockPropertyValue[7].Text = "  " + sensorData.ConnectionType;
+            textBlockPropertyValue[8].Text = "  " + sensorData.IsPrimary;
+            textBlockPropertyValue[9].Text = "  " + sensorData.VendorDefinedSubType;
+            textBlockPropertyValue[10].Text = "  " + sensorData.State;
+            textBlockPropertyValue[11].Text = $"{sensorData.DeviceId.Replace("{", "\r\n  {")}";
         }
 
-        public void UpdatePLDProperty(string panelId, string panelGroup, string panelSide, string panelWidth, string panelHeight, string panelLength,
-                                      string panelPositionX, string panelPositionY, string panelPositionZ, string panelRotationX, string panelRotationY,
-                                      string panelRotationZ, string panelColor, string panelShape, string panelVisible)
+        public void UpdatePLDProperty(SensorData sensorData)
         {
-            textBlockPLDValue[0].Text = panelId == null ? "null" : panelId;
-            textBlockPLDValue[1].Text = panelGroup == null ? "null" : Constants.PanelGroup[panelGroup];
-            textBlockPLDValue[2].Text = panelSide == null ? "null" : Constants.PanelSide[panelSide];
-            textBlockPLDValue[3].Text = panelWidth == null ? "null" : panelWidth;
-            textBlockPLDValue[4].Text = panelHeight == null ? "null" : panelHeight;
-            textBlockPLDValue[5].Text = panelLength == null ? "null" : panelLength;
-            textBlockPLDValue[6].Text = panelPositionX == null ? "null" : panelPositionX;
-            textBlockPLDValue[7].Text = panelPositionY == null ? "null" : panelPositionY;
-            textBlockPLDValue[8].Text = panelPositionZ == null ? "null" : panelPositionZ;
-            textBlockPLDValue[9].Text = panelRotationX == null ? "null" : Constants.PanelRotation[panelRotationX];
-            textBlockPLDValue[10].Text = panelRotationY == null ? "null" : Constants.PanelRotation[panelRotationY];
-            textBlockPLDValue[11].Text = panelRotationZ == null ? "null" : Constants.PanelRotation[panelRotationZ];
+            textBlockPLDValue[0].Text = (sensorData.PanelId == null) ? "null" : sensorData.PanelId;
+            textBlockPLDValue[1].Text = (sensorData.PanelGroup == null) ? "null" : Constants.PanelGroup[sensorData.PanelGroup];
+            textBlockPLDValue[2].Text = (sensorData.PanelSide == null) ? "null" : Constants.PanelSide[sensorData.PanelSide];
+            textBlockPLDValue[3].Text = (sensorData.PanelWidth == null) ? "null" : sensorData.PanelWidth;
+            textBlockPLDValue[4].Text = (sensorData.PanelHeight == null) ? "null" : sensorData.PanelHeight;
+            textBlockPLDValue[5].Text = (sensorData.PanelLength == null) ? "null" : sensorData.PanelLength;
+            textBlockPLDValue[6].Text = (sensorData.PanelPositionX == null) ? "null" : sensorData.PanelPositionX;
+            textBlockPLDValue[7].Text = (sensorData.PanelPositionY == null) ? "null" : sensorData.PanelPositionY;
+            textBlockPLDValue[8].Text = (sensorData.PanelPositionZ == null) ? "null" : sensorData.PanelPositionZ;
+            textBlockPLDValue[9].Text = (sensorData.PanelRotationX == null) ? "null" : Constants.PanelRotation[sensorData.PanelRotationX];
+            textBlockPLDValue[10].Text = (sensorData.PanelRotationY == null) ? "null" : Constants.PanelRotation[sensorData.PanelRotationY];
+            textBlockPLDValue[11].Text = (sensorData.PanelRotationZ == null) ? "null" : Constants.PanelRotation[sensorData.PanelRotationZ];
 
             try
             {
-                textBlockPLDValue[12].Text = panelColor == null ? "null" : "0x" + long.Parse(panelColor).ToString("X");    // convert to hex
+                textBlockPLDValue[12].Text = (sensorData.PanelColor == null) ? "null" : "0x" + long.Parse(sensorData.PanelColor).ToString("X");    // convert to hex
             }
             catch { }
 
-            textBlockPLDValue[13].Text = panelShape == null ? "null" : Constants.PanelShape[panelShape];
-            textBlockPLDValue[14].Text = panelVisible == null ? "null" : panelVisible;
+            textBlockPLDValue[13].Text = (sensorData.PanelShape == null) ? "null" : Constants.PanelShape[sensorData.PanelShape];
+            textBlockPLDValue[14].Text = (sensorData.PanelVisible == null) ? "null" : sensorData.PanelVisible;
         }
 
         public void UpdateText(SensorData sensorData)
@@ -503,12 +491,8 @@ namespace SensorExplorer
                 int index = sensorData.Readings.Count - 1;
                 if (sensorData.Count == Sensor.CurrentId)
                 {
-                    UpdateProperty(sensorData.DeviceId, sensorData.DeviceName, sensorData.ReportInterval, sensorData.MinReportInterval, sensorData.ReportLatency,
-                                   sensorData.Category, sensorData.PersistentUniqueId, sensorData.Manufacturer, sensorData.Model, sensorData.ConnectionType,
-                                   sensorData.IsPrimary, sensorData.VendorDefinedSubType, sensorData.State, sensorData.ObjectHierarchy);
-                    UpdatePLDProperty(sensorData.PanelId, sensorData.PanelGroup, sensorData.PanelSide, sensorData.PanelWidth, sensorData.PanelHeight, sensorData.PanelLength,
-                                      sensorData.PanelPositionX, sensorData.PanelPositionY, sensorData.PanelPositionZ, sensorData.PanelRotationX, sensorData.PanelRotationY,
-                                      sensorData.PanelRotationZ, sensorData.PanelColor, sensorData.PanelShape, sensorData.PanelVisible);
+                    UpdateProperty(sensorData);
+                    UpdatePLDProperty(sensorData);
                 }
 
                 if (StackPanelSensor.Visibility == Visibility.Visible)

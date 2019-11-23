@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Resources;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
 using Windows.Devices.SerialCommunication;
@@ -16,7 +15,6 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
 using Windows.Storage.Streams;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Text;
@@ -32,15 +30,14 @@ namespace SensorExplorer
     {
         public static Scenario1View Scenario1;
 
-        private List<SensorData> sensorData;
-        private List<SensorDisplay> sensorDisplay;
-        private MainPage rootPage = MainPage.Current;
-        private Popup settingsPopup; // This is the container that will hold our custom content
-
         // MALT
         private const string buttonNameDisconnectFromDevice = "Disconnect from device";
         private const string buttonNameDisableReconnectToDevice = "Do not automatically reconnect to device that was just closed";
 
+        private readonly List<string> conversionValues = new List<string> { "100", "800" };
+
+        private MainPage rootPage = MainPage.Current;
+        private Popup settingsPopup; // This is the container that will hold our custom content
         private bool cancel = false;
         private bool isAllDevicesEnumerated;
         private bool watchersStarted;
@@ -48,12 +45,10 @@ namespace SensorExplorer
         private DataReader DataReaderObject = null;
         private DataWriter DataWriterObject = null;
         private Dictionary<DeviceWatcher, string> mapDeviceWatchersToDeviceSelector;
-        private double windowHeight;
-        private double windowWidth;
         private EventHandler<object> appResumeEventHandler;
-        private List<string> conversionValues = new List<string> { "100", "800" };
         private ObservableCollection<DeviceListEntry> listOfDevices = new ObservableCollection<DeviceListEntry>();
         private SuspendingEventHandler appSuspendEventHandler;
+        private ScrollViewer scrollViewerSensor = new ScrollViewer();
 
         public Scenario1View()
         {
@@ -62,18 +57,13 @@ namespace SensorExplorer
 
             SizeChanged += MainPageSizeChanged;
 
-            sensorDisplay = new List<SensorDisplay>();
-            sensorData = new List<SensorData>();
+            Sensor.SensorDisplay = new List<SensorDisplay>();
+            Sensor.SensorData = new List<SensorData>();
 
             EnumerateSensors();
 
-            PeriodicTimer.SensorData = sensorData;
-            PeriodicTimer.SensorDisplay = sensorDisplay;
-
-            Sensor.SensorData = sensorData;
-            Sensor.SensorDisplay = sensorDisplay;
-
-            var resourceLoader = ResourceLoader.GetForCurrentView();
+            PeriodicTimer.SensorDisplay = Sensor.SensorDisplay;
+            PeriodicTimer.SensorData = Sensor.SensorData;
 
             saveFileButton.Click += SaveFileButtonClick;
 
@@ -120,15 +110,16 @@ namespace SensorExplorer
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (Sensor.SensorDisplay != null && Sensor.SensorDisplay.Count > 0 
-                && Sensor.CurrentId >= 0 && Sensor.CurrentId != PivotSensor.Items.Count - 1)
+            if (Sensor.SensorDisplay.Count > 0 && Sensor.CurrentId >= 0 && Sensor.CurrentId != PivotSensor.Items.Count - 1)
             {
-                if (Sensor.SensorDisplay[Sensor.CurrentId].SensorType == Sensor.LIGHTSENSOR)
+                SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
+
+                if (selected.SensorType == Sensor.LIGHTSENSOR)
                 {
                     DisconnectFromDeviceClick(null, null);
                 }
 
-                Sensor.DisableSensor(Sensor.SensorDisplay[Sensor.CurrentId].SensorType, Sensor.SensorDisplay[Sensor.CurrentId].Index);
+                Sensor.DisableSensor(selected.SensorType, selected.Index);
             }
 
             rootPage.NotifyUser("", NotifyType.StatusMessage);
@@ -147,194 +138,135 @@ namespace SensorExplorer
                 for (int index = 0; index < Sensor.AccelerometerStandardList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _accelerometerData = new SensorData(Sensor.ACCELEROMETER, totalIndex, "Accelerometer (Standard)", new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" });
-                    SensorDisplay _accelerometerDisplay = new SensorDisplay(Sensor.ACCELEROMETER, index, totalIndex, "Accelerometer (Standard)", -2, 2, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_accelerometerDisplay);
-                    sensorData.Add(_accelerometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ACCELEROMETER, index, totalIndex, -2, 2, 2, Constants.AccelerometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ACCELEROMETER, totalIndex, Constants.AccelerometerPropertyTitles));
                     AddPivotItem(Sensor.ACCELEROMETER, index, totalIndex);
-                }
-                for (int index = 0; index < Sensor.AccelerometerLinearList.Count; index++)
-                {
-                    totalIndex++;
-                    SensorData _accelerometerLinearData = new SensorData(Sensor.ACCELEROMETERLINEAR, totalIndex, "Accelerometer (Linear)", new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" });
-                    SensorDisplay _accelerometerLinearDisplay = new SensorDisplay(Sensor.ACCELEROMETERLINEAR, index, totalIndex, "Accelerometer (Linear)", -2, 2, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_accelerometerLinearDisplay);
-                    sensorData.Add(_accelerometerLinearData);
-                    AddPivotItem(Sensor.ACCELEROMETERLINEAR, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.AccelerometerGravityList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _accelerometerGravityData = new SensorData(Sensor.ACCELEROMETERGRAVITY, totalIndex, "Accelerometer (Gravity)", new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" });
-                    SensorDisplay _accelerometerGravityDisplay = new SensorDisplay(Sensor.ACCELEROMETERGRAVITY, index, totalIndex, "Accelerometer (Gravity)", -2, 2, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_accelerometerGravityDisplay);
-                    sensorData.Add(_accelerometerGravityData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ACCELEROMETERGRAVITY, index, totalIndex, -2, 2, 2, Constants.AccelerometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ACCELEROMETERGRAVITY, totalIndex, Constants.AccelerometerPropertyTitles));
                     AddPivotItem(Sensor.ACCELEROMETERGRAVITY, index, totalIndex);
                 }
+                for (int index = 0; index < Sensor.AccelerometerLinearList.Count; index++)
+                {
+                    totalIndex++;
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ACCELEROMETERLINEAR, index, totalIndex, -2, 2, 2, Constants.AccelerometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ACCELEROMETERLINEAR, totalIndex, Constants.AccelerometerPropertyTitles));
+                    AddPivotItem(Sensor.ACCELEROMETERLINEAR, index, totalIndex);
+                }
+
                 for (int index = 0; index < Sensor.ActivitySensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _activitySensorData = new SensorData(Sensor.ACTIVITYSENSOR, totalIndex, "ActivitySensor", new string[] { "AccelerationX (g)", "AccelerationY (g)", "AccelerationZ (g)" });
-                    SensorDisplay _activitySensorDisplay = new SensorDisplay(Sensor.ACTIVITYSENSOR, index, totalIndex, "ActivitySensor", 2, 0, 2, new Color[] { Colors.Gray, Colors.Brown, Colors.DarkRed, Colors.Orange, Colors.DarkOrange, Colors.Lime, Colors.DarkCyan, Colors.DarkViolet });
-                    sensorDisplay.Add(_activitySensorDisplay);
-                    sensorData.Add(_activitySensorData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ACTIVITYSENSOR, index, totalIndex, 2, 0, 2, Constants.ActivitySensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ACTIVITYSENSOR, totalIndex, Constants.ActivitySensorPropertyTitles));
                     AddPivotItem(Sensor.ACTIVITYSENSOR, index, totalIndex);
                 }
                 if (Sensor.Altimeter != null)
                 {
                     totalIndex++;
-                    SensorData _altimeterData = new SensorData(Sensor.ALTIMETER, totalIndex, "Altimeter", new string[] { "AltitudeChange (m)" });
-                    SensorDisplay _altimeterDisplay = new SensorDisplay(Sensor.ALTIMETER, 0, totalIndex, "Altimeter", -10, 10, 2, new Color[] { Colors.DarkRed });
-                    sensorDisplay.Add(_altimeterDisplay);
-                    sensorData.Add(_altimeterData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ALTIMETER, 0, totalIndex, -10, 10, 2, Constants.AltimeterColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ALTIMETER, totalIndex, Constants.AltimeterPropertyTitles));
                     AddPivotItem(Sensor.ALTIMETER, 0, totalIndex);
                 }
                 for (int index = 0; index < Sensor.BarometerList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _barometerData = new SensorData(Sensor.BAROMETER, totalIndex, "Barometer", new string[] { "Pressure (hPa)" });
-                    SensorDisplay _barometerDisplay = new SensorDisplay(Sensor.BAROMETER, index, totalIndex, "Barometer", 950, 1050, 2, new Color[] { Colors.Lime });
-                    sensorDisplay.Add(_barometerDisplay);
-                    sensorData.Add(_barometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.BAROMETER, index, totalIndex, 950, 1050, 2, Constants.BarometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.BAROMETER, totalIndex, Constants.BarometerPropertyTitles));
                     AddPivotItem(Sensor.BAROMETER, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.CompassList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _compassData = new SensorData(Sensor.COMPASS, totalIndex, "Compass", new string[] { "MagneticNorth (°)", "TrueNorth (°)", "HeadingAccuracy" });
-                    SensorDisplay _compassDisplay = new SensorDisplay(Sensor.COMPASS, index, totalIndex, "Compass", 0, 360, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_compassDisplay);
-                    sensorData.Add(_compassData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.COMPASS, index, totalIndex, 0, 360, 2, Constants.CompassColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.COMPASS, totalIndex, Constants.CompassPropertyTitles));
                     AddPivotItem(Sensor.COMPASS, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.CustomSensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _customSensorData = new SensorData(Sensor.CUSTOMSENSOR, totalIndex, "CustomSensor", new string[0]);
-                    SensorDisplay _customSensorDisplay = new SensorDisplay(Sensor.CUSTOMSENSOR, index, totalIndex, "CustomSensor", 0, 360, 2, new Color[0]);
-                    sensorDisplay.Add(_customSensorDisplay);
-                    sensorData.Add(_customSensorData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.CUSTOMSENSOR, index, totalIndex, 0, 360, 2, Constants.CustomSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.CUSTOMSENSOR, totalIndex, Constants.CustomSensorPropertyTitles));
                     AddPivotItem(Sensor.CUSTOMSENSOR, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.GyrometerList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _gyrometerData = new SensorData(Sensor.GYROMETER, totalIndex, "Gyrometer", new string[] { "AngularVelocityX (°/s)", "AngularVelocityY (°/s)", "AngularVelocityZ (°/s)" });
-                    SensorDisplay _gyrometerDisplay = new SensorDisplay(Sensor.GYROMETER, index, totalIndex, "Gyrometer", -200, 200, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_gyrometerDisplay);
-                    sensorData.Add(_gyrometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.GYROMETER, index, totalIndex, -200, 200, 2, Constants.GyrometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.GYROMETER, totalIndex, Constants.GyrometerPropertyTitles));
                     AddPivotItem(Sensor.GYROMETER, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.InclinometerList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _inclinometerData = new SensorData(Sensor.INCLINOMETER, totalIndex, "Inclinometer", new string[] { "Pitch (°)", "Roll (°)", "Yaw (°)", "YawAccuracy" });
-                    SensorDisplay _inclinometerDisplay = new SensorDisplay(Sensor.INCLINOMETER, index, totalIndex, "Inclinometer", -180, 360, 3, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.Black });
-                    sensorDisplay.Add(_inclinometerDisplay);
-                    sensorData.Add(_inclinometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.INCLINOMETER, index, totalIndex, -180, 360, 3, Constants.InclinometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.INCLINOMETER, totalIndex, Constants.InclinometerPropertyTitles));
                     AddPivotItem(Sensor.INCLINOMETER, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.LightSensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _lightSensorData = new SensorData(Sensor.LIGHTSENSOR, totalIndex, "LightSensor", new string[] { "Illuminance (lux)", "Chromaticity X", "Chromaticity Y" });
-                    SensorDisplay _lightSensorDisplay = new SensorDisplay(Sensor.LIGHTSENSOR, index, totalIndex, "LightSensor", 0, 1000, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_lightSensorDisplay);
-                    sensorData.Add(_lightSensorData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.LIGHTSENSOR, index, totalIndex, 0, 1000, 2, Constants.LightSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.LIGHTSENSOR, totalIndex, Constants.LightSensorPropertyTitles));
                     AddPivotItem(Sensor.LIGHTSENSOR, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.MagnetometerList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _magnetometerData = new SensorData(Sensor.MAGNETOMETER, totalIndex, "Magnetometer", new string[] { "MagneticFieldX (µT)", "MagneticFieldY (µT)", "MagneticFieldZ (µT)" });
-                    SensorDisplay _magnetometerDisplay = new SensorDisplay(Sensor.MAGNETOMETER, index, totalIndex, "Magnetometer", -500, 500, 2, new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan });
-                    sensorDisplay.Add(_magnetometerDisplay);
-                    sensorData.Add(_magnetometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.MAGNETOMETER, index, totalIndex, -500, 500, 2, Constants.MagnetometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.MAGNETOMETER, totalIndex, Constants.MagnetometerPropertyTitles));
                     AddPivotItem(Sensor.MAGNETOMETER, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.OrientationAbsoluteList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _orientationAbsoluteData = new SensorData(Sensor.ORIENTATIONSENSOR, totalIndex, "Orientation (Absolute)",
-                                                                   new string[] { "QuaternionX", "QuaternionY", "QuaternionZ", "QuaternionW",
-                                                                                  "RotationMatrixM11", "RotationMatrixM12", "RotationMatrixM13",
-                                                                                  "RotationMatrixM21", "RotationMatrixM22", "RotationMatrixM23",
-                                                                                  "RotationMatrixM31", "RotationMatrixM32", "RotationMatrixM33" });
-                    SensorDisplay _orientationAbsoluteDisplay = new SensorDisplay(Sensor.ORIENTATIONSENSOR, index, totalIndex, "Orientation (Absolute)", -1, 1, 2,
-                                                                            new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.DarkViolet,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black });
-                    sensorDisplay.Add(_orientationAbsoluteDisplay);
-                    sensorData.Add(_orientationAbsoluteData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ORIENTATIONSENSOR, index, totalIndex, -1, 1, 2, Constants.OrientationSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ORIENTATIONSENSOR, totalIndex, Constants.OrientationSensorPropertyTitles));
                     AddPivotItem(Sensor.ORIENTATIONSENSOR, index, totalIndex);
-                }
-                for (int index = 0; index < Sensor.OrientationRelativeList.Count; index++)
-                {
-                    totalIndex++;
-                    SensorData _orientationRelativeData = new SensorData(Sensor.ORIENTATIONRELATIVE, totalIndex, "Orientation (Relative)",
-                                                                   new string[] { "QuaternionX", "QuaternionY", "QuaternionZ", "QuaternionW",
-                                                                                  "RotationMatrixM11", "RotationMatrixM12", "RotationMatrixM13",
-                                                                                  "RotationMatrixM21", "RotationMatrixM22", "RotationMatrixM23",
-                                                                                  "RotationMatrixM31", "RotationMatrixM32", "RotationMatrixM33" });
-                    SensorDisplay _orientationRelativeDisplay = new SensorDisplay(Sensor.ORIENTATIONRELATIVE, index, totalIndex, "Orientation (Relative)", -1, 1, 2,
-                                                                            new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.DarkViolet,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black });
-                    sensorDisplay.Add(_orientationRelativeDisplay);
-                    sensorData.Add(_orientationRelativeData);
-                    AddPivotItem(Sensor.ORIENTATIONRELATIVE, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.OrientationGeomagneticList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _orientationGeomagneticData = new SensorData(Sensor.ORIENTATIONGEOMAGNETIC, totalIndex, "Orientation (Geomagnetic)",
-                                                                   new string[] { "QuaternionX", "QuaternionY", "QuaternionZ", "QuaternionW",
-                                                                                  "RotationMatrixM11", "RotationMatrixM12", "RotationMatrixM13",
-                                                                                  "RotationMatrixM21", "RotationMatrixM22", "RotationMatrixM23",
-                                                                                  "RotationMatrixM31", "RotationMatrixM32", "RotationMatrixM33" });
-                    SensorDisplay _orientationGeomagneticDisplay = new SensorDisplay(Sensor.ORIENTATIONGEOMAGNETIC, index, totalIndex, "Orientation (Geomagnetic)", -1, 1, 2,
-                                                                            new Color[] { Colors.DarkRed, Colors.DarkOrange, Colors.DarkCyan, Colors.DarkViolet,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black,
-                                                                                          Colors.Black, Colors.Black, Colors.Black });
-                    sensorDisplay.Add(_orientationGeomagneticDisplay);
-                    sensorData.Add(_orientationGeomagneticData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ORIENTATIONGEOMAGNETIC, index, totalIndex, -1, 1, 2, Constants.OrientationSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ORIENTATIONGEOMAGNETIC, totalIndex, Constants.OrientationSensorPropertyTitles));
                     AddPivotItem(Sensor.ORIENTATIONGEOMAGNETIC, index, totalIndex);
                 }
+                for (int index = 0; index < Sensor.OrientationRelativeList.Count; index++)
+                {
+                    totalIndex++;
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.ORIENTATIONRELATIVE, index, totalIndex, -1, 1, 2, Constants.OrientationSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.ORIENTATIONRELATIVE, totalIndex, Constants.OrientationSensorPropertyTitles));
+                    AddPivotItem(Sensor.ORIENTATIONRELATIVE, index, totalIndex);
+                }
+
                 for (int index = 0; index < Sensor.PedometerList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _pedometerData = new SensorData(Sensor.PEDOMETER, totalIndex, "Pedometer", new string[] { "CumulativeSteps", "CumulativeStepsDuration (s)", "StepKind" });
-                    SensorDisplay _pedometerDisplay = new SensorDisplay(Sensor.PEDOMETER, index, totalIndex, "Pedometer", 0, 50, 2, new Color[] { Colors.DarkCyan, Colors.Black, Colors.Black });
-                    sensorDisplay.Add(_pedometerDisplay);
-                    sensorData.Add(_pedometerData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.PEDOMETER, index, totalIndex, 0, 50, 2, Constants.PedometerColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.PEDOMETER, totalIndex, Constants.PedometerPropertyTitles));
                     AddPivotItem(Sensor.PEDOMETER, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.ProximitySensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData _proximitySensorData = new SensorData(Sensor.PROXIMITYSENSOR, totalIndex, "ProximitySensor", new string[] { "IsDetected", "Distance (mm)" });
-                    SensorDisplay _proximitySensorDisplay = new SensorDisplay(Sensor.PROXIMITYSENSOR, index, totalIndex, "ProximitySensor", 0, 1, 1, new Color[] { Colors.DarkOrange, Colors.Black });
-                    sensorDisplay.Add(_proximitySensorDisplay);
-                    sensorData.Add(_proximitySensorData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.PROXIMITYSENSOR, index, totalIndex, 0, 1, 1, Constants.ProximitySensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.PROXIMITYSENSOR, totalIndex, Constants.ProximitySensorPropertyTitles));
                     AddPivotItem(Sensor.PROXIMITYSENSOR, index, totalIndex);
                 }
                 for (int index = 0; index < Sensor.SimpleOrientationSensorList.Count; index++)
                 {
                     totalIndex++;
-                    SensorData simpleOrientationSensorData = new SensorData(Sensor.SIMPLEORIENTATIONSENSOR, totalIndex, "SimpleOrientationSensor", new string[] { "SimpleOrientation" });
-                    SensorDisplay simpleOrientationSensorDisplay = new SensorDisplay(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex, "SimpleOrientationSensor", 0, 5, 5, new Color[] { Colors.Lime });
-                    sensorDisplay.Add(simpleOrientationSensorDisplay);
-                    sensorData.Add(simpleOrientationSensorData);
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex, 0, 5, 5, Constants.SimpleOrientationSensorColors));
+                    Sensor.SensorData.Add(new SensorData(Sensor.SIMPLEORIENTATIONSENSOR, totalIndex, Constants.SimpleOrientationSensorPropertyTitles));
                     AddPivotItem(Sensor.SIMPLEORIENTATIONSENSOR, index, totalIndex);
                 }
 
                 AddSummaryPage();
 
-                var resourceLoader = ResourceLoader.GetForCurrentView();
-                rootPage.NotifyUser(resourceLoader.GetString("NumberOfSensors") + ": " + (PivotSensor.Items.Count - 1) + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
+                rootPage.NotifyUser("Number of sensors: " + (PivotSensor.Items.Count - 1) + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
                 ProgressRingSensor.IsActive = false;
 
                 if (PivotSensor.Items.Count > 1)    // 1 for Summary Page which always exists
@@ -357,13 +289,15 @@ namespace SensorExplorer
             PivotItem PivotItemSensor = new PivotItem();
             ScrollViewer scrollViewerSensor = new ScrollViewer() { VerticalScrollBarVisibility = ScrollBarVisibility.Visible, HorizontalScrollBarVisibility = ScrollBarVisibility.Visible };
 
-            PivotItemSensor.Header = sensorData[totalIndex].Name + " " + (index + 1);
-            scrollViewerSensor.Content = sensorDisplay[totalIndex].StackPanelSensor;
+            SensorDisplay selected = Sensor.SensorDisplay[totalIndex];
+            PivotItemSensor.Header = Constants.SensorName[selected.SensorType] + " " + (index + 1);
+            scrollViewerSensor.Content = selected.StackPanelSensor;
             PivotItemSensor.Content = scrollViewerSensor;
             PivotSensor.Items.Add(PivotItemSensor);
         }
 
-        /// <summary>        /// This the event handler for the "Defaults" button added to the settings charm. This method
+        /// <summary>        
+        /// This the event handler for the "Defaults" button added to the settings charm. This method
         /// is responsible for creating the Popup window will use as the container for our settings Flyout.
         /// The reason we use a Popup is that it gives us the "light dismiss" behavior that when a user clicks away 
         /// from our custom UI it just dismisses.  This is a principle in the Settings experience and you see the
@@ -387,16 +321,15 @@ namespace SensorExplorer
 
         void MainPageSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double width = e.NewSize.Width - 50;
-            windowWidth = e.NewSize.Width;
-            windowHeight = e.NewSize.Height;
-            double actualWidth = 0;
-            for (int i = 0; i < sensorDisplay.Count; i++)
+            for (int i = 0; i < Sensor.SensorDisplay.Count; i++)
             {
-                actualWidth = sensorDisplay[i].SetWidth(e.NewSize.Width, e.NewSize.Height);
+                Sensor.SensorDisplay[i].SetWidth(e.NewSize.Width, e.NewSize.Height);
             }
+        
+            scrollViewerSensor.MaxWidth = e.NewSize.Width * 0.85;
+            scrollViewerSensor.MaxHeight = e.NewSize.Height * 0.8;
         }
-         
+
         private void PivotSensorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             for (int i = 0; i < PivotSensor.Items.Count; i++)
@@ -406,29 +339,30 @@ namespace SensorExplorer
                     (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Collapsed;
                 }
                 else
-                {
-                    if (Sensor.SensorDisplay != null && Sensor.SensorDisplay.Count > 0 &&
-                        Sensor.CurrentId != -1 && Sensor.CurrentId != PivotSensor.Items.Count - 1) // disable previous sensor
+                {                   
+                    if (Sensor.SensorDisplay.Count > 0 && Sensor.CurrentId != -1 ) 
                     {
-                        ShowPlotButton(null, null);
-                        if (Sensor.SensorDisplay[Sensor.CurrentId].SensorType == Sensor.LIGHTSENSOR)
+                        SensorDisplay selected;
+
+                        if (Sensor.CurrentId != PivotSensor.Items.Count - 1)    // disable previous sensor
                         {
-                            DisconnectFromDeviceClick(null, null);
+                            selected = Sensor.SensorDisplay[Sensor.CurrentId];
+
+                            if (selected.SensorType == Sensor.LIGHTSENSOR)
+                            {
+                                DisconnectFromDeviceClick(null, null);
+                            }
+
+                            ShowPlotButton(null, null);
+                            Sensor.DisableSensor(selected.SensorType, selected.Index);
                         }
 
-                        Sensor.DisableSensor(Sensor.SensorDisplay[Sensor.CurrentId].SensorType, Sensor.SensorDisplay[Sensor.CurrentId].Index);
-                    }
+                        Sensor.CurrentId = i;   // sensor being displayed
+                        (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
+                        selected = Sensor.SensorDisplay[Sensor.CurrentId];
+                        selected.EnableSensor();
 
-                    Sensor.CurrentId = i;   // sensor being displayed
-                    (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
-
-                    if (Sensor.SensorDisplay != null && Sensor.SensorDisplay.Count > 0 &&  i != PivotSensor.Items.Count - 1)
-                    {
-                        sensorDisplay[i].EnableSensor();
-                        SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
-                        selected.StackPanelProperty.Visibility = Visibility.Visible;
-
-                        if ((PivotSensor.Items[i] as PivotItem).Header.ToString().Contains("LightSensor"))
+                        if (selected.SensorType == Sensor.LIGHTSENSOR)
                         {
                             saveFileButton.IsEnabled = true;
                             selected.MALTButton.Visibility = Visibility.Visible;
@@ -455,17 +389,15 @@ namespace SensorExplorer
         public void MALTButton(object sender, RoutedEventArgs e)
         {
             cancel = false;
-
-            SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
-
+            SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
             selected.MALTButton.Visibility = Visibility.Collapsed;
             stackPanelMALTConnection.Visibility = Visibility.Visible;
             selected.StackPanelProperty.Visibility = Visibility.Collapsed;
         }
 
-        public async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
+        private async void ConnectToDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
-            SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+            SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
 
             var selection = connectDevices.SelectedItems;
             DeviceListEntry entry = null;
@@ -515,7 +447,7 @@ namespace SensorExplorer
             }
         }
 
-        public async void SaveFileButtonClick(object sender, RoutedEventArgs e)
+        private async void SaveFileButtonClick(object sender, RoutedEventArgs e)
         {
             FileSavePicker savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
@@ -551,7 +483,7 @@ namespace SensorExplorer
         {
             try
             {
-                SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+                SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
                 selected.PlotCanvas.HideCanvas();
                 selected.StackPanelTop.Visibility = Visibility.Collapsed;
                 hidePlotButton.IsEnabled = false;
@@ -564,7 +496,7 @@ namespace SensorExplorer
         {
             try
             {
-                SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+                SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
                 selected.PlotCanvas.ShowCanvas();
                 selected.StackPanelTop.Visibility = Visibility.Visible;
                 hidePlotButton.IsEnabled = true;
@@ -576,12 +508,10 @@ namespace SensorExplorer
         private void AddSummaryPage()
         {
             PivotItem PivotItemSensor = new PivotItem();
-            ScrollViewer scrollViewerSensor = new ScrollViewer();
             scrollViewerSensor.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             scrollViewerSensor.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
 
-            StackPanel stackpanel = new StackPanel();
-            stackpanel.Orientation = Orientation.Horizontal;
+            StackPanel stackpanel = new StackPanel() { Margin = new Thickness(20), Orientation = Orientation.Horizontal };
             StackPanel stackpanelProperty = new StackPanel();
             StackPanel stackpanelValue = new StackPanel();
             StackPanel stackpanelFailed = new StackPanel();
@@ -590,19 +520,13 @@ namespace SensorExplorer
             TextBlock[] TextBlockFailed = new TextBlock[20];
             for (int i = 0; i < TextBlockProperties.Length; i++)
             {
-                TextBlockProperties[i] = new TextBlock();
-                TextBlockProperties[i].FontSize = 20;
+                TextBlockProperties[i] = new TextBlock() { FontSize = 20 };
                 stackpanelProperty.Children.Add(TextBlockProperties[i]);
 
-                TextBlockValues[i] = new TextBlock();
-                TextBlockValues[i].FontSize = 20;
-                TextBlockValues[i].HorizontalAlignment = HorizontalAlignment.Center;
+                TextBlockValues[i] = new TextBlock() { FontSize = 20, HorizontalAlignment = HorizontalAlignment.Center };
                 stackpanelValue.Children.Add(TextBlockValues[i]);
 
-                TextBlockFailed[i] = new TextBlock();
-                TextBlockFailed[i].Margin = new Thickness(20, 0, 0, 0);
-                TextBlockFailed[i].FontSize = 20;
-                TextBlockFailed[i].HorizontalAlignment = HorizontalAlignment.Center;
+                TextBlockFailed[i] = new TextBlock() { Margin = new Thickness(20, 0, 0, 0), FontSize = 20, HorizontalAlignment = HorizontalAlignment.Center };
                 stackpanelFailed.Children.Add(TextBlockFailed[i]);
             }
 
@@ -686,85 +610,72 @@ namespace SensorExplorer
         {
             try
             {
-                SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
-                if (selected.SensorType == Sensor.ACCELEROMETER)
+                SensorDisplay selectedDisplay = Sensor.SensorDisplay[Sensor.CurrentId];
+                SensorData selectedData = Sensor.SensorData[Sensor.CurrentId];
+
+                uint newReportInterval = uint.Parse(selectedDisplay.TextboxReportInterval.Text);
+                selectedData.UpdateReportInterval(newReportInterval);
+
+                if (selectedDisplay.SensorType == Sensor.ACCELEROMETER)
                 {
-                    Sensor.AccelerometerStandardList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.AccelerometerStandardList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.ACCELEROMETERLINEAR)
+                else if (selectedDisplay.SensorType == Sensor.ACCELEROMETERGRAVITY)
                 {
-                    Sensor.AccelerometerLinearList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.AccelerometerGravityList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.ACCELEROMETERGRAVITY)
+                else if (selectedDisplay.SensorType == Sensor.ACCELEROMETERLINEAR)
                 {
-                    Sensor.AccelerometerGravityList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.AccelerometerLinearList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                // ActivitySensor doesn't have ReportInterval
-                else if (selected.SensorType == Sensor.ALTIMETER)
+                else if (selectedDisplay.SensorType == Sensor.ALTIMETER)
                 {
-                    Sensor.Altimeter.ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.Altimeter.ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.BAROMETER)
+                else if (selectedDisplay.SensorType == Sensor.BAROMETER)
                 {
-                    Sensor.BarometerList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.BarometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.COMPASS)
+                else if (selectedDisplay.SensorType == Sensor.COMPASS)
                 {
-                    Sensor.CompassList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.CompassList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.CUSTOMSENSOR)
+                else if (selectedDisplay.SensorType == Sensor.CUSTOMSENSOR)
                 {
-                    Sensor.CustomSensorList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.CustomSensorList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.GYROMETER)
+                else if (selectedDisplay.SensorType == Sensor.GYROMETER)
                 {
-                    Sensor.GyrometerList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.GyrometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.INCLINOMETER)
+                else if (selectedDisplay.SensorType == Sensor.INCLINOMETER)
                 {
-                    Sensor.InclinometerList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.InclinometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.LIGHTSENSOR)
+                else if (selectedDisplay.SensorType == Sensor.LIGHTSENSOR)
                 {
-                    Sensor.LightSensorList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.LightSensorList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.MAGNETOMETER)
+                else if (selectedDisplay.SensorType == Sensor.MAGNETOMETER)
                 {
-                    Sensor.MagnetometerList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.MagnetometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.ORIENTATIONSENSOR)
+                else if (selectedDisplay.SensorType == Sensor.ORIENTATIONSENSOR)
                 {
-                    Sensor.OrientationAbsoluteList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.OrientationAbsoluteList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.ORIENTATIONGEOMAGNETIC)
+                else if (selectedDisplay.SensorType == Sensor.ORIENTATIONGEOMAGNETIC)
                 {
-                    Sensor.OrientationGeomagneticList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.OrientationGeomagneticList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.ORIENTATIONRELATIVE)
+                else if (selectedDisplay.SensorType == Sensor.ORIENTATIONRELATIVE)
                 {
-                    Sensor.OrientationRelativeList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
+                    Sensor.OrientationRelativeList[selectedDisplay.Index].ReportInterval = newReportInterval;
                 }
-                else if (selected.SensorType == Sensor.PEDOMETER)
+                else if (selectedDisplay.SensorType == Sensor.PEDOMETER)
                 {
-                    Sensor.PedometerList[selected.Index].ReportInterval = uint.Parse(selected.TextboxReportInterval.Text);
-                    sensorData[Sensor.CurrentId].UpdateReportInterval(uint.Parse(selected.TextboxReportInterval.Text));
-                }
-                //ProximitySensor doesn't have ReportInterval
-                //SimpleOrientationSensor doesn't have ReportInterval               
+                    Sensor.PedometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
+                }             
             }
             catch { }
         }
@@ -952,7 +863,7 @@ namespace SensorExplorer
         /// </summary>
         private void OnDeviceConnected(EventHandlerForDevice sender, DeviceInformation deviceInformation)
         {
-            SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+            SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
 
             // Find and select our connected device
             if (isAllDevicesEnumerated)
@@ -1003,7 +914,7 @@ namespace SensorExplorer
         {
             try
             {
-                SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+                SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
 
                 await WriteCommandAsync("READALSSENSOR 1\n");
                 double ambientLux = await ReadLightSensor("READALSSENSOR 1\n");
@@ -1099,14 +1010,14 @@ namespace SensorExplorer
         {
             DisconnectFromDeviceClick(null, null);
 
-            SensorDisplay selected = sensorDisplay[Sensor.CurrentId];
+            SensorDisplay selected = Sensor.SensorDisplay[Sensor.CurrentId];
 
             selected.StackPanelMALTData.Visibility = Visibility.Collapsed;
             selected.MALTButton.Visibility = Visibility.Visible;
             selected.StackPanelProperty.Visibility = Visibility.Visible;
         }
 
-        public void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
+        private void DisconnectFromDeviceClick(object sender, RoutedEventArgs eventArgs)
         {
             cancel = true;
 

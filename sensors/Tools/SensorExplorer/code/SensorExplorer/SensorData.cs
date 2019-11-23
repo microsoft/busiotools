@@ -29,11 +29,9 @@ namespace SensorExplorer
         public string Category;
         public string ConnectionType;
         public string DeviceId;
-        public string DeviceName;
         public string IsPrimary;
         public string Manufacturer;
         public string Model;
-        public string Name = string.Empty;
         public string PanelColor;
         public string PanelGroup;
         public string PanelHeight;
@@ -59,17 +57,16 @@ namespace SensorExplorer
         public uint MinReportInterval = 0;
         public uint ReportLatency = 0;
 
-        public SensorData(int sensorType, int count, string name, string[] property)
+        public SensorData(int sensorType, int count, string[] property)
         {
             SensorType = sensorType;
             Count = count;
-            Name = name;
             Property = property;
             MaxValue = new double[Property.Length];
             MinValue = new double[Property.Length];
         }
 
-        public void AddProperty(string deviceId, string deviceName, uint reportInterval, uint minReportInterval, uint reportLatency, string[] properties)
+        public void AddProperty(string deviceId, uint reportInterval, uint minReportInterval, uint reportLatency, string[] properties)
         {
             if (DefaultReportInterval == 0)
             {
@@ -77,7 +74,6 @@ namespace SensorExplorer
             }
 
             DeviceId = deviceId;
-            DeviceName = deviceName;
             ReportInterval = reportInterval;
             MinReportInterval = minReportInterval;
             ReportLatency = reportLatency;

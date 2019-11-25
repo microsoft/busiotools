@@ -23,7 +23,7 @@ namespace SensorExplorer
         public bool ReportIntervalChanged = false;
         public double[] MaxValue;
         public double[] MinValue;
-        public int Count = -1;
+        public int TotalIndex = -1;
         public int SensorType = -1;
         public List<Reading> Readings = new List<Reading>();
         public string Category;
@@ -57,10 +57,10 @@ namespace SensorExplorer
         public uint MinReportInterval = 0;
         public uint ReportLatency = 0;
 
-        public SensorData(int sensorType, int count, string[] property)
+        public SensorData(int sensorType, int totalIndex, string[] property)
         {
             SensorType = sensorType;
-            Count = count;
+            TotalIndex = totalIndex;
             Property = property;
             MaxValue = new double[Property.Length];
             MinValue = new double[Property.Length];

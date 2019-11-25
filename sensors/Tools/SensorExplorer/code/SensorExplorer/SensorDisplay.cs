@@ -42,7 +42,7 @@ namespace SensorExplorer
         public int Index;
         public int SensorType;
         public PlotCanvas PlotCanvas;
-        public StackPanel StackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal };
+        public StackPanel StackPanelProperty = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(20) };
         public StackPanel StackPanelSensor = new StackPanel() { Orientation = Orientation.Vertical, Visibility = Visibility.Collapsed, Margin = new Thickness(0, 0, 18, 20) };
         public StackPanel StackPanelTop = new StackPanel() { Orientation = Orientation.Horizontal, Height = 100, HorizontalAlignment = HorizontalAlignment.Center };
         public TextBox TextboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness(40, 20, 10, 10) };
@@ -67,8 +67,38 @@ namespace SensorExplorer
         private Image imageInclinometerYaw = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Images/Inclinometer.png")) };
         private int totalIndex;
         private ScrollViewer scrollViewerProperty = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private string[] pld = new string[] { "Panel Id", "Panel Group", "Panel Side", "Panel Width (mm)", "Panel Height (mm)", "Panel Length (mm)", "Panel PositionX", "Panel PositionY", "Panel PositionZ", "Panel RotationX", "Panel RotationY", "Panel RotationZ", "Panel Color", "Panel Shape", "Panel Visible" };
-        private string[] properties = new string[] { "\r\nReport Interval", "Min Report Interval", "Category", "PersistentUniqueID", "ACPI Object Name", "Manufacturer", "Model", "ConnectionType", "IsPrimary", "Vendor Defined Sub-Type", "State", "Device ID" }; private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
+        private string[] pld = new string[] {
+            "Panel Id",
+            "Panel Group",
+            "Panel Side",
+            "Panel Width (mm)",
+            "Panel Height (mm)",
+            "Panel Length (mm)",
+            "Panel PositionX",
+            "Panel PositionY",
+            "Panel PositionZ",
+            "Panel RotationX",
+            "Panel RotationY",
+            "Panel RotationZ",
+            "Panel Color",
+            "Panel Shape",
+            "Panel Visible"
+        };
+        private string[] properties = new string[] {
+            "\r\nReport Interval",
+            "Min Report Interval",
+            "Category",
+            "PersistentUniqueID",
+            "ACPI Object Name",
+            "Manufacturer",
+            "Model",
+            "ConnectionType",
+            "IsPrimary",
+            "Vendor Defined Sub-Type",
+            "State",
+            "Device ID"
+        };
+        private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomRightCol = new StackPanel() { Orientation = Orientation.Vertical };
         private StackPanel stackPanelDataName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(40, 0, 0, 0) };
@@ -90,7 +120,7 @@ namespace SensorExplorer
         // PLD
         private Expander expanderPLD = new Expander() { Header = "Physical Location of Device (PLD)" };
         private ScrollViewer scrollViewerPLD = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
-        private StackPanel stackPanelPLD = new StackPanel() { Orientation = Orientation.Horizontal };
+        private StackPanel stackPanelPLD = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(20) };
         private StackPanel stackPanelPLDName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 10, 0, 10) };
         private StackPanel stackPanelPLDValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
         private TextBlock[] textBlockPLDName;
@@ -439,7 +469,7 @@ namespace SensorExplorer
             buttonSensor.SetValue(AutomationProperties.NameProperty, "");
             StackPanelSensor.Visibility = Visibility.Visible;
             StackPanelProperty.Visibility = Visibility.Visible;
-            PeriodicTimer.Create(totalIndex);
+            PeriodicTimer.CreateSensorDisplay(totalIndex);
             Sensor.EnableSensor(SensorType, Index, totalIndex);
         }
 
@@ -489,7 +519,7 @@ namespace SensorExplorer
             try
             {
                 int index = sensorData.Readings.Count - 1;
-                if (sensorData.Count == Sensor.CurrentId)
+                if (sensorData.TotalIndex == Sensor.CurrentId)
                 {
                     UpdateProperty(sensorData);
                     UpdatePLDProperty(sensorData);

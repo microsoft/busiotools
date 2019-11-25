@@ -164,6 +164,13 @@ namespace SensorExplorer
                     SensorType.Add(Sensor.COMPASS);
                     totalIndexToIndex.Add(index);
                 }
+                for (int index = 0; index < Sensor.CustomSensorList.Count; index++)
+                {
+                    totalIndex++;
+                    AddPivotItem(Sensor.CUSTOMSENSOR, index, totalIndex);
+                    SensorType.Add(Sensor.CUSTOMSENSOR);
+                    totalIndexToIndex.Add(index);
+                }
                 for (int index = 0; index < Sensor.GyrometerList.Count; index++)
                 {
                     totalIndex++;
@@ -277,33 +284,30 @@ namespace SensorExplorer
             int type = SensorType[pivotSensor.SelectedIndex];
             switch (((Button)sender).Content)
             {
-                case "Orientation Test":
-                    testType = "Orientation";
-                    OrientationTestInitialization();
-                    TestBeginOrientation();
-                    break;
+                case "Drift Test":
+                    testType = "Drift";
+                    DisplayPrecondition();
+                    break;                
                 case "Frequency Test":
                     testType = "Frequency";
-                    DisplayPrecondition();
-                    break;
-                case "Offset Test":
-                    testType = "Offset";
                     DisplayPrecondition();
                     break;
                 case "Jitter Test":
                     testType = "Jitter";
                     DisplayPrecondition();
                     break;
-                case "Drift Test":
-                    if (type == Sensor.GYROMETER)
-                    {
-                        testType = "GyroDrift";
-                    }
-                    else
-                    {
-                        testType = "Drift";
-                    }
+                case "MagInterference Test":
+                    testType = "MagInterference";
                     DisplayPrecondition();
+                    break;
+                case "Offset Test":
+                    testType = "Offset";
+                    DisplayPrecondition();
+                    break;
+                case "Orientation Test":
+                    testType = "Orientation";
+                    OrientationTestInitialization();
+                    TestBeginOrientation();
                     break;
                 case "Packet Loss Test":
                     testType = "PacketLoss";
@@ -311,10 +315,6 @@ namespace SensorExplorer
                     break;
                 case "Static Accuracy Test":
                     testType = "StaticAccuracy";
-                    DisplayPrecondition();
-                    break;
-                case "MagInterference Test":
-                    testType = "MagInterference";
                     DisplayPrecondition();
                     break;
             }
@@ -325,6 +325,10 @@ namespace SensorExplorer
             int type = SensorType[pivotSensor.SelectedIndex];
             switch (testType)
             {
+                case "Drift":
+                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                       "Keep it in stationary state.";
+                    break;
                 case "Frequency":
                     instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
                                        "Keep it in stationary state.";
@@ -352,14 +356,6 @@ namespace SensorExplorer
                                            "Place the screen face up, with top side (Y axis) pointing to the magnetic north.\n" +
                                            "Keep it in stationary state.";
                     }
-                    break;
-                case "Drift":
-                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
-                                       "Keep it in stationary state.";
-                    break;
-                case "GyroDrift":
-                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
-                                       "Keep it in stationary state.";
                     break;
                 case "PacketLoss":
                     instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
@@ -465,7 +461,7 @@ namespace SensorExplorer
             else if (type == Sensor.INCLINOMETER)
             {
                 currentInclinometer = Sensor.InclinometerList[i];
-                instruction.Text = Constants.SensorName[type] +  "ready\n" + currentInclinometer.DeviceId;
+                instruction.Text = Constants.SensorName[type] +  " ready\n" + currentInclinometer.DeviceId;
                 currentInclinometer.ReportInterval = Math.Max(currentInclinometer.MinimumReportInterval, 200);
                 currentInclinometer.ReadingChanged += InclinometerReadingChangedOrientation;
             }
@@ -563,6 +559,7 @@ namespace SensorExplorer
                     currentCompass.ReadingChanged += CompassReadingChanged;
                 }
             }
+
             else if (type == Sensor.GYROMETER)
             {
                 currentGyrometer = Sensor.GyrometerList[i];
@@ -717,6 +714,27 @@ namespace SensorExplorer
             }
         }
 
+        private void DeregisterReadingChangedEventOrientation()
+        {
+            int type = SensorType[pivotSensor.SelectedIndex];
+            if (type == Sensor.ACCELEROMETER)
+            {
+                currentAccelerometer.ReadingChanged -= AccelerometerReadingChangedOrientation;
+            }
+            else if (type == Sensor.INCLINOMETER)
+            {
+                currentInclinometer.ReadingChanged -= InclinometerReadingChangedOrientation;
+            }
+            else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC || type == Sensor.ORIENTATIONRELATIVE)
+            {
+                currentOrientationSensor.ReadingChanged -= OrientationReadingChangedOrientation;
+            }
+            else if(type == Sensor.SIMPLEORIENTATIONSENSOR)
+            {
+                currentSimpleOrientationSensor.OrientationChanged -= SimpleOrientationChangedOrientation;
+            }
+        }
+
         public async void TestEnd()
         {
             DeregisterReadingChangedEvent();
@@ -727,7 +745,7 @@ namespace SensorExplorer
             output.Text = "";
             LogDataList();
 
-            if (testType == "Drift" || testType == "GyroDrift")
+            if (testType == "Drift")
             {
                 CalculateDriftTest();
             }
@@ -1743,7 +1761,7 @@ namespace SensorExplorer
             HideArrows();
             Hide();
             int type = SensorType[pivotSensor.SelectedIndex];
-            DeregisterReadingChangedEvent();
+            DeregisterReadingChangedEventOrientation();
             LogTestFailure(testsCompleted, Enum.GetName(typeof(Directions), arrowDir), Constants.SensorName[type] + "SingleTestResult");
 
             // Display red x for 2 sec

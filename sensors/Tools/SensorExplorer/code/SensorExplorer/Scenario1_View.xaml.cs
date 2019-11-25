@@ -62,9 +62,6 @@ namespace SensorExplorer
 
             EnumerateSensors();
 
-            PeriodicTimer.SensorDisplay = Sensor.SensorDisplay;
-            PeriodicTimer.SensorData = Sensor.SensorData;
-
             saveFileButton.Click += SaveFileButtonClick;
 
             rootPage.NotifyUser("Enumerating sensors...", NotifyType.StatusMessage);
@@ -339,26 +336,28 @@ namespace SensorExplorer
                     (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Collapsed;
                 }
                 else
-                {                   
-                    if (Sensor.SensorDisplay.Count > 0 && Sensor.CurrentId != -1 ) 
+                {
+                    SensorDisplay selected;
+
+                    if (Sensor.SensorDisplay.Count > 0 && Sensor.CurrentId != -1 && Sensor.CurrentId != PivotSensor.Items.Count - 1)
                     {
-                        SensorDisplay selected;
+                        ShowPlotButton(null, null);
 
-                        if (Sensor.CurrentId != PivotSensor.Items.Count - 1)    // disable previous sensor
+                        selected = Sensor.SensorDisplay[Sensor.CurrentId];
+
+                        if (selected.SensorType == Sensor.LIGHTSENSOR)
                         {
-                            selected = Sensor.SensorDisplay[Sensor.CurrentId];
-
-                            if (selected.SensorType == Sensor.LIGHTSENSOR)
-                            {
-                                DisconnectFromDeviceClick(null, null);
-                            }
-
-                            ShowPlotButton(null, null);
-                            Sensor.DisableSensor(selected.SensorType, selected.Index);
+                            DisconnectFromDeviceClick(null, null);
                         }
 
-                        Sensor.CurrentId = i;   // sensor being displayed
-                        (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
+                        Sensor.DisableSensor(selected.SensorType, selected.Index);
+                    }
+
+                    Sensor.CurrentId = i;   // sensor being displayed
+                    (((PivotSensor.Items[i] as PivotItem).Content as ScrollViewer).Content as StackPanel).Visibility = Visibility.Visible;
+
+                    if (Sensor.SensorDisplay.Count > 0 && Sensor.CurrentId != -1 && Sensor.CurrentId != PivotSensor.Items.Count - 1)
+                    {
                         selected = Sensor.SensorDisplay[Sensor.CurrentId];
                         selected.EnableSensor();
 
@@ -426,7 +425,7 @@ namespace SensorExplorer
                     {
                         stackPanelMALTConnection.Visibility = Visibility.Collapsed;
                         selected.StackPanelMALTData.Visibility = Visibility.Visible;
-                        PeriodicTimer.CreateScenario1();
+                        PeriodicTimer.CreateMALTScenario1();
                     }
                 }
             }
@@ -1021,7 +1020,7 @@ namespace SensorExplorer
         {
             cancel = true;
 
-            PeriodicTimer.Cancel3();
+            PeriodicTimer.CancelMALTScenario1();
 
             try
             {

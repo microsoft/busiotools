@@ -114,7 +114,7 @@ namespace SensorExplorer
             {
                 lightSensor.ReadingChanged -= LightSensorReadingChanged;
             }
-            PeriodicTimer.Cancel2();
+            PeriodicTimer.CancelMALTScenario2();
 
             DisconnectFromDeviceClick(null, null);
 
@@ -640,7 +640,7 @@ namespace SensorExplorer
                 lightSensor.ReadingChanged += LightSensorReadingChanged;
             }
 
-            PeriodicTimer.Create();
+            PeriodicTimer.CreateMALTScenario2();
         }
 
         public async void GetMALTData()
@@ -722,7 +722,7 @@ namespace SensorExplorer
                 lightSensor.ReadingChanged -= LightSensorReadingChanged;
             }
 
-            PeriodicTimer.Cancel2();
+            PeriodicTimer.CancelMALTScenario2();
 
             stackpanel4.Visibility = Visibility.Collapsed;
             stackpanel2.Visibility = Visibility.Visible;

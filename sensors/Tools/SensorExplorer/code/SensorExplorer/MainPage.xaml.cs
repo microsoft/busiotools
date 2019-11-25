@@ -19,8 +19,9 @@ namespace SensorExplorer
 
         public FileLoggingSession LoggingSessionTests;
         public FileLoggingSession LoggingSessionView;
-        public LoggingChannel LoggingChannelTests;
         public LoggingChannel LoggingChannelView;
+
+        private LoggingChannel LoggingChannelTests;
 
         public MainPage()
         {

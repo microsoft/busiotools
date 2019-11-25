@@ -39,7 +39,7 @@ namespace SensorExplorer
             comboBoxNits.ItemsSource = new List<string>() { "Slider", "Specific value" };
             comboBoxNits.SelectionChanged += OnSelectionChangedNits;
 
-            PeriodicTimer.CreateScenario3();
+            PeriodicTimer.CreateDEO();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

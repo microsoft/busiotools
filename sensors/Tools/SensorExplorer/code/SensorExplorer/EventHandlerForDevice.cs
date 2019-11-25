@@ -12,14 +12,6 @@ using Windows.UI.Xaml;
 
 namespace SensorExplorer
 {
-    /// <summary>
-    /// The purpose of this class is to demonstrate the expected application behavior for app events 
-    /// such as suspension and resume or when the device is disconnected. 
-    /// 
-    /// This class will also demonstrate how to handle device watcher events.
-    /// 
-    /// For simplicity, this class will only allow at most one device to be connected at any given time.
-    /// </summary>
     public class EventHandlerForDevice
     {
         // Allows for singleton EventHandlerForDevice
@@ -28,11 +20,11 @@ namespace SensorExplorer
         // Used to synchronize threads to avoid multiple instantiations of eventHandlerForDevice.
         private static object singletonCreationLock = new object();
 
+        private MainPage rootPage = MainPage.Current;
         private bool watcherStarted;
         private bool watcherSuspended;
         private DeviceWatcher deviceWatcher;
         private EventHandler<object> appResumeEventHandler;
-        private MainPage rootPage = MainPage.Current;
         private SuspendingEventHandler appSuspendEventHandler;
         private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformation> deviceAddedEventHandler;
@@ -164,13 +156,6 @@ namespace SensorExplorer
                     RegisterForAppEvents();
                 }
 
-                // Register for DeviceAccessInformation.AccessChanged event and react to any changes to the
-                // user access after the device handle was opened.
-                if (deviceAccessEventHandler == null)
-                {
-                    RegisterForDeviceAccessStatusChange();
-                }
-
                 // Create and register device watcher events for the device to be opened unless we're reopening the device
                 if (deviceWatcher == null)
                 {
@@ -207,7 +192,7 @@ namespace SensorExplorer
                 }
             }
 
-            MainPage.Current.NotifyUser(notificationMessage, notificationStatus);
+            rootPage.NotifyUser(notificationMessage, notificationStatus);
             return successfullyOpenedDevice;
         }
 
@@ -259,8 +244,6 @@ namespace SensorExplorer
         }
 
         /// <summary>
-        /// This method demonstrates how to close the device properly using the WinRT Serial API.
-        ///
         /// When the SerialDevice is closing, it will cancel all IO operations that are still pending (not complete).
         /// The close will not wait for any IO completion callbacks to be called, so the close call may complete before any of
         /// the IO completion callbacks are called.
@@ -284,7 +267,7 @@ namespace SensorExplorer
 
                 await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
                 {
-                    MainPage.Current.NotifyUser(deviceId + " is closed", NotifyType.StatusMessage);
+                    rootPage.NotifyUser(deviceId + " is closed", NotifyType.StatusMessage);
                 }));
             }
         }
@@ -332,21 +315,6 @@ namespace SensorExplorer
             deviceAddedEventHandler = null;
             deviceWatcher.Removed -= deviceRemovedEventHandler;
             deviceRemovedEventHandler = null;
-        }
-
-        /// <summary>
-        /// Listen for any changed in device access permission. The user can block access to the device while the device is in use.
-        /// If the user blocks access to the device while the device is opened, the device's handle will be closed automatically by
-        /// the system; it is still a good idea to close the device explicitly so that resources are cleaned up.
-        /// 
-        /// Note that by the time the AccessChanged event is raised, the device handle may already be closed by the system.
-        /// </summary>
-        private void RegisterForDeviceAccessStatusChange()
-        {
-            // Enable the following registration ONLY if the Serial device under test is non-internal.
-            //deviceAccessInformation = DeviceAccessInformation.CreateFromId(deviceInformation.Id);
-            //deviceAccessEventHandler = new TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs>(this.OnDeviceAccessChanged);
-            //deviceAccessInformation.AccessChanged += deviceAccessEventHandler;
         }
 
         private void UnregisterFromDeviceAccessStatusChange()
@@ -439,7 +407,6 @@ namespace SensorExplorer
                 await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(async () =>
                 {
                     await OpenDeviceAsync(DeviceInformation, DeviceSelector);
-                    // Any app specific device intialization should be done here because we don't know the state of the device when it is re-enumerated.
                 }));
             }
         }

@@ -177,6 +177,7 @@ logman update autosession\UsbBootTrace -p {EDEF8E04-4E22-4A95-9D04-539EBD112A5E}
 logman update autosession\UsbBootTrace -p {04b3644b-27ca-4cac-9243-29bed5c91cf9} 0xffffffff 0xff
 logman update autosession\UsbBootTrace -p {9c06e0ca-f00e-4ac3-a049-65663b654393} 0xffffffff 0xff
 logman update autosession\UsbBootTrace -p {C1330B70-D01E-4AA6-B30D-B2BDAF228EC3} 0xffffffff 0xff
+logman update autosession\UsbBootTrace -p {8FBF685A-DCE5-44C2-B126-5E90176993A7} 0xffffffff 0xff
 
 echo.
 echo Please reboot your PC to enable tracing.

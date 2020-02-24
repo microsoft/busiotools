@@ -202,8 +202,12 @@ function Prepare-Target {
                 if (!(Test-TShellConnected)) {
                     Write-Error "[Prepare-Target] TShell connection not available"
                 }
-
                 break
+            }
+            ([Tracing.TargetType]::Container) {
+                if(!(Test-IsContainerAvailable)) {
+                    Write-Error "[Prepare-Target] Container not available"
+                }
             }
             ([Tracing.TargetType]::XBox) {
                 if (!(Test-XBoxConnected)) {
@@ -232,6 +236,33 @@ function Prepare-Target {
                 Write-Verbose "[Prepare-Target] Copying XPerf.exe to the target device from $($EnvironmentInfo.XPerfRemote)"
                 PutFile-Target -Local $EnvironmentInfo.XPerfRemote    -Target $EnvironmentInfo.XPerfOnTarget -TargetType ($TargetType) > $null
             }
+        }
+
+        # If target is Container prepare container sharing etc.
+        if($TargetType -eq [Tracing.TargetType]::Container) {
+            $testpath = cmdd dir %windir%\system32\cmdiag.exe -HideOutput
+            if( $testpath.ExitCode -ne 0) {
+                Write-Error "[Prepare-Target] TargetType: $TargetType is wrong, target does not have necessary tools"
+            }
+            
+            # We require that container is already running and obtain it id guid
+            # Example output of cmdiag Enumerate: 5ec359fa-658c-4f04-82d2-d4476021c729 , CentennialContainer , CmsContainerStateRunning
+            $containerList = execd cmdiag Enumerate -HideOutput
+            if( ($containerList.Output -eq $null) -or ($containerList.Output.Split(",")[2].trim() -ne "CmsContainerStateRunning"))
+            {
+                Write-Error "[Prepare-Target] TargetType: $TargetType there is no container running on target"
+            }
+            $script:ContainerId = ($containerList.Output.split(",")[0].trim())
+
+            # Id is GUID so lenght should be 36
+            if($script:ContainerId.Length -ne 36)
+            {
+                Write-Error "[Prepare-Target] TargetType: $TargetType cannot obtain proper container ID guid"
+            }
+
+            # share folder between host and guest
+            execd cmdiag Map $script:ContainerId $EnvironmentInfo.TargetTemp $EnvironmentInfo.TargetTemp -HideOutput > $null
+        
         }
 
         Write-Verbose "[Prepare-Target] Done"
@@ -649,6 +680,7 @@ function Create-Scripts-Tracing-WPR {
         }
 
         $mergedFileName        = "$($tracingSessionName).etl"
+        $mergedFileNameGuest   = "$($tracingSessionName)_guest.etl"
         $wprpFileName          = "$($tracingSessionName).wprp"
 
         $wprpPath              = "$($EnvironmentInfo.TraceScriptsPathLocal)\$wprpFileName"
@@ -695,6 +727,13 @@ function Create-Scripts-Tracing-WPR {
             
             [void]$startScript.AppendLine("%WPR_LOCAL% -boottrace -addboot  `"%~dp0\$wprpFileName`" -filemode")
         }
+        elseif($TargetType -eq ([Tracing.TargetType]::Container))
+        {
+            [void]$startScript.AppendLine("echo starting local trace")
+            [void]$startScript.AppendLine("%WPR_LOCAL% -start `"%~dp0\$wprpFileName`" -filemode")
+            [void]$startScript.AppendLine("echo starting container trace")
+            [void]$startScript.AppendLine("%windir%\system32\cmdiag.exe exec $ContainerId C:\windows\system32\wpr.exe -start `"%~dp0\$wprpFileName`" -filemode")
+        }
         else
         {
             [void]$startScript.AppendLine("%WPR_LOCAL% -start `"%~dp0\$wprpFileName`" -filemode")
@@ -714,8 +753,9 @@ function Create-Scripts-Tracing-WPR {
         [void]$stopScript.AppendLine("@ECHO OFF")
         [void]$stopScript.AppendLine("SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION")
         [void]$stopScript.AppendLine("")
-        [void]$stopScript.AppendLine("set WPR_LOCAL=%windir%\sysnative\wpr.exe")
-        [void]$stopScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\system32\wpr.exe )")
+        [void]$stopScript.AppendLine("set WPR_LOCAL=c:\windows\system32\wpr.exe")
+        [void]$startScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\sysnative\wpr.exe )")
+        [void]$startScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\system32\wpr.exe )")
         [void]$stopScript.AppendLine("echo WPR location %WPR_LOCAL%")
         [void]$stopScript.AppendLine("")
 
@@ -725,6 +765,11 @@ function Create-Scripts-Tracing-WPR {
         if($bootTrace)
         {
             [void]$stopScript.AppendLine("%WPR_LOCAL% -boottrace -stopboot `"%~dp0\..\$mergedFileName`"")
+        }
+        elseif($TargetType -eq ([Tracing.TargetType]::Container))
+        {
+            [void]$stopScript.AppendLine("%WPR_LOCAL% -stop `"%~dp0\..\$mergedFileName`"")
+            [void]$stopScript.AppendLine("%windir%\system32\cmdiag.exe Exec $ContainerId  C:\windows\system32\wpr.exe -stop `"%~dp0\..\$mergedFileNameGuest`"")
         }
         else
         {

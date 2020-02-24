@@ -429,6 +429,41 @@ function Test-DeviceConnected {
 
 <#
  .SYNOPSIS
+ Checks whether the current session window has container tooling available
+#>
+function Test-IsContainerAvailable {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    begin {
+        Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    }
+
+    process {
+        $testpath = cmdd dir %windir%\system32\cmdiag.exe -HideOutput
+        if( $testpath.ExitCode -ne 0) {
+            return $false
+        }
+
+        # We require that container is already running and obtain it id guid
+        $containerList = execd cmdiag Enumerate -HideOutput
+        if( ($containerList.Output -eq $null) -or ($containerList.Output.Split(",")[2].trim() -ne "CmsContainerStateRunning")) {
+            return $false
+        }
+        $script:ContainerId = ($containerList.Output.split(",")[0].trim())
+
+        # Id is GUID so lenght should be 36
+        if($ContainerId.Length -ne 36) {
+            return $false
+        }
+         
+        return $true;
+    }
+}
+
+<#
+ .SYNOPSIS
  Runs the command with the specified args on the target device.
 
  .PARAMETER Command
@@ -493,6 +528,21 @@ function Run-Target {
             }
             ([Tracing.TargetType]::Local) {
                 Run-Local $Command $CommandArgs
+
+                break
+            }
+            ([Tracing.TargetType]::Container) {
+                $commandResult = Cmd-Device $Command $CommandArgs -HideOutput
+
+                if ($commandResult.Output) {
+                    Write-Verbose "[Run-Target] $($commandResult.Output)"
+                }
+
+                if ($commandResult.ExitCode -ne 0) {
+                    Write-Error "[Run-Target] '$Command $CommandArgs' failed with error code: $($commandResult.ExitCode)"
+                }
+
+                break
             }
             default {
                 Write-Error "[Run-Target] Unsupported target type: $TargetType"
@@ -545,6 +595,10 @@ function Get-RegistryValueTarget {
 
         switch ($TargetType) {
             ([Tracing.TargetType]::TShell) {
+                $regQueryReturn = Reg-Device Query $RegKey /v $RegName -ErrorAction Continue
+                break
+            }
+            ([Tracing.TargetType]::Container) {
                 $regQueryReturn = Reg-Device Query $RegKey /v $RegName -ErrorAction Continue
                 break
             }
@@ -628,6 +682,10 @@ function MkDir-Target {
                 New-Item -ItemType Directory -Path $Path -ErrorAction Continue
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                MkDir-Device $Path
+                break
+            }
             default {
                 Write-Error "[MkDir-Target] Unsupported target type: $TargetType"
             }
@@ -672,6 +730,10 @@ function RmDir-Target {
                 RmDir-Device $Path /S /Q
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                RmDir-Device $Path /S /Q
+                break
+            }
             ([Tracing.TargetType]::XBox) {
                 & xbrmdir "X$Path" /F
                 break
@@ -680,6 +742,7 @@ function RmDir-Target {
                 Remove-Item -Path $Path -Recurse -Force -ErrorAction Continue
                 break
             }
+
             default {
                 Write-Error "[RmDir-Target] Unsupported target type: $TargetType"
             }
@@ -728,6 +791,10 @@ function PutFile-Target {
 
         switch ($TargetType) {
             ([Tracing.TargetType]::TShell) {
+                Put-Device $Local $Target | Write-Verbose -ErrorAction Continue
+                break
+            }
+            ([Tracing.TargetType]::Container) {
                 Put-Device $Local $Target | Write-Verbose -ErrorAction Continue
                 break
             }
@@ -790,6 +857,10 @@ function GetFile-Target {
                 Get-Device $Target $Local -ErrorAction Continue | Write-Verbose -ErrorAction Continue
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                Get-Device $Target $Local -ErrorAction Continue | Write-Verbose -ErrorAction Continue
+                break
+            }
             ([Tracing.TargetType]::XBox) {
                 & xbcp "X$Target" $Local
                 break
@@ -830,7 +901,7 @@ function Get-BuildInfo {
         Write-Verbose "[Get-BuildInfo] Getting the target build information"
 
         # For example: [0] = 9600, [1] = 17630, [2] = amd64fre, [3] = winblue_r7, [4] = 150109-2022
-        $buildParams = (Get-RegistryValueTarget -RegKey "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -RegName "BuildLabEx" -TargetType $TargetType).Split(".")
+        $buildParams = (Get-RegistryValueTarget -RegKey "HKEY_LOCAL_MACHINE\SYSTEM\Software\Microsoft" -RegName "BuildLabEx" -TargetType $TargetType).Split(".")
 
         # We use 'woa' instead of 'arm' for 32-bit.
         $buildParams[2] = $buildParams[2].Replace("armfre", "woafre")

@@ -137,7 +137,11 @@
     <EventProvider Id="SSMFSOURCE" Name="8f55386b-eb37-4afc-88e0-c475b2fefd9a" />
     <EventProvider Id="TPM" Name="85be49ea-38f1-4547-a604-80060202fb27" />
     <EventProvider Id="UifEventSource" Name="b39b8cea-eaaa-5a74-5794-4948e222c663" />
-    <EventProvider Id="UsbVideo" Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" Level="4" NonPagedMemory="true" />
+    <EventProvider Id="UsbVideo" Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x0000000000000007" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="WinBioService_0" Name="9dadd79b-d556-53f2-67c4-129fa62b7512" />
     <EventProvider Id="WinBioService_1" Name="e0dda06c-a215-407b-be66-8ae0c628d6b0" />
     <EventProvider Id="WinBioService_2" Name="3a8d6942-b034-48e2-b314-f69c2b4655a3" />

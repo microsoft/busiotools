@@ -164,7 +164,7 @@ function Main {
                 Write-Host "Preparing target system..."
                 Prepare-Target
 
-                if ($TargetType -ne [Tracing.TargetType]::Local) {
+                if ([Tracing.TargetType]::Local -ne $TargetType ) {
                     PutFile-Target -Local "$($EnvironmentInfo.TraceScriptsPathLocal)\*" -Target $EnvironmentInfo.TraceScriptsPathTarget -TargetType $TargetType
 
                     # Modify locations of the start/stop scripts, as they are on a remote device now.
@@ -173,7 +173,7 @@ function Main {
                     $script:StopScripts  = $script:StopScripts  | % { "$($EnvironmentInfo.TraceScriptsPathTarget)\$((Get-Item $_).Name)" }
                 }
 
-                Write-Host "Stopping tracing and merging results..."
+                Write-Host "Stopping boot tracing and merging results..."
                 Stop-Tracing -DownloadFiles
                 $tracingStarted = $false
 
@@ -242,12 +242,15 @@ function Main {
                     Write-Host "Stopping tracing and merging results..."
                     Stop-Tracing -DownloadFiles
                     $tracingStarted = $false
+                    Write-Verbose "Stopping tracing succeeded."
 
                     Write-Host "Saving target system details..."
                     Save-TargetDetailsOnStop
+                    Write-Verbose "Saving target details on stop succeeded."
 
                     Write-Host "Waiting for the background jobs to complete..."
                     Wait-ForBackgroundJobs
+                    Write-Verbose "Wait for background jobs succeeded."
 
                     Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
 
@@ -258,8 +261,13 @@ function Main {
             Write-Error "Unexpected error: $_"
         } finally {
             # Open the output, and archive directory.
-            if (Test-Path $EnvironmentInfo.TracePathLocal) {
-                Start-Process ($EnvironmentInfo.TracePathLocal) > $null
+            
+            if ((Test-Path $EnvironmentInfo.TracePathLocal)){
+                try {
+                    # shell os  doesn't have UI, don't try to open the folder
+                    Start-Process ($EnvironmentInfo.TracePathLocal) > $null
+                }
+                catch {}
             }
 
             if ($tracingStarted -and (-not $StartBootTrace)) {
@@ -297,15 +305,31 @@ function Get-EnvironmentInformation {
             $localXPerf = "C:\Windows\System32\XPerf.exe"
         }
 
+        Write-Verbose "[Get-EnvironmentInformation] Data:"
         $script:EnvironmentInfo = New-Object Tracing.EnvironmentInfo
         $EnvironmentInfo.ScriptRootPath          = $PSScriptRoot
+        Write-Verbose "  ScriptRootPath          : $($EnvironmentInfo.ScriptRootPath)"
+
         $EnvironmentInfo.TargetTemp              = if ($TargetType -eq [Tracing.TargetType]::TShell) { "C:\Data\Test\Tracing" } elseif ($TargetType -eq [Tracing.TargetType]::XBox) { "D:\Tmp\Tracing" } else { $env:TEMP }
+        Write-Verbose "  TargetTemp              : $($EnvironmentInfo.TargetTemp)"
+
         $EnvironmentInfo.SymLocalPath            = "$($env:SystemDrive)\Symbols.pri"
+        Write-Verbose "  SymLocalPath            : $($EnvironmentInfo.SymLocalPath)"
+
         $EnvironmentInfo.TraceEtlBase            = "Trace_$($env:USERNAME)_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+        Write-Verbose "  TraceEtlBase            : $($EnvironmentInfo.TraceEtlBase)"
+
         $EnvironmentInfo.TracePathTarget         = "$($EnvironmentInfo.TargetTemp)\$($EnvironmentInfo.TraceEtlBase)"
+        Write-Verbose "  TracePathTarget         : $($EnvironmentInfo.TracePathTarget)"
+
         $EnvironmentInfo.TracePathLocal          = if ([String]::IsNullOrEmpty($Output)) { "$($env:TEMP)\$($EnvironmentInfo.TraceEtlBase)" } else { $Output }
+        Write-Verbose "  TracePathLocal          : $($EnvironmentInfo.TracePathLocal)"
+
         $EnvironmentInfo.TraceScriptsPathLocal   = "$($EnvironmentInfo.TracePathLocal)\Scripts"
+        Write-Verbose "  TraceScriptsPathLocal   : $($EnvironmentInfo.TraceScriptsPathLocal)"
+
         $EnvironmentInfo.TraceScriptsPathTarget  = "$($EnvironmentInfo.TracePathTarget)\Scripts"
+        Write-Verbose "  TraceScriptsPathTarget  : $($EnvironmentInfo.TraceScriptsPathTarget)"
         
 
         Write-Verbose "[Get-EnvironmentInformation] Data:"
@@ -352,7 +376,7 @@ function Save-TargetDetailsOnStart {
                 Write-Verbose "[Save-TargetDetailsOnStart] Error while getting buildInfo: $_"
         }
 
-        if ($TargetType -eq [Tracing.TargetType]::Local) {
+        if ([Tracing.TargetType]::Local -eq $TargetType) {
             
             Write-Verbose "[Save-TargetDetailsOnStart] Collecting machine information and crash reports"
 
@@ -363,7 +387,7 @@ function Save-TargetDetailsOnStart {
             Gather-SetupAPILog
             Gather-PnpUtil
 
-            # Save buildInfo
+            Write-Verbose "[Save-TargetDetailsOnStart] Done"
         }
     }
 }
@@ -382,7 +406,7 @@ function Save-TargetDetailsOnStop {
     }
 
     process {
-        if ($TargetType -ne [Tracing.TargetType]::Local) {
+        if ([Tracing.TargetType]::Local -ne $TargetType) {
             Write-Verbose "[Save-TargetDetailsOnStop] Skipping for the remote device"
         } else {
             Write-Verbose "[Save-TargetDetailsOnStop] Collecting machine information and crash reports"

@@ -81,9 +81,10 @@ namespace Tracing
 
     public enum TargetType
     {
-        Local  = 0,
-        TShell = 1,
-        XBox   = 2
+        Local       = 0,
+        TShell      = 1,
+        XBox        = 2,
+        Container   = 3
     }
 
     public enum ToolsetType
@@ -249,6 +250,10 @@ function Read-TraceTargetType {
                     $result = [Tracing.TargetType]::Local
                     break
                 }
+                "Container" {
+                    $result = [Tracing.TargetType]::Container
+                    break
+                }
                 default {
                     Write-Error "[Read-TraceTargetType] Unknown target type: $Value"
                 }
@@ -256,6 +261,9 @@ function Read-TraceTargetType {
         } else {
             if (Test-TShellConnected) {
                 $result = [Tracing.TargetType]::TShell
+                if(Test-IsContainerAvailable) {
+                    $result = [Tracing.TargetType]::Container
+                }
             } elseif (Test-XBoxConnected) {
                 $result = [Tracing.TargetType]::XBox
             } else {

@@ -36,7 +36,7 @@ function Wait-ForStop {
         try {
             # Start a new background job, if user wants us to wait for a text.
             if ($WinWait.Count -gt 0) {
-                $waitJob = Start-ThreadJob -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock {
+                $scriptblock = {
                     param(
                         [Parameter(Mandatory = $true)]
                         [Object[]]
@@ -65,6 +65,13 @@ function Wait-ForStop {
                     }
 
                     Write-Warning "Unable to find window in time"
+                }
+
+                if (Test-CommandExist "start-threadjob") {
+                    $waitJob = Start-ThreadJob -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock $scriptblock
+                }
+                else {
+                    $waitJob = Start-Job -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock $scriptblock
                 }
             }
 
@@ -171,7 +178,7 @@ function Prepare-Local {
         New-Item -ItemType Directory -Path $EnvironmentInfo.TraceScriptsPathLocal   -Force > $null
 
         # Copy manifests to a local directory.
-        if (Test-Path "$($EnvironmentInfo.ScriptRootPath)\manifests") {
+        if ((Test-Path "$($EnvironmentInfo.ScriptRootPath)\manifests")  -and (Test-Path "$($EnvironmentInfo.TraceManifestsPathLocal)")){
             New-Item -ItemType Directory -Path $EnvironmentInfo.TraceManifestsPathLocal -Force > $null
             Copy-Item "$($EnvironmentInfo.ScriptRootPath)\manifests\*" $EnvironmentInfo.TraceManifestsPathLocal
         }
@@ -724,7 +731,6 @@ function Create-Scripts-Tracing-WPR {
         [void]$startScript.AppendLine("%WPR_LOCAL% -resetprofint >nul 2>&1")
         if($bootTrace)
         {
-            
             [void]$startScript.AppendLine("%WPR_LOCAL% -boottrace -addboot  `"%~dp0\$wprpFileName`" -filemode")
         }
         elseif($TargetType -eq ([Tracing.TargetType]::Container))
@@ -754,8 +760,8 @@ function Create-Scripts-Tracing-WPR {
         [void]$stopScript.AppendLine("SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION")
         [void]$stopScript.AppendLine("")
         [void]$stopScript.AppendLine("set WPR_LOCAL=c:\windows\system32\wpr.exe")
-        [void]$startScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\sysnative\wpr.exe )")
-        [void]$startScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\system32\wpr.exe )")
+        [void]$stopScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\sysnative\wpr.exe )")
+        [void]$stopScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\system32\wpr.exe )")
         [void]$stopScript.AppendLine("echo WPR location %WPR_LOCAL%")
         [void]$stopScript.AppendLine("")
 
@@ -796,7 +802,7 @@ function Gather-DXDiag {
     # Collect information about the machine.
     #
 
-    $dxdiagJob = Start-ThreadJob -Name "DxDiag" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\dxdiag.txt") -ScriptBlock {
+    Queue-BackgroundJob -Name "DxDiag" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\dxdiag.txt") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -811,9 +817,6 @@ function Gather-DXDiag {
             Write-Verbose "[Gather-DXDiag] Error while getting dxdiag logs: $_"
         }
     }
-    
-    Write-Host "Queue collect DxDiag to background job"
-    [void]$BackgroundJobs.Add($dxdiagJob)
 }
 
 <#
@@ -822,13 +825,12 @@ function Gather-DXDiag {
 #>
 function Gather-SetupAPILog {
 
-    $setupapiJob = Start-ThreadJob -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
+    Queue-BackgroundJob -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
             $OutputFile
         )
-
         try {
             if (Test-Path "$env:windir\inf\setupapi.dev.log" -PathType Leaf) {
                 Copy-Item -Path "$env:windir\inf\setupapi.dev.log" -Destination $OutputFile
@@ -837,9 +839,6 @@ function Gather-SetupAPILog {
             Write-Verbose "[Save-TargetDetails] Error while getting device installation logs: $_"
         }
     }
-    
-    Write-Host "Queue collect SetupAPILog to background job"
-    [void]$BackgroundJobs.Add($setupapiJob)
 }
 
 
@@ -855,7 +854,7 @@ function Gather-PnpUtil {
     # Collect information about the machine.
     #
 
-    $pnpUtilJob = Start-ThreadJob -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\pnpUtil.pnp") -ScriptBlock {
+    Queue-BackgroundJob -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\pnpUtil.pnp") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -870,9 +869,6 @@ function Gather-PnpUtil {
             Write-Verbose "[Save-TargetDetails] Error while getting pnpUtil logs: $_"
         }
     }
-    
-    Write-Host "Queue collect pnpUtil to background job"
-    [void]$BackgroundJobs.Add($pnpUtilJob)
 }
 
 <#
@@ -883,15 +879,12 @@ function Gather-WinBioEvtx {
     [CmdletBinding()]
     [OutputType([void])]
     param()
-    #
-    # Collect information about the machine.
-    #
 
     #
     # Collect the winbio.evtx
     #
 
-    $winbioJob = Start-ThreadJob -Name "Winbio.evtx" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\winbio.evtx") -ScriptBlock {
+    Queue-BackgroundJob -Name "Winbio.evtx" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\winbio.evtx") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -904,9 +897,6 @@ function Gather-WinBioEvtx {
             Write-Verbose "[Gather-WinBioEvtx] Error while getting WER logs: $_"
         }
     }
-
-    Write-Host " Queue collect WinBioEvtx to background job"
-    [void]$BackgroundJobs.Add($winbioJob) 
 }
 
 <#
@@ -920,8 +910,7 @@ function Gather-WinHelloInfo {
     #
     # Collect information about the machine.
     #
-
-    $winHelloJob = Start-ThreadJob -Name "WinHelloInfo" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\WinHelloInfo.log") -ScriptBlock {
+    Queue-BackgroundJob -Name "WinHelloInfo" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\WinHelloInfo.log") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -1011,7 +1000,28 @@ function Gather-WinHelloInfo {
             Write-Verbose "[Gather-WinHelloInfo] Error while getting winHelloInfo logs: $_"
         }
     }
-    
-    Write-Host "Queue collect WinHelloInfo to background job"
-    [void]$BackgroundJobs.Add($winHelloJob)
+}
+
+
+<#
+ .SYNOPSIS
+ Create and queue job to background job queue.
+#>
+function Queue-BackgroundJob {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [string] $Name,
+        [System.Array] $ArgumentList,
+        [ScriptBlock] $ScriptBlock
+    )
+
+    if(Test-CommandExist "Start-ThreadJob"){
+        $job = Start-ThreadJob -Name $Name -ArgumentList $ArgumentList -ScriptBlock $ScriptBlock
+    }
+    else{
+        $job = Start-Job -Name $Name -ArgumentList $ArgumentList -ScriptBlock $ScriptBlock
+    }
+    Write-Host "Queue $name to background job"
+    [void]$BackgroundJobs.Add($job)
 }

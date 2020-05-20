@@ -205,8 +205,9 @@ function Main {
                 #$script:ScenariosData = Get-Scenario $Scenario
 
                 Write-Host "Gathering system information..."
-                Get-EnvironmentInformation
 
+                Get-EnvironmentInformation
+                
                 Write-Host "Preparing local system..."
                 Prepare-Local
 
@@ -258,7 +259,8 @@ function Main {
                 }
             }
         } catch {
-            Write-Error "Unexpected error: $_"
+            Write-Host "Unexpected error: $($_.Exception.Message)"
+            Write-Host "Stack: `n$($_.ScriptStackTrace)"
         } finally {
             # Open the output, and archive directory.
             
@@ -293,18 +295,16 @@ function Get-EnvironmentInformation {
     }
 
     process {
-        Write-Verbose "[Get-EnvironmentInformation] Collecting environment information"
+        Write-host "[Get-EnvironmentInformation] Collecting environment information"
 
         $systemArchitecture = Get-LocalSystemArchitecture
 
         # Figure out if xperf can be found in the PATH.
-        cmd /c where /Q xperf.exe > $null
-        if ($LASTEXITCODE -eq 0) {
-            $localXPerf = cmd /c where xperf.exe
+        if (Test-CommandExist "xperf.exe") {
+            $localXPerf = get-command "xperf.exe" | Select -ExpandProperty "Source"
         } else {
             $localXPerf = "C:\Windows\System32\XPerf.exe"
         }
-
         Write-Verbose "[Get-EnvironmentInformation] Data:"
         $script:EnvironmentInfo = New-Object Tracing.EnvironmentInfo
         $EnvironmentInfo.ScriptRootPath          = $PSScriptRoot
@@ -329,17 +329,6 @@ function Get-EnvironmentInformation {
         Write-Verbose "  TraceScriptsPathLocal   : $($EnvironmentInfo.TraceScriptsPathLocal)"
 
         $EnvironmentInfo.TraceScriptsPathTarget  = "$($EnvironmentInfo.TracePathTarget)\Scripts"
-        Write-Verbose "  TraceScriptsPathTarget  : $($EnvironmentInfo.TraceScriptsPathTarget)"
-        
-
-        Write-Verbose "[Get-EnvironmentInformation] Data:"
-        Write-Verbose "  ScriptRootPath          : $($EnvironmentInfo.ScriptRootPath)"
-        Write-Verbose "  TargetTemp              : $($EnvironmentInfo.TargetTemp)"
-        Write-Verbose "  SymLocalPath            : $($EnvironmentInfo.SymLocalPath)"
-        Write-Verbose "  TraceEtlBase            : $($EnvironmentInfo.TraceEtlBase)"
-        Write-Verbose "  TracePathTarget         : $($EnvironmentInfo.TracePathTarget)"
-        Write-Verbose "  TracePathLocal          : $($EnvironmentInfo.TracePathLocal)"
-        Write-Verbose "  TraceScriptsPathLocal   : $($EnvironmentInfo.TraceScriptsPathLocal)"
         Write-Verbose "  TraceScriptsPathTarget  : $($EnvironmentInfo.TraceScriptsPathTarget)"
 
         Write-Verbose "[Get-EnvironmentInformation] Done"

@@ -105,7 +105,7 @@ function Test-DomainNetworkAvailable {
 
 <#
  .SYNOPSIS
- use Get-Command to test is a command exists. If exception occur with get-command, the command doesn't exist.
+ use Get-Command to test if a command exists. If exception occur with get-command, the command doesn't exist.
 
 . Input
  String name of command to be tested
@@ -120,8 +120,10 @@ function Test-CommandExist
     param($command)
     
     try {
-        Get-command $command
-        return $true
+        if(Get-command $command -ErrorAction silentlyContinue){
+            return $true
+        }
+        return $false
     }
     catch {
         return $false
@@ -762,7 +764,7 @@ function RmDir-Target {
         Write-Verbose "[RmDir-Target] Removing folder on the device $($TargetType): $Path"
 
         switch ($TargetType) {
-	        {@([Tracing.TargetType]::TShell, [Tracing.TargetType]::Container) -contains $_ } {
+            {@([Tracing.TargetType]::TShell, [Tracing.TargetType]::Container) -contains $_ } {
                 RmDir-Device $Path /S /Q
                 break
             }

@@ -105,6 +105,33 @@ function Test-DomainNetworkAvailable {
 
 <#
  .SYNOPSIS
+ use Get-Command to test if a command exists. If exception occur with get-command, the command doesn't exist.
+
+. Input
+ String name of command to be tested
+
+ .Output
+ Bool true if get-command succeed, false if get-command encounter exception.
+#>
+function Test-CommandExist
+{
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param($command)
+    
+    try {
+        if(Get-command $command -ErrorAction silentlyContinue){
+            return $true
+        }
+        return $false
+    }
+    catch {
+        return $false
+    }
+}
+
+<#
+ .SYNOPSIS
  Determines the current host architecture.
 #>
 function Get-LocalSystemArchitecture {
@@ -118,15 +145,26 @@ function Get-LocalSystemArchitecture {
 
     process {
         if ($LocalSystemArchitecture -eq $null) {
-            $os = Get-WmiObject Win32_OperatingSystem
 
-            if ($os.OSArchitecture -eq "64-bit") {
-                $script:LocalSystemArchitecture = "amd64"
-            } else {
-                $script:LocalSystemArchitecture = "x86"
+            # some version of powershell doesn't support WMI (example: pwsh version.)
+            if (Test-CommandExist "Get-WmiObject") {
+                $os = Get-WmiObject Win32_OperatingSystem
+
+                if ($os.OSArchitecture -eq "64-bit") {
+                    $script:LocalSystemArchitecture = "amd64" 
+                } else {
+                    $script:LocalSystemArchitecture = "x86"
+                }
+            }
+            else {
+                if([Environment]::Is64BitOperatingSystem){
+                    $script:LocalSystemArchitecture = "amd64"
+                }
+                else {
+                    $script:LocalSystemArchitecture = "x86"
+                }
             }
         }
-
         return $LocalSystemArchitecture
     }
 }
@@ -429,6 +467,41 @@ function Test-DeviceConnected {
 
 <#
  .SYNOPSIS
+ Checks whether the current session window has container tooling available
+#>
+function Test-IsContainerAvailable {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    begin {
+        Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    }
+
+    process {
+        $testpath = cmdd dir %windir%\system32\cmdiag.exe -HideOutput
+        if( $testpath.ExitCode -ne 0) {
+            return $false
+        }
+
+        # We require that container is already running and obtain it id guid
+        $containerList = execd cmdiag Enumerate -HideOutput
+        if( ($containerList.Output -eq $null) -or ($containerList.Output.Split(",")[2].trim() -ne "CmsContainerStateRunning")) {
+            return $false
+        }
+        $script:ContainerId = ($containerList.Output.split(",")[0].trim())
+
+        # Id is GUID so lenght should be 36
+        if($ContainerId.Length -ne 36) {
+            return $false
+        }
+         
+        return $true;
+    }
+}
+
+<#
+ .SYNOPSIS
  Runs the command with the specified args on the target device.
 
  .PARAMETER Command
@@ -493,6 +566,21 @@ function Run-Target {
             }
             ([Tracing.TargetType]::Local) {
                 Run-Local $Command $CommandArgs
+
+                break
+            }
+            ([Tracing.TargetType]::Container) {
+                $commandResult = Cmd-Device $Command $CommandArgs -HideOutput
+
+                if ($commandResult.Output) {
+                    Write-Verbose "[Run-Target] $($commandResult.Output)"
+                }
+
+                if ($commandResult.ExitCode -ne 0) {
+                    Write-Error "[Run-Target] '$Command $CommandArgs' failed with error code: $($commandResult.ExitCode)"
+                }
+
+                break
             }
             default {
                 Write-Error "[Run-Target] Unsupported target type: $TargetType"
@@ -545,6 +633,10 @@ function Get-RegistryValueTarget {
 
         switch ($TargetType) {
             ([Tracing.TargetType]::TShell) {
+                $regQueryReturn = Reg-Device Query $RegKey /v $RegName -ErrorAction Continue
+                break
+            }
+            ([Tracing.TargetType]::Container) {
                 $regQueryReturn = Reg-Device Query $RegKey /v $RegName -ErrorAction Continue
                 break
             }
@@ -628,6 +720,10 @@ function MkDir-Target {
                 New-Item -ItemType Directory -Path $Path -ErrorAction Continue
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                MkDir-Device $Path
+                break
+            }
             default {
                 Write-Error "[MkDir-Target] Unsupported target type: $TargetType"
             }
@@ -668,7 +764,7 @@ function RmDir-Target {
         Write-Verbose "[RmDir-Target] Removing folder on the device $($TargetType): $Path"
 
         switch ($TargetType) {
-            ([Tracing.TargetType]::TShell) {
+            {@([Tracing.TargetType]::TShell, [Tracing.TargetType]::Container) -contains $_ } {
                 RmDir-Device $Path /S /Q
                 break
             }
@@ -731,6 +827,10 @@ function PutFile-Target {
                 Put-Device $Local $Target | Write-Verbose -ErrorAction Continue
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                Put-Device $Local $Target | Write-Verbose -ErrorAction Continue
+                break
+            }
             ([Tracing.TargetType]::XBox) {
                 & xbcp $Local "X$Target"
                 break
@@ -790,6 +890,10 @@ function GetFile-Target {
                 Get-Device $Target $Local -ErrorAction Continue | Write-Verbose -ErrorAction Continue
                 break
             }
+            ([Tracing.TargetType]::Container) {
+                Get-Device $Target $Local -ErrorAction Continue | Write-Verbose -ErrorAction Continue
+                break
+            }
             ([Tracing.TargetType]::XBox) {
                 & xbcp "X$Target" $Local
                 break
@@ -830,7 +934,7 @@ function Get-BuildInfo {
         Write-Verbose "[Get-BuildInfo] Getting the target build information"
 
         # For example: [0] = 9600, [1] = 17630, [2] = amd64fre, [3] = winblue_r7, [4] = 150109-2022
-        $buildParams = (Get-RegistryValueTarget -RegKey "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -RegName "BuildLabEx" -TargetType $TargetType).Split(".")
+        $buildParams = (Get-RegistryValueTarget -RegKey "HKEY_LOCAL_MACHINE\SYSTEM\Software\Microsoft" -RegName "BuildLabEx" -TargetType $TargetType).Split(".")
 
         # We use 'woa' instead of 'arm' for 32-bit.
         $buildParams[2] = $buildParams[2].Replace("armfre", "woafre")

@@ -36,7 +36,7 @@ function Wait-ForStop {
         try {
             # Start a new background job, if user wants us to wait for a text.
             if ($WinWait.Count -gt 0) {
-                $waitJob = Start-Job -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock {
+                $scriptblock = {
                     param(
                         [Parameter(Mandatory = $true)]
                         [Object[]]
@@ -65,6 +65,13 @@ function Wait-ForStop {
                     }
 
                     Write-Warning "Unable to find window in time"
+                }
+
+                if (Test-CommandExist "start-threadjob") {
+                    $waitJob = Start-ThreadJob -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock $scriptblock
+                }
+                else {
+                    $waitJob = Start-Job -ArgumentList @($WinWait, "$($EnvironmentInfo.ScriptRootPath)\bin\AutoIt\AutoItX3.psd1") -ScriptBlock $scriptblock
                 }
             }
 
@@ -171,7 +178,7 @@ function Prepare-Local {
         New-Item -ItemType Directory -Path $EnvironmentInfo.TraceScriptsPathLocal   -Force > $null
 
         # Copy manifests to a local directory.
-        if (Test-Path "$($EnvironmentInfo.ScriptRootPath)\manifests") {
+        if ((Test-Path "$($EnvironmentInfo.ScriptRootPath)\manifests")  -and (Test-Path "$($EnvironmentInfo.TraceManifestsPathLocal)")){
             New-Item -ItemType Directory -Path $EnvironmentInfo.TraceManifestsPathLocal -Force > $null
             Copy-Item "$($EnvironmentInfo.ScriptRootPath)\manifests\*" $EnvironmentInfo.TraceManifestsPathLocal
         }
@@ -202,8 +209,12 @@ function Prepare-Target {
                 if (!(Test-TShellConnected)) {
                     Write-Error "[Prepare-Target] TShell connection not available"
                 }
-
                 break
+            }
+            ([Tracing.TargetType]::Container) {
+                if(!(Test-IsContainerAvailable)) {
+                    Write-Error "[Prepare-Target] Container not available"
+                }
             }
             ([Tracing.TargetType]::XBox) {
                 if (!(Test-XBoxConnected)) {
@@ -232,6 +243,33 @@ function Prepare-Target {
                 Write-Verbose "[Prepare-Target] Copying XPerf.exe to the target device from $($EnvironmentInfo.XPerfRemote)"
                 PutFile-Target -Local $EnvironmentInfo.XPerfRemote    -Target $EnvironmentInfo.XPerfOnTarget -TargetType ($TargetType) > $null
             }
+        }
+
+        # If target is Container prepare container sharing etc.
+        if($TargetType -eq [Tracing.TargetType]::Container) {
+            $testpath = cmdd dir %windir%\system32\cmdiag.exe -HideOutput
+            if( $testpath.ExitCode -ne 0) {
+                Write-Error "[Prepare-Target] TargetType: $TargetType is wrong, target does not have necessary tools"
+            }
+            
+            # We require that container is already running and obtain it id guid
+            # Example output of cmdiag Enumerate: 5ec359fa-658c-4f04-82d2-d4476021c729 , CentennialContainer , CmsContainerStateRunning
+            $containerList = execd cmdiag Enumerate -HideOutput
+            if( ($containerList.Output -eq $null) -or ($containerList.Output.Split(",")[2].trim() -ne "CmsContainerStateRunning"))
+            {
+                Write-Error "[Prepare-Target] TargetType: $TargetType there is no container running on target"
+            }
+            $script:ContainerId = ($containerList.Output.split(",")[0].trim())
+
+            # Id is GUID so lenght should be 36
+            if($script:ContainerId.Length -ne 36)
+            {
+                Write-Error "[Prepare-Target] TargetType: $TargetType cannot obtain proper container ID guid"
+            }
+
+            # share folder between host and guest
+            execd cmdiag Map $script:ContainerId $EnvironmentInfo.TargetTemp $EnvironmentInfo.TargetTemp -HideOutput > $null
+        
         }
 
         Write-Verbose "[Prepare-Target] Done"
@@ -649,6 +687,7 @@ function Create-Scripts-Tracing-WPR {
         }
 
         $mergedFileName        = "$($tracingSessionName).etl"
+        $mergedFileNameGuest   = "$($tracingSessionName)_guest.etl"
         $wprpFileName          = "$($tracingSessionName).wprp"
 
         $wprpPath              = "$($EnvironmentInfo.TraceScriptsPathLocal)\$wprpFileName"
@@ -692,8 +731,14 @@ function Create-Scripts-Tracing-WPR {
         [void]$startScript.AppendLine("%WPR_LOCAL% -resetprofint >nul 2>&1")
         if($bootTrace)
         {
-            
             [void]$startScript.AppendLine("%WPR_LOCAL% -boottrace -addboot  `"%~dp0\$wprpFileName`" -filemode")
+        }
+        elseif($TargetType -eq ([Tracing.TargetType]::Container))
+        {
+            [void]$startScript.AppendLine("echo starting local trace")
+            [void]$startScript.AppendLine("%WPR_LOCAL% -start `"%~dp0\$wprpFileName`" -filemode")
+            [void]$startScript.AppendLine("echo starting container trace")
+            [void]$startScript.AppendLine("%windir%\system32\cmdiag.exe exec $ContainerId C:\windows\system32\wpr.exe -start `"%~dp0\$wprpFileName`" -filemode")
         }
         else
         {
@@ -714,7 +759,8 @@ function Create-Scripts-Tracing-WPR {
         [void]$stopScript.AppendLine("@ECHO OFF")
         [void]$stopScript.AppendLine("SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION")
         [void]$stopScript.AppendLine("")
-        [void]$stopScript.AppendLine("set WPR_LOCAL=%windir%\sysnative\wpr.exe")
+        [void]$stopScript.AppendLine("set WPR_LOCAL=c:\windows\system32\wpr.exe")
+        [void]$stopScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\sysnative\wpr.exe )")
         [void]$stopScript.AppendLine("If Not Exist %WPR_LOCAL% ( set WPR_LOCAL=%windir%\system32\wpr.exe )")
         [void]$stopScript.AppendLine("echo WPR location %WPR_LOCAL%")
         [void]$stopScript.AppendLine("")
@@ -725,6 +771,11 @@ function Create-Scripts-Tracing-WPR {
         if($bootTrace)
         {
             [void]$stopScript.AppendLine("%WPR_LOCAL% -boottrace -stopboot `"%~dp0\..\$mergedFileName`"")
+        }
+        elseif($TargetType -eq ([Tracing.TargetType]::Container))
+        {
+            [void]$stopScript.AppendLine("%WPR_LOCAL% -stop `"%~dp0\..\$mergedFileName`"")
+            [void]$stopScript.AppendLine("%windir%\system32\cmdiag.exe Exec $ContainerId  C:\windows\system32\wpr.exe -stop `"%~dp0\..\$mergedFileNameGuest`"")
         }
         else
         {
@@ -751,7 +802,7 @@ function Gather-DXDiag {
     # Collect information about the machine.
     #
 
-    $dxdiagJob = Start-Job -Name "DxDiag" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\dxdiag.txt") -ScriptBlock {
+    Queue-BackgroundJob -Name "DxDiag" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\dxdiag.txt") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -763,11 +814,9 @@ function Gather-DXDiag {
                 & dxdiag /whql:off /t $OutputFile > $null
             }
         } catch {
-            Write-Verbose "[Save-TargetDetails] Error while getting dxdiag logs: $_"
+            Write-Verbose "[Gather-DXDiag] Error while getting dxdiag logs: $_"
         }
     }
-
-    [void]$BackgroundJobs.Add($dxdiagJob)
 }
 
 <#
@@ -776,13 +825,12 @@ function Gather-DXDiag {
 #>
 function Gather-SetupAPILog {
 
-    $setupapiJob = Start-Job -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
+    Queue-BackgroundJob -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
             $OutputFile
         )
-
         try {
             if (Test-Path "$env:windir\inf\setupapi.dev.log" -PathType Leaf) {
                 Copy-Item -Path "$env:windir\inf\setupapi.dev.log" -Destination $OutputFile
@@ -791,8 +839,6 @@ function Gather-SetupAPILog {
             Write-Verbose "[Save-TargetDetails] Error while getting device installation logs: $_"
         }
     }
-
-    [void]$BackgroundJobs.Add($setupapiJob)
 }
 
 
@@ -808,7 +854,7 @@ function Gather-PnpUtil {
     # Collect information about the machine.
     #
 
-    $pnpUtilJob = Start-Job -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\pnpUtil.pnp") -ScriptBlock {
+    Queue-BackgroundJob -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\pnpUtil.pnp") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -823,8 +869,6 @@ function Gather-PnpUtil {
             Write-Verbose "[Save-TargetDetails] Error while getting pnpUtil logs: $_"
         }
     }
-
-    [void]$BackgroundJobs.Add($pnpUtilJob)
 }
 
 <#
@@ -835,14 +879,12 @@ function Gather-WinBioEvtx {
     [CmdletBinding()]
     [OutputType([void])]
     param()
-    #
-    # Collect information about the machine.
-    #
 
     #
     # Collect the winbio.evtx
     #
-    $winbioJob = Start-Job -Name "Winbio.evtx" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\winbio.evtx") -ScriptBlock {
+
+    Queue-BackgroundJob -Name "Winbio.evtx" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\winbio.evtx") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -852,12 +894,9 @@ function Gather-WinBioEvtx {
         try {
             & wevtutil epl Microsoft-Windows-Biometrics/Operational $OutputFile
         } catch {
-            Write-Verbose "[Save-TargetDetailsOnStop] Error while getting WER logs: $_"
+            Write-Verbose "[Gather-WinBioEvtx] Error while getting WER logs: $_"
         }
     }
-
-    [void]$BackgroundJobs.Add($winbioJob)
-    Write-Verbose "[Save-TargetDetailsOnStop] Done"
 }
 
 <#
@@ -871,8 +910,7 @@ function Gather-WinHelloInfo {
     #
     # Collect information about the machine.
     #
-
-    $winHelloJob = Start-Job -Name "WinHelloInfo" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\WinHelloInfo.log") -ScriptBlock {
+    Queue-BackgroundJob -Name "WinHelloInfo" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\WinHelloInfo.log") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -959,9 +997,31 @@ function Gather-WinHelloInfo {
             $InfoStr.ToString() | Set-Content $OutputFile -Encoding Ascii
 
         } catch {
-            Write-Verbose "[Save-TargetDetails] Error while getting winHelloInfo logs: $_"
+            Write-Verbose "[Gather-WinHelloInfo] Error while getting winHelloInfo logs: $_"
         }
     }
+}
 
-    [void]$BackgroundJobs.Add($winHelloJob)
+
+<#
+ .SYNOPSIS
+ Create and queue job to background job queue.
+#>
+function Queue-BackgroundJob {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [string] $Name,
+        [System.Array] $ArgumentList,
+        [ScriptBlock] $ScriptBlock
+    )
+
+    if(Test-CommandExist "Start-ThreadJob"){
+        $job = Start-ThreadJob -Name $Name -ArgumentList $ArgumentList -ScriptBlock $ScriptBlock
+    }
+    else{
+        $job = Start-Job -Name $Name -ArgumentList $ArgumentList -ScriptBlock $ScriptBlock
+    }
+    Write-Host "Queue $name to background job"
+    [void]$BackgroundJobs.Add($job)
 }

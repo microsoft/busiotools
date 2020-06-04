@@ -1,6 +1,0 @@
-MainPackage=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.10.0_ARM.appx
-SymbolPackage=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\AppPackages\SensorExplorer_1.0.10.0_Test\SensorExplorer_1.0.10.0_ARM.appxsym
-ResourcePack=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.10.0_scale-100.appx
-ResourcePack=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.10.0_scale-125.appx
-ResourcePack=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.10.0_scale-150.appx
-ResourcePack=C:\Users\LIsa\Desktop\SensorExplorer\SensorExplorer\bin\ARM\Release\SensorExplorer_1.0.10.0_scale-400.appx

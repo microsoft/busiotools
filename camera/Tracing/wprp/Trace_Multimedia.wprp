@@ -7,16 +7,30 @@
       <MaximumFileSize Value="256" FileMode="Circular" />
       <FileMax Value="1" />
     </EventCollector>
+    <EventProvider Id="AuthUX_1" Name="3ec987dd-90e6-5877-ccb7-f27cdf6a976b" />
+    <EventProvider Id="AuthUX_2" Name="41ad72c3-469e-5fcf-cacf-e3d278856c08" />
+    <EventProvider Id="AuthUX_3" Name="4f7c073a-65bf-5045-7651-cc53bb272db5" />
+    <EventProvider Id="AuthUX_4" Name="a6c5c84d-c025-5997-0d82-e608d1abbbee" />
+    <EventProvider Id="AuthUX_5" Name="c0ac3923-5cb1-5e37-ef8f-ce84d60f1c74" />
+    <EventProvider Id="AuthUX_6" Name="df350158-0f8f-555d-7e4f-f1151ed14299" />
+    <EventProvider Id="AuthUX_7" Name="fb3cd94d-95ef-5a73-b35c-6c78451095ef" />
+    <EventProvider Id="AuthUX_8" Name="6d7051a0-9c83-5e52-cf8f-0ecaf5d5f6fd" />
     <EventProvider Id="CameraQComAvStream_DebugMenu" Name="e0141511-4523-463e-9709-b1a6fadbcbfb" Level="32" />
     <EventProvider Id="CameraQComVFE_DebugMenu" Name="62774a98-5c63-43e1-8b13-3c5e8958e414" Level="32" />
     <EventProvider Id="CTRLGUID_EVR_WPP" Name="d3045008-e530-485e-81b7-c6d54dbd9044" />
     <EventProvider Id="DRMWMI" Name="6e03dd26-581b-4ec5-8f22-601a4de5f022" />
+    <EventProvider Id="Fingerprint_CredProv" Name="0aba6892-455b-551d-7da8-3a8f85225e1a" />
+    <EventProvider Id="FsIsoTracelogProvider" Name="0a645885-cc18-4dec-ab0a-8aa890c13d3e" Level="5" />
     <EventProvider Id="Jedi" Name="e647b5bf-99a4-41fe-8789-56c6bb3fa9c8" Level="32" />
     <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" />
+    <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft_Windows_Devices_Background" Name="64ef2b1c-4ae1-4e64-8599-1636e441ec88" />
     <EventProvider Id="Microsoft-Apps-SkypeApp-UI" Name="edd0620d-036c-516e-dc22-564351a84725" />
+    <EventProvider Id="Microsoft-Kinect-FrameProvide" Name="a0e3d8ea-c34f-4419-a1db-90435b8b21d0" />
+    <EventProvider Id="Microsoft-OSG-OSS-CredProvFramework" Name="176cd9c5-c90c-5471-38ba-0eeb4f7e0bd0" />
     <EventProvider Id="Microsoft-Skype-Cafe-Threshold-Calling" Name="eb5667d3-a91a-5ede-35bc-fcfb2c6bffb1" />
     <EventProvider Id="Microsoft-Skype-Cafe-Threshold-Skype" Name="a5a483a3-76df-445b-a371-24265926199b" />
+    <EventProvider Id="Microsoft-Windows-Analog-SensorDataService" Name="39a5aa08-031d-4777-a32d-ed386bf03470" />
     <EventProvider Id="Microsoft-Windows-Apps-Flighting-Photos" Name="dca2b5b9-047f-5768-688f-9b4c705b541f" />
     <EventProvider Id="Microsoft-Windows-Apps-Photos" Name="3c20a2bd-0497-5e1d-ad49-7b789b9d7318" />
     <EventProvider Id="Microsoft-Windows-Apps-Photos-Analysis" Name="6a1e3074-ffee-5d94-f0b9-f1e92857ac55" />
@@ -29,6 +43,7 @@
     <EventProvider Id="Microsoft-Windows-AudioSes" Name="ae4bd3be-f36f-45b6-8d21-bdd6fb832853" />
     <EventProvider Id="Microsoft-Windows-AudioStackTrace" Name="e27950eb-1768-451f-96ac-cc4e14f6d3d0" />
     <EventProvider Id="Microsoft-Windows-AvStream" Name="46deb98e-b7d7-4578-a15a-e3f365c73ddb" />
+    <EventProvider Id="Microsoft-Windows-Biometrics" Name="beb1a719-40d1-54e5-c207-232d48ac6dea" />
     <EventProvider Id="Microsoft-Windows-Capture-Photography" Name="2aa2b8df-8a4e-52a7-8cc7-c72f28293393" />
     <EventProvider Id="Microsoft-Windows-Capture-RtMediaPreview" Name="c2b69254-1579-4c5f-9746-28ea00311bdd" />
     <EventProvider Id="Microsoft-Windows-Devices-Lights-LightsWinRTLayer" Name="1964d316-5ec7-496f-82a8-a62c8b164b1a" />
@@ -59,6 +74,11 @@
     <EventProvider Id="Microsoft-Windows-MF-PLATFORM-WPP" Name="00000000-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-MF-PLAY-WPP" Name="00000006-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" Name="00000008-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-PerceptionRuntime" Name="0279b50e-52bd-4ed6-a7fd-b683d9cdf45d" />
+    <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Stub" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" />
+    <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Verbose" Name="f4183a75-20d4-479b-967d-367dbf62a058" />
+    <EventProvider Id="Microsoft-Windows-PerceptionSensorDataService" Name="747e166b-dfa0-4e13-bc91-eb38dfcb4554" />
+    <EventProvider Id="Microsoft-Windows-PerceptionSensorDataService-Verbose" Name="1b5106b1-7622-4740-ad81-d9c6ee74f124" />
     <EventProvider Id="Microsoft-WindowsPhone-AppPlatProvider-Test" Name="1230dd62-03b6-4a26-92f5-06374d678571" />
     <EventProvider Id="Microsoft-WindowsPhone-AudioRouting" Name="c72d385e-3a63-4e6d-8393-9399a36bd6e4" />
     <EventProvider Id="Microsoft-WindowsPhone-AudioSrvPolicyManager" Name="71e0ac1e-cfa2-447c-91c7-4f307030f2fc" />
@@ -88,6 +108,12 @@
     <EventProvider Id="Microsoft-WindowsPhone-zMediaQueueApp" Name="9e0d9603-4e6a-4a48-8cbd-63305d398f63" />
     <EventProvider Id="Microsoft-Windows-Portcls" Name="10eb6007-818c-4db6-a694-b518e589d07a" />
     <EventProvider Id="Microsoft-Windows-Runtime-Media" Name="8f0db3a8-299b-4d64-a4ed-907b409d4584" />
+    <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-Face" Name="48cafa6c-73aa-499c-bdd8-c0d36f84813e" />
+    <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-FaceDiag" Name="8db3086d-116f-5bed-cfd5-9afda80d28ea" />
+    <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-DiagnosticsProvider" Name="e60019f0-b378-42b6-a185-515914d3228c" />
+    <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-PerformanceProvider" Name="af09b0f9-ae02-4926-8a0f-e90d803063a8" />
+    <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-TelemetryProvider" Name="1d480c11-3870-4b19-9144-47a53cd973bd" />
+    <EventProvider Id="Microsoft-Windows-Shell-BioEnrollment" Name="22eb0808-0b6c-5cd4-5511-6a77e6e73a93" />
     <EventProvider Id="Microsoft-Windows-SocCaptureSim" Name="e59fb1ec-318f-4ac6-b36b-6d11c5a49bec" />
     <EventProvider Id="Microsoft-Windows-USBVideo" Name="da1d1dbd-3186-4fa2-bc2d-075efd9e43e2" Level="4" />
     <EventProvider Id="Microsoft-Windows-VideoEditing" Name="acabb288-1997-439b-808b-6ffb52b3488f" Level="32">
@@ -95,14 +121,34 @@
         <Keyword Value="0x000000001FFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft-Windows-WdfCompanionFilter" Name="12ab1cf8-c42c-4b9a-bd9c-3fa45b42bdca" Level="5" />
+    <EventProvider Id="Microsoft-Windows-WinBioDataModel" Name="63221d5a-4d00-4be3-9d38-de9aaf5d0258" />
     <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
     <EventProvider Id="Microsoft-Windows-WMP" Name="f3f14ff3-7b80-4868-91d0-d77e497b025e" />
+    <EventProvider Id="NGC_CredProv" Name="e92355c0-41e4-4aed-8d67-df6b2058f090" />
+    <EventProvider Id="NGC_Crypt" Name="9df6a82d-5174-5ebf-842a-39947c48bf2a" />
+    <EventProvider Id="NGC_Ctnr" Name="b66b577f-ae49-5ccf-d2d7-8eb96bfd440c" />
+    <EventProvider Id="NGC_CtnrSvc" Name="cac8d861-7b16-5b6b-5fc0-85014776bdac" />
+    <EventProvider Id="NGC_KspSvc" Name="add0de40-32b0-4b58-9d5e-938b2f5c1d1f" />
     <EventProvider Id="Osiris" Name="7d40a645-bcab-5bb4-82f0-09a26f9af2ea" Level="32" />
     <EventProvider Id="PlayAudio" Name="ac239183-f48e-47b1-b70c-d028d24c2fb4" />
     <EventProvider Id="PlayReady-WPP" Name="00000000-7ac4-430a-94e4-b0dfd254650f" />
+    <EventProvider Id="Secure-ClearDMFT" Name="4280b01e-1f58-4e48-a282-20e609c8e528" Level="5" />
     <EventProvider Id="SSMFSOURCE" Name="8f55386b-eb37-4afc-88e0-c475b2fefd9a" />
-    <EventProvider Id="UsbVideo" Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" Level="4" NonPagedMemory="true" />
+    <EventProvider Id="TPM" Name="85be49ea-38f1-4547-a604-80060202fb27" />
+    <EventProvider Id="UifEventSource" Name="b39b8cea-eaaa-5a74-5794-4948e222c663" />
+    <EventProvider Id="UsbVideo" Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x0000000000000007" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WinBioService_0" Name="9dadd79b-d556-53f2-67c4-129fa62b7512" />
+    <EventProvider Id="WinBioService_1" Name="e0dda06c-a215-407b-be66-8ae0c628d6b0" />
+    <EventProvider Id="WinBioService_2" Name="3a8d6942-b034-48e2-b314-f69c2b4655a3" />
+    <EventProvider Id="WinBioService_4" Name="9df19cfa-e122-5343-284b-f3945ccd65b2" />
     <EventProvider Id="Windows_Media_Player_Trace" Name="a9c1a3b7-54f3-4724-adce-58bc03e3bc78" />
+    <EventProvider Id="Windows-Media-FaceAnalysis-ApiDiagnostics" Name="a55d5a23-1a5b-580a-2be5-d7188f43fae1" />
+    <EventProvider Id="WinLogon" Name="4b8b1947-ae4d-54e2-826a-1aee78ef05b2" />
     <EventProvider Id="ZTrace" Name="f0febce4-5f0a-4cd8-b14c-7f04b2f57f9e" Level="32">
       <Keywords>
         <Keyword Value="0x000000007FFFFFFF" />
@@ -112,16 +158,30 @@
       <Collectors>
         <EventCollectorId Value="EventCollector_Trace_Multimedia">
           <EventProviders>
+            <EventProviderId Value="AuthUX_1" />
+            <EventProviderId Value="AuthUX_2" />
+            <EventProviderId Value="AuthUX_3" />
+            <EventProviderId Value="AuthUX_4" />
+            <EventProviderId Value="AuthUX_5" />
+            <EventProviderId Value="AuthUX_6" />
+            <EventProviderId Value="AuthUX_7" />
+            <EventProviderId Value="AuthUX_8" />
             <EventProviderId Value="CameraQComAvStream_DebugMenu" />
             <EventProviderId Value="CameraQComVFE_DebugMenu" />
             <EventProviderId Value="CTRLGUID_EVR_WPP" />
             <EventProviderId Value="DRMWMI" />
+            <EventProviderId Value="Fingerprint_CredProv" />
+            <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="Jedi" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft_Windows_Devices_Background" />
             <EventProviderId Value="Microsoft-Apps-SkypeApp-UI" />
+            <EventProviderId Value="Microsoft-Kinect-FrameProvide" />
+            <EventProviderId Value="Microsoft-OSG-OSS-CredProvFramework" />
             <EventProviderId Value="Microsoft-Skype-Cafe-Threshold-Calling" />
             <EventProviderId Value="Microsoft-Skype-Cafe-Threshold-Skype" />
+            <EventProviderId Value="Microsoft-Windows-Analog-SensorDataService" />
             <EventProviderId Value="Microsoft-Windows-Apps-Flighting-Photos" />
             <EventProviderId Value="Microsoft-Windows-Apps-Photos" />
             <EventProviderId Value="Microsoft-Windows-Apps-Photos-Analysis" />
@@ -134,6 +194,7 @@
             <EventProviderId Value="Microsoft-Windows-AudioSes" />
             <EventProviderId Value="Microsoft-Windows-AudioStackTrace" />
             <EventProviderId Value="Microsoft-Windows-AvStream" />
+            <EventProviderId Value="Microsoft-Windows-Biometrics" />
             <EventProviderId Value="Microsoft-Windows-Capture-Photography" />
             <EventProviderId Value="Microsoft-Windows-Capture-RtMediaPreview" />
             <EventProviderId Value="Microsoft-Windows-Devices-Lights-LightsWinRTLayer" />
@@ -160,6 +221,11 @@
             <EventProviderId Value="Microsoft-Windows-MF-PLATFORM-WPP" />
             <EventProviderId Value="Microsoft-Windows-MF-PLAY-WPP" />
             <EventProviderId Value="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" />
+            <EventProviderId Value="Microsoft-Windows-PerceptionRuntime" />
+            <EventProviderId Value="Microsoft-Windows-PerceptionRuntime-Stub" />
+            <EventProviderId Value="Microsoft-Windows-PerceptionRuntime-Verbose" />
+            <EventProviderId Value="Microsoft-Windows-PerceptionSensorDataService" />
+            <EventProviderId Value="Microsoft-Windows-PerceptionSensorDataService-Verbose" />
             <EventProviderId Value="Microsoft-WindowsPhone-AppPlatProvider-Test" />
             <EventProviderId Value="Microsoft-WindowsPhone-AudioRouting" />
             <EventProviderId Value="Microsoft-WindowsPhone-AudioSrvPolicyManager" />
@@ -189,17 +255,39 @@
             <EventProviderId Value="Microsoft-WindowsPhone-zMediaQueueApp" />
             <EventProviderId Value="Microsoft-Windows-Portcls" />
             <EventProviderId Value="Microsoft-Windows-Runtime-Media" />
+            <EventProviderId Value="Microsoft-Windows-Security-Biometrics-CredentialProvider-Face" />
+            <EventProviderId Value="Microsoft-Windows-Security-Biometrics-CredentialProvider-FaceDiag" />
+            <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-DiagnosticsProvider" />
+            <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-PerformanceProvider" />
+            <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-TelemetryProvider" />
+            <EventProviderId Value="Microsoft-Windows-Shell-BioEnrollment" />
             <EventProviderId Value="Microsoft-Windows-SocCaptureSim" />
             <EventProviderId Value="Microsoft-Windows-USBVideo" />
             <EventProviderId Value="Microsoft-Windows-VideoEditing" />
+            <EventProviderId Value="Microsoft-Windows-WdfCompanionFilter" />
+            <EventProviderId Value="Microsoft-Windows-WinBioDataModel" />
             <EventProviderId Value="Microsoft-Windows-WinRT-Error" />
             <EventProviderId Value="Microsoft-Windows-WMP" />
+            <EventProviderId Value="NGC_CredProv" />
+            <EventProviderId Value="NGC_Crypt" />
+            <EventProviderId Value="NGC_Ctnr" />
+            <EventProviderId Value="NGC_CtnrSvc" />
+            <EventProviderId Value="NGC_KspSvc" />
             <EventProviderId Value="Osiris" />
             <EventProviderId Value="PlayAudio" />
             <EventProviderId Value="PlayReady-WPP" />
+            <EventProviderId Value="Secure-ClearDMFT" />
             <EventProviderId Value="SSMFSOURCE" />
+            <EventProviderId Value="TPM" />
+            <EventProviderId Value="UifEventSource" />
             <EventProviderId Value="UsbVideo" />
+            <EventProviderId Value="WinBioService_0" />
+            <EventProviderId Value="WinBioService_1" />
+            <EventProviderId Value="WinBioService_2" />
+            <EventProviderId Value="WinBioService_4" />
             <EventProviderId Value="Windows_Media_Player_Trace" />
+            <EventProviderId Value="Windows-Media-FaceAnalysis-ApiDiagnostics" />
+            <EventProviderId Value="WinLogon" />
             <EventProviderId Value="ZTrace" />
           </EventProviders>
         </EventCollectorId>

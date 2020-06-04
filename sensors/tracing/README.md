@@ -12,6 +12,14 @@ Unzip the package locally and browse to the sensors\tracing subfolder
 5) Run StopPersistentSensorsTracing.cmd from an elevated command prompt
 6) Collect the traces and build information from C:\Windows\tracing
 
+The steps above are the recommended steps. Alternatively, if you think rebooting the system will lose the repro, do the following instead
+
+1) Open an elevated command prompt
+2) Run CollectSensorsTraces.cmd
+3) When prompted, reproduce the problem
+4) Press any key on the command prompt where you ran CollectSensorsTraces.cmd
+5) Collect the traces and build information from C:\Windows\tracing
+
 # Brightness
 The following are only supported on systems which support changing display brightness.
 

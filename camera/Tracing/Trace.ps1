@@ -34,6 +34,10 @@
  .EXAMPLE
  .\Trace.ps1 -List -Detailed
  Shows information about the supported scenarios, including providers used.
+
+ .EXAMPLE
+ .\Trace.ps1 -Start
+ Start tracing without stopping
 #>
 
 [CmdletBinding(DefaultParameterSetName = "Common")]
@@ -43,6 +47,16 @@ param(
     [String]
     $Output,
 
+    [Parameter(ParameterSetName = "Common", ValueFromPipeline = $true)]
+    [Switch]
+    [Alias("start")]
+    $StartBootTrace,
+
+    [Parameter(ParameterSetName = "StopBootTrace", ValueFromPipeline = $true)]
+    [ValidateNotNullOrEmpty()]
+    [Alias("stop")]
+    [String]
+    $StopBootTrace,
     [Parameter(ParameterSetName = "Help")]
     [Alias("h", "?")]
     [Switch]
@@ -95,7 +109,7 @@ $BackgroundJobs        = New-Object System.Collections.ArrayList
 #>
 function Main {
     [CmdletBinding()]
-    [OutputType([void])]
+    [OutputType([String])]
     param()
 
     begin {
@@ -118,6 +132,12 @@ function Main {
         $script:ToolsetType        = Read-TraceToolsetType        "WPR"
         $script:PostProcessingType = Read-TracePostProcessingType "None"
 
+        $IsStopBootTrace = $false
+        if([String]::IsNullOrEmpty($StopBootTrace) -eq $false)
+        {
+            $IsStopBootTrace = $true
+        }
+
         #
         # Make sure the script is running elevated.
         #
@@ -133,51 +153,126 @@ function Main {
         $tracingStarted = $false
 
         try {
-            Write-Host "Looking for the logging scenarios..."
-            #$script:ScenariosData = Get-Scenario $Scenario
+            if($IsStopBootTrace)
+            {
+                Write-Host "Gathering system information..."
+                Get-EnvironmentInformation
 
-            Write-Host "Gathering system information..."
-            Get-EnvironmentInformation
+                $script:StopScripts = @(Get-ChildItem -Path $path -Filter *_stop.cmd | select -ExpandProperty FullName)
 
-            Write-Host "Preparing local system..."
-            Prepare-Local
+                # Put scripts on device, if needed.
+                Write-Host "Preparing target system..."
+                Prepare-Target
 
-            # If the user wants us to generate scripts, but not to run them.
-            Write-Host "Preparing target system..."
-            Prepare-Target
+                if ([Tracing.TargetType]::Local -ne $TargetType ) {
+                    PutFile-Target -Local "$($EnvironmentInfo.TraceScriptsPathLocal)\*" -Target $EnvironmentInfo.TraceScriptsPathTarget -TargetType $TargetType
 
-            Write-Host "Saving target system details..."
-            Save-TargetDetails
+                    # Modify locations of the start/stop scripts, as they are on a remote device now.
+                    # NOTE: Don't do anything with the post-processing scripts, because they are run locally.
+                    $script:StartScripts = $script:StartScripts | % { "$($EnvironmentInfo.TraceScriptsPathTarget)\$((Get-Item $_).Name)" }
+                    $script:StopScripts  = $script:StopScripts  | % { "$($EnvironmentInfo.TraceScriptsPathTarget)\$((Get-Item $_).Name)" }
+                }
 
-            Write-Host "Creating tracing scripts..."
-            Create-Scripts
+                Write-Host "Stopping boot tracing and merging results..."
+                Stop-Tracing -DownloadFiles
+                $tracingStarted = $false
 
-            Write-Host "Starting tracing..."
-            $tracingStarted = $true
-            Start-Tracing
+                Write-Host "Saving target system details..."
+                Save-TargetDetailsOnStop
 
-            # Wait for user input, or for background tasks to finish.
-            Wait-ForStop
+                # Decide if the post-processing is needed.
+                if (($OperationModeType -ne [Tracing.OperationMode]::NoPostProcessing) -and ($PostProcessingType -ne [Tracing.PostProcessingType]::None)) {
+                    Write-Host "Post-processing..."
 
-            Write-Host "Stopping tracing and merging results..."
-            Stop-Tracing -DownloadFiles
-            $tracingStarted = $false
+                    if (Test-DomainNetworkAvailable) {
+                        Start-PostProcessing
+                    } else {
+                        Write-Host "Post-processing skipped, domain resources not available" -ForegroundColor Yellow
+                    }
+                } else {
+                    Write-Host "Post-processing skipped per user request" -ForegroundColor Yellow
+                }
 
-            Write-Host "Waiting for the background jobs to complete..."
-            Wait-ForBackgroundJobs
+                Write-Host "Waiting for the background jobs to complete..."
+                Wait-ForBackgroundJobs
 
-            Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+                Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+    
+            }
+            else
+            {
+                Write-Host "Looking for the logging scenarios..."
+                #$script:ScenariosData = Get-Scenario $Scenario
 
-            Compress-Archive -Path $($EnvironmentInfo.TracePathLocal) -DestinationPath $($EnvironmentInfo.TracePathLocal)
-            
+                Write-Host "Gathering system information..."
 
+                Get-EnvironmentInformation
+                
+                Write-Host "Preparing local system..."
+                Prepare-Local
+
+                # If the user wants us to generate scripts, but not to run them.
+                Write-Host "Preparing target system..."
+                Prepare-Target
+
+                Write-Host "Saving target system details..."
+                Save-TargetDetailsOnStart
+
+                Write-Host "Creating tracing scripts..."
+                Create-Scripts -bootTrace:$StartBootTrace
+
+                Write-Host "Starting tracing..."
+                $tracingStarted = $true
+                Start-Tracing
+
+                if ($StartBootTrace)
+                {
+                    # retain tracing between reboot
+                    Write-Host "Waiting for the background jobs to complete..."
+                    Wait-ForBackgroundJobs
+
+                    Write-Host "To stop active trace"
+                    Write-Host "    Trace.ps1 -stopbootTrace $($EnvironmentInfo.TracePathLocal)" 
+                    return $EnvironmentInfo.TracePathLocal
+                }
+                else
+                {
+                    # Wait for user input, or for background tasks to finish.
+                    Wait-ForStop
+
+                    Write-Host "Stopping tracing and merging results..."
+                    Stop-Tracing -DownloadFiles
+                    $tracingStarted = $false
+                    Write-Verbose "Stopping tracing succeeded."
+
+                    Write-Host "Saving target system details..."
+                    Save-TargetDetailsOnStop
+                    Write-Verbose "Saving target details on stop succeeded."
+
+                    Write-Host "Waiting for the background jobs to complete..."
+                    Wait-ForBackgroundJobs
+                    Write-Verbose "Wait for background jobs succeeded."
+
+                    Write-Host "Output: $($EnvironmentInfo.TracePathLocal)"
+
+                    Compress-Archive -Path $($EnvironmentInfo.TracePathLocal) -DestinationPath $($EnvironmentInfo.TracePathLocal)
+                }
+            }
+        } catch {
+            Write-Host "Unexpected error: $($_.Exception.Message)"
+            Write-Host "Stack: `n$($_.ScriptStackTrace)"
         } finally {
             # Open the output, and archive directory.
-            if (Test-Path $EnvironmentInfo.TracePathLocal) {
-                Start-Process ($EnvironmentInfo.TracePathLocal) > $null
+            
+            if ((Test-Path $EnvironmentInfo.TracePathLocal)){
+                try {
+                    # shell os  doesn't have UI, don't try to open the folder
+                    Start-Process ($EnvironmentInfo.TracePathLocal) > $null
+                }
+                catch {}
             }
 
-            if ($tracingStarted) {
+            if ($tracingStarted -and (-not $StartBootTrace)) {
                 # No need to download files in case we were interrupted.
                 Stop-Tracing -DownloadFiles:$false
             }
@@ -200,37 +295,40 @@ function Get-EnvironmentInformation {
     }
 
     process {
-        Write-Verbose "[Get-EnvironmentInformation] Collecting environment information"
+        Write-host "[Get-EnvironmentInformation] Collecting environment information"
 
         $systemArchitecture = Get-LocalSystemArchitecture
 
         # Figure out if xperf can be found in the PATH.
-        cmd /c where /Q xperf.exe > $null
-        if ($LASTEXITCODE -eq 0) {
-            $localXPerf = cmd /c where xperf.exe
+        if (Test-CommandExist "xperf.exe") {
+            $localXPerf = get-command "xperf.exe" | Select -ExpandProperty "Source"
         } else {
             $localXPerf = "C:\Windows\System32\XPerf.exe"
         }
-
+        Write-Verbose "[Get-EnvironmentInformation] Data:"
         $script:EnvironmentInfo = New-Object Tracing.EnvironmentInfo
         $EnvironmentInfo.ScriptRootPath          = $PSScriptRoot
-        $EnvironmentInfo.TargetTemp              = if ($TargetType -eq [Tracing.TargetType]::TShell) { "C:\Data\Test\Tracing" } elseif ($TargetType -eq [Tracing.TargetType]::XBox) { "D:\Tmp\Tracing" } else { $env:TEMP }
-        $EnvironmentInfo.SymLocalPath            = "$($env:SystemDrive)\Symbols.pri"
-        $EnvironmentInfo.TraceEtlBase            = "Trace_$($env:USERNAME)_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
-        $EnvironmentInfo.TracePathTarget         = "$($EnvironmentInfo.TargetTemp)\$($EnvironmentInfo.TraceEtlBase)"
-        $EnvironmentInfo.TracePathLocal          = if ([String]::IsNullOrEmpty($Output)) { "$($env:TEMP)\$($EnvironmentInfo.TraceEtlBase)" } else { $Output }
-        $EnvironmentInfo.TraceScriptsPathLocal   = "$($EnvironmentInfo.TracePathLocal)\Scripts"
-        $EnvironmentInfo.TraceScriptsPathTarget  = "$($EnvironmentInfo.TracePathTarget)\Scripts"
-        
-
-        Write-Verbose "[Get-EnvironmentInformation] Data:"
         Write-Verbose "  ScriptRootPath          : $($EnvironmentInfo.ScriptRootPath)"
+
+        $EnvironmentInfo.TargetTemp              = if ($TargetType -eq [Tracing.TargetType]::TShell) { "C:\Data\Test\Tracing" } elseif ($TargetType -eq [Tracing.TargetType]::XBox) { "D:\Tmp\Tracing" } else { $env:TEMP }
         Write-Verbose "  TargetTemp              : $($EnvironmentInfo.TargetTemp)"
+
+        $EnvironmentInfo.SymLocalPath            = "$($env:SystemDrive)\Symbols.pri"
         Write-Verbose "  SymLocalPath            : $($EnvironmentInfo.SymLocalPath)"
+
+        $EnvironmentInfo.TraceEtlBase            = "Trace_$($env:USERNAME)_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
         Write-Verbose "  TraceEtlBase            : $($EnvironmentInfo.TraceEtlBase)"
+
+        $EnvironmentInfo.TracePathTarget         = "$($EnvironmentInfo.TargetTemp)\$($EnvironmentInfo.TraceEtlBase)"
         Write-Verbose "  TracePathTarget         : $($EnvironmentInfo.TracePathTarget)"
+
+        $EnvironmentInfo.TracePathLocal          = if ([String]::IsNullOrEmpty($Output)) { "$($env:TEMP)\$($EnvironmentInfo.TraceEtlBase)" } else { $Output }
         Write-Verbose "  TracePathLocal          : $($EnvironmentInfo.TracePathLocal)"
+
+        $EnvironmentInfo.TraceScriptsPathLocal   = "$($EnvironmentInfo.TracePathLocal)\Scripts"
         Write-Verbose "  TraceScriptsPathLocal   : $($EnvironmentInfo.TraceScriptsPathLocal)"
+
+        $EnvironmentInfo.TraceScriptsPathTarget  = "$($EnvironmentInfo.TracePathTarget)\Scripts"
         Write-Verbose "  TraceScriptsPathTarget  : $($EnvironmentInfo.TraceScriptsPathTarget)"
 
         Write-Verbose "[Get-EnvironmentInformation] Done"
@@ -241,7 +339,7 @@ function Get-EnvironmentInformation {
  .SYNOPSIS
  Stores system information in the output folder.
 #>
-function Save-TargetDetails {
+function Save-TargetDetailsOnStart {
     [CmdletBinding()]
     [OutputType([void])]
     param()
@@ -256,19 +354,20 @@ function Save-TargetDetails {
 
         try{
             $buildInfo = Get-BuildInfo -TargetType $TargetType
-            $buildInfoFilePath = "$($EnvironmentInfo.TracePathTarget)\BuildInfo.log"
+            $buildInfoFilePath = "$($EnvironmentInfo.TracePathLocal)\BuildInfo.log"
 
+            # build 
             $buildInfoStr = New-Object System.Text.StringBuilder
             [void]$buildInfoStr.AppendLine("Version=$($buildInfo.Version),Arch=$($buildInfo.Flavor),Branch=$($buildInfo.Branch)")
             $buildInfoStr.ToString() | Set-Content $buildInfoFilePath -Encoding Ascii
 
         } catch {
-                Write-Verbose "[Save-TargetDetails] Error while getting buildInfo: $_"
+                Write-Verbose "[Save-TargetDetailsOnStart] Error while getting buildInfo: $_"
         }
 
-        if ($TargetType -eq [Tracing.TargetType]::Local) {
+        if ([Tracing.TargetType]::Local -eq $TargetType) {
             
-            Write-Verbose "[Save-TargetDetails] Collecting machine information and crash reports"
+            Write-Verbose "[Save-TargetDetailsOnStart] Collecting machine information and crash reports"
 
             #
             # Collect information about the machine.
@@ -277,8 +376,35 @@ function Save-TargetDetails {
             Gather-SetupAPILog
             Gather-PnpUtil
 
-            # Save buildInfo
+            Write-Verbose "[Save-TargetDetailsOnStart] Done"
         }
+    }
+}
+
+<#
+ .SYNOPSIS
+ Stores system information in the output folder.
+#>
+function Save-TargetDetailsOnStop {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
+
+    begin {
+        Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    }
+
+    process {
+        if ([Tracing.TargetType]::Local -ne $TargetType) {
+            Write-Verbose "[Save-TargetDetailsOnStop] Skipping for the remote device"
+        } else {
+            Write-Verbose "[Save-TargetDetailsOnStop] Collecting machine information and crash reports"
+
+            Gather-WinHelloInfo
+            Gather-WinBioEvtx
+
+            Write-Verbose "[Save-TargetDetailsOnStop] Done"
+       }
     }
 }
 

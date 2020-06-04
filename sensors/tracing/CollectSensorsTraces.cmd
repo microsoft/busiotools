@@ -52,8 +52,13 @@ reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %
 powershell "(dir %SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll).VersionInfo | fl" >> %SystemRoot%\Tracing\BuildNumber.txt
 dir /s %SystemRoot%\LiveKernelReports\* >> %SystemRoot%\Tracing\BuildNumber.txt
 
-rem copying the WUDF traces
+echo Now collecting DispDiag
+rem Collecting DispDiag
+dispdiag
+
+rem copying the WUDF traces and DispDiag
 copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %SystemRoot%\Tracing >nul 2>&1
 copy %ProgramData%\Microsoft\WDF\*.dmp %SystemRoot%\Tracing >nul 2>&1
+copy %SYSTEMROOT%\system32\DispDiag*.dat %SystemRoot%\Tracing >nul 2>&1
 
 start %SystemRoot%\Tracing

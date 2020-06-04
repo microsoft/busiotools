@@ -7,7 +7,7 @@
   Copyright="Microsoft Corporation"
   Tag="">
   <Profiles>
-  
+
     <EventCollector Id="Traces_paged" Name="Event Collector Paged">
       <BufferSize Value="1024"/>
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
@@ -349,16 +349,6 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.QuickPair" Name="7BD2C7F4-6671-474E-BDFC-2D141A0B6B7E" Level="7" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.Proximity" Name="FA5FD884-8804-4A36-98B8-70BFC46A9FA2" Level="7" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.WinsockSocket" Name="51200EE7-BA88-4E31-812F-527060C35D79" Level="7" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xfffffff"/>
@@ -509,6 +499,21 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.LooselyCoupledDevices" Name="8A6767B6-D556-4AAA-8612-DD370FADA6A9" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.WLAN.AutoConfig" Name="9580d7dd-0379-4658-9870-d5be7d52d6de" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.WLAN.WDI" Name="21ba7b61-05f8-41f1-9048-c09493dcfe38" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
 
     <!-- Non Paged providers. They are kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="true">
@@ -556,6 +561,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose" Name="1a973eb5-9862-46f0-a54b-ad8a6221654e" Level="7" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthPort" Name="d88ace07-cac0-11d8-a4c6-000d560bcba5" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -601,6 +611,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthHfAud.Verbose" Name="565D84DC-23F7-400a-B2FA-23580731F09F" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.WPP.BthHFEnum" Name="BF94D329-C5F9-4deb-AD29-2C6682D485F0" Level="7" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0xfffffff"/>
@@ -636,10 +651,9 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-
-    <EventProvider Id="Microsoft.Windows.Bluetooth.BthTelemetry" Name="D951CB3F-2CBA-4A1C-9436-6CF2E904DDE8" Level="4" NonPagedMemory="true">
+    <EventProvider Id="Microsoft.Surface.OobAdaptationDriver" Name="C09E7A78-ECF1-4AA7-8CEA-1568E5054F4E" Level="5" NonPagedMemory="true">
       <Keywords>
-        <Keyword Value="0x0"/>
+        <Keyword Value="0xffffffff"/>
       </Keywords>
     </EventProvider>
     <EventProvider Id="Intel.Windows.Bluetooth.IBTUSB" Name="F7C7AF11-757A-46B0-B1CB-93F3CBCB3390" Level="4" NonPagedMemory="true">
@@ -647,26 +661,24 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.BthPort" Name="A8DD90AF-85F0-40B1-B022-4F54961E8AE5" Level="7" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH" Name="0575a639-1f8c-510e-8aaa-0af5e54229ab" Level="7" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.Gap" Name="2AEE48B8-F498-4F2E-A2A2-898665DB5C3E" Level="7" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController" Name="257D541D-16D8-433C-B421-9AE2255DF475" Level="7" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry" Name="D951CB3F-2CBA-4A1C-9436-6CF2E904DDE8" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.AudioPlaybackConnection" Name="C3EC8B2A-6B8C-4E85-947E-99DD27A6B4AC" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.AVCTP" Name="B20C600F-AA2F-4574-BE01-F9FB7D773E67" Level="5" NonPagedMemory="true"/>
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.AVRCP" Name="E7A5F875-1FEE-4113-BDCC-348D56ABBA84" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Battery" Name="9eb494cd-1f06-5384-c8d8-98c3377fce89" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp" Name="8776AD1E-5022-4451-A566-F47E708B9075" Level="4" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp.Verbose" Name="8776AD1E-5022-4451-A566-F47E708B9075" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthEnum" Name="8C8349A2-F297-4178-80A5-0810A56C9DFB" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthPort" Name="A8DD90AF-85F0-40B1-B022-4F54961E8AE5" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Gap" Name="2AEE48B8-F498-4F2E-A2A2-898665DB5C3E" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HfAud" Name="8D87AA29-0EBE-41AF-B3C4-F56CE668BD22" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HfEnum" Name="9680893F-0696-4EC0-9AF5-65974897C9D4" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HFP" Name="1D571AB7-C34D-41C5-B141-42D76317C7C5" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH" Name="0575a639-1f8c-510e-8aaa-0af5e54229ab" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices" Name="1adab660-a3f8-5f4a-276b-743d455464ee" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Proximity" Name="FA5FD884-8804-4A36-98B8-70BFC46A9FA2" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.QuickPair" Name="7BD2C7F4-6671-474E-BDFC-2D141A0B6B7E" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController" Name="257D541D-16D8-433C-B421-9AE2255DF475" Level="5" NonPagedMemory="true" />
 
     <!-- BthPort ETW provider. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHPORT" Name="8a1f9517-3a8c-4a9e-a018-4f17a200f277" Level="4" NonPagedMemory="true">
@@ -815,8 +827,6 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Service"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Battery"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Common"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.QuickPair"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WinsockSocket"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ConsentUI"/>
             <EventProviderId Value="Microsoft.Windows.Broker.InfrastructureWPP"/>
@@ -861,6 +871,9 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -887,12 +900,25 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.bthusb"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthTelemetry"/>
             <EventProviderId Value="Intel.Windows.Bluetooth.IBTUSB"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthPort"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AudioPlaybackConnection"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AVCTP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AVRCP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Battery"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthPort"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Gap"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HFP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -901,7 +927,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT"/>
           </EventProviders>
         </EventCollectorId>
-        
+
       </Collectors>
     </Profile>
 
@@ -962,8 +988,6 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Service"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Battery"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.Common"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.QuickPair"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.WinsockSocket"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.ConsentUI"/>
             <EventProviderId Value="Microsoft.Windows.Broker.InfrastructureWPP"/>
@@ -1008,6 +1032,9 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
             <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
+            <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1019,7 +1046,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BthA2dp.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthA2DP.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.AvrcpTransport"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthLeEnum.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPort.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.RFCOMM"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BtAmPm"/>
@@ -1027,19 +1054,32 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthCsti"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthPrint"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.Enumerator"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHfAud.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthHFEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BTHL2CAP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.BthModem"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.bthusb.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDBTH"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.WPP.HIDCLASS"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.BthTelemetry"/>
             <EventProviderId Value="Intel.Windows.Bluetooth.IBTUSB"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.BthPort"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.HIDBTH"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.Gap"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.Tracelogging.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Surface.OobAdaptationDriver"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AudioPlaybackConnection"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AVCTP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.AVRCP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Battery"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp.Verbose"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthPort"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Gap"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfAud"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfEnum"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HFP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1048,7 +1088,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT"/>
           </EventProviders>
         </EventCollectorId>
-        
+
       </Collectors>
     </Profile>
 
@@ -1056,4 +1096,3 @@
     <!--<Profile Id="BluetoothStack.Verbose.Memory" Base="BluetoothStack.Verbose.File" LoggingMode="Memory" Name="BluetoothStack" DetailLevel="Verbose" Description="Bluetooth stack verbose"/>-->
   </Profiles>
 </WindowsPerformanceRecorder>
-

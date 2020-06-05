@@ -788,7 +788,6 @@ namespace SensorExplorer
                 CalculateStaticAccuracy();
             }
 
-
             DisplayRestart();
         }
 
@@ -1180,8 +1179,18 @@ namespace SensorExplorer
 
         private int GetIndexOfMaxValue(List<int> inputList)
         {
-            int indexMax = 0;
-            int valueMax = 0;
+            int indexMax = -1;
+            int valueMax;
+
+            if (inputList.Count > 0 )
+            {
+                valueMax = inputList[0];
+                indexMax = 0;
+            }
+            else
+            {
+                return indexMax;
+            }
 
             for (int i = 0; i < inputList.Count; i++)
             {
@@ -1234,69 +1243,72 @@ namespace SensorExplorer
             int type = SensorType[pivotSensor.SelectedIndex];
             double[] axisResolution = new double[3];
             double[] axisStdDev = new double[3];
-            double finalResolution = 0;
-            double finalNoiseDensity = 0;
+            double finalResolution = -1;
+            double finalNoiseDensity = -1;
             const double histogramBin = 1e-4;
 
             if (type == Sensor.ACCELEROMETER)
             {
-                for (int i = 0; i < 3; i++)
+                if (dataList.Count > 0 && testLength[testType] > 0)
                 {
-                    axisList[i] = new List<double>();
-                    for (int j = 0; j < dataList.Count; j++)
+                    for (int i = 0; i < 3; i++)
                     {
-                        axisList[i].Add(dataList[j][i]);
-                    }
-                    axisList[i].Sort();
-
-                    int histogramCount = 1;
-                    histogramList[i] = new List<double>();
-                    countList[i] = new List<int>();
-                    for (int j = 1; j < axisList[i].Count; j++)
-                    {
-                        if (Math.Abs(axisList[i][j] - axisList[i][j-1]) < histogramBin)
+                        axisList[i] = new List<double>();
+                        for (int j = 0; j < dataList.Count; j++)
                         {
-                            histogramCount++;
+                            axisList[i].Add(dataList[j][i]);
+                        }
+                        axisList[i].Sort();
+                    
+                        int histogramCount = 1;
+                        histogramList[i] = new List<double>();
+                        countList[i] = new List<int>();
+                        for (int j = 1; j < axisList[i].Count; j++)
+                        {
+                            if (Math.Abs(axisList[i][j] - axisList[i][j-1]) < histogramBin)
+                            {
+                                histogramCount++;
+                            }
+                            else
+                            {
+                                histogramList[i].Add(axisList[i][j - 1]);
+                                countList[i].Add(histogramCount);
+                                histogramCount = 1;
+                            }
+                        }
+                    
+                        int maxHistogramIndex = -1;
+                        maxHistogramIndex = GetIndexOfMaxValue(countList[i]);
+                        if (maxHistogramIndex >= 0)
+                        {
+                            if ((maxHistogramIndex == 0) || (countList[i][maxHistogramIndex + 1] >= countList[i][maxHistogramIndex - 1]))
+                            {
+                                axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex + 1] - histogramList[i][maxHistogramIndex]);
+                            }
+                            else
+                            {
+                                axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex] - histogramList[i][maxHistogramIndex - 1]);
+                            }
                         }
                         else
                         {
-                            histogramList[i].Add(axisList[i][j - 1]);
-                            countList[i].Add(histogramCount);
-                            histogramCount = 1;
+                            axisResolution[i] = -1;
                         }
+                    
+                        axisStdDev[i] = GetStdDev(axisList[i]);
                     }
-
-                    int maxHistogramIndex = -1;
-                    maxHistogramIndex = GetIndexOfMaxValue(countList[i]);
-                    if (maxHistogramIndex >= 0)
+                    
+                    finalResolution = Math.Max(Math.Max(axisResolution[0], axisResolution[1]), axisResolution[2]) * 1e3;
+                    finalNoiseDensity = Math.Max(Math.Max(axisStdDev[0], axisStdDev[1]), axisStdDev[2]);
+                    int frequency = dataList.Count / testLength[testType];
+                    if (frequency > 0)
                     {
-                        if ((maxHistogramIndex == 0) || (countList[i][maxHistogramIndex + 1] >= countList[i][maxHistogramIndex - 1]))
-                        {
-                            axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex + 1] - histogramList[i][maxHistogramIndex]);
-                        }
-                        else
-                        {
-                            axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex] - histogramList[i][maxHistogramIndex - 1]);
-                        }
+                        finalNoiseDensity = finalNoiseDensity * 1e6 / Math.Sqrt(1.6 * frequency);
                     }
                     else
                     {
-                        axisResolution[i] = -1;
-                    }
-
-                    axisStdDev[i] = GetStdDev(axisList[i]);
-                }
-
-                finalResolution = Math.Max(Math.Max(axisResolution[0], axisResolution[1]), axisResolution[2]) * 1e3;
-                finalNoiseDensity = Math.Max(Math.Max(axisStdDev[0], axisStdDev[1]), axisStdDev[2]);
-                int frequency = dataList.Count / testLength[testType];
-                if (frequency > 0)
-                {
-                    finalNoiseDensity = finalNoiseDensity * 1e6 / Math.Sqrt(1.6 * frequency);
-                }
-                else
-                {
-                    finalNoiseDensity = -1;
+                        finalNoiseDensity = -1;
+                    }                
                 }
 
                 str = Constants.SensorName[type] + " " + testType + " Test Result: \n" +

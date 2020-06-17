@@ -40,7 +40,8 @@ namespace SensorExplorer
             { "GyroDrift", 60 },
             { "PacketLoss", 60*5 },
             { "StaticAccuracy", 5 },
-            { "MagInterference", 30 }
+            { "MagInterference", 30 },
+            { "ResolutionNoiseDensity", 60 }
          }; // In seconds
 
         private MainPage rootPage = MainPage.Current;
@@ -313,6 +314,10 @@ namespace SensorExplorer
                     testType = "PacketLoss";
                     DisplayPrecondition();
                     break;
+                case "Resolution Noise Density Test":
+                    testType = "ResolutionNoiseDensity";
+                    DisplayPrecondition();
+                    break;
                 case "Static Accuracy Test":
                     testType = "StaticAccuracy";
                     DisplayPrecondition();
@@ -369,6 +374,10 @@ namespace SensorExplorer
                     instruction.Text = "Please move a magnet (~1G) pass the stationary device at a speed of approximately 0.25 m/s .\n" +
                                        "You have 30 seconds to do the test.";
                     break;
+                case "ResolutionNoiseDensity":
+                    instruction.Text = "Put device on a level surface, isolated from outside vibration.\n" +
+                                       "Keep it in stationary state.";
+                    break;
             }
 
             pivotSensor.Visibility = Visibility.Collapsed;
@@ -390,6 +399,7 @@ namespace SensorExplorer
                 stackPanel.Children.Add(CreateTestButton("Offset Test"));
                 stackPanel.Children.Add(CreateTestButton("Orientation Test"));
                 stackPanel.Children.Add(CreateTestButton("Packet Loss Test"));
+                stackPanel.Children.Add(CreateTestButton("Resolution Noise Density Test", 18));
             }
             else if (sensorType == Sensor.COMPASS || sensorType == Sensor.MAGNETOMETER)
             {
@@ -768,6 +778,10 @@ namespace SensorExplorer
             else if (testType == "PacketLoss")
             {
                 CalculatePacketLossTest();
+            }
+            else if (testType == "ResolutionNoiseDensity")
+            {
+                CalculateResolutionNoiseDensity();
             }
             else if (testType == "StaticAccuracy")
             {
@@ -1161,6 +1175,151 @@ namespace SensorExplorer
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
+        }
+
+        private int GetIndexOfMaxValue(List<int> inputList)
+        {
+            int indexMax = -1;
+            int valueMax;
+
+            if (inputList.Count > 0 )
+            {
+                valueMax = inputList[0];
+                indexMax = 0;
+            }
+            else
+            {
+                return indexMax;
+            }
+
+            for (int i = 0; i < inputList.Count; i++)
+            {
+                if (inputList[i] > valueMax)
+                {
+                    valueMax = inputList[i];
+                    indexMax = i;
+                }
+            }
+
+            return indexMax;
+        }
+
+        private double GetStdDev(List<double> inputList)
+        {
+            double dSum = 0;
+            double dSquareSum = 0;
+
+            if (inputList.Count == 0)
+            {
+                return 0;
+            }
+
+            for (int i = 0; i < inputList.Count; i++)
+            {
+                dSum += inputList[i];
+                dSquareSum += inputList[i] * inputList[i];
+            }
+
+            double dMean = dSum / inputList.Count;
+            double dVariance = dSquareSum / inputList.Count - dMean * dMean;
+
+            if (dVariance > 0)
+            {
+                return Math.Sqrt(dVariance);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private void CalculateResolutionNoiseDensity()
+        {
+            string str = string.Empty;
+            List<double>[] axisList = new List<double>[3];
+            List<double>[] histogramList = new List<double>[3];
+            List<double>[] resolutionList = new List<double>[3];
+            List<int>[] countList = new List<int>[3];
+            int type = SensorType[pivotSensor.SelectedIndex];
+            double[] axisResolution = new double[3];
+            double[] axisStdDev = new double[3];
+            double finalResolution = -1;
+            double finalNoiseDensity = -1;
+            const double histogramBin = 1e-4;
+
+            if (type == Sensor.ACCELEROMETER)
+            {
+                if (dataList.Count > 0 && testLength[testType] > 0)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        axisList[i] = new List<double>();
+                        for (int j = 0; j < dataList.Count; j++)
+                        {
+                            axisList[i].Add(dataList[j][i]);
+                        }
+                        axisList[i].Sort();
+                    
+                        int histogramCount = 1;
+                        histogramList[i] = new List<double>();
+                        countList[i] = new List<int>();
+                        for (int j = 1; j < axisList[i].Count; j++)
+                        {
+                            if (Math.Abs(axisList[i][j] - axisList[i][j-1]) < histogramBin)
+                            {
+                                histogramCount++;
+                            }
+                            else
+                            {
+                                histogramList[i].Add(axisList[i][j - 1]);
+                                countList[i].Add(histogramCount);
+                                histogramCount = 1;
+                            }
+                        }
+                    
+                        int maxHistogramIndex = -1;
+                        maxHistogramIndex = GetIndexOfMaxValue(countList[i]);
+                        if (maxHistogramIndex >= 0)
+                        {
+                            if ((maxHistogramIndex == 0) || (countList[i][maxHistogramIndex + 1] >= countList[i][maxHistogramIndex - 1]))
+                            {
+                                axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex + 1] - histogramList[i][maxHistogramIndex]);
+                            }
+                            else
+                            {
+                                axisResolution[i] = Math.Abs(histogramList[i][maxHistogramIndex] - histogramList[i][maxHistogramIndex - 1]);
+                            }
+                        }
+                        else
+                        {
+                            axisResolution[i] = -1;
+                        }
+                    
+                        axisStdDev[i] = GetStdDev(axisList[i]);
+                    }
+                    
+                    finalResolution = Math.Max(Math.Max(axisResolution[0], axisResolution[1]), axisResolution[2]) * 1e3;
+                    finalNoiseDensity = Math.Max(Math.Max(axisStdDev[0], axisStdDev[1]), axisStdDev[2]);
+                    int frequency = dataList.Count / testLength[testType];
+                    if (frequency > 0)
+                    {
+                        finalNoiseDensity = finalNoiseDensity * 1e6 / Math.Sqrt(1.6 * frequency);
+                    }
+                    else
+                    {
+                        finalNoiseDensity = -1;
+                    }                
+                }
+
+                str = Constants.SensorName[type] + " " + testType + " Test Result: \n" +
+                      "--> Resolution: " + finalResolution + " mg/LSB \n" +
+                      "--> NoiseDensity: " + finalNoiseDensity + " ug/(hz)^0.5\n";
+
+                rootPage.LoggingChannelView.LogMessage(str);
+                hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
+                run.Text = "https://aka.ms/sensorexplorerblog";
+                instruction.Text = str + "For more information, please visit:";
+            }
         }
 
         private async void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)

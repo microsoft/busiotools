@@ -39,5 +39,18 @@ foreach ($device in $devices) {
             Add-Member -InputObject $radio -MemberType NoteProperty -Name "ScoType" -Value "InBand"
         }
     }
+
+    # A2DP Sideband Supported
+    $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName '{A92F26CA-EDA7-4B1D-9DB2-27B68AA5A2EB} 8'
+    if (([int32]$property.Type) -eq  0) {
+        Add-Member -InputObject $radio -MemberType NoteProperty -Name "A2DPType" -Value "Unknown"
+    } else {
+        $A2DPType = $property.Data
+        if (($A2DPType -band 0x80) -eq 0) {
+            Add-Member -InputObject $radio -MemberType NoteProperty -Name "A2DPType" -Value "InBand"
+        } else {
+            Add-Member -InputObject $radio -MemberType NoteProperty -Name "A2DPType" -Value "Sideband"
+        }
+    }
 }
 $radios

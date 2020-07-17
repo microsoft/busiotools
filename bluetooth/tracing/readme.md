@@ -7,7 +7,7 @@ This readme covers how developers can collect Bluetooth logs for bugs using [Win
 * [Autologger mode (Collects logs across reboots)](#Autologger-mode-(Collects-logs-across-reboots)): Tracing for running across reboots until you stop it manually
 > Note: Only one of the above methods can be used at a time. 
 
-More details can be 
+More details can be found in the [Additional Information](Additional-Information) section.
  
 ## Normal Mode (cancels on reboot)
 1. From an administrative PowerShell session run:

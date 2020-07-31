@@ -53,6 +53,13 @@ More details can be found in the [Additional Information](#Additional-Informatio
 ## Additional Information
 
 Some additional information on the log collection steps above.
+
+### How to Collect Bluetooth Radio Information
+From PowerShell execute: 
+```powershell
+wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex
+```
+
 ### Verbose/Non-verbose logs
 The above collects Verbose logs by default. If you don't need verbose logs, replace ``BluetoothStack.wprp!BluetoothStack`` with ``BluetoothStack.wprp!BluetoothStack.Light`` in the above commands.
 
@@ -79,23 +86,7 @@ The above collects Verbose logs by default. If you don't need verbose logs, repl
         wpr.exe -stop BthTracing_CPU.etl
     ````
 
-
-
-
 ### More info on Windows Performance Recorder (WPR)
 `wpr.exe` is available on all version of windows. More details can be found [here.](https://docs.microsoft.com/en-us/windows-hardware/test/wpt/wpr-command-line-options)
 
 `wpr.exe /?` will also give you more information.
-
-### How to Collect Bluetooth Radio Information
-
-From PowerShell execute: 
-```powershell
-wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex
-```
-### Collecting the Bluetooth stack trace files
-1. Save BthTracing.etl created. (Do not save as 7z or .rar).
-1. Save relevant screen shots or video as needed.
-1. If this is a setup or driver issue also:
-    * Save `c:\windows\inf\setupapi.*.log` and `c:\Windows\Panther\setupact.log` and `c:\windows\logs\windowsupdate\*`.
-    * Save `Microsoft-Windows-Kernel-PnP%4Configuration.evtx` (In event viewer as `Microsoft-Windows-Kernel-PnP\Configuration`).

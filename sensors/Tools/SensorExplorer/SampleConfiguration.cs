@@ -15,7 +15,6 @@ namespace SensorExplorer
             new Scenario() { Title = "View", ClassType = typeof(Scenario1View) },
             new Scenario() { Title = "MALT", ClassType = typeof(Scenario2MALT) },
             new Scenario() { Title = "Display Enhancement Override", ClassType = typeof(Scenario3DEO) },
-            new Scenario() { Title = "Distance", ClassType = typeof(Scenario4Distance) },
         };
     }
 

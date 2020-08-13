@@ -6,3 +6,5 @@ This repo contains the scripts and tools to help discover and diagnose issues de
 * [HMD Validation Kit](hmdvalidationkit/README.md)
 * [USB, HID and Simple Peripheral Buses- I2C, UART, SPI Tools](usb/README.md) 
 * [Sensor Tools](sensors/README.md) 
+* [How to collect Bluetooth logs](bluetooth/tracing/readme.md)
+* [Windows Camera Tracing](camera/Tracing/Readme.md)

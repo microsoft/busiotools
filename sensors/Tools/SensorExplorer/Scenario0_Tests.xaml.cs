@@ -779,13 +779,13 @@ namespace SensorExplorer
             {
                 CalculatePacketLossTest();
             }
-            else if (testType == "ResolutionNoiseDensity")
-            {
-                CalculateResolutionNoiseDensity();
-            }
             else if (testType == "StaticAccuracy")
             {
                 CalculateStaticAccuracy();
+            }
+            else if (testType == "ResolutionNoiseDensity")
+            {
+                CalculateResolutionNoiseDensity();
             }
 
             DisplayRestart();
@@ -1246,6 +1246,9 @@ namespace SensorExplorer
             double finalResolution = -1;
             double finalNoiseDensity = -1;
             const double histogramBin = 1e-4;
+            const double gTomg = 1e3;
+            const double gToug = 1e6;
+            const double NoiseCoefficient = 1.6;
 
             if (type == Sensor.ACCELEROMETER)
             {
@@ -1298,12 +1301,12 @@ namespace SensorExplorer
                         axisStdDev[i] = GetStdDev(axisList[i]);
                     }
                     
-                    finalResolution = Math.Max(Math.Max(axisResolution[0], axisResolution[1]), axisResolution[2]) * 1e3;
+                    finalResolution = Math.Max(Math.Max(axisResolution[0], axisResolution[1]), axisResolution[2]) * gTomg;
                     finalNoiseDensity = Math.Max(Math.Max(axisStdDev[0], axisStdDev[1]), axisStdDev[2]);
                     int frequency = dataList.Count / testLength[testType];
                     if (frequency > 0)
                     {
-                        finalNoiseDensity = finalNoiseDensity * 1e6 / Math.Sqrt(1.6 * frequency);
+                        finalNoiseDensity = finalNoiseDensity * gToug / Math.Sqrt(NoiseCoefficient * frequency);
                     }
                     else
                     {
@@ -1673,7 +1676,6 @@ namespace SensorExplorer
                             LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
                             LogTestSuccess(loggingFields, testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "OrientationSensorSingleTestResult");
                             TestSuccess();
-
                         }
                         else
                         {

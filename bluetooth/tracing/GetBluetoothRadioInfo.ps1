@@ -3,8 +3,7 @@
 $devices = Get-PnpDevice -Class Bluetooth |? InstanceId -notlike "BTH*"
 
 $radios = New-Object System.Collections.ArrayList
-foreach ($device in $devices)
-{   
+foreach ($device in $devices) {   
     $radio = New-Object PSObject
     Add-Member -InputObject $radio -MemberType NoteProperty -Name "InstanceId" -Value $device.InstanceId
     $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName 'DEVPKEY_Bluetooth_RadioAddress'
@@ -20,16 +19,25 @@ foreach ($device in $devices)
     # Error Recovery
     $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName '{A92F26CA-EDA7-4B1D-9DB2-27B68AA5A2EB} 14'
     $supportedTypes = $property.Data
-    if ($supportedTypes -eq 0)
-    {
+    if ($supportedTypes -eq 0) {
         Add-Member -InputObject $radio -MemberType NoteProperty -Name "ErrorRecovery" -Value "None"
-    } elseif ($supportedTypes -band 1 -shl 0)
-    {
+    } elseif ($supportedTypes -band 1 -shl 0) {
         Add-Member -InputObject $radio -MemberType NoteProperty -Name "ErrorRecovery" -Value "FLDR"
-    } elseif ($supportedTypes -band 1 -shl 1)
-    {
+    } elseif ($supportedTypes -band 1 -shl 1) {
         Add-Member -InputObject $radio -MemberType NoteProperty -Name "ErrorRecovery" -Value "PLDR"
     }
     
+    # ScoType
+    $property = Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName '{A92F26CA-EDA7-4B1D-9DB2-27B68AA5A2EB} 21'
+    if (([int32]$property.Type) -eq  0) {
+        Add-Member -InputObject $radio -MemberType NoteProperty -Name "ScoType" -Value "Unknown"
+    } else {
+        $scoType = $property.Data
+        if ($scoType -eq 0) {
+            Add-Member -InputObject $radio -MemberType NoteProperty -Name "ScoType" -Value "SideBand"
+        } else {
+            Add-Member -InputObject $radio -MemberType NoteProperty -Name "ScoType" -Value "InBand"
+        }
+    }
 }
-$radios | Format-Table
+$radios

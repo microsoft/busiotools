@@ -1248,7 +1248,7 @@ namespace SensorExplorer
             const double histogramBin = 1e-4;
             const double gTomg = 1e3;
             const double gToug = 1e6;
-            const double NoiseCoefficient = 1.6;
+            const double noiseCoefficient = 1.6;
 
             if (type == Sensor.ACCELEROMETER)
             {
@@ -1306,7 +1306,7 @@ namespace SensorExplorer
                     int frequency = dataList.Count / testLength[testType];
                     if (frequency > 0)
                     {
-                        finalNoiseDensity = finalNoiseDensity * gToug / Math.Sqrt(NoiseCoefficient * frequency);
+                        finalNoiseDensity = finalNoiseDensity * gToug / Math.Sqrt(noiseCoefficient * frequency);
                     }
                     else
                     {

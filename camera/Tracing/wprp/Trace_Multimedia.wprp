@@ -113,6 +113,7 @@
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-DiagnosticsProvider" Name="e60019f0-b378-42b6-a185-515914d3228c" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-PerformanceProvider" Name="af09b0f9-ae02-4926-8a0f-e90d803063a8" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-Face-TelemetryProvider" Name="1d480c11-3870-4b19-9144-47a53cd973bd" />
+    <EventProvider Id="Microsoft-Windows-Settings-Camera" Name="00000012-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-Shell-BioEnrollment" Name="22eb0808-0b6c-5cd4-5511-6a77e6e73a93" />
     <EventProvider Id="Microsoft-Windows-SocCaptureSim" Name="e59fb1ec-318f-4ac6-b36b-6d11c5a49bec" />
     <EventProvider Id="Microsoft-Windows-USBVideo" Name="da1d1dbd-3186-4fa2-bc2d-075efd9e43e2" Level="4" />
@@ -260,6 +261,7 @@
             <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-DiagnosticsProvider" />
             <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-PerformanceProvider" />
             <EventProviderId Value="Microsoft-Windows-Security-Biometrics-Face-TelemetryProvider" />
+            <EventProviderId Value="Microsoft-Windows-Settings-Camera" />
             <EventProviderId Value="Microsoft-Windows-Shell-BioEnrollment" />
             <EventProviderId Value="Microsoft-Windows-SocCaptureSim" />
             <EventProviderId Value="Microsoft-Windows-USBVideo" />

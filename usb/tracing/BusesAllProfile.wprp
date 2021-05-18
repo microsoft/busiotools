@@ -29,6 +29,14 @@
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
+    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_display" Name="DisplayTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
+    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_ndisnetcx" Name="NdisNetCxTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_6" Name="UIFProvider">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
@@ -341,7 +349,24 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="PciWpp" Name="ebadf775-48aa-4bf3-8f8e-ec68d113c98e" NonPagedMemory="false" Level="255">
+    <EventProvider Id="PciWpp" Name="ebadf775-48aa-4bf3-8f8e-ec68d113c98e" NonPagedMemory="true" Level="255">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DisplayWin32K" Name="deb96c0a-d2d9-5868-a5d5-50ee13513c8b" NonPagedMemory="true" Level="5" />
+    <EventProvider Id="DisplayDxgDiagnostics" Name="221D444C-D07E-4FDE-B425-15B746CF535B" NonPagedMemory="true" Level="5" />
+    <EventProvider Id="NetAdapterCxWpp" Name="16D3161E-4883-493F-ACD9-8E2065B82270" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="NdisWpp" Name="DD7A21E6-A651-46D4-B7C2-66543067B869" NonPagedMemory="true" Level="4">
+      <Keywords>
+        <Keyword Value="0x801001" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Usb4NetWpp" Name="9991521E-A3AE-40B1-B38E-527FEA446B6D" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -449,6 +474,7 @@
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="USB4HrdEtwTlg" />
             <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
@@ -518,6 +544,7 @@
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="USB4HrdEtwTlg" />
             <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
@@ -547,6 +574,7 @@
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="USB4HrdEtwTlg" />
             <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
@@ -558,12 +586,13 @@
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" Description="USB4, PnP and PCI" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" Description="USB4, PnP, Display, Net and PCI" LoggingMode="Memory" DetailLevel="Verbose">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="USB4HrdEtwTlg" />
             <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
@@ -576,6 +605,18 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pci">
           <EventProviders>
             <EventProviderId Value="PciWpp" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_display">
+          <EventProviders>
+            <EventProviderId Value="DisplayDxgDiagnostics" />
+            <EventProviderId Value="DisplayWin32K" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_ndisnetcx">
+          <EventProviders>
+            <EventProviderId Value="NdisWpp" />
+            <EventProviderId Value="NetAdapterCxWpp" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

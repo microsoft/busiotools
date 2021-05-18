@@ -2,7 +2,7 @@
 
 ### How to collect traces
 #### Desktop:
-- Double-click on Trace.cmd.
+- Launch elevated powershell, run Trace.ps1.
 - Run your scenario when told.
 - Press Enter and wait for the script to complete.
 - The folder containing the traces will pop up.

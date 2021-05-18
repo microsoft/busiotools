@@ -66,6 +66,11 @@ param(
     [Switch]
     $Detailed
 )
+#--------------------------------------------------------------------
+# Setup Trace script log
+#--------------------------------------------------------------------
+$log = join-path $env:TEMP "$($env:UserName)_MediaTrace.log"
+Start-Transcript -Path $log -Append 
 
 #--------------------------------------------------------------------
 # Variables
@@ -416,4 +421,11 @@ function Save-TargetDetailsOnStop {
 $ErrorActionPreference = "Stop"
 $WarningPreference     = "Continue"
 
-Main
+try
+{
+    Main
+}
+finally
+{
+    stop-transcript >$null
+}

@@ -489,7 +489,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Bluetooth.Audio" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="5" NonPagedMemory="false">
+    <EventProvider Id="Microsoft.Bluetooth.Audio" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    <EventProvider Id="Microsoft.Bluetooth.Audio.Verbose" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -1022,7 +1026,7 @@
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSoftwareInstallationClient"/>
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
-            <EventProviderId Value="Microsoft.Bluetooth.Audio"/>
+            <EventProviderId Value="Microsoft.Bluetooth.Audio.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.CapabilityAccessManager"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CommsEnhancementRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Shell.Components.Calling"/>

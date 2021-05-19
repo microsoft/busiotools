@@ -493,6 +493,7 @@
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Bluetooth.Audio.Verbose" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>

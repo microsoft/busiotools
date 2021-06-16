@@ -4,8 +4,7 @@ Building the code:
 2) Clone the following projects into the libraries directory:
 
     https://github.com/kroimon/Arduino-SerialCommand
-    
-    https://github.com/felias-fogg/SoftI2CMaster
+    https://github.com/sastorer/SoftI2CMaster
     
 3) Install the Arduino IDE.
 4) Select "Tools | Board | Mega 2560"

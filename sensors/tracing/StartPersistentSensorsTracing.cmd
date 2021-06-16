@@ -40,13 +40,15 @@ rem DEM
 logman update trace -n autosession\SensorsTrace -p "{DD902827-DD80-4244-ABFD-0289ADB05F31}" 0xffffffffffffffff 0xff -ets >nul
 rem DEO
 logman update trace -n autosession\SensorsTrace -p "{7AE1974C-262A-43C6-B1FA-58CB4E36084B}" 0xffffffffffffffff 0xff -ets >nul
+rem Settings Handler
+logman update trace -n autosession\SensorsTrace -p "{45DFC839-5805-49E9-A622-51AEB4C35A3B}" 0xffffffffffffffff 0xff -ets >nul
 logman start -n SensorsTrace -ets
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
-echo Tracing has been setup.  
+echo Tracing has been setup.
 echo ===========================================================
-echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing. 
+echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing.
 echo ===========================================================
 pause
 
@@ -67,9 +69,9 @@ tracelog -start SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
-echo Tracing has been setup.  
+echo Tracing has been setup.
 echo ===========================================================
-echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing. 
+echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing.
 echo ===========================================================
 
 )

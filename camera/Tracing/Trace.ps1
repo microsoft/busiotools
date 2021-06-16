@@ -66,6 +66,11 @@ param(
     [Switch]
     $Detailed
 )
+#--------------------------------------------------------------------
+# Setup Trace script log
+#--------------------------------------------------------------------
+$log = join-path $env:TEMP "$($env:UserName)_MediaTrace.log"
+Start-Transcript -Path $log -Append 
 
 #--------------------------------------------------------------------
 # Variables
@@ -158,7 +163,7 @@ function Main {
                 Write-Host "Gathering system information..."
                 Get-EnvironmentInformation
 
-                $script:StopScripts = @(Get-ChildItem -Path $path -Filter *_stop.cmd | select -ExpandProperty FullName)
+                $script:StopScripts = @(Get-ChildItem -Path $StopBootTrace -Filter *_stop.cmd -Recurse | select -ExpandProperty FullName)
 
                 # Put scripts on device, if needed.
                 Write-Host "Preparing target system..."
@@ -416,4 +421,11 @@ function Save-TargetDetailsOnStop {
 $ErrorActionPreference = "Stop"
 $WarningPreference     = "Continue"
 
-Main
+try
+{
+    Main
+}
+finally
+{
+    stop-transcript >$null
+}

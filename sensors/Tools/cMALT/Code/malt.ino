@@ -4,11 +4,7 @@
 #define SCL_PORT PORTA
 #define SCL_PIN 6 // digital pin 28
 
-#include <SoftWire.h>
-SoftWire Wire = SoftWire();
-
-#include <SerialCommand.h>
-#include <SPI.h>
+#include "helpers.h"
 #include "AS73211.h"
 #include "lightpanel.h"
 #include "mcp4821.h"
@@ -67,6 +63,17 @@ void setup()
   SerCmd.addCommand("READIRSENSOR", readIRSensor);
   SerCmd.addCommand("CONVERSIONTIME",  setConversionTime);
   SerCmd.addCommand("MALTVERSION", getVersion);
+  SerCmd.addCommand("READCONT", readLightSensorContinuous);
+  SerCmd.addCommand("COLORRAW", readColorSensorRAW);
+  SerCmd.addCommand("CALBX", calibrateBotX);
+  SerCmd.addCommand("CALBY", calibrateBotY);
+  SerCmd.addCommand("CALBZ", calibrateBotZ);
+  SerCmd.addCommand("CALBOTTOM", calibrateBottom);
+  SerCmd.addCommand("CALTX", calibrateTopX);
+  SerCmd.addCommand("CALTY", calibrateTopY);
+  SerCmd.addCommand("CALTZ", calibrateTopZ);
+  SerCmd.addCommand("CALTOP", calibrateTop);
+  SerCmd.addCommand("READEEPROM", readEeprom);
   SerCmd.setDefaultHandler(unrecognized);
 }
 

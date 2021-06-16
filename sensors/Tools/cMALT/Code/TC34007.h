@@ -24,7 +24,7 @@ void initIRSensor(char channelSelect)
   // Config Reg 2
   Wire.beginTransmission(IRSensorAddr);
   Wire.write(IRAddr);
-  Wire.write(0x00); //IR and Clear color data share a register. Sending this value selects IR. (0x00 selects clear)
+  Wire.write(0x00); //IR and Clear color data share a register. (0x00 selects clear)
   Wire.endTransmission();
 
    // Config Reg 3
@@ -86,7 +86,6 @@ void readIRSensor()
   int Blue;
   int Green;
   int Red;
-  float ratio;
   float temp;
   float IRx;
   MALTERROR err = E_SUCCESS;
@@ -125,13 +124,10 @@ void readIRSensor()
   Blue = Blue - IRx;
   Green = Green - IRx;
   temp = (3852*(float(Blue)/float(Red))) + 1855;
-  Serial.print("Color Temperature: ");
   Serial.print(temp);
-  Serial.println("K");
 
 
   
 Exit:  
-  Serial.print("Error Code: ");
   Serial.println(err);
 }

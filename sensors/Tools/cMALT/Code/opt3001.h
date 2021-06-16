@@ -158,18 +158,67 @@ void readLightSensor()
   // Read the value of that sensor
   readFromLightSensor(channelSelect, &MSB, &LSB);
 
+Exit:
+  // Always write the error code first
+  Serial.println(err);
+  
   // Write the result to serial out.
   // In the failure case, the exponent and result will be 0. Software must check the error before using these values.
   result = MSB & 0x0F; 
   result = (result << 8) | LSB;
   exponent = MSB >> 4;
   
-  Serial.print("Exponent: ");
   Serial.println(exponent, DEC);
-  Serial.print("Result: ");
   Serial.println(result, DEC);
+}
+
+// ReadLightSensor serial command takes one argument - which sensor to read from
+// 1 for the ambient light sensor facing away from the screen, 2 for the screen-facing sensor
+void readLightSensorContinuous()
+{
+  char* arg;
+  int sensorId;
+  uint8_t channelSelect;
+  uint8_t MSB;
+  uint8_t LSB;
+  uint16_t result;
+  uint16_t exponent;
+  MALTERROR err = E_SUCCESS;
+
+  arg = SerCmd.next();
+  if (arg == NULL)
+  {
+    // Error: Provide which sensor to read from. 1 for sensor 1 (should be facing away from the screen to measure ambient light), 2 for Sensor 2 (should be placed on the screen)
+    err = E_INVALID_PARAM;
+    goto Exit;
+  }
+  
+  sensorId = atoi(arg);
+  if(sensorId != screenSensorId && sensorId != ambientSensorId)
+  {
+    // Invalid sensor ID provided. Use 1 for sensor 1 (should be facing away from the screen to measure ambient light), 2 for Sensor 2 (should be placed on the screen)
+    err = E_INVALID_PARAM;
+    goto Exit;
+  }
+
+  channelSelect = (sensorId == screenSensorId) ? channelSelectScreen : channelSelectAmbient;
+
+  // Read the value of that sensor
+  for (int i = 0; i < 500; i++) {
+    readFromLightSensor(channelSelect, &MSB, &LSB);
+    delay(40);
+  }
 
 Exit:
-  Serial.print("Error Code: ");
+  // Always write the error code first
   Serial.println(err);
+  
+  // Write the result to serial out.
+  // In the failure case, the exponent and result will be 0. Software must check the error before using these values.
+  result = MSB & 0x0F; 
+  result = (result << 8) | LSB;
+  exponent = MSB >> 4;
+  
+  Serial.println(exponent, DEC);
+  Serial.println(result, DEC);
 }

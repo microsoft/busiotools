@@ -289,6 +289,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="HidServ" Name="0d6375f5-5710-47e0-add8-f9cdbc7b92e0" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="KbdHid" Name="b41b0a56-4483-48ef-a772-0b007cbea8c6" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -456,6 +461,7 @@
             <EventProviderId Value="HidClassEtw" />
             <EventProviderId Value="HidUsb" />
             <EventProviderId Value="HidI2c" />
+            <EventProviderId Value="HidServ" />
             <EventProviderId Value="KbdHid" />
             <EventProviderId Value="KbdClass" />
             <EventProviderId Value="MouHid" />
@@ -500,6 +506,7 @@
             <EventProviderId Value="HidClassEtw" />
             <EventProviderId Value="HidUsb" />
             <EventProviderId Value="HidI2c" />
+            <EventProviderId Value="HidServ" />
             <EventProviderId Value="KbdHid" />
             <EventProviderId Value="KbdClass" />
             <EventProviderId Value="MouHid" />

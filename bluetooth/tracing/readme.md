@@ -3,8 +3,8 @@
 **This information is targeted to developers, for non-developer information on troubleshooting Bluetooth, see [Fix Bluetooth problems in Windows 10](https://support.microsoft.com/en-us/help/14169/windows-10-fix-bluetooth-problems).**
 
 This readme covers how developers can collect Bluetooth logs for bugs using [Windows Performance Recorder (WPR)](https://docs.microsoft.com/en-us/windows-hardware/test/wpt/introduction-to-wpr) using the custom Bluetooth tracing [Recording Profile](https://docs.microsoft.com/en-us/windows-hardware/test/wpt/wpr-quick-start#using-recording-profiles) found here: [BluetoothStack.wprp](./BluetoothStack.wprp). There are few ways you can collect these logs: 
-* [Normal Mode (cancels on reboot)](#Normal-Mode-(cancels-on-reboot)): Tracing for a single boot session, will not continue tracing after a reboot
-* [Autologger mode (collects logs across reboots)](#Autologger-mode-(collects-logs-across-reboots)): Tracing for running across reboots until you stop it manually
+* [Normal Mode (cancels on reboot)](#Normal-Mode-cancels-on-reboot): Tracing for a single boot session, will not continue tracing after a reboot
+* [Autologger mode (collects logs across reboots)](#Autologger-mode-collects-logs-across-reboots): Tracing for running across reboots until you stop it manually
 > Note: Only one of the above methods can be used at a time. 
 
 More details can be found in the [Additional Information](#Additional-Information) section.

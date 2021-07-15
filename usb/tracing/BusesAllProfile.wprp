@@ -400,7 +400,6 @@
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_0">
           <EventProviders>
-            <EventProviderId Value="CadEtw" />
             <EventProviderId Value="Msgpiowin32" />
             <EventProviderId Value="I8042prt" />
             <EventProviderId Value="Buttonconverter" />
@@ -447,6 +446,7 @@
             <EventProviderId Value="UcmUcsiCxAcpiClient" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
+            <EventProviderId Value="CadEtw" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
@@ -454,7 +454,6 @@
             <EventProviderId Value="Hidspi" />
             <EventProviderId Value="Hidinterrupt" />
             <EventProviderId Value="HidTelephonyTraceGuid" />
-            <EventProviderId Value="Msgpiowin32" />
             <EventProviderId Value="BTNCONV" />
             <EventProviderId Value="HIDVHF" />
             <EventProviderId Value="HidClassWpp" />
@@ -511,6 +510,7 @@
             <EventProviderId Value="KbdClass" />
             <EventProviderId Value="MouHid" />
             <EventProviderId Value="MouClass" />
+            <EventProviderId Value="I8042prt" />
             <EventProviderId Value="MtConfig" />
             <EventProviderId Value="RIM_RS1" />
             <EventProviderId Value="Win32kBaseInput" />
@@ -648,6 +648,7 @@
             <EventProviderId Value="UcmUcsiCxAcpiClient" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
+            <EventProviderId Value="CadEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

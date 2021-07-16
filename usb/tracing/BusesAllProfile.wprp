@@ -246,6 +246,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="HidSpiCx" Name="5ed8bb73-c76f-49d9-bf05-4982903c6ca5" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Hidinterrupt" Name="78396E52-9753-4D63-8CF5-A936B4989FF2" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -452,6 +457,7 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
           <EventProviders>
             <EventProviderId Value="Hidspi" />
+            <EventProviderId Value="HidSpiCx" />
             <EventProviderId Value="Hidinterrupt" />
             <EventProviderId Value="HidTelephonyTraceGuid" />
             <EventProviderId Value="BTNCONV" />
@@ -496,6 +502,7 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
           <EventProviders>
             <EventProviderId Value="Hidspi" />
+            <EventProviderId Value="HidSpiCx" />
             <EventProviderId Value="Hidinterrupt" />
             <EventProviderId Value="HidTelephonyTraceGuid" />
             <EventProviderId Value="Msgpiowin32" />

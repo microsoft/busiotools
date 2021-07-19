@@ -246,6 +246,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="HidSpiCx" Name="5ed8bb73-c76f-49d9-bf05-4982903c6ca5" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Hidinterrupt" Name="78396E52-9753-4D63-8CF5-A936B4989FF2" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -400,7 +405,6 @@
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_0">
           <EventProviders>
-            <EventProviderId Value="CadEtw" />
             <EventProviderId Value="Msgpiowin32" />
             <EventProviderId Value="I8042prt" />
             <EventProviderId Value="Buttonconverter" />
@@ -447,14 +451,15 @@
             <EventProviderId Value="UcmUcsiCxAcpiClient" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
+            <EventProviderId Value="CadEtw" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
           <EventProviders>
             <EventProviderId Value="Hidspi" />
+            <EventProviderId Value="HidSpiCx" />
             <EventProviderId Value="Hidinterrupt" />
             <EventProviderId Value="HidTelephonyTraceGuid" />
-            <EventProviderId Value="Msgpiowin32" />
             <EventProviderId Value="BTNCONV" />
             <EventProviderId Value="HIDVHF" />
             <EventProviderId Value="HidClassWpp" />
@@ -497,6 +502,7 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
           <EventProviders>
             <EventProviderId Value="Hidspi" />
+            <EventProviderId Value="HidSpiCx" />
             <EventProviderId Value="Hidinterrupt" />
             <EventProviderId Value="HidTelephonyTraceGuid" />
             <EventProviderId Value="Msgpiowin32" />
@@ -511,6 +517,7 @@
             <EventProviderId Value="KbdClass" />
             <EventProviderId Value="MouHid" />
             <EventProviderId Value="MouClass" />
+            <EventProviderId Value="I8042prt" />
             <EventProviderId Value="MtConfig" />
             <EventProviderId Value="RIM_RS1" />
             <EventProviderId Value="Win32kBaseInput" />
@@ -648,6 +655,7 @@
             <EventProviderId Value="UcmUcsiCxAcpiClient" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
+            <EventProviderId Value="CadEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

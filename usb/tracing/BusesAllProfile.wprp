@@ -256,7 +256,7 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="HidTelephonyTraceGuid" Name="83788503-CA93-49CC-A658,01202F0E6CC6" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidTelephonyTraceGuid" Name="83788503-CA93-49CC-A658-01202F0E6CC6" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>

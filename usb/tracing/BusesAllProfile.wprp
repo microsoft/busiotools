@@ -37,6 +37,10 @@
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
+    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_LowPowerBuses" Name="LowPowerBusesTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_6" Name="UIFProvider">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
@@ -401,6 +405,21 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="SerCx2Wpp" Name="0ae46f43-b144-4056-9195-470054009d6c" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SerCx2Etw" Name="EEE173EF-7ED2-45DE-9877-01C70A852FBD" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SpbCx" Name="e6086b4d-aeff-472b-bda7-eec662afbf11" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" Description="USB2, USB3, USB4, hard buttons and HID trace logging" LoggingMode="Memory" DetailLevel="Verbose">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_0">
@@ -656,6 +675,17 @@
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" Description="SerCx2, SpbCx" LoggingMode="Memory" DetailLevel="Verbose">
+      <Collectors>
+        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_LowPowerBuses">
+          <EventProviders>
+            <EventProviderId Value="SerCx2Wpp" />
+            <EventProviderId Value="SerCx2Etw" />
+            <EventProviderId Value="SpbCx" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

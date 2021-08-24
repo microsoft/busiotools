@@ -27,7 +27,7 @@ namespace SensorExplorer
             { "Device_PanelPositionX", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 8" },
             { "Device_PanelPositionY", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 9" },
             { "Device_PanelPositionZ", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 10" },
-            { "Device_PanelRotationX", "{8DBC9PositionXC86-97A9-4BFF-9BC6-BFE95D3E6DAD} 11" },
+            { "Device_PanelRotationX", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 11" },
             { "Device_PanelRotationY", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 12" },
             { "Device_PanelRotationZ", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 13" },
             { "Device_PanelColor", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 14" },

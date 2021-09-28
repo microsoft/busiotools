@@ -619,7 +619,7 @@
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" Description="USB4, PnP, Display, Net and PCI" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" Description="USB4, USB3, PnP, Display, Net and PCI" LoggingMode="Memory" DetailLevel="Verbose">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
@@ -628,6 +628,18 @@
             <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="USB4HrdEtwTlg" />
             <EventProviderId Value="USB4DrdEtwTlg" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
+          <EventProviders>
+            <EventProviderId Value="UsbHub3Etw" />
+            <EventProviderId Value="UsbHub3Wpp" />
+            <EventProviderId Value="UsbXhciCommonEtw" />
+            <EventProviderId Value="UsbXhciCompanionWpp" />
+            <EventProviderId Value="UsbXhciDriverWpp" />
+            <EventProviderId Value="UcxEtw" />
+            <EventProviderId Value="UcxWpp" />
+            <EventProviderId Value="UsbXhciTrustlet" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp">

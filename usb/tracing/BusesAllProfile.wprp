@@ -363,7 +363,7 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="PciWpp" Name="ebadf775-48aa-4bf3-8f8e-ec68d113c98e" NonPagedMemory="true" Level="255">
+    <EventProvider Id="PciWpp" Name="47711976-08c7-44ef-8fa2-082da6a30a30" NonPagedMemory="true" Level="255">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>

@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WindowsPerformanceRecorder   Version="1" Author="DiagTrack Scenario Editor" Copyright="Microsoft Corporation" Company="Microsoft Corporation" >
   <Profiles>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_0" Name="ButtonsTrace">
-      <BufferSize Value="1024" />
-      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
-    </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1" Name="UsbTrace">
       <BufferSize Value="64" />
-      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+      <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
     </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2" Name="UsbCAndUsbFnTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3" Name="HidTrace">
+    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3" Name="InputTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4" Name="Usb4Trace">
       <BufferSize Value="64" />
-      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+      <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
     </EventCollector>
     <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp" Name="PnPTrace">
       <BufferSize Value="64" />
@@ -45,92 +41,15 @@
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventProvider Id="KernelPnP" Name="Microsoft-Windows-Kernel-PnP" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0xc9a000"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="CadEtw" Name="DABA4D32-CC40-4266-BB95-C30344DBC680" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="QcPmicTccWpp" Name="9CAB7EF0-9C6F-4C3A-A5AC-FF2E59E181EC" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="QcUsbCWpp" Name="246E500B-1764-4427-ADD6-3C998B71F899" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="QcUsbFnSSFilterWpp" Name="3277C006-3313-4BD0-9B2C-7BDC8C28E75B" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="QcXhciFilterWpp" Name="11ED5F0A-0200-42AF-B5DF-B8BEC02C9624" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UcmCxWpp" Name="C5964C90-1824-4835-857A-5E95F8AA33B2" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UcmTcpciCxWpp" Name="8DEAEA72-4C63-49A4-9B8B-25DA24DAE056" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UcmUcsiWpp" Name="EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
+    <!-- 
+      Buses USBHost Event Providers
+    -->
     <EventProvider Id="UcxEtw" Name="36DA592D-E43A-4E28-AF6F-4BC57C5A11E8" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0x8241" />
       </Keywords>
     </EventProvider>
     <EventProvider Id="UcxWpp" Name="6FB6E467-9ED4-4B73-8C22-70B97E22C7D9" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UfxEtw" Name="E98EBDBF-3058-4784-8521-47860B1D2B8E" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UfxSynEtw" Name="49B12C7C-4BD5-4F93-BB75-30FCE739600B" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UfxSynWpp" Name="8650230D-68B0-476E-93ED-634490DCE145" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UfxWpp" Name="468D9E9D-07F5-4537-B650-98389559206E" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UrsChpWpp" Name="9D028F46-7B90-43DC-A976-68EC85DF454C" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UrsCxWpp" Name="4921461B-27DE-4937-AC2D-96390848DDF4" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UrsSynWpp" Name="0F1ECE0C-1647-4051-B1BA-D3A0694E6B12" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -160,11 +79,6 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="UsbTaskWpp" Name="04B3644B-27CA-4CAC-9243-29BED5C91CF9" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="UsbXhciCommonEtw" Name="30E1D284-5D88-459C-83FD-6345B39B19EC" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -185,32 +99,108 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="UifEventSourceProvider" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0x1" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UcmUcsiCx" Name="C500C63A-6EFE-433B-84A7-C0740D5DC97F" NonPagedMemory="true" Level="5">
+    <EventProvider Id="UsbTaskWpp" Name="04b3644b-27ca-4cac-9243-29bed5c91cf9" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="UcmUcsiCxAcpiClient" Name="EDEF8E04-4E22-4A95-9D04-539EBD112A5E" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UsbTask" Name="04b3644b-27ca-4cac-9243-29bed5c91cf9" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UsbXhciTrustlet" Name="3BBABCCA-A210-4570-B501-0E34D88A88FB" NonPagedMemory="true" Level="5">
+    <EventProvider Id="UsbXhciTrustletWpp" Name="3BBABCCA-A210-4570-B501-0E34D88A88FB" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
     <EventProvider Id="UsbPortWpp" Name="d75aedbe-cfcd-42b9-94ab-f47b224245dd" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UsbSerWpp" Name="8FBF685A-DCE5-44C2-B126-5E90176993A7" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!--
+      Buses USB4 Event Providers
+    -->
+    <EventProvider Id="USB4HrdWpp" Name="505A6797-992E-43E6-B84E-235E41E3FD82" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="USB4DrdWpp" Name="1B502FCB-68CD-4407-A59E-1EAF8AB9EA26" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="USB4HrdTlg" Name="575BA31F-2B45-58C2-64FD-F5DC757B6137" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="USB4DrdTlg" Name="AE795D36-2B11-5EFB-C7E0-5D552BC55D6C" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!--
+      USB-C and USBFN Event Providers
+    -->
+    <EventProvider Id="UcmCxWpp" Name="C5964C90-1824-4835-857A-5E95F8AA33B2" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UcmTcpciCxWpp" Name="8DEAEA72-4C63-49A4-9B8B-25DA24DAE056" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UcmUcsiWpp" Name="EAD1EE75-4BFE-4E28-8AFA-E94B0A1BAF37" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UcmUcsiCxWpp" Name="C500C63A-6EFE-433B-84A7-C0740D5DC97F" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UcmUcsiAcpiClientWpp" Name="EDEF8E04-4E22-4A95-9D04-539EBD112A5E" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UrsCxWpp" Name="4921461B-27DE-4937-AC2D-96390848DDF4" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UrsChipideaWpp" Name="9D028F46-7B90-43DC-A976-68EC85DF454C" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UrsSynopsysWpp" Name="0F1ECE0C-1647-4051-B1BA-D3A0694E6B12" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UfxWpp" Name="468D9E9D-07F5-4537-B650-98389559206E" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UfxEtw" Name="E98EBDBF-3058-4784-8521-47860B1D2B8E" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UfxSynopsysWpp" Name="8650230D-68B0-476E-93ED-634490DCE145" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="UfxSynopsysEtw" Name="49B12C7C-4BD5-4F93-BB75-30FCE739600B" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -225,52 +215,10 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="UsbSerWpp" Name="8FBF685A-DCE5-44C2-B126-5E90176993A7" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Msgpiowin32" Name="5A81715A-84C0-4DEF-AE38-EDDE40DF5B3A" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="I8042prt" Name="7ffb8eb8-2c86-45d6-a7c5-c023d9c070c1" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Buttonconverter" Name="4B2862FE-F8BE-41FF-984A-0AF845F78E86" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Hidspi" Name="0a6b3bb2-3504-49c1-81d0-6a4b88b96427" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="HidSpiCx" Name="5ed8bb73-c76f-49d9-bf05-4982903c6ca5" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Hidinterrupt" Name="78396E52-9753-4D63-8CF5-A936B4989FF2" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="HidTelephonyTraceGuid" Name="83788503-CA93-49CC-A658-01202F0E6CC6" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="BTNCONV" Name="4b2862fe-f8be-41ff-984a-0af845f78e86" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="HIDVHF" Name="51B2172F-205D-40C1-9A30-ED090FF72E6C" NonPagedMemory="true" Level="5">
+    <!--
+      Buses Input Event Providers
+    -->
+    <EventProvider Id="I8042PrtWpp" Name="7ffb8eb8-2c86-45d6-a7c5-c023d9c070c1" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -288,79 +236,110 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </CaptureStateOnSave>
     </EventProvider>
-    <EventProvider Id="HidUsb" Name="896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidUsbWpp" Name="896f2806-9d0e-4d5f-aa25-7acdbf4eaf2c" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="HidI2c" Name="e742c27d-29b1-4e4b-94ee-074d3ad72836" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidI2cWpp" Name="e742c27d-29b1-4e4b-94ee-074d3ad72836" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="HidServ" Name="0d6375f5-5710-47e0-add8-f9cdbc7b92e0" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidI2cEtw" Name="991F8FE6-249D-44D6-B93D-5A3060C1DEDB" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="KbdHid" Name="b41b0a56-4483-48ef-a772-0b007cbea8c6" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidSpiWpp" Name="0a6b3bb2-3504-49c1-81d0-6a4b88b96427" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="KbdClass" Name="09281f1f-f66e-485a-99a2-91638f782c49" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidSpiCxWpp" Name="5ed8bb73-c76f-49d9-bf05-4982903c6ca5" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="MouHid" Name="bbbc2565-8272-486e-b5e5-2bc4630374ba" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidInterruptWpp" Name="78396E52-9753-4D63-8CF5-A936B4989FF2" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="MouClass" Name="fc8df8fd-d105-40a9-af75-2eec294adf8d" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidVhfWpp" Name="51B2172F-205D-40C1-9A30-ED090FF72E6C" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="MtConfig" Name="46bce2cc-ed23-41df-be49-6bb8ec04cf70" NonPagedMemory="true" Level="5">
+    <EventProvider Id="MsGpiowin32Wpp" Name="5A81715A-84C0-4DEF-AE38-EDDE40DF5B3A" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="RIM_RS1" Name="3374f1c0-597f-4aa1-b2c2-12789d9c8c3f" NonPagedMemory="true" Level="5">
+    <EventProvider Id="ButtonConverterWpp" Name="4B2862FE-F8BE-41FF-984A-0AF845F78E86" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Win32kBaseInput" Name="7e6b69b9-2aec-4fb3-9426-69a0f2b61a86" NonPagedMemory="true" Level="5">
+    <EventProvider Id="KbdHidWpp" Name="b41b0a56-4483-48ef-a772-0b007cbea8c6" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Win32kTraceLog" Name="487d6e37-1b9d-46d3-a8fd-54ce8bdf8a53" NonPagedMemory="true" Level="5">
+    <EventProvider Id="KbdClassWpp" Name="09281f1f-f66e-485a-99a2-91638f782c49" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Input_RS2" Name="0f81ec00-9e52-48e6-b899-eb3bbeede741" NonPagedMemory="true" Level="5">
+    <EventProvider Id="MouHidWpp" Name="bbbc2565-8272-486e-b5e5-2bc4630374ba" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="SurfaceHidMiniDriver" Name="155B2B92-EF08-47CD-BAE0-4FE3EFFD424D" NonPagedMemory="true" Level="5">
+    <EventProvider Id="MouClassWpp" Name="fc8df8fd-d105-40a9-af75-2eec294adf8d" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="DevicesLogging" Name="CDEF60FA-5777-4B02-9980-1E2C0DF22635" NonPagedMemory="true" Level="5">
+    <EventProvider Id="HidTelephonyWpp" Name="83788503-CA93-49CC-A658-01202F0E6CC6" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.TextInput" Name="ebadf775-48aa-4bf3-8f8e-ec68d113c98e" NonPagedMemory="false" Level="255">
+    <EventProvider Id="HidServWpp" Name="0d6375f5-5710-47e0-add8-f9cdbc7b92e0" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!--
+      Lower Power Buses Event Providers
+    -->
+    <EventProvider Id="SerCx2Wpp" Name="0ae46f43-b144-4056-9195-470054009d6c" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SerCx2Etw" Name="EEE173EF-7ED2-45DE-9877-01C70A852FBD" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SpbCxWpp" Name="e6086b4d-aeff-472b-bda7-eec662afbf11" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!--
+      Other Event Providers
+    -->
+    <EventProvider Id="UifEventSourceProvider" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0x1" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="KernelPnPEtw" Name="Microsoft-Windows-Kernel-PnP" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0xc9a000" />
       </Keywords>
     </EventProvider>
     <EventProvider Id="PciWpp" Name="47711976-08c7-44ef-8fa2-082da6a30a30" NonPagedMemory="true" Level="255">
@@ -385,128 +364,152 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="USB4HrdWpp" Name="505A6797-992E-43E6-B84E-235E41E3FD82" NonPagedMemory="true" Level="5">
+    <EventProvider Id="CadEtw" Name="DABA4D32-CC40-4266-BB95-C30344DBC680" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="USB4DrdWpp" Name="1B502FCB-68CD-4407-A59E-1EAF8AB9EA26" NonPagedMemory="true" Level="5">
+    <EventProvider Id="QcPmicTccWpp" Name="9CAB7EF0-9C6F-4C3A-A5AC-FF2E59E181EC" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="USB4HrdEtwTlg" Name="575BA31F-2B45-58C2-64FD-F5DC757B6137" NonPagedMemory="true" Level="5">
+    <EventProvider Id="QcUsbCWpp" Name="246E500B-1764-4427-ADD6-3C998B71F899" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="USB4DrdEtwTlg" Name="AE795D36-2B11-5EFB-C7E0-5D552BC55D6C" NonPagedMemory="true" Level="5">
+    <EventProvider Id="QcUsbFnSSFilterWpp" Name="3277C006-3313-4BD0-9B2C-7BDC8C28E75B" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="SerCx2Wpp" Name="0ae46f43-b144-4056-9195-470054009d6c" NonPagedMemory="true" Level="5">
+    <EventProvider Id="QcXhciFilterWpp" Name="11ED5F0A-0200-42AF-B5DF-B8BEC02C9624" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="SerCx2Etw" Name="EEE173EF-7ED2-45DE-9877-01C70A852FBD" NonPagedMemory="true" Level="5">
+    <EventProvider Id="MtConfigWpp" Name="46bce2cc-ed23-41df-be49-6bb8ec04cf70" NonPagedMemory="true" Level="3">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="SpbCx" Name="e6086b4d-aeff-472b-bda7-eec662afbf11" NonPagedMemory="true" Level="5">
+    <EventProvider Id="RIM_RS1Wpp" Name="3374f1c0-597f-4aa1-b2c2-12789d9c8c3f" NonPagedMemory="true" Level="3">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" Description="USB2, USB3, USB4, hard buttons and HID trace logging" LoggingMode="Memory" DetailLevel="Verbose">
+    <!-- Microsoft.Windows.Win32kBase.Input -->
+    <EventProvider Id="Win32kBaseInputTlg" Name="7e6b69b9-2aec-4fb3-9426-69a0f2b61a86" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Win32kTraceLogging" Name="487d6e37-1b9d-46d3-a8fd-54ce8bdf8a53" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!-- Win32kBase WPP (win32kbase.sys) -->
+    <EventProvider Id="Win32kBaseWpp" Name="0f81ec00-9e52-48e6-b899-eb3bbeede741" NonPagedMemory="true" Level="3">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SurfaceHidMiniDriver" Name="155B2B92-EF08-47CD-BAE0-4FE3EFFD424D" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!-- Microsoft.Windows.Power.DeviceProblems (energy.dll) -->
+    <EventProvider Id="DeviceProblemsTlg" Name="CDEF60FA-5777-4B02-9980-1E2C0DF22635" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+
+    <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="USB2, USB3, USB4, USB-C, Input and UIF logging">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_0">
-          <EventProviders>
-            <EventProviderId Value="Msgpiowin32" />
-            <EventProviderId Value="I8042prt" />
-            <EventProviderId Value="Buttonconverter" />
-          </EventProviders>
-        </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
           <EventProviders>
-            <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcXhciFilterWpp" />
             <EventProviderId Value="UsbCcgpWpp" />
             <EventProviderId Value="UsbHub2Etw" />
             <EventProviderId Value="UsbHub3Etw" />
             <EventProviderId Value="UsbHub3Wpp" />
             <EventProviderId Value="UsbPortEtw" />
-            <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbXhciCommonEtw" />
             <EventProviderId Value="UsbXhciCompanionWpp" />
             <EventProviderId Value="UsbXhciDriverWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
             <EventProviderId Value="WinUsbWpp" />
-            <EventProviderId Value="UsbTask" />
-            <EventProviderId Value="UsbXhciTrustlet" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
             <EventProviderId Value="PciWpp" />
             <EventProviderId Value="UsbPortWpp" />
             <EventProviderId Value="UsbSerWpp" />
+            <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
           <EventProviders>
-            <EventProviderId Value="QcPmicTccWpp" />
-            <EventProviderId Value="QcUsbCWpp" />
             <EventProviderId Value="UcmCxWpp" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
+            <EventProviderId Value="UcmUcsiCxWpp" />
+            <EventProviderId Value="UcmUcsiAcpiClientWpp" />
+            <EventProviderId Value="UrsCxWpp" />
+            <EventProviderId Value="UrsChipideaWpp" />
+            <EventProviderId Value="UrsSynopsysWpp" />
             <EventProviderId Value="UfxWpp" />
             <EventProviderId Value="UfxEtw" />
-            <EventProviderId Value="UfxSynWpp" />
-            <EventProviderId Value="UfxSynEtw" />
-            <EventProviderId Value="UrsChpWpp" />
-            <EventProviderId Value="UrsCxWpp" />
-            <EventProviderId Value="UrsSynWpp" />
-            <EventProviderId Value="UcmUcsiCx" />
-            <EventProviderId Value="UcmUcsiCxAcpiClient" />
+            <EventProviderId Value="UfxSynopsysWpp" />
+            <EventProviderId Value="UfxSynopsysEtw" />
+            <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
+            <EventProviderId Value="QcPmicTccWpp" />
+            <EventProviderId Value="QcUsbCWpp" />
+            <EventProviderId Value="QcUsbFnSSFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
           <EventProviders>
-            <EventProviderId Value="Hidspi" />
-            <EventProviderId Value="HidSpiCx" />
-            <EventProviderId Value="Hidinterrupt" />
-            <EventProviderId Value="HidTelephonyTraceGuid" />
-            <EventProviderId Value="BTNCONV" />
-            <EventProviderId Value="HIDVHF" />
+            <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWpp" />
             <EventProviderId Value="HidClassEtw" />
-            <EventProviderId Value="HidUsb" />
-            <EventProviderId Value="HidI2c" />
-            <EventProviderId Value="HidServ" />
-            <EventProviderId Value="KbdHid" />
-            <EventProviderId Value="KbdClass" />
-            <EventProviderId Value="MouHid" />
-            <EventProviderId Value="MouClass" />
-            <EventProviderId Value="MtConfig" />
-            <EventProviderId Value="RIM_RS1" />
-            <EventProviderId Value="Win32kBaseInput" />
-            <EventProviderId Value="Win32kTraceLog" />
-            <EventProviderId Value="Input_RS2" />
+            <EventProviderId Value="HidUsbWpp" />
+            <EventProviderId Value="HidI2cWpp" />
+            <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidSpiWpp" />
+            <EventProviderId Value="HidSpiCxWpp" />
+            <EventProviderId Value="HidInterruptWpp" />
+            <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="MsGpiowin32Wpp" />
+            <EventProviderId Value="ButtonConverterWpp" />
+            <EventProviderId Value="KbdHidWpp" />
+            <EventProviderId Value="KbdClassWpp" />
+            <EventProviderId Value="MouHidWpp" />
+            <EventProviderId Value="MouClassWpp" />
+            <EventProviderId Value="HidTelephonyWpp" />
+            <EventProviderId Value="HidServWpp" />
+            <EventProviderId Value="MtConfigWpp" />
+            <EventProviderId Value="RIM_RS1Wpp" />
+            <EventProviderId Value="Win32kBaseInputTlg" />
+            <EventProviderId Value="Win32kTraceLogging" />
+            <EventProviderId Value="Win32kBaseWpp" />
             <EventProviderId Value="SurfaceHidMiniDriver" />
-            <EventProviderId Value="DevicesLogging" />
-            <EventProviderId Value="Microsoft.Windows.TextInput" />
+            <EventProviderId Value="DeviceProblemsTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="USB4HrdTlg" />
+            <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
-            <EventProviderId Value="USB4HrdEtwTlg" />
-            <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_6">
@@ -516,75 +519,50 @@
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="HidOnlyProfile.Verbose.Memory" Name="HidOnlyProfile" Description="HID logging" LoggingMode="Memory" DetailLevel="Verbose">
-      <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
-          <EventProviders>
-            <EventProviderId Value="Hidspi" />
-            <EventProviderId Value="HidSpiCx" />
-            <EventProviderId Value="Hidinterrupt" />
-            <EventProviderId Value="HidTelephonyTraceGuid" />
-            <EventProviderId Value="Msgpiowin32" />
-            <EventProviderId Value="BTNCONV" />
-            <EventProviderId Value="HIDVHF" />
-            <EventProviderId Value="HidClassWpp" />
-            <EventProviderId Value="HidClassEtw" />
-            <EventProviderId Value="HidUsb" />
-            <EventProviderId Value="HidI2c" />
-            <EventProviderId Value="HidServ" />
-            <EventProviderId Value="KbdHid" />
-            <EventProviderId Value="KbdClass" />
-            <EventProviderId Value="MouHid" />
-            <EventProviderId Value="MouClass" />
-            <EventProviderId Value="I8042prt" />
-            <EventProviderId Value="MtConfig" />
-            <EventProviderId Value="RIM_RS1" />
-            <EventProviderId Value="Win32kBaseInput" />
-            <EventProviderId Value="Win32kTraceLog" />
-            <EventProviderId Value="Input_RS2" />
-            <EventProviderId Value="SurfaceHidMiniDriver" />
-            <EventProviderId Value="DevicesLogging" />
-            <EventProviderId Value="Microsoft.Windows.TextInput" />
-          </EventProviders>
-        </EventCollectorId>
-      </Collectors>
-    </Profile>
-    <Profile Id="UsbOnlyProfile.Verbose.Memory" Name="UsbOnlyProfile" Description="USB2, USB3, USB4 logging" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="BusesAllProfile.Verbose.File" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="File" 
+      Description="USB2, USB3, USB4, USB-C, Input and UIF logging"
+      Base="BusesAllProfile.Verbose.Memory"/>
+
+    <Profile Id="UsbOnlyProfile.Verbose.Memory" Name="UsbOnlyProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="USB2, USB3 and USB4 logging">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
           <EventProviders>
-            <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcXhciFilterWpp" />
             <EventProviderId Value="UsbCcgpWpp" />
             <EventProviderId Value="UsbHub2Etw" />
             <EventProviderId Value="UsbHub3Etw" />
             <EventProviderId Value="UsbHub3Wpp" />
             <EventProviderId Value="UsbPortEtw" />
-            <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbXhciCommonEtw" />
             <EventProviderId Value="UsbXhciCompanionWpp" />
             <EventProviderId Value="UsbXhciDriverWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
             <EventProviderId Value="WinUsbWpp" />
-            <EventProviderId Value="UsbTask" />
-            <EventProviderId Value="UsbXhciTrustlet" />
+            <EventProviderId Value="UsbTaskWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
             <EventProviderId Value="UsbPortWpp" />
             <EventProviderId Value="UsbSerWpp" />
+            <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="USB4HrdTlg" />
+            <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
-            <EventProviderId Value="USB4HrdEtwTlg" />
-            <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="UsbAndPnPProfile.Verbose.Memory" Name="UsbAndPnPProfile" Description="USB2, USB3, USB4 and PnP" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="UsbOnlyProfile.Verbose.File" Name="UsbOnlyProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="USB2, USB3 and USB4 logging"
+      Base="UsbOnlyProfile.Verbose.Memory"/>
+
+    <Profile Id="UsbAndPnPProfile.Verbose.Memory" Name="UsbAndPnPProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="USB2, USB3, USB4 and PnP logging">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
           <EventProviders>
@@ -599,35 +577,40 @@
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
             <EventProviderId Value="WinUsbWpp" />
-            <EventProviderId Value="UsbTask" />
-            <EventProviderId Value="UsbXhciTrustlet" />
+            <EventProviderId Value="UsbTaskWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="USB4HrdTlg" />
+            <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
-            <EventProviderId Value="USB4HrdEtwTlg" />
-            <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp">
           <EventProviders>
-            <EventProviderId Value="KernelPnP" />
+            <EventProviderId Value="KernelPnPEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" Description="USB4, USB3, PnP, Display, Net and PCI" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="UsbAndPnPProfile.Verbose.File" Name="UsbAndPnPProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="USB2, USB3, USB4 and PnP logging"
+      Base="UsbAndPnPProfile.Verbose.Memory"/>
+
+    <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="USB3, USB4, PnP, Display, Net and PCI logging">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="USB4HrdTlg" />
+            <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
-            <EventProviderId Value="USB4HrdEtwTlg" />
-            <EventProviderId Value="USB4DrdEtwTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
@@ -639,12 +622,12 @@
             <EventProviderId Value="UsbXhciDriverWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
-            <EventProviderId Value="UsbXhciTrustlet" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp">
           <EventProviders>
-            <EventProviderId Value="KernelPnP" />
+            <EventProviderId Value="KernelPnPEtw" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pci">
@@ -666,42 +649,95 @@
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="USBCOnlyProfile.Verbose.Memory" Name="USBCOnlyProfile" Description="USBC Only" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="Usb4WithTunnelsProfile.Verbose.File" Name="Usb4WithTunnelsProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="USB3, USB4, PnP, Display, Net and PCI logging"
+      Base="Usb4WithTunnelsProfile.Verbose.Memory"/>
+
+    <Profile Id="USBCProfile.Verbose.Memory" Name="USBCProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="USB-C, URS and USBFN logging">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
           <EventProviders>
-            <EventProviderId Value="QcPmicTccWpp" />
-            <EventProviderId Value="QcUsbCWpp" />
             <EventProviderId Value="UcmCxWpp" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
+            <EventProviderId Value="UcmUcsiCxWpp" />
+            <EventProviderId Value="UcmUcsiAcpiClientWpp" />
+            <EventProviderId Value="UrsCxWpp" />
+            <EventProviderId Value="UrsChipideaWpp" />
+            <EventProviderId Value="UrsSynopsysWpp" />
             <EventProviderId Value="UfxWpp" />
             <EventProviderId Value="UfxEtw" />
-            <EventProviderId Value="UfxSynWpp" />
-            <EventProviderId Value="UfxSynEtw" />
-            <EventProviderId Value="UrsChpWpp" />
-            <EventProviderId Value="UrsCxWpp" />
-            <EventProviderId Value="UrsSynWpp" />
-            <EventProviderId Value="UcmUcsiCx" />
-            <EventProviderId Value="UcmUcsiCxAcpiClient" />
+            <EventProviderId Value="UfxSynopsysWpp" />
+            <EventProviderId Value="UfxSynopsysEtw" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
+            <EventProviderId Value="QcPmicTccWpp" />
+            <EventProviderId Value="QcUsbCWpp" />
+            <EventProviderId Value="QcUsbFnSSFilterWpp" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" Description="SerCx2, SpbCx" LoggingMode="Memory" DetailLevel="Verbose">
+    <Profile Id="USBCProfile.Verbose.File" Name="USBCProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="USB-C, URS and USBFN logging"
+      Base="USBCProfile.Verbose.Memory"/>
+
+    <Profile Id="InputOnlyProfile.Verbose.Memory" Name="InputOnlyProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="Input only logging">
+      <Collectors>
+        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
+          <EventProviders>
+            <EventProviderId Value="I8042PrtWpp" />
+            <EventProviderId Value="HidClassWpp" />
+            <EventProviderId Value="HidClassEtw" />
+            <EventProviderId Value="HidUsbWpp" />
+            <EventProviderId Value="HidI2cWpp" />
+            <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidSpiWpp" />
+            <EventProviderId Value="HidSpiCxWpp" />
+            <EventProviderId Value="HidInterruptWpp" />
+            <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="MsGpiowin32Wpp" />
+            <EventProviderId Value="ButtonConverterWpp" />
+            <EventProviderId Value="KbdHidWpp" />
+            <EventProviderId Value="KbdClassWpp" />
+            <EventProviderId Value="MouHidWpp" />
+            <EventProviderId Value="MouClassWpp" />
+            <EventProviderId Value="HidTelephonyWpp" />
+            <EventProviderId Value="HidServWpp" />
+            <EventProviderId Value="MtConfigWpp" />
+            <EventProviderId Value="RIM_RS1Wpp" />
+            <EventProviderId Value="Win32kBaseInputTlg" />
+            <EventProviderId Value="Win32kTraceLogging" />
+            <EventProviderId Value="Win32kBaseWpp" />
+            <EventProviderId Value="SurfaceHidMiniDriver" />
+            <EventProviderId Value="DeviceProblemsTlg" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="InputOnlyProfile.Verbose.File" Name="InputOnlyProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="Input only logging"
+      Base="InputOnlyProfile.Verbose.Memory"/>
+
+    <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="SerCx2 and SpbCx logging">
       <Collectors>
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_LowPowerBuses">
           <EventProviders>
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
-            <EventProviderId Value="SpbCx" />
+            <EventProviderId Value="SpbCxWpp" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
+    <Profile Id="LowPowerBusesProfile.Verbose.File" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="SerCx2 and SpbCx logging"
+      Base="LowPowerBusesProfile.Verbose.Memory"/>
+
   </Profiles>
   <TraceMergeProperties>
     <TraceMergeProperty Id="USB_Default" Name="USB_Default">

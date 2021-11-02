@@ -60,7 +60,7 @@ echo ---------------------------------------
 echo Which components to collect trace from?
 echo ---------------------------------------
 echo 1) All buses components
-echo 2) Input components only 
+echo 2) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
 echo 3) Other options...
 echo 4) Back
 echo.
@@ -158,7 +158,7 @@ echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %traceFilesOutputPath%\%buildNumberFileName%
-rem PnP Stte
+rem PnP State
 echo - PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
 if exist %traceFilesOutputPath%\%pnpStateFileName% del %traceFilesOutputPath%\%pnpStateFileName%
 pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStateFileName%
@@ -169,7 +169,6 @@ copy %SystemRoot%\System32\Winevt\Logs\Application.evtx %traceFilesOutputPath%\
 if exist %traceFilesOutputPath%\%pnpLogsFileName% del %traceFilesOutputPath%\%pnpLogsFileName%
 wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" "%traceFilesOutputPath%\%pnpLogsFileName%"
 rem USB Live Kernel Reports
-rem TODO: exclude this for InputOnlyProfile
 echo - Live kernel reports...
 if exist %SystemRoot%\LiveKernelReports\USB* (
     echo Found these reports for USB. They may be related.

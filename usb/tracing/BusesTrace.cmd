@@ -123,21 +123,21 @@ goto StartOptionsMenu
 
 :StartNow
 echo Starting Tracing Now... (%wprpFileName%!%profileName%)
-wpr.exe -start %wprpFileName%!%profileName% -recordTempTo %traceFilesOutputPath%\
+wpr.exe -start %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
-echo Saving status to %wprStatusFileName%...
-wpr -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
 echo.
 echo ----------------------------------------------------------------------
 echo Tracing started. Reproduce the issue and hit any key to stop tracing.
 echo ----------------------------------------------------------------------
 pause
+echo Saving status to %wprStatusFileName%...
+wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
 wpr.exe -stop %traceFilesOutputPath%\%etlFileName%
 goto CollectMoreInfo
 
 :ConfigureBootTrace
 echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
-wpr.exe -addboot %wprpFileName%!%profileName%
+wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
 echo.
 echo #################################################################
@@ -148,6 +148,8 @@ echo.
 goto End
 
 :StopBootTrace
+echo Saving status to %wprStatusFileName%...
+wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
 wpr.exe -stopboot %traceFilesOutputPath%\%etlFileName%
 if not %ERRORLEVEL%==0 goto End
 goto CollectMoreInfo

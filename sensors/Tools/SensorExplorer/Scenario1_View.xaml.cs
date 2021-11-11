@@ -62,7 +62,7 @@ namespace SensorExplorer
 
             EnumerateSensors();
 
-            saveFileButton.Click += SaveFileButtonClick;
+            saveFileButton.Click += SaveFileViewButtonClick;
 
             rootPage.NotifyUser("Enumerating sensors...", NotifyType.StatusMessage);
 
@@ -78,7 +78,7 @@ namespace SensorExplorer
         /// Create the DeviceWatcher objects when the user navigates to this page so the UI list of devices is populated.
         /// </summary>
         protected override void OnNavigatedTo(NavigationEventArgs eventArgs)
-        {            
+        {
             // If we are connected to the device or planning to reconnect, we should disable the list of devices
             // to prevent the user from opening a device without explicitly closing or disabling the auto reconnect
             if (EventHandlerForDevice.Current.IsDeviceConnected
@@ -249,7 +249,7 @@ namespace SensorExplorer
                 for (int index = 0; index < Sensor.ProximitySensorList.Count; index++)
                 {
                     totalIndex++;
-                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.PROXIMITYSENSOR, index, totalIndex, 0, 1, 1, Constants.ProximitySensorColors));
+                    Sensor.SensorDisplay.Add(new SensorDisplay(Sensor.PROXIMITYSENSOR, index, totalIndex, 0, 3000, 3, Constants.ProximitySensorColors));
                     Sensor.SensorData.Add(new SensorData(Sensor.PROXIMITYSENSOR, totalIndex, Constants.ProximitySensorPropertyTitles));
                     AddPivotItem(Sensor.PROXIMITYSENSOR, index, totalIndex);
                 }
@@ -288,6 +288,17 @@ namespace SensorExplorer
 
             SensorDisplay selected = Sensor.SensorDisplay[totalIndex];
             PivotItemSensor.Header = Constants.SensorName[selected.SensorType] + " " + (index + 1);
+
+            // Special case proximity sensors and label the human presence sensors explicitly through the header. A human presence sensor is a proximity
+            // sensor with the optional property DEVPKEY_Sensor_ProximityType set as 1.
+            try
+            {
+                if (sensorType == Sensor.PROXIMITYSENSOR && (Sensor.ProximitySensorDeviceInfo[index].Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() == "1"))
+                {
+                    PivotItemSensor.Header = Constants.SensorName[selected.SensorType] + " (Human Presence) " + (index + 1);
+                }
+            }
+            catch { }
             scrollViewerSensor.Content = selected.StackPanelSensor;
             PivotItemSensor.Content = scrollViewerSensor;
             PivotSensor.Items.Add(PivotItemSensor);
@@ -322,7 +333,7 @@ namespace SensorExplorer
             {
                 Sensor.SensorDisplay[i].SetWidth(e.NewSize.Width, e.NewSize.Height);
             }
-        
+
             scrollViewerSensor.MaxWidth = e.NewSize.Width * 0.85;
             scrollViewerSensor.MaxHeight = e.NewSize.Height * 0.8;
         }
@@ -446,7 +457,7 @@ namespace SensorExplorer
             }
         }
 
-        private async void SaveFileButtonClick(object sender, RoutedEventArgs e)
+        private async void SaveFileViewButtonClick(object sender, RoutedEventArgs e)
         {
             FileSavePicker savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
@@ -456,26 +467,38 @@ namespace SensorExplorer
             if (file != null)
             {
                 CachedFileManager.DeferUpdates(file);
-                StorageFile logFileGenerated = await rootPage.LoggingSessionView.CloseAndSaveToFileAsync();
-                await logFileGenerated.CopyAndReplaceAsync(file);
-                FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                if (status == FileUpdateStatus.Complete)
+                StorageFile logFileGenerated = await rootPage.LoggingSessionView.CloseAndSaveToFileAsync(); //returns NULL if the current log file is empty
+
+                if (logFileGenerated != null)
                 {
-                    rootPage.NotifyUser("File " + file.Name + " was saved.", NotifyType.StatusMessage);
-                }
-                else if (status == FileUpdateStatus.CompleteAndRenamed)
-                {
-                    rootPage.NotifyUser("File " + file.Name + " was renamed and saved.", NotifyType.StatusMessage);
+                    await logFileGenerated.CopyAndReplaceAsync(file);
+                    FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
+                    if (status == FileUpdateStatus.Complete)
+                    {
+                        rootPage.NotifyUser("File " + file.Name + " was saved.", NotifyType.StatusMessage);
+                    }
+                    else if (status == FileUpdateStatus.CompleteAndRenamed)
+                    {
+                        rootPage.NotifyUser("File " + file.Name + " was renamed and saved.", NotifyType.StatusMessage);
+                    }
+                    else
+                    {
+                        rootPage.NotifyUser("File " + file.Name + " couldn't be saved.", NotifyType.ErrorMessage);
+                    }
                 }
                 else
                 {
-                    rootPage.NotifyUser("File " + file.Name + " couldn't be saved.", NotifyType.ErrorMessage);
+                    rootPage.NotifyUser("The log is empty.", NotifyType.ErrorMessage);
                 }
             }
             else
             {
                 rootPage.NotifyUser("Operation cancelled.", NotifyType.ErrorMessage);
             }
+
+            // start a new loging session
+            rootPage.LoggingSessionView = new FileLoggingSession("SensorExplorerLogViewNew");
+            rootPage.LoggingSessionView.AddLoggingChannel(rootPage.LoggingChannelView);
         }
 
         private void HidePlotButton(object sender, RoutedEventArgs e)
@@ -674,7 +697,7 @@ namespace SensorExplorer
                 else if (selectedDisplay.SensorType == Sensor.PEDOMETER)
                 {
                     Sensor.PedometerList[selectedDisplay.Index].ReportInterval = newReportInterval;
-                }             
+                }
             }
             catch { }
         }
@@ -689,8 +712,13 @@ namespace SensorExplorer
         {
             string deviceSelector = SerialDevice.GetDeviceSelectorFromUsbVidPid(ArduinoDevice.Vid, ArduinoDevice.Pid);
             var deviceWatcher = DeviceInformation.CreateWatcher(deviceSelector);
+
+            string alternateDeviceSelector = SerialDevice.GetDeviceSelectorFromUsbVidPid(ArduinoDevice.Vid, ArduinoDevice.PidAlternative);
+            var alternateDeviceWatcher = DeviceInformation.CreateWatcher(deviceSelector);
+
             // Allow the EventHandlerForDevice to handle device watcher events that relates or effects our device (i.e. device removal, addition, app suspension/resume)
             AddDeviceWatcher(deviceWatcher, deviceSelector);
+            AddDeviceWatcher(alternateDeviceWatcher, alternateDeviceSelector);
         }
 
         private void StartHandlingAppEvents()

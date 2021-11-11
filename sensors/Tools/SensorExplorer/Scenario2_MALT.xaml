@@ -7,6 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
     <Page.Resources>
         <CollectionViewSource x:Name="DeviceListSource"/>
@@ -14,7 +15,7 @@
 
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel x:Name="stackpanel1" Margin="12,20,12,12">
-            <TextBlock Text="Device Selection" Margin="0,0,0,10" FontSize="20"/>
+            <TextBlock Text="Device Selection" Margin="0,0,0,10"/>
             <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
@@ -34,60 +35,135 @@
             <Border x:Name="errorBorder" Background="Red"/>
         </StackPanel>
 
-        <StackPanel x:Name="stackpanel2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
-            <Button x:Name="showConnectionButton" Margin="10,0,0,0" Height="35" Content="Connect to another device" Click="ShowConnectionButton"/>
-            <StackPanel Orientation="Horizontal" Margin="10,18,0,0">
-                <StackPanel>
-                    <TextBlock Text="Light Value" FontSize="20"/>
-                    <TextBlock Text="Please enter a value in the range of 0 - 2600." Margin="0,10,0,0"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBox x:Name="textboxLIGHT" Width="150"/>
-                        <Button x:Name="buttonLIGHT" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonLIGHT"/>
+        <controls:TabView x:Name="Tabs" Visibility="Collapsed" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsAddTabButtonVisible="False" CanDragTabs="False" CanReorderTabs="False">
+            <controls:TabViewItem Header="Home">
+                <StackPanel x:Name="stackpanel2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Visible"
+                            >
+                    <Button x:Name="showConnectionButton" Margin="10,0,0,0" Height="35" Content="Connect to another device" Click="ShowConnectionButton"/>
+                    <StackPanel Orientation="Horizontal" Margin="10,18,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Light Value" FontSize="20"/>
+                            <TextBlock Text="Please enter a value in the range of 0 - 2600." Margin="0,10,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBox x:Name="textboxLIGHT" Width="150"/>
+                                <Button x:Name="buttonLIGHT" Margin="20,0,0,0" Height="32" Width="50" Content="Set" Click="ButtonLIGHT"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="100,0,0,0">
+                            <TextBlock Text="Conversion Time" FontSize="20"/>
+                            <TextBlock Text="Please enter either 100 or 800" Margin="0,10,0,0"/>
+                            <ComboBox x:Name="comboBox" Width="200" ItemsSource="100, 800" Margin="0,10,0,0"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <StackPanel Margin="100,0,0,0">
-                    <TextBlock Text="Conversion Time" FontSize="20"/>
-                    <TextBlock Text="Please enter either 100 or 800" Margin="0,10,0,0"/>
-                    <ComboBox x:Name="comboBox" Width="200" ItemsSource="100, 800" Margin="0,10,0,0"/>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel Margin="10,0,0,0">
-                    <TextBlock Text="Run a Test" FontSize="20" Margin="0,20,0,0"/>
-                    <StackPanel>
-                        <Button x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0" Click="ButtonAUTOCURVE" Width="300"/>
-                        <!--<Button x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>-->
-                        <Button x:Name="buttonIntervalExternal" Content="Internal vs external color sensor readings" Height="35" Margin="0,10,0,0" Click="ButtonInternalExternal" Width="300"/>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Margin="80,0,0,0">
-                    <TextBlock Text="MALT Version" FontSize="20" Margin="0,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="buttonMALTVERSION" Content="Get" Height="35" Click="ButtonMALTVERSION" Margin="0,10,0,0"/>
-                        <TextBlock x:Name="textblockVersion" Margin="20,18,0,0"/>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Text="Run a Test" FontSize="20" Margin="0,20,0,0"/>
+                            <StackPanel>
+                                <Button x:Name="buttonAUTOCURVE" Content="Take auto-brightness curve" Height="35" Margin="0,10,0,0" Click="ButtonAUTOCURVE" Width="300"/>
+                                <!--<Button x:Name="buttonSTRESS" Content="Stress mode" Height="35" Margin="20,10,0,0" IsEnabled="False"/>-->
+                                <Button x:Name="buttonIntervalExternal" Content="Internal vs external color sensor readings" Height="35" Margin="0,10,0,0" Click="ButtonInternalExternal" Width="300"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="80,0,0,0">
+                            <TextBlock Text="MALT Version" FontSize="20" Margin="0,20,0,0"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="buttonMALTVERSION" Content="Get" Height="35" Click="ButtonMALTVERSION" Margin="0,10,0,0"/>
+                                <TextBlock x:Name="textblockVersion" Margin="20,18,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Sensor Data" FontSize="20" Margin="10,20,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="buttonREADALSSENSOR1" Content="Get ambient brightness" Height="35" Click="ButtonREADALSSENSOR1" Margin="10,10,0,0" Width="200"/>
+                            <TextBlock x:Name="textblockLightSensor1" Margin="20,18,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="buttonREADALSSENSOR2" Content="Get screen brightness" Height="35" Click="ButtonREADALSSENSOR2" Margin="10,10,0,0" Width="200"/>
+                            <TextBlock x:Name="textblockLightSensor2" Margin="20,18,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="buttonREADCOLORSENSOR1" Content="Get ambient XYZ" Height="35" Click="ButtonREADCOLORSENSOR1" Margin="10,10,0,0" Width="200"/>
+                            <TextBlock x:Name="textblockColorSensor1" Margin="20,18,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="buttonREADCOLORSENSOR2" Content="Get screen XYZ" Height="35" Click="ButtonREADCOLORSENSOR2" Margin="10,10,0,0" Width="200"/>
+                            <TextBlock x:Name="textblockColorSensor2" Margin="20,18,0,0"/>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Sensor Data" FontSize="20" Margin="10,20,0,0"/>
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="buttonREADALSSENSOR1" Content="Get ambient brightness" Height="35" Click="ButtonREADALSSENSOR1" Margin="10,10,0,0" Width="200"/>
-                    <TextBlock x:Name="textblockLightSensor1" Margin="20,18,0,0"/>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Calibration">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Width="750" Margin="0,40,0,0">
+                        <TextBlock Text="Known Values" FontSize="20"/>
+                        <TextBlock Text="Please enter a value in the range of 0 - 100." Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxKNOWN1" Width="70" TextChanged="TextboxKNOWN1_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN2" Width="70" TextChanged="TextboxKNOWN2_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN3" Width="70" TextChanged="TextboxKNOWN3_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxKNOWN4" Width="70" TextChanged="TextboxKNOWN4_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN5" Width="70" TextChanged="TextboxKNOWN5_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN6" Width="70" TextChanged="TextboxKNOWN6_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxKNOWN7" Width="70" TextChanged="TextboxKNOWN7_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN8" Width="70" TextChanged="TextboxKNOWN8_TextChanged"/>
+                            <TextBox x:Name="textboxKNOWN9" Width="70" TextChanged="TextboxKNOWN9_TextChanged"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Width="750" Margin="0,40,0,0">
+                        <TextBlock Text="Raw Uncalibrated Values" FontSize="20"/>
+                        <TextBlock Text="Press button to read in values." Margin="0,0,0,20"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <TextBox x:Name="textboxRAW1" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW2" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW3" Width="70" IsReadOnly="True"/>
+                            <Button x:Name="buttonRAW1Screen" Margin="10,0,0,0" Height="32" Width="150" Content="Read Screen RED" Click="ButtonREADRAWSCREENR"/>
+                            <Button x:Name="buttonRAW1Ambient" Margin="10,0,0,0" Height="32" Width="155" Content="Read Ambient RED" Click="ButtonREADRAWAMBIENTR"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxRAW4" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW5" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW6" Width="70" IsReadOnly="True"/>
+                            <Button x:Name="buttonRAW2Screen" Margin="10,0,0,0" Height="32" Width="150" Content="Read Screen GREEN" Click="ButtonREADRAWSCREENG"/>
+                            <Button x:Name="buttonRAW2Ambient" Margin="10,0,0,0" Height="32" Width="155" Content="Read Ambient GREEN" Click="ButtonREADRAWAMBIENTG"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxRAW7" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW8" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxRAW9" Width="70" IsReadOnly="True"/>
+                            <Button x:Name="buttonRAW3Screen" Margin="10,0,0,0" Height="32" Width="150" Content="Read Screen BLUE" Click="ButtonREADRAWSCREENB"/>
+                            <Button x:Name="buttonRAW3Ambient" Margin="10,0,0,0" Height="32" Width="155" Content="Read Ambient BLUE" Click="ButtonREADRAWAMBIENTB"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Width="750" Margin="0,40,0,0">
+                        <TextBlock Text="Calibrated Values" FontSize="20"/>
+                        <TextBlock Text="Calculated Calibration Matrix." Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxCAL1" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL2" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL3" Width="70" IsReadOnly="True"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxCAL4" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL5" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL6" Width="70" IsReadOnly="True"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="textboxCAL7" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL8" Width="70" IsReadOnly="True"/>
+                            <TextBox x:Name="textboxCAL9" Width="70" IsReadOnly="True"/>
+                            <Button x:Name="buttonCAL" Margin="10,0,0,0" Height="32" Width="90" Content="Calculate" Click="ButtonCALCULATE"/>
+                            <Button x:Name="buttonCALT" Margin="10,0,0,0" Height="32" Width="200" Content="Calibrate Top" Click="ButtonCALIBRATETOP"/>
+                            <Button x:Name="buttonCALB" Margin="10,0,0,0" Height="32" Width="200" Content="Calibrate Bottom" Click="ButtonCALIBRATEBOTTOM"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="buttonREADALSSENSOR2" Content="Get screen brightness" Height="35" Click="ButtonREADALSSENSOR2" Margin="10,10,0,0" Width="200"/>
-                    <TextBlock x:Name="textblockLightSensor2" Margin="20,18,0,0"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="buttonREADCOLORSENSOR1" Content="Get ambient RGB" Height="35" Click="ButtonREADCOLORSENSOR1" Margin="10,10,0,0" Width="200"/>
-                    <TextBlock x:Name="textblockColorSensor1" Margin="20,18,0,0"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="buttonREADCOLORSENSOR2" Content="Get screen RGB" Height="35" Click="ButtonREADCOLORSENSOR2" Margin="10,10,0,0" Width="200"/>
-                    <TextBlock x:Name="textblockColorSensor2" Margin="20,18,0,0"/>
-                </StackPanel>
-            </StackPanel>
-        </StackPanel>
+            </controls:TabViewItem>
+        </controls:TabView>
 
         <StackPanel x:Name="stackpanel3" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12,20,12,12" Visibility="Collapsed">
             <TextBlock x:Name="output" TextWrapping="Wrap" Margin="0,10,0,0" FontSize="25"/>

@@ -106,7 +106,7 @@ namespace SensorExplorer
                 textBlockPercentageBrightnessSettings.Visibility = args.Capabilities.IsBrightnessControlSupported ? Visibility.Collapsed : Visibility.Visible;
 
                 stackPanelComboBoxNits.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Visible : Visibility.Collapsed;
-                textBlockNitsBrightnessSettings.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Collapsed: Visibility.Visible;
+                textBlockNitsBrightnessSettings.Visibility = args.Capabilities.IsBrightnessNitsControlSupported ? Visibility.Collapsed : Visibility.Visible;
 
                 if (supportedNitRange.Count >= 1)
                 {
@@ -258,8 +258,8 @@ namespace SensorExplorer
             try
             {
                 double percentage = Convert.ToDouble(textBoxPercentageBrightness.Text);
-                
-                if(percentage >= 0 && percentage <= 100)
+
+                if (percentage >= 0 && percentage <= 100)
                 {
                     SetBrightnessPercentage(percentage);
                     textBlockPercentageInputError.Visibility = Visibility.Collapsed;
@@ -277,14 +277,14 @@ namespace SensorExplorer
 
         private void NitsBrightnessSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            SetBrightnessNits((float) e.NewValue);
+            SetBrightnessNits((float)e.NewValue);
         }
 
         private void ButtonNitsBrightness_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                float nits = (float) Convert.ToDouble(textBoxNitsBrightness.Text);
+                float nits = (float)Convert.ToDouble(textBoxNitsBrightness.Text);
 
                 if (supportedNitRange.Count >= 1)
                 {

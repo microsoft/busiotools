@@ -90,13 +90,15 @@ namespace SensorExplorer
             "Category",
             "PersistentUniqueID",
             "ACPI Object Name",
+            "Sensor Name",
             "Manufacturer",
             "Model",
             "ConnectionType",
             "IsPrimary",
             "Vendor Defined Sub-Type",
             "State",
-            "Device ID"
+            "HumanPresenceDetectionType",
+            "Device ID",
         };
         private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
@@ -145,7 +147,7 @@ namespace SensorExplorer
             this.totalIndex = totalIndex;
 
             string[] vAxisLabel = new string[scale + 1];
-            var resourceLoader = ResourceLoader.GetForCurrentView();          
+            var resourceLoader = ResourceLoader.GetForCurrentView();
             StackPanelSensor.Children.Clear();
 
             expanderProperty.Content = scrollViewerProperty;
@@ -448,15 +450,15 @@ namespace SensorExplorer
                 textBlockPLDValue[i].FontSize = fontSize;
             }
 
-            TextBlock textBlock = new TextBlock() { Text = "00000000" , FontSize = fontSize };
+            TextBlock textBlock = new TextBlock() { Text = "00000000", FontSize = fontSize };
             textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
-            canvasSensor.Margin = new Thickness(textBlock.DesiredSize.Width, textBlock.DesiredSize.Height, 0, textBlock.DesiredSize.Height * 2 );
+            canvasSensor.Margin = new Thickness(textBlock.DesiredSize.Width, textBlock.DesiredSize.Height, 0, textBlock.DesiredSize.Height * 2);
             PlotCanvas.SetFontSize(fontSize);
         }
 
         public void SetHeight(double height)
         {
-            PlotCanvas.SetHeight(height*0.4);
+            PlotCanvas.SetHeight(height * 0.4);
             canvasSensor.Width = height;
             scrollViewerProperty.MaxHeight = height;
             scrollViewerPLD.MaxHeight = height;
@@ -480,19 +482,27 @@ namespace SensorExplorer
             textBlockPropertyValue[2].Text = "  " + sensorData.Category;
             textBlockPropertyValue[3].Text = "  " + sensorData.PersistentUniqueId;
             textBlockPropertyValue[4].Text = "  " + sensorData.ObjectHierarchy;
-            textBlockPropertyValue[5].Text = "  " + sensorData.Manufacturer;
-            textBlockPropertyValue[6].Text = "  " + sensorData.Model;
-            textBlockPropertyValue[7].Text = "  " + sensorData.ConnectionType;
-            textBlockPropertyValue[8].Text = "  " + sensorData.IsPrimary;
-            textBlockPropertyValue[9].Text = "  " + sensorData.VendorDefinedSubType;
-            textBlockPropertyValue[10].Text = "  " + sensorData.State;
-            textBlockPropertyValue[11].Text = $"{sensorData.DeviceId.Replace("{", "\r\n  {")}";
+            textBlockPropertyValue[5].Text = "  " + sensorData.SensorName;
+            textBlockPropertyValue[6].Text = "  " + sensorData.Manufacturer;
+            textBlockPropertyValue[7].Text = "  " + sensorData.Model;
+            textBlockPropertyValue[8].Text = "  " + sensorData.ConnectionType;
+            textBlockPropertyValue[9].Text = "  " + sensorData.IsPrimary;
+            textBlockPropertyValue[10].Text = "  " + sensorData.VendorDefinedSubType;
+            textBlockPropertyValue[11].Text = "  " + sensorData.State;
+            if (sensorData.HumanPresenceDetectionType != null)
+            {
+                textBlockPropertyValue[12].Text = "  " + sensorData.HumanPresenceDetectionType;
+            }
+            if (sensorData.DeviceId != null)
+            {
+                textBlockPropertyValue[13].Text = $"{sensorData.DeviceId.Replace("{", "\r\n  {")}";
+            }
         }
 
         public void UpdatePLDProperty(SensorData sensorData)
         {
             textBlockPLDValue[0].Text = (sensorData.PanelId == null) ? "null" : sensorData.PanelId;
-            textBlockPLDValue[1].Text = (sensorData.PanelGroup == null) ? "null" : Constants.PanelGroup[sensorData.PanelGroup];
+            textBlockPLDValue[1].Text = (sensorData.PanelGroup == null) ? "null" : sensorData.PanelGroup;
             textBlockPLDValue[2].Text = (sensorData.PanelSide == null) ? "null" : Constants.PanelSide[sensorData.PanelSide];
             textBlockPLDValue[3].Text = (sensorData.PanelWidth == null) ? "null" : sensorData.PanelWidth;
             textBlockPLDValue[4].Text = (sensorData.PanelHeight == null) ? "null" : sensorData.PanelHeight;
@@ -546,9 +556,9 @@ namespace SensorExplorer
                             switch (displayInformation.CurrentOrientation)
                             {
                                 case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness(margin * x, 0, 0, margin * y); break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * y, 0, 0, -margin * x ); break;
+                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * y, 0, 0, -margin * x); break;
                                 case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * x, 0, 0, -margin * y); break;
-                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * y, 0, 0, margin * x ); break;
+                                case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * y, 0, 0, margin * x); break;
                             }
                         }
                         else if (displayInformation.NativeOrientation == DisplayOrientations.Portrait)
@@ -556,7 +566,7 @@ namespace SensorExplorer
                             switch (displayInformation.CurrentOrientation)
                             {
                                 case DisplayOrientations.Landscape: ellipseAccelerometer.Margin = new Thickness(-margin * y, 0, 0, margin * x); break;
-                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * x, 0, 0, margin * y ); break;
+                                case DisplayOrientations.Portrait: ellipseAccelerometer.Margin = new Thickness(margin * x, 0, 0, margin * y); break;
                                 case DisplayOrientations.LandscapeFlipped: ellipseAccelerometer.Margin = new Thickness(margin * y, 0, 0, -margin * x); break;
                                 case DisplayOrientations.PortraitFlipped: ellipseAccelerometer.Margin = new Thickness(-margin * x, 0, 0, -margin * y); break;
                             }
@@ -566,9 +576,9 @@ namespace SensorExplorer
                     for (int i = 0; i < sensorData.Readings[index].Value.Length; i++)
                     {
                         textBlockProperty[i].Text = sensorData.Property[i];
-                        textBlockValue[i].Text = string.Format("        {0,5:0.00}", sensorData.Readings[index].Value[i]);
-                        textBlockMinValue[i].Text = string.Format("        {0,5:0.0}", sensorData.MinValue[i]);
-                        textBlockMaxValue[i].Text = string.Format("        {0,5:0.0}", sensorData.MaxValue[i]);
+                        textBlockValue[i].Text = string.Format("        {0,5:0.0000}", sensorData.Readings[index].Value[i]);
+                        textBlockMinValue[i].Text = string.Format("        {0,5:0.0000}", sensorData.MinValue[i]);
+                        textBlockMaxValue[i].Text = string.Format("        {0,5:0.0000}", sensorData.MaxValue[i]);
 
                         if (sensorData.Property[i].StartsWith("MagneticNorth"))
                         {

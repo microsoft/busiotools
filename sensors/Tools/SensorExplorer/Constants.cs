@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 /* Copyright (c) Intel Corporation. All rights reserved.
@@ -11,13 +11,13 @@ namespace SensorExplorer
 {
     public static class Constants
     {
-        public static readonly Dictionary<string, string> DeviceProperties = new Dictionary<string, string>() {
+        public static Dictionary<string, string> DeviceProperties = new Dictionary<string, string>() {
             { "BiosDeviceName", "{540b947e-8b40-45bc-a8a2-6a0b894cbda2} 10" },
             { "DeviceAddress", "{a45c254e-df1c-4efd-8020-67d146a850e0} 30" },
             { "ParentDevice", "{4340a6c5-93fa-4706-972c-7b648008a5a7} 8" }
         };
 
-        public static readonly Dictionary<string, string> PLD = new Dictionary<string, string>() {
+        public static Dictionary<string, string> PLD = new Dictionary<string, string>() {
             { "Device_PanelId", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 2" },
             { "Device_PanelGroup", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 3" },
             { "Device_PanelSide", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 4" },
@@ -27,7 +27,7 @@ namespace SensorExplorer
             { "Device_PanelPositionX", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 8" },
             { "Device_PanelPositionY", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 9" },
             { "Device_PanelPositionZ", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 10" },
-            { "Device_PanelRotationX", "{8DBC9PositionXC86-97A9-4BFF-9BC6-BFE95D3E6DAD} 11" },
+            { "Device_PanelRotationX", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 11" },
             { "Device_PanelRotationY", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 12" },
             { "Device_PanelRotationZ", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 13" },
             { "Device_PanelColor", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 14" },
@@ -35,12 +35,7 @@ namespace SensorExplorer
             { "Device_PanelVisible", "{8DBC9C86-97A9-4BFF-9BC6-BFE95D3E6DAD} 16" }
         };
 
-        public static readonly Dictionary<string, string> PanelGroup = new Dictionary<string, string>() {
-            { "0", "Right Panel" },
-            { "1", "Left Panel" }
-        };
-
-        public static readonly Dictionary<string, string> PanelRotation = new Dictionary<string, string>() {
+        public static Dictionary<string, string> PanelRotation = new Dictionary<string, string>() {
             { "0", "0°" },
             { "1", "45°" },
             { "2", "90°" },
@@ -51,7 +46,7 @@ namespace SensorExplorer
             { "7", "315°" }
         };
 
-        public static readonly Dictionary<string, string> PanelShape = new Dictionary<string, string>() {
+        public static Dictionary<string, string> PanelShape = new Dictionary<string, string>() {
             { "0", "Round" },
             { "1", "Oval" },
             { "2", "Square" },
@@ -63,17 +58,17 @@ namespace SensorExplorer
             { "8", "Chamfered" }
         };
 
-        public static readonly Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
-            { "0", "Top" },
-            { "1", "Bottom" },
-            { "2", "Left" },
-            { "3", "Right" },
-            { "4", "Front" },
-            { "5", "Back" },
-            { "6", "Unknown" }
+        public static Dictionary<string, string> PanelSide = new Dictionary<string, string>() {
+            { "0", "Unknown" },
+            { "1", "Top" },
+            { "2", "Bottom" },
+            { "3", "Left" },
+            { "4", "Right" },
+            { "5", "Front" },
+            { "6", "Back" }
         };
 
-        public static readonly Dictionary<string, string> Properties = new Dictionary<string, string>() {
+        public static Dictionary<string, string> Properties = new Dictionary<string, string>() {
             { "Sensor_Type", "{D4247382-969D-4F24-BB14-FB9671870BBF} 2" },
             { "Sensor_Category", "{D4247382-969D-4F24-BB14-FB9671870BBF} 3" },
             { "Sensor_ConnectionType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 4" },
@@ -84,10 +79,12 @@ namespace SensorExplorer
             { "Sensor_PersistentUniqueId", "{D4247382-969D-4F24-BB14-FB9671870BBF} 9" },
             { "Sensor_VendorDefinedSubType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 10" },
             { "Sensor_State", "{D4247382-969D-4F24-BB14-FB9671870BBF} 20" },
-            { "DEVPKEY_Device_InstanceId", "{78C34FC8-104A-4ACA-9EA4-524D52996E57} 256" }
+            { "DEVPKEY_Device_InstanceId", "{78C34FC8-104A-4ACA-9EA4-524D52996E57} 256" },
+            { "DEVPKEY_Sensor_ProximityType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 80" },
+            { "DEVPKEY_Sensor_HumanPresenceDetectionType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 81" },
         };
 
-        public static readonly Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
+        public static Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
             { "C317C286-C468-4288-9975-D4C4587C442C".ToLower(), "All" },
             { "CA19690F-A2C7-477D-A99E-99EC6E2B5648".ToLower(), "Biometric" },
             { "FB73FCD8-FC4A-483C-AC58-27B691C6BEFF".ToLower(), "Electrical" },
@@ -103,23 +100,37 @@ namespace SensorExplorer
             { "2BEAE7FA-19B0-48C5-A1F6-B5480DC206B0".ToLower(), "Unsupported" }
         };
 
-        public static readonly string[] SensorConnectionTypes = new string[] {
+        public static string[] SensorConnectionTypes = new string[] {
             "Integrated",
             "Attached",
             "External"
         };
 
-        public static readonly string[] RequestedProperties = new string[] {
+        public static Dictionary<int, string> HumanPresenceDetectionTypes = new Dictionary<int, string>()
+        {
+            { 1,  "VendorDefinedNonBiometric" },
+            { 2,  "VendorDefinedBiometric" },
+            { 4,  "FacialBiometric" },
+            { 6,  "VendorDefinedBiometric & FacialBiometric"},
+            { 8,  "AudioBiometric" },
+            { 10, "VendorDefinedBiometric & AudioBiometric"},
+            { 12, "FacialBiometric & AudioBiometric" },
+            { 14, "VendorDefinedBiometric & FacialBiometric & AudioBiometric"}
+        };
+
+        public static string[] RequestedProperties = new string[] {
             Properties["Sensor_Type"],
             Properties["Sensor_Category"],
             Properties["Sensor_ConnectionType"],
             Properties["Sensor_Name"],
             Properties["Sensor_Manufacturer"],
             Properties["Sensor_Model"],
-            Properties["Sensor_PersistentUniqueId"]
+            Properties["Sensor_PersistentUniqueId"],
+            Properties["DEVPKEY_Sensor_ProximityType"],
+            Properties["DEVPKEY_Sensor_HumanPresenceDetectionType"]
         };
 
-        public static readonly Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
+        public static Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
             { Sensor.ACCELEROMETER, new double[3] { 0, 0, -1 } },
             { Sensor.GYROMETER, new double[3] { 0, 0, 0 } },
             { Sensor.LIGHTSENSOR, new double[1] { 0 } },
@@ -127,7 +138,7 @@ namespace SensorExplorer
             { Sensor.ORIENTATIONGEOMAGNETIC, new double[4] { 0, 0, 0, 1 } }
         };
 
-        public static readonly Dictionary<int, string> SensorName = new Dictionary<int, string>() {
+        public static Dictionary<int, string> SensorName = new Dictionary<int, string>() {
             { Sensor.ACCELEROMETER, "Accelerometer (Standard)" },
             { Sensor.ACCELEROMETERGRAVITY, "Accelerometer (Gravity)" },
             { Sensor.ACCELEROMETERLINEAR, "Accelerometer (Linear)" },
@@ -307,13 +318,105 @@ namespace SensorExplorer
 
         public static readonly Color[] ProximitySensorColors = new Color[] {
             Colors.DarkOrange,
-            Colors.Black
+            Colors.DarkBlue
         };
 
         public static readonly Color[] SimpleOrientationSensorColors = new Color[] {
             Colors.Lime
         };
+
+        public static Dictionary<string, List<string>> panelOrientations = new Dictionary<string, List<string>>()
+        {
+            { "Concave", new List<string>() { "Not rotated, Not rotated",
+                                              "Rotated 180° CCW, Rotated 180° CCW",
+                                              "Face up, Rotated 90° CCW",
+                                              "Rotated 270° CCW, Face up" }
+            },
+            { "Flat", new List<string>()    { "Not rotated, Not rotated",
+                                              "Rotated 90° CCW, Rotated 90° CCW",
+                                              "Rotated 180° CCW, Rotated 180° CCW",
+                                              "Rotated 270° CCW, Rotated 270° CCW",
+                                              "Face up, Face up",
+                                              "Face down, Face down" }
+            },
+            { "Convex", new List<string>()  { "Not rotated, Not rotated",
+                                              "Rotated 180° CCW, Rotated 180° CCW",
+                                              "Rotated 270° CCW, Rotated 90° CCW",
+                                              "Rotated 90° CCW, Rotated 270° CCW",
+                                              "Face down, Rotated 90° CCW",
+                                              "Rotated 270° CCW, Face down" }
+            },
+            { "Full", new List<string>()    { "Not rotated, Not rotated",
+                                              "Rotated 180° CCW, Rotated 180° CCW",
+                                              "Rotated 90° CCW, Rotated 270° CCW",
+                                              "Rotated 270° CCW, Rotated 90° CCW",
+                                              "Face down, Face up",
+                                              "Face up, Face down" }
+            }
+        };
+
+        public static string Readable(string input)
+        {
+            switch (input.ToLower())
+            {
+                case "notrotated":
+                    return "Not rotated";
+                case "rotated90degreescounterclockwise":
+                    return "Rotated 90° CCW";
+                case "rotated180degreescounterclockwise":
+                    return "Rotated 180° CCW";
+                case "rotated270degreescounterclockwise":
+                    return "Rotated 270° CCW";
+                case "faceup":
+                    return "Face up";
+                case "facedown":
+                    return "Face down";
+                case "closed":
+                    return "Closed";
+                case "concave":
+                    return "Concave";
+                case "convex":
+                    return "Convex";
+                case "flat":
+                    return "Flat";
+                case "full":
+                    return "Full";
+            }
+            return null;
+        }
+
+        public static string ReadableReverse(string input)
+        {
+            switch (input)
+            {
+                case "Not rotated":
+                    return "notrotated";
+                case "Rotated 90° CCW":
+                    return "rotated90degreescounterclockwise";
+                case "Rotated 180° CCW":
+                    return "rotated180degreescounterclockwise";
+                case "Rotated 270° CCW":
+                    return "rotated270degreescounterclockwise";
+                case "Face up":
+                    return "faceup";
+                case "Face down":
+                    return "facedown";
+                case "Closed":
+                    return "closed";
+                case "Concave":
+                    return "concave";
+                case "Convex":
+                    return "convex";
+                case "Flat":
+                    return "flat";
+                case "Full":
+                    return "full";
+                default:
+                    return null;
+            }
+        }
     }
+
     public class DeviceProperties
     {
         public const string DeviceInstanceId = "System.Devices.DeviceInstanceId";
@@ -322,6 +425,7 @@ namespace SensorExplorer
     public class ArduinoDevice
     {
         public const ushort Vid = 0x2341;
-        public const ushort Pid = 0x0042;
+        public const ushort Pid = 0x0042; //Arduino Mega PID
+        public const ushort PidAlternative = 0x0010; //Sainsmart PID
     }
 }

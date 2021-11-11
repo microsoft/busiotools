@@ -9,12 +9,13 @@ namespace SensorExplorer
 {
     public partial class MainPage : Page
     {
-        private List<Scenario> scenarios = new List<Scenario>
+        public List<Scenario> scenarios = new List<Scenario>
         {
-            new Scenario() { Title = "Tests", ClassType = typeof(Scenario0Tests) },
+            new Scenario() { Title = "Test", ClassType = typeof(Scenario0Tests) },
             new Scenario() { Title = "View", ClassType = typeof(Scenario1View) },
             new Scenario() { Title = "MALT", ClassType = typeof(Scenario2MALT) },
             new Scenario() { Title = "Display Enhancement Override", ClassType = typeof(Scenario3DEO) },
+            new Scenario() { Title = "Distance", ClassType = typeof(Scenario4Distance) },
         };
     }
 

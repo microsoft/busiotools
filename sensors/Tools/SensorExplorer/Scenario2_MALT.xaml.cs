@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -16,6 +19,7 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -46,7 +50,7 @@ namespace SensorExplorer
         private List<string> conversionValues = new List<string> { "100", "800" };
         private MainPage rootPage = MainPage.Current;
         private ObservableCollection<DeviceListEntry> listOfDevices;
-        private StorageFile tmp, file;  
+        private StorageFile tmp, file;
         private SuspendingEventHandler appSuspendEventHandler;
 
         // Track Read Operation
@@ -110,7 +114,7 @@ namespace SensorExplorer
         /// </summary>
         protected override void OnNavigatedFrom(NavigationEventArgs eventArgs)
         {
-            if(lightSensor != null)
+            if (lightSensor != null)
             {
                 lightSensor.ReadingChanged -= LightSensorReadingChanged;
             }
@@ -183,6 +187,7 @@ namespace SensorExplorer
                         stackpanel1.Visibility = Visibility.Collapsed;
                         initialize();
                         stackpanel2.Visibility = Visibility.Visible;
+                        Tabs.Visibility = Visibility.Visible;
                     }
                 }
             }
@@ -226,8 +231,13 @@ namespace SensorExplorer
         {
             string deviceSelector = SerialDevice.GetDeviceSelectorFromUsbVidPid(ArduinoDevice.Vid, ArduinoDevice.Pid);
             var deviceWatcher = DeviceInformation.CreateWatcher(deviceSelector);
+
+            string alternateDeviceSelector = SerialDevice.GetDeviceSelectorFromUsbVidPid(ArduinoDevice.Vid, ArduinoDevice.PidAlternative);
+            var alternateDeviceWatcher = DeviceInformation.CreateWatcher(alternateDeviceSelector);
+
             // Allow the EventHandlerForDevice to handle device watcher events that relates or effects our device (i.e. device removal, addition, app suspension/resume)
             AddDeviceWatcher(deviceWatcher, deviceSelector);
+            AddDeviceWatcher(alternateDeviceWatcher, alternateDeviceSelector);
         }
 
         private void StartHandlingAppEvents()
@@ -606,10 +616,7 @@ namespace SensorExplorer
             string command = "READCOLORSENSOR 1\n";
             await WriteCommandAsync(command);
             string[] result = await ReadColorSensor(command);
-            textblockColorSensor1.Text = "Clear: " + result[1] +
-                                         ", Red: " + result[2] +
-                                         ", Green: " + result[3] +
-                                         ", Blue: " + result[4];
+            textblockColorSensor1.Text = "X: " + result[0] + " Y: " + result[1] + " Z: " + result[2];
 
             buttonREADCOLORSENSOR1.IsEnabled = true;
         }
@@ -622,13 +629,272 @@ namespace SensorExplorer
             string command = "READCOLORSENSOR 2\n";
             await WriteCommandAsync(command);
             string[] result = await ReadColorSensor(command);
-            textblockColorSensor2.Text = "Clear: " + result[1] +
-                                    ", Red: " + result[2] +
-                                    ", Green: " + result[3] +
-                                    ", Blue: " + result[4];
+            textblockColorSensor2.Text = "X: " + result[0] + " Y: " + result[1] + " Z: " + result[2];
 
             buttonREADCOLORSENSOR2.IsEnabled = true;
         }
+
+        // get screen raw RED XYZ
+        private async void ButtonREADRAWSCREENR(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW1Screen.IsEnabled = false;
+
+                string command = "COLORRAW 2\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run( async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW1.Text = task.Result[0];
+                    textboxRAW4.Text = task.Result[1];
+                    textboxRAW7.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            } catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW1Screen.IsEnabled = true;
+        }
+
+        // get screen raw GREEN XYZ
+        private async void ButtonREADRAWSCREENG(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW2Screen.IsEnabled = false;
+
+                string command = "COLORRAW 2\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run(async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW2.Text = task.Result[0];
+                    textboxRAW5.Text = task.Result[1];
+                    textboxRAW8.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            }
+            catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW2Screen.IsEnabled = true;
+        }
+
+        // get screen raw BLUE XYZ
+        private async void ButtonREADRAWSCREENB(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW3Screen.IsEnabled = false;
+
+                string command = "COLORRAW 2\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run(async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW3.Text = task.Result[0];
+                    textboxRAW6.Text = task.Result[1];
+                    textboxRAW9.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            }
+            catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW3Screen.IsEnabled = true;
+        }
+
+        // get raw RED XYZ
+        private async void ButtonREADRAWAMBIENTR(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW1Ambient.IsEnabled = false;
+
+                string command = "COLORRAW 1\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run(async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW1.Text = task.Result[0];
+                    textboxRAW4.Text = task.Result[1];
+                    textboxRAW7.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            }
+            catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW1Ambient.IsEnabled = true;
+        }
+
+        // get ambient raw GREEN XYZ
+        private async void ButtonREADRAWAMBIENTG(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW2Ambient.IsEnabled = false;
+
+                string command = "COLORRAW 1\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run(async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW2.Text = task.Result[0];
+                    textboxRAW5.Text = task.Result[1];
+                    textboxRAW8.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            }
+            catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW2Ambient.IsEnabled = true;
+        }
+
+        // get raw BLUE XYZ
+        private async void ButtonREADRAWAMBIENTB(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                buttonRAW3Ambient.IsEnabled = false;
+
+                string command = "COLORRAW 1\n";
+                await WriteCommandAsync(command);
+                var task = Task.Run(async () => await ReadColorSensor(command));
+                if (task.Wait(TimeSpan.FromSeconds(1)))
+                {
+                    textboxRAW3.Text = task.Result[0];
+                    textboxRAW6.Text = task.Result[1];
+                    textboxRAW9.Text = task.Result[2];
+                }
+                else
+                {
+                    var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                    await Msg.ShowAsync();
+                }
+            }
+            catch
+            {
+                var Msg = new MessageDialog("Please ensure you have the MALT plugged in.", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonRAW3Ambient.IsEnabled = true;
+        }
+
+        private async void ButtonCALCULATE(object sender, RoutedEventArgs e)
+        {
+            buttonCAL.IsEnabled = false;
+            try
+            {
+                //Generate Known Matrix
+                Matrix<double> T = DenseMatrix.OfArray(new double[,] {
+                    {Convert.ToDouble(textboxKNOWN1.Text),Convert.ToDouble(textboxKNOWN2.Text),Convert.ToDouble(textboxKNOWN3.Text)},
+                    {Convert.ToDouble(textboxKNOWN4.Text),Convert.ToDouble(textboxKNOWN5.Text),Convert.ToDouble(textboxKNOWN6.Text)},
+                    {Convert.ToDouble(textboxKNOWN7.Text),Convert.ToDouble(textboxKNOWN8.Text),Convert.ToDouble(textboxKNOWN9.Text)}});
+
+                //Generate Raw Matrix
+                Matrix<double> S = DenseMatrix.OfArray(new double[,] {
+                    {Convert.ToDouble(textboxRAW1.Text),Convert.ToDouble(textboxRAW2.Text),Convert.ToDouble(textboxRAW3.Text)},
+                    {Convert.ToDouble(textboxRAW4.Text),Convert.ToDouble(textboxRAW5.Text),Convert.ToDouble(textboxRAW6.Text)},
+                    {Convert.ToDouble(textboxRAW7.Text),Convert.ToDouble(textboxRAW8.Text),Convert.ToDouble(textboxRAW9.Text)}
+                    });
+
+                //Do matrix math
+                Matrix<double> K = (T * S.Transpose()) * ((S * S.Transpose()).Inverse());
+
+                //Output to textbox
+                textboxCAL1.Text = Math.Round(K[0, 0], 3).ToString();
+                textboxCAL2.Text = Math.Round(K[0, 1], 3).ToString();
+                textboxCAL3.Text = Math.Round(K[0, 2], 3).ToString();
+                textboxCAL4.Text = Math.Round(K[1, 0], 3).ToString();
+                textboxCAL5.Text = Math.Round(K[1, 1], 3).ToString();
+                textboxCAL6.Text = Math.Round(K[1, 2], 3).ToString();
+                textboxCAL7.Text = Math.Round(K[2, 0], 3).ToString();
+                textboxCAL8.Text = Math.Round(K[2, 1], 3).ToString();
+                textboxCAL9.Text = Math.Round(K[2, 2], 3).ToString();
+            } catch
+            {
+                var Msg = new MessageDialog("Please ensure you have filled every Known and Raw value before clicking Calculate!", "Error Occured");
+                await Msg.ShowAsync();
+            }
+
+            buttonCAL.IsEnabled = true;
+        }
+
+        private async void ButtonCALIBRATETOP(object sender, RoutedEventArgs e)
+        {
+            buttonCALT.IsEnabled = false;
+            string command = "CALTX " + textboxCAL1.Text + " " + textboxCAL4.Text + " " + textboxCAL7.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALTY " + textboxCAL2.Text + " " + textboxCAL5.Text + " " + textboxCAL8.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALTZ " + textboxCAL3.Text + " " + textboxCAL6.Text + " " + textboxCAL9.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALTOP\n";
+            await WriteCommandAsync(command);
+
+            buttonCALT.IsEnabled = true;
+        }
+
+        private async void ButtonCALIBRATEBOTTOM(object sender, RoutedEventArgs e)
+        {
+            buttonCALB.IsEnabled = false;
+            string command = "CALBX " + textboxCAL1.Text + " " + textboxCAL4.Text + " " + textboxCAL7.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALBY " + textboxCAL2.Text + " " + textboxCAL5.Text + " " + textboxCAL8.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALBZ " + textboxCAL3.Text + " " + textboxCAL6.Text + " " + textboxCAL9.Text + "\n";
+            await WriteCommandAsync(command);
+
+            command = "CALBOTTOM\n";
+            await WriteCommandAsync(command);
+
+            buttonCALB.IsEnabled = true;
+        }
+
 
         private void ButtonInternalExternal(object sender, RoutedEventArgs e)
         {
@@ -787,7 +1053,7 @@ namespace SensorExplorer
 
             try
             {
-                var csv = new System.Text.StringBuilder();
+                var csv = new StringBuilder();
                 await SetConversionTime(100);
                 csv.AppendLine("Light Level,Ambient Lux,Screen Lux");
 
@@ -905,11 +1171,26 @@ namespace SensorExplorer
             catch { return -1; }
         }
 
+        private async Task<double> ReadColorTemperature(string command)
+        {
+            try
+            {
+                string data = await ReadLines(2);
+                data = data.Replace("\n", "");
+                string[] delim = new string[1] { "\r" };
+                string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+                OutputError(command, split[0]);
+
+                return Convert.ToDouble(split[1]);
+            }
+            catch { return -1; }
+        }
+
         private async Task<string[]> ReadColorSensor(string command)
         {
             try
             {
-                string data = await ReadLines(5);
+                string data = await ReadLines(4);
                 data = data.Replace("\n", "");
                 string[] delim = new string[1] { "\r" };
                 string[] split = data.Split(delim, StringSplitOptions.RemoveEmptyEntries);
@@ -943,6 +1224,7 @@ namespace SensorExplorer
             int newLines = 0;
             string data = string.Empty;
 
+            //Needs error handling for arduino being unplugged
             DataReaderObject = new DataReader(EventHandlerForDevice.Current.Device.InputStream);
             while (newLines != numLines)
             {
@@ -977,6 +1259,10 @@ namespace SensorExplorer
                     rootPage.NotifyUser("Success - Get version", NotifyType.StatusMessage);
                 }
                 else if (command.Contains("READALSSENSOR"))
+                {
+                    rootPage.NotifyUser("Success - Reading sensor value...", NotifyType.StatusMessage);
+                }
+                else if (command.Contains("READCOLORSENSOR"))
                 {
                     rootPage.NotifyUser("Success - Reading sensor value...", NotifyType.StatusMessage);
                 }
@@ -1100,6 +1386,286 @@ namespace SensorExplorer
 
             return xyY;
         }
+
+        private void TextboxKNOWN1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN3_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN4_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN5_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN6_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN7_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN8_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
+        private void TextboxKNOWN9_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //get the textbox that fired the event
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+        }
+
 
         // white is in XYZ
         private double[] RGBToXYZ(double[] RGB, double[] redPrimary, double[] greenPrimary, double[] bluePrimary, double[] white)

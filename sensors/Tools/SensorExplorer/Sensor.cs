@@ -122,7 +122,7 @@ namespace SensorExplorer
 
         public static async Task<string[]> GetProperties(DeviceInformation deviceInfo)
         {
-            string[] properties = new string[9];
+            string[] properties = new string[11];
             try
             {
                 properties[0] = Constants.SensorCategories[deviceInfo.Properties[Constants.Properties["Sensor_Category"]].ToString()];
@@ -152,17 +152,26 @@ namespace SensorExplorer
             {
                 properties[5] = deviceInfo.Properties[Constants.Properties["Sensor_IsPrimary"]].ToString();
             }
-            catch { }
+            catch
+            {
+                properties[5] = "N/A";
+            }
             try
             {
                 properties[6] = deviceInfo.Properties[Constants.Properties["Sensor_VendorDefinedSubType"]].ToString();
             }
-            catch { }
+            catch
+            {
+                properties[6] = "N/A";
+            }
             try
             {
                 properties[7] = deviceInfo.Properties[Constants.Properties["SensorState"]].ToString();
             }
-            catch { }
+            catch
+            {
+                properties[7] = "N/A";
+            }
 
             try
             {
@@ -174,104 +183,183 @@ namespace SensorExplorer
                 properties[8] = "Device not created by ACPI";
             }
 
+            try
+            {
+                properties[9] = deviceInfo.Properties[Constants.Properties["Sensor_Name"]].ToString();
+            }
+            catch
+            {
+                properties[9] = "No sensor name set";
+            }
+
+            try
+            {
+                properties[10] = Constants.HumanPresenceDetectionTypes[int.Parse(deviceInfo.Properties[Constants.Properties["DEVPKEY_Sensor_HumanPresenceDetectionType"]].ToString())];
+            }
+            catch
+            {
+                properties[10] = "N/A";
+            }
+
             return properties;
         }
 
-        public static async Task<string[]> GetPLDInformation(string deviceInstanceId)
+        public static async Task<string[]> GetPLDInformation(string deviceInstanceId, DeviceInformationKind kind = DeviceInformationKind.Device)
         {
             string[] pld = new string[15];
+            bool isPldInformationPresent = false;
             try
             {
-                DeviceInformation pldPanelId = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelId"] }, DeviceInformationKind.Device);
-                pld[0] = pldPanelId.Properties[Constants.PLD["Device_PanelId"]].ToString();
+                DeviceInformation pldPanelId = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelId"] }, kind);
+                if(pldPanelId.Properties[Constants.PLD["Device_PanelId"]] != null)
+                {
+                    pld[0] = pldPanelId.Properties[Constants.PLD["Device_PanelId"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelGroup = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelGroup"] }, DeviceInformationKind.Device);
-                pld[1] = pldPanelGroup.Properties[Constants.PLD["Device_PanelGroup"]].ToString();
+                DeviceInformation pldPanelGroup = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelGroup"] }, kind);
+                if(pldPanelGroup.Properties[Constants.PLD["Device_PanelGroup"]] != null)
+                {
+                    pld[1] = pldPanelGroup.Properties[Constants.PLD["Device_PanelGroup"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelSide = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelSide"] }, DeviceInformationKind.Device);
-                pld[2] = pldPanelSide.Properties[Constants.PLD["Device_PanelSide"]].ToString();
+                DeviceInformation pldPanelSide = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelSide"] }, kind);
+                if (pldPanelSide.Properties[Constants.PLD["Device_PanelSide"]] != null)
+                {
+                    pld[2] = pldPanelSide.Properties[Constants.PLD["Device_PanelSide"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelWidth = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelWidth"] }, DeviceInformationKind.Device);
-                pld[3] = pldPanelWidth.Properties[Constants.PLD["Device_PanelWidth"]].ToString();
+                DeviceInformation pldPanelWidth = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelWidth"] }, kind);
+                if (pldPanelWidth.Properties[Constants.PLD["Device_PanelWidth"]] != null)
+                {
+                    pld[3] = pldPanelWidth.Properties[Constants.PLD["Device_PanelWidth"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelHeight = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelHeight"] }, DeviceInformationKind.Device);
-                pld[4] = pldPanelHeight.Properties[Constants.PLD["Device_PanelHeight"]].ToString();
+                DeviceInformation pldPanelHeight = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelHeight"] }, kind);
+                if (pldPanelHeight.Properties[Constants.PLD["Device_PanelHeight"]] != null)
+                {
+                    pld[4] = pldPanelHeight.Properties[Constants.PLD["Device_PanelHeight"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelLength = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelLength"] }, DeviceInformationKind.Device);
-                pld[5] = pldPanelLength.Properties[Constants.PLD["Device_PanelLength"]].ToString();
+                DeviceInformation pldPanelLength = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelLength"] }, kind);
+                if (pldPanelLength.Properties[Constants.PLD["Device_PanelLength"]] != null)
+                {
+                    pld[5] = pldPanelLength.Properties[Constants.PLD["Device_PanelLength"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelPositionX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionX"] }, DeviceInformationKind.Device);
-                pld[6] = pldPanelPositionX.Properties[Constants.PLD["Device_PanelPositionX"]].ToString();
+                DeviceInformation pldPanelPositionX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionX"] }, kind);
+                if (pldPanelPositionX.Properties[Constants.PLD["Device_PanelPositionX"]] != null)
+                {
+                    pld[6] = pldPanelPositionX.Properties[Constants.PLD["Device_PanelPositionX"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelPositionY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionY"] }, DeviceInformationKind.Device);
-                pld[7] = pldPanelPositionY.Properties[Constants.PLD["Device_PanelPositionY"]].ToString();
+                DeviceInformation pldPanelPositionY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionY"] }, kind);
+                if (pldPanelPositionY.Properties[Constants.PLD["Device_PanelPositionY"]] != null)
+                {
+                    pld[7] = pldPanelPositionY.Properties[Constants.PLD["Device_PanelPositionY"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelPositionZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionZ"] }, DeviceInformationKind.Device);
-                pld[8] = pldPanelPositionZ.Properties[Constants.PLD["Device_PanelPositionZ"]].ToString();
+                DeviceInformation pldPanelPositionZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPositionZ"] }, kind);
+                if(pldPanelPositionZ.Properties[Constants.PLD["Device_PanelPositionZ"]] != null)
+                {
+                    pld[8] = pldPanelPositionZ.Properties[Constants.PLD["Device_PanelPositionZ"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelRotationX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationX"] }, DeviceInformationKind.Device);
-                pld[9] = pldPanelRotationX.Properties[Constants.PLD["Device_PanelRotationX"]].ToString();
+                DeviceInformation pldPanelRotationX = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationX"] }, kind);
+                if(pldPanelRotationX.Properties[Constants.PLD["Device_PanelRotationX"]] != null)
+                {
+                    pld[9] = pldPanelRotationX.Properties[Constants.PLD["Device_PanelRotationX"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelRotationY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelPosiRotationY"] }, DeviceInformationKind.Device);
-                pld[10] = pldPanelRotationY.Properties[Constants.PLD["Device_PanelRotationY"]].ToString();
+                DeviceInformation pldPanelRotationY = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationY"] }, kind);
+                if (pldPanelRotationY.Properties[Constants.PLD["Device_PanelRotationY"]] != null)
+                {
+                    pld[10] = pldPanelRotationY.Properties[Constants.PLD["Device_PanelRotationY"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelRotationZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationZ"] }, DeviceInformationKind.Device);
-                pld[11] = pldPanelRotationZ.Properties[Constants.PLD["Device_PanelRotationZ"]].ToString();
+                DeviceInformation pldPanelRotationZ = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelRotationZ"] }, kind);
+                if(pldPanelRotationZ.Properties[Constants.PLD["Device_PanelRotationZ"]] != null)
+                {
+                    pld[11] = pldPanelRotationZ.Properties[Constants.PLD["Device_PanelRotationZ"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelColor = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelColor"] }, DeviceInformationKind.Device);
-                pld[12] = pldPanelColor.Properties[Constants.PLD["Device_PanelColor"]].ToString();
+                DeviceInformation pldPanelColor = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelColor"] }, kind);
+                if(pldPanelColor.Properties[Constants.PLD["Device_PanelColor"]] != null)
+                {
+                    pld[12] = pldPanelColor.Properties[Constants.PLD["Device_PanelColor"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelShape = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelShape"] }, DeviceInformationKind.Device);
-                pld[13] = pldPanelShape.Properties[Constants.PLD["Device_PanelShape"]].ToString();
+                DeviceInformation pldPanelShape = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelShape"] }, kind);
+                if(pldPanelShape.Properties[Constants.PLD["Device_PanelShape"]] != null)
+                {
+                    pld[13] = pldPanelShape.Properties[Constants.PLD["Device_PanelShape"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
             try
             {
-                DeviceInformation pldPanelVisible = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelVisible"] }, DeviceInformationKind.Device);
-                pld[14] = pldPanelVisible.Properties[Constants.PLD["Device_PanelVisible"]].ToString();
+                DeviceInformation pldPanelVisible = await DeviceInformation.CreateFromIdAsync(deviceInstanceId, new string[] { Constants.PLD["Device_PanelVisible"] }, kind);
+                if(pldPanelVisible.Properties[Constants.PLD["Device_PanelVisible"]] != null)
+                {
+                    pld[14] = pldPanelVisible.Properties[Constants.PLD["Device_PanelVisible"]].ToString();
+                    isPldInformationPresent = true;
+                }
             }
             catch { }
 
-            return pld;
+            return isPldInformationPresent ? pld : null;
         }
 
         private static async Task<string> GetAcpiObjectHierarchy(string deviceInstanceId)
@@ -464,8 +552,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        AccelerometerStandardPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if(pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            AccelerometerStandardPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            AccelerometerStandardPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -485,8 +582,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        AccelerometerGravityPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            AccelerometerGravityPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            AccelerometerGravityPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -506,8 +612,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        AccelerometerLinearPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            AccelerometerLinearPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            AccelerometerLinearPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -527,8 +642,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        ActivitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            ActivitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            ActivitySensorPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -546,8 +670,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = AltimeterDeviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        AltimeterPLD = await GetPLDInformation(deviceInstanceId);
+                        var pldInfo = await GetPLDInformation(AltimeterDeviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = AltimeterDeviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            AltimeterPLD = await GetPLDInformation(deviceInstanceId);
+                        }
+                        else
+                        {
+                            AltimeterPLD = pldInfo;
+                        }
                     }
                 }
             }
@@ -567,8 +700,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        BarometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            BarometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            BarometerPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -588,8 +730,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        CompassPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            CompassPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            CompassPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -609,8 +760,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        CustomSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            CustomSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            CustomSensorPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -630,8 +790,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        GyrometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            GyrometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            GyrometerPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -650,8 +819,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        InclinometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            InclinometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            InclinometerPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -671,8 +849,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        LightSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            LightSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            LightSensorPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -692,8 +879,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        MagnetometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            MagnetometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            MagnetometerPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -713,8 +909,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        OrientationAbsolutePLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            OrientationAbsolutePLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            OrientationAbsolutePLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -734,8 +939,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        OrientationGeomagneticPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            OrientationGeomagneticPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            OrientationGeomagneticPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -755,8 +969,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        OrientationRelativePLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            OrientationRelativePLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            OrientationRelativePLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -776,8 +999,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        PedometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            PedometerPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            PedometerPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -797,8 +1029,17 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            ProximitySensorPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -818,8 +1059,19 @@ namespace SensorExplorer
 
                     if (getPLD)
                     {
-                        string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                        SimpleOrientationSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+
+
+                        if (pldInfo == null)
+                        {
+                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                            SimpleOrientationSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                        }
+                        else
+                        {
+                            SimpleOrientationSensorPLD.Add(pldInfo);
+                        }
                     }
                 }
             }
@@ -1209,7 +1461,7 @@ namespace SensorExplorer
                 if (SensorData[CurrentId].SensorType == ACTIVITYSENSOR)
                 {
                     ActivitySensorReading reading = e.Reading;
-                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { 0 } ))
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { 0 }))
                     {
                         await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
@@ -1795,7 +2047,7 @@ namespace SensorExplorer
             catch { }
         }
 
-        private static async  void EnableOrientationGeomagnetic(int index, int totalIndex)
+        private static async void EnableOrientationGeomagnetic(int index, int totalIndex)
         {
             if (OrientationGeomagneticList[index] != null)
             {

@@ -24,7 +24,7 @@ namespace SensorExplorer
         private int minValue = 0;
         private List<int> plotIndex = new List<int>();
         private string[] vAxisLabel;
-
+        private bool isOneShotGraph = false;
         public PlotCanvas(int minValue, int maxValue, Color[] color, Canvas canvas, string[] vAxisLabel)
         {
             this.minValue = minValue;
@@ -219,9 +219,24 @@ namespace SensorExplorer
                     // Add the path to the Canvas
                     canvas.Children.Add(vLine);
 
-                    if (frame < 15 || i % 5 == 0)
+                    if (frame < 15 || i % 5 == 0 || i == frame)
                     {
                         TextBlock textBlock = new TextBlock() { Text = (-i).ToString(), FontSize = fontSize };
+                        if (isOneShotGraph)
+                        {
+                            if (i == 0)
+                            {
+                                textBlock.Text = "Start";
+                            }
+                            else if (i == frame)
+                            {
+                                textBlock.Text = "End";
+                            }
+                            else
+                            {
+                                textBlock.Text = i.ToString();
+                            }
+                        }
                         textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
                         textBlock.Width = textBlock.DesiredSize.Width;
                         textBlock.Height = textBlock.DesiredSize.Height;
@@ -262,6 +277,62 @@ namespace SensorExplorer
                 }
             }
             catch { }
+        }
+
+        public void PlotGroup(List<List<int>> distances, List<List<DateTimeOffset>> timestamps)
+        {
+            DateTimeOffset startTime = timestamps[0][0];
+            DateTimeOffset endTime = timestamps[0][timestamps[0].Count - 1];
+            DateTimeOffset timeNow = DateTimeOffset.Now;
+            isOneShotGraph = true;
+            for (int i = 1; i < timestamps.Count; i++)
+            {
+                if (timestamps[i][0] < startTime)
+                {
+                    startTime = timestamps[i][0];
+                }
+                if (timestamps[i][timestamps[i].Count - 1] > endTime)
+                {
+                    endTime = timestamps[i][timestamps[i].Count - 1];
+                }
+            }
+            try
+            {
+                canvas.Children.Clear();
+                canvas.Height = height;
+
+                frame = (int)timeNow.Subtract(startTime).TotalSeconds;
+
+                PlotGrid(maxValue, minValue, Colors.Black);
+
+                PathFigure[] pathFigure = new PathFigure[plotIndex.Count];
+
+                for (int i = 0; i < pathFigure.Length; i++)
+                {
+                    pathFigure[i] = new PathFigure();
+                }
+
+                for (int i = 0; i < timestamps.Count; i++)
+                {
+                    for (int j = 1; j < distances[i].Count; j++)
+                    {
+                        if (timestamps[i][j] < timeNow)
+                        {
+                            AddLineSegmentToPathFigure(ref pathFigure[i], startTime.Subtract(timestamps[i][j - 1]).TotalSeconds, distances[i][j - 1], startTime.Subtract(timestamps[i][j]).TotalSeconds, distances[i][j]);
+                        }
+                    }
+                }
+
+                Path[] path = AddPathFigureToPath(pathFigure);
+
+                for (int i = 0; i < path.Length; i++)
+                {
+                    canvas.Children.Add(path[i]);
+                }
+            }
+            catch { }
+
+            replotGrid = true;
         }
     }
 }

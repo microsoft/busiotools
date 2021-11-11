@@ -15,6 +15,7 @@ namespace SensorExplorer
         private static ThreadPoolTimer periodicTimerMALTScenario1 = null;
         private static ThreadPoolTimer periodicTimerMALTScenario2 = null;
         private static ThreadPoolTimer periodicTimerDEO = null;
+        private static ThreadPoolTimer periodicTimerDistance = null;
 
         /// <summary>
         /// Create a periodic timer that fires every time the period elapses.
@@ -198,6 +199,31 @@ namespace SensorExplorer
             await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 Scenario3DEO.Scenario3.BrightnessLevelChanged();
+            });
+        }
+
+        public static void CreateDistanceTimer()
+        {
+            if (periodicTimerDistance == null)
+            {
+                periodicTimerDistance = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallbackDistance), new TimeSpan(0, 0, 1));
+            }
+        }
+
+        public static void CancelDistanceTimer()
+        {
+            if (periodicTimerDistance != null)
+            {
+                periodicTimerDistance.Cancel();
+                periodicTimerDistance = null;
+            }
+        }
+
+        private async static void PeriodicTimerCallbackDistance(ThreadPoolTimer timer)
+        {
+            await cd.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await Scenario4Distance.Scenario4.EvaluateStateEverySecondAsync();
             });
         }
     }

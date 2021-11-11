@@ -1,2 +1,0 @@
-MainPackage=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\bin\x64\Release\SensorExplorer_1.0.17.0_x64.msix
-SymbolPackage=C:\Users\jialzhu\Desktop\busiotools\sensors\Tools\SensorExplorer\code\SensorExplorer\AppPackages\SensorExplorer_1.0.17.0_Test\SensorExplorer_1.0.17.0_x64.appxsym

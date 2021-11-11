@@ -29,6 +29,7 @@ namespace SensorExplorer
         public string Category;
         public string ConnectionType;
         public string DeviceId;
+        public string HumanPresenceDetectionType;
         public string IsPrimary;
         public string Manufacturer;
         public string Model;
@@ -52,6 +53,7 @@ namespace SensorExplorer
         public string State;
         public string VendorDefinedSubType;
         public string ObjectHierarchy;
+        public string SensorName;
         public uint DefaultReportInterval = 0;
         public uint ReportInterval = 0;
         public uint MinReportInterval = 0;
@@ -86,25 +88,30 @@ namespace SensorExplorer
             VendorDefinedSubType = properties[6];
             State = properties[7];
             ObjectHierarchy = properties[8];
+            SensorName = properties[9];
+            HumanPresenceDetectionType = properties[10];
         }
 
         public void AddPLDProperty(string[] PLD)
         {
-            PanelId = PLD[0];
-            PanelGroup = PLD[1];
-            PanelSide = PLD[2];
-            PanelWidth = PLD[3];
-            PanelHeight = PLD[4];
-            PanelLength = PLD[5];
-            PanelPositionX = PLD[6];
-            PanelPositionY = PLD[7];
-            PanelPositionZ = PLD[8];
-            PanelRotationX = PLD[9];
-            PanelRotationY = PLD[10];
-            PanelRotationZ = PLD[11];
-            PanelColor = PLD[12];
-            PanelShape = PLD[13];
-            PanelVisible = PLD[14];
+            if (null != PLD)
+            {
+                PanelId = PLD[0];
+                PanelGroup = PLD[1];
+                PanelSide = PLD[2];
+                PanelWidth = PLD[3];
+                PanelHeight = PLD[4];
+                PanelLength = PLD[5];
+                PanelPositionX = PLD[6];
+                PanelPositionY = PLD[7];
+                PanelPositionZ = PLD[8];
+                PanelRotationX = PLD[9];
+                PanelRotationY = PLD[10];
+                PanelRotationZ = PLD[11];
+                PanelColor = PLD[12];
+                PanelShape = PLD[13];
+                PanelVisible = PLD[14];
+            }
         }
 
         public void UpdateReportInterval(uint reportInterval)

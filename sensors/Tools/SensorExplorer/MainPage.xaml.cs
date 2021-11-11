@@ -1,8 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+#if(SENSORWRAPPERS)
+using SensorWrappers;
+#endif
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.Devices.Enumeration;
+using Windows.Devices.Sensors;
 using Windows.Foundation.Diagnostics;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -19,9 +25,8 @@ namespace SensorExplorer
 
         public FileLoggingSession LoggingSessionTests;
         public FileLoggingSession LoggingSessionView;
+        public LoggingChannel LoggingChannelTests;
         public LoggingChannel LoggingChannelView;
-
-        private LoggingChannel LoggingChannelTests;
 
         public MainPage()
         {
@@ -29,7 +34,7 @@ namespace SensorExplorer
             Current = this;
 
             try
-            { 
+            {
                 LoggingSessionTests = new FileLoggingSession("SensorExplorerLogTests");
                 LoggingChannelTests = new LoggingChannel("SensorExplorerLogTests", null);
                 LoggingSessionTests.AddLoggingChannel(LoggingChannelTests);

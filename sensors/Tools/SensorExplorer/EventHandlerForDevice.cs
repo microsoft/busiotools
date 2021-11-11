@@ -3,9 +3,9 @@
 
 using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -21,14 +21,14 @@ namespace SensorExplorer
         private static object singletonCreationLock = new object();
 
         private MainPage rootPage = MainPage.Current;
-        private bool watcherStarted;
-        private bool watcherSuspended;
         private DeviceWatcher deviceWatcher;
-        private EventHandler<object> appResumeEventHandler;
         private SuspendingEventHandler appSuspendEventHandler;
-        private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
+        private EventHandler<object> appResumeEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformation> deviceAddedEventHandler;
         private TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> deviceRemovedEventHandler;
+        private TypedEventHandler<DeviceAccessInformation, DeviceAccessChangedEventArgs> deviceAccessEventHandler;
+        private bool watcherSuspended;
+        private bool watcherStarted;
 
         /// <summary>
         /// Enforces the singleton pattern so that there is only one object handling app events
@@ -192,7 +192,8 @@ namespace SensorExplorer
                 }
             }
 
-            rootPage.NotifyUser(notificationMessage, notificationStatus);
+            MainPage.Current.NotifyUser(notificationMessage, notificationStatus);
+
             return successfullyOpenedDevice;
         }
 
@@ -267,7 +268,7 @@ namespace SensorExplorer
 
                 await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(() =>
                 {
-                    rootPage.NotifyUser(deviceId + " is closed", NotifyType.StatusMessage);
+                    MainPage.Current.NotifyUser(deviceId + " is closed", NotifyType.StatusMessage);
                 }));
             }
         }
@@ -281,7 +282,7 @@ namespace SensorExplorer
         private void RegisterForAppEvents()
         {
             appSuspendEventHandler = new SuspendingEventHandler(Current.OnAppSuspension);
-            appResumeEventHandler = new EventHandler<Object>(Current.OnAppResume);
+            appResumeEventHandler = new EventHandler<object>(Current.OnAppResume);
 
             // This event is raised when the app is exited and when the app is suspended
             Application.Current.Suspending += appSuspendEventHandler;

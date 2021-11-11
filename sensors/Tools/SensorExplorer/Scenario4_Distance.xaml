@@ -1,0 +1,82 @@
+﻿<!--Copyright (c) Microsoft Corporation. All rights reserved.-->
+<!--Licensed under the MIT License.-->
+
+<Page
+    x:Class="SensorExplorer.Scenario4Distance"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:local="using:FaceDetection"
+    Background="White">
+
+    <Grid>
+        <StackPanel Name="StartPanel1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="50" Text="Proximity Sensor Tests" />
+            <Image Name="ProximityImage" Source="Images/proximityimageintro.png" Width="500" />
+            <TextBlock Name="StartPanelInstructionsTextBox" MaxWidth="700" FontSize="20" TextWrapping="WrapWholeWords" Text="Please set your laptop in front of a table so the sensor height is similar to your height. Please have an open area of 2000 mm around you. Press Confirm once you have set this up."/>
+            <Button Name="ConfirmInstructionsButton" HorizontalAlignment="Center" Height="85" Width="200" FontSize="30" Margin="10" Content="Confirm" Click="ConfirmInstructions_Click"/>
+        </StackPanel>
+        <StackPanel Name="StartPanel2" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="30" Name="ProximitySensorFoundTextBox" Text="No Proximity Sensor Found!" />
+            <TextBlock FontSize="30" Name="CurrentProximitySensorName" Text="" />
+            <Button Name="ChangeProximitySensorButton" Visibility="Collapsed" Height="50"  FontSize="20" Margin="10" Content="Change Sensor" Click="ChangeProximitySensor_Click"/>
+            <Button Name="RunAutomaticTestsButton" Visibility="Collapsed" HorizontalAlignment="Center" Height="85" Width="450" FontSize="30" Margin="10" Content="Run Automatic Distance Tests" Click="RunAutomaticTestsButton_Click"/>
+            <Button Name="RunManualTestsButton" Visibility="Collapsed" HorizontalAlignment="Center" Height="85" Width="450" FontSize="30" Margin="10" Content="Run Manual Distance Tests" Click="RunManualTestsButton_Click" />
+        </StackPanel>
+        <StackPanel Name="ManualPanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="30" Text="Manual Proximity Sensor Tests" />
+            <Image Name="ProximityImageManual" Source="Images/proximityimagemanual.png" Width="400" />
+            <TextBlock Name="ManualLongTextTextBox" Margin="10" MaxWidth="700" FontSize="12" TextWrapping="WrapWholeWords" Text="Please set the laptop on a table, pointing at an open area of 2000 mm. From the location of the sensor or top of monitor if sensor location is unknown, measure and mark out the following distances: 400 mm, 800 mm, and 1200 mm. During the test, you will be instructed to move to each of these distances, in sequence. Place a marker on the ground for each of these distances for easy access. SensorExplorer will ask you to go to these distances, one at a time. When you are ready, press Start to start the test when you are ready." />
+            <TextBlock Name="CurrentDistanceFromSensorTextBox" FontSize="25" Text="No proximity sample acquired." Visibility="Collapsed"/>
+            <TextBlock Name="CurrentTimerTextBox" FontSize="25" Text="Timer: 20 seconds" Visibility="Collapsed" />
+            <TextBlock Name="ManualGoToDistanceTextBox" Foreground="DarkMagenta" HorizontalAlignment="Center" FontSize="50" Text="Go to the following distance:" Visibility="Collapsed"/>
+            <Button Name="StartManualTestsButton" HorizontalAlignment="Center" Height="40" Width="100" FontSize="20" Margin="10" Content="Start" Click="StartManualTestsButton_Click" />
+            <TextBlock Name="ManualDistanceTextBox" Foreground="DarkMagenta" HorizontalAlignment="Center" Margin="30" FontSize="200" Text="400mm" Visibility="Collapsed"/>
+            <TextBlock Name="ManualCustomConfigOptionsTextBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="25" Text="Custom Config Options:" />
+            <TextBox Name="ManualErrorMarginPercentTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Bottom" Header="Accepted Error % (0 to 100)" PlaceholderText="30" TextChanged="ManualErrorMarginPercent_TextChanged"/>
+            <TextBox Name="TestTimeLengthInSecondsTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Bottom" Header="Test timeout in seconds" PlaceholderText="20"  TextChanged="TestTimeLengthInSeconds_TextChanged" />
+            <Image x:Name="SuccessImage" Source="Images\greencheckmark.png" Margin="0,10,0,0" Height="120" Visibility="Collapsed"/>
+            <Image x:Name="FailureImage" Source="Images\redx.png" Margin="0,10,0,0" Height="120" Visibility="Collapsed" />
+        </StackPanel>
+        <StackPanel Name="ManualResultsPanel" Visibility="Collapsed"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30,30,30,30">
+            <TextBlock FontSize="50" Text="Manual Proximity Sensor Tests Results" />
+            <TextBlock FontSize="20" Text="Distances in millimeters reported by the proximity sensor" HorizontalAlignment="Right" Foreground="DarkOrange"/>
+            <TextBlock FontSize="20" Text="Target distances in millimeters" HorizontalAlignment="Right" Foreground="DarkBlue"/>
+            <Canvas Name="ManualResultsPlot" Height="500" Width="888"/>
+            <TextBlock FontSize="20" Text="Time in seconds" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+            <TextBlock FontSize="25" TextWrapping="WrapWholeWords" Name="PassedDistances" Text="Passed Distances: "/>
+            <TextBlock FontSize="25" TextWrapping="WrapWholeWords" Name="FailedDistances" Text="Failed Distances: "/>
+            <Button Name="CompleteManualTestsButton" HorizontalAlignment="Center" Height="60" Width="150" FontSize="30" Margin="10" Content="Reset" Click="CompleteManualTestsButton_Click" />
+        </StackPanel>
+        <StackPanel Name="AutoPanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="30,30,30,30">
+            <TextBlock FontSize="35" Text="Automatic Proximity Sensor Tests" Margin="0,20,0,0" />
+            <TextBlock Name="AutomaticLongTextTextBox" Margin="0,10,0,10" MaxWidth="1000" FontSize="15" TextWrapping="WrapWholeWords" Text="Please set the laptop on a table, looking at an open area of at maximum 2000 mm. Please keep your face in the video frame for the entire duration of this test. SensorExplorer will ask you to move backwards until 300mm less than your desired maximum distance from the camera before asking you to move forward. At that point, you should move forward until you are within 500 mm of the camera. SensorExplorer will then evaluate your sensor relative to the distance generated from your face. Press Start to start the test when you are ready." />
+            <TextBlock Name="MoveDirectionTextBox" Foreground="DarkMagenta" HorizontalAlignment="Center" FontSize="50" Text="Move backwards!" Visibility="Collapsed"/>
+            <Button Name="EscapeAutomaticTestsButton" HorizontalAlignment="Center" Height="40" Width="150" FontSize="15" Margin="10" Content="Stop" Click="EscapeAutomaticTestsButton_Click" />
+            <Button Name="StartAutomaticTestsButton" HorizontalAlignment="Center" Height="40" Width="150" FontSize="15" Margin="10" Content="Start" Click="StartAutomaticTestsButton_Click" />
+            <TextBlock Name="DistanceFromCameraTextBox" FontSize="20" Text="Camera not detected!"/>
+            <TextBlock Name="DistanceFromSensorTextBox" FontSize="20" Text="Sensor not detected!"/>
+            <Button Name="ChangeCameraButton" Visibility="Collapsed" Height="30" Width="150" FontSize="15" Margin="10" Content="Change Camera" Click="ChangeCamera_Click"/>
+            <TextBlock FontSize="15" Name="CameraToggleTextBox" Text="Using default camera!" Visibility="Collapsed"/>
+            <TextBlock Name="AutoCustomConfigOptionsTextBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="20" Text="Custom Config Options:" />
+            <TextBox Name="AutoErrorMarginPercentTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Bottom" Header="Accepted Error % (0 to 100)" PlaceholderText="30" TextChanged="AutoErrorMarginPercent_TextChanged"/>
+            <TextBox Name="AutoMaxDistanceTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Bottom" Header="Maximum Sensor Distance (300 to 2000mm) &#10;This value will default to 2000mm if a value under 300mm is entered." PlaceholderText="2000" TextChanged="AutoMaxDistance_TextChanged"/>
+        </StackPanel>
+        <CaptureElement Name="PreviewControl" Visibility="Collapsed" MaxHeight="300" MaxWidth="533" Stretch="Uniform" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,30,30"/>
+        <Canvas Name="FacesCanvas" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,30,30"/>
+        <StackPanel Name="AutoResultsPanel" Visibility="Collapsed"  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="50" Text="Automatic Proximity Sensor Tests Results"/>
+            <TextBlock Name="AutoPlotHeader1" FontSize="20" Text="Distances in millimeters reported by the proximity sensor" HorizontalAlignment="Right" Foreground="DarkOrange"/>
+            <TextBlock Name="AutoPlotHeader2" FontSize="20" Text="Distances in millimeters reported by the camera" HorizontalAlignment="Right" Foreground="DarkBlue"/>
+            <Canvas Name="AutoResultsPlot" Height="500" Width="888"/>
+            <TextBlock Name="AutoPlotHeader3" FontSize="20" Text="Time in seconds" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+            <TextBlock FontSize="25" TextWrapping="WrapWholeWords" Name="CloseDistancesRatio" Text="Placeholder Close Distances Text"/>
+            <TextBlock FontSize="25" TextWrapping="WrapWholeWords" Name="MediumDistancesRatio" Text="Placeholder Medium Distances Text"/>
+            <TextBlock FontSize="25" TextWrapping="WrapWholeWords" Name="FarDistancesRatio" Text="Placeholder Far Distances Text"/>
+            <Button Name="CompleteAutomaticTestsButton" HorizontalAlignment="Center" Height="60" Width="150" FontSize="30" Margin="10" Content="Reset" Click="CompleteAutomaticTestsButton_Click" />
+        </StackPanel>
+    </Grid>
+</Page>

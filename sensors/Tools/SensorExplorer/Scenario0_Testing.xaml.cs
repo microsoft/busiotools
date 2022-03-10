@@ -244,6 +244,7 @@ namespace SensorExplorer
                 }
 
                 rootPage.NotifyUser("Number of sensors: " + pivotSensor.Items.Count + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations, NotifyType.StatusMessage);
+                rootPage.LoggingChannelView.LogMessage("Number of sensors: " + pivotSensor.Items.Count + "\nNumber of sensors failed to enumerate: " + Sensor.NumFailedEnumerations);
                 if (pivotSensor.Items.Count > 0)
                 {
                     pivotSensor.SelectionChanged += PivotSensorSelectionChanged;
@@ -546,6 +547,7 @@ namespace SensorExplorer
                 if (currentAccelerometer.ReportInterval != currentAccelerometer.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -572,6 +574,7 @@ namespace SensorExplorer
                 if (currentCompass.ReportInterval != currentCompass.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -594,6 +597,7 @@ namespace SensorExplorer
                 if (currentGyrometer.ReportInterval != currentGyrometer.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -620,6 +624,7 @@ namespace SensorExplorer
                 if (currentLightSensor.ReportInterval != currentLightSensor.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -646,6 +651,7 @@ namespace SensorExplorer
                 if (currentMagnetometer.ReportInterval != currentMagnetometer.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -678,6 +684,7 @@ namespace SensorExplorer
                 if (currentOrientationSensor.ReportInterval != currentOrientationSensor.MinimumReportInterval)
                 {
                     rootPage.NotifyUser("Failed to set to the minimum report interval.", NotifyType.ErrorMessage);
+                    rootPage.LoggingChannelView.LogMessage("Failed to set to the minimum report interval.");
                     restartButton.Visibility = Visibility.Visible;
                 }
                 else if (testType == "StaticAccuracy")
@@ -800,6 +807,7 @@ namespace SensorExplorer
             }
 
             DisplayRestart();
+            rootPage.NotifyUser("", NotifyType.StatusMessage);
         }
 
         private void CalculateMagInterference()
@@ -830,6 +838,8 @@ namespace SensorExplorer
 
             result = Math.Max(maxE - temp, temp - minE);
             instruction.Text = "The result of Magnetic Interference is\n" + " " + result + " " + "degrees";
+            rootPage.LoggingChannelView.LogMessage("The result of Magnetic Interference is\n" + " " + result + " " + "degrees");
+            rootPage.LoggingChannelTests.LogMessage("The result of Magnetic Interference is\n" + " " + result + " " + "degrees");
         }
 
         private void CalculateStaticAccuracy()
@@ -838,6 +848,8 @@ namespace SensorExplorer
             oriAngles.Reverse();
             double result = oriAngles[0];
             instruction.Text = "The result of Static Accuracy is\n" + " " + result + " " + "degrees";
+            rootPage.LoggingChannelView.LogMessage("The result of Static Accuracy is\n" + " " + result + " " + "degrees");
+            rootPage.LoggingChannelTests.LogMessage("The result of Static Accuracy is\n" + " " + result + " " + "degrees");
         }
 
         private void LogDataList()
@@ -848,22 +860,27 @@ namespace SensorExplorer
                 if (type == Sensor.ACCELEROMETER)
                 {
                     rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": AccelerationX=" + dataList[i][0] + ", AccelerationY=" + dataList[i][1] + ", AccelerationZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelTests.LogMessage(timestampList[i] + ": AccelerationX=" + dataList[i][0] + ", AccelerationY=" + dataList[i][1] + ", AccelerationZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.GYROMETER)
                 {
                     rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": AngularVelocityX=" + dataList[i][0] + ", AngularVelocityY=" + dataList[i][1] + ", AngularVelocityZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelTests.LogMessage(timestampList[i] + ": AngularVelocityX=" + dataList[i][0] + ", AngularVelocityY=" + dataList[i][1] + ", AngularVelocityZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.LIGHTSENSOR)
                 {
                     rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": IlluminanceInLux" + dataList[i][0]);
+                    rootPage.LoggingChannelTests.LogMessage(timestampList[i] + ": IlluminanceInLux" + dataList[i][0]);
                 }
                 else if (type == Sensor.MAGNETOMETER)
                 {
                     rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": MagneticFieldX=" + dataList[i][0] + ", MagneticFieldY=" + dataList[i][1] + ", MagneticFieldZ=" + dataList[i][2]);
+                    rootPage.LoggingChannelTests.LogMessage(timestampList[i] + ": MagneticFieldX=" + dataList[i][0] + ", MagneticFieldY=" + dataList[i][1] + ", MagneticFieldZ=" + dataList[i][2]);
                 }
                 else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC || type == Sensor.ORIENTATIONRELATIVE)
                 {
                     rootPage.LoggingChannelView.LogMessage(timestampList[i] + ": QuaternionW=" + dataList[i][0] + ", QuaternionX=" + dataList[i][1] + ", QuaternionY=" + dataList[i][2] + ", QuaternionZ=" + dataList[i][3]);
+                    rootPage.LoggingChannelTests.LogMessage(timestampList[i] + ": QuaternionW=" + dataList[i][0] + ", QuaternionX=" + dataList[i][1] + ", QuaternionY=" + dataList[i][2] + ", QuaternionZ=" + dataList[i][3]);
                 }
             }
         }
@@ -917,6 +934,7 @@ namespace SensorExplorer
             int type = SensorType[pivotSensor.SelectedIndex];
             string str = Constants.SensorName[type] + " " + testType + " Test Result: " + (dataList.Count / testLength[testType]) + " Hz\n\n";
             rootPage.LoggingChannelView.LogMessage(str);
+            rootPage.LoggingChannelTests.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -977,7 +995,7 @@ namespace SensorExplorer
                     errorSum += Math.Abs(array[0] - Constants.OffsetTestExpectedValue[type][0]);
                 }
                 double result = errorSum / dataList.Count;
-                str = Constants.SensorName[type] + " " + testType + " Test Result: " + (errorSum / dataList.Count) + " Lux\n";
+                str = Constants.SensorName[type] + " " + testType + " Test Result: " + result + " Lux\n";
             }
             else if (type == Sensor.ORIENTATIONSENSOR || type == Sensor.ORIENTATIONGEOMAGNETIC || type == Sensor.ORIENTATIONRELATIVE)
             {
@@ -998,6 +1016,7 @@ namespace SensorExplorer
             }
 
             rootPage.LoggingChannelView.LogMessage(str);
+            rootPage.LoggingChannelTests.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1066,6 +1085,7 @@ namespace SensorExplorer
             }
 
             rootPage.LoggingChannelView.LogMessage(str);
+            rootPage.LoggingChannelTests.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1144,6 +1164,7 @@ namespace SensorExplorer
             }
 
             rootPage.LoggingChannelView.LogMessage(str);
+            rootPage.LoggingChannelTests.LogMessage(str);
             instruction.Text = str + "For more information, please visit https://aka.ms/sensorexplorerblog";
         }
 
@@ -1183,6 +1204,7 @@ namespace SensorExplorer
             double expectedNumData = testLength[testType] / (reportInterval / 1000.0);
             string str = Constants.SensorName[type] + " " + testType + " Test Result: " + ((expectedNumData - dataList.Count) / expectedNumData) * 100 + " %\n\n";
             rootPage.LoggingChannelView.LogMessage(str);
+            rootPage.LoggingChannelTests.LogMessage(str);
             hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
             run.Text = "https://aka.ms/sensorexplorerblog";
             instruction.Text = str + "For more information, please visit:";
@@ -1330,6 +1352,7 @@ namespace SensorExplorer
                       "--> NoiseDensity: " + finalNoiseDensity + " ug/(hz)^0.5\n";
 
                 rootPage.LoggingChannelView.LogMessage(str);
+                rootPage.LoggingChannelTests.LogMessage(str);
                 hyperlink.NavigateUri = new Uri("https://aka.ms/sensorexplorerblog");
                 run.Text = "https://aka.ms/sensorexplorerblog";
                 instruction.Text = str + "For more information, please visit:";
@@ -1485,9 +1508,9 @@ namespace SensorExplorer
             saveButton.IsEnabled = false;
             saveButtonOrientation.IsEnabled = false;
 
-            // start a new loging session
+            // start a new logging session
             rootPage.LoggingSessionTests = new FileLoggingSession("SensorExplorerLogTestsNew");
-            rootPage.LoggingSessionTests.AddLoggingChannel(rootPage.LoggingChannelView);
+            rootPage.LoggingSessionTests.AddLoggingChannel(rootPage.LoggingChannelTests);
         }
 
         public void DisplayCountdown(int remainingTime)
@@ -1595,6 +1618,7 @@ namespace SensorExplorer
                         accelerometerInitialized = true;
                         LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
                         rootPage.LoggingChannelView.LogEvent("AccelerometerInitialized", loggingFields);
+                        rootPage.LoggingChannelTests.LogEvent("AccelerometerInitialized", loggingFields);
                     }
                     else if ((e.Reading.AccelerationX < -0.9 && arrowDir == (int)Directions.left) ||
                              (e.Reading.AccelerationX > 0.9 && arrowDir == (int)Directions.right) ||
@@ -1604,6 +1628,7 @@ namespace SensorExplorer
                         arrowDir = (int)Directions.nothing;
                         testsCompleted++;
                         LoggingFields loggingFields = LogAccelerometerReading(e.Reading);
+                        rootPage.LoggingChannelTests.LogEvent("Success Reading: ", loggingFields);
                         LogTestSuccess(testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "AccelerometerSingleTestResult");
                         TestSuccess();
                     }
@@ -1634,6 +1659,7 @@ namespace SensorExplorer
                         inclinometerInitialized = true;
                         LoggingFields loggingFields = LogInclinometerReading(e.Reading);
                         rootPage.LoggingChannelView.LogEvent("InclinometerInitialized", loggingFields);
+                        rootPage.LoggingChannelTests.LogEvent("InclinometerInitialized", loggingFields);
                     }
                     else if ((e.Reading.RollDegrees > 80 && e.Reading.RollDegrees < 100 && arrowDir == (int)Directions.right) ||
                              (e.Reading.RollDegrees > -100 && e.Reading.RollDegrees < -80 && arrowDir == (int)Directions.left) ||
@@ -1643,6 +1669,7 @@ namespace SensorExplorer
                         arrowDir = (int)Directions.nothing;
                         testsCompleted++;
                         LoggingFields loggingFields = LogInclinometerReading(e.Reading);
+                        rootPage.LoggingChannelTests.LogEvent("Success Reading: ", loggingFields);
                         LogTestSuccess(testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "InclinometerSingleTestResult");
                         TestSuccess();
                     }
@@ -1698,6 +1725,7 @@ namespace SensorExplorer
                             arrowDir = (int)Directions.nothing;
                             testsCompleted++;
                             LoggingFields loggingFields = LogOrientationSensorReading(e.Reading);
+                            rootPage.LoggingChannelTests.LogEvent("Success Reading: ", loggingFields);
                             LogTestSuccess(testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "OrientationSensorSingleTestResult");
                             TestSuccess();
                         }
@@ -1881,6 +1909,7 @@ namespace SensorExplorer
                         simpleOrientationInitialized = true;
                         LoggingFields loggingFields = LogSimpleOrientationSensorReading(e.Orientation);
                         rootPage.LoggingChannelView.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
+                        rootPage.LoggingChannelTests.LogEvent("SimpleOrientationSensorInitialized", loggingFields);
                     }
                 }
             });
@@ -1898,6 +1927,7 @@ namespace SensorExplorer
                 currentSimpleOrientationSensor.OrientationChanged -= SimpleOrientationChangedOrientation;
                 testsCompleted++;
                 LoggingFields loggingFields = LogSimpleOrientationSensorReading(orientation);
+                rootPage.LoggingChannelTests.LogEvent("Success Reading: ", loggingFields);
                 LogTestSuccess(testsCompleted, Enum.GetName(typeof(Directions), arrowDir), "SimpleOrientationSensorSingleTestResult");
                 TestSuccess();
             }
@@ -1936,6 +1966,7 @@ namespace SensorExplorer
         private void Success()
         {
             rootPage.LoggingChannelView.LogMessage("Orientation Test successfully completed");
+            rootPage.LoggingChannelTests.LogMessage("Orientation Test successfully completed");
             instruction.Text = "Orientation Test successfully completed";
             DisplayRestartOrientation();
         }
@@ -1955,6 +1986,7 @@ namespace SensorExplorer
             imgX.Visibility = Visibility.Collapsed;
 
             rootPage.LoggingChannelView.LogMessage("Orientation Test failed");
+            rootPage.LoggingChannelTests.LogMessage("Orientation Test failed");
             hyperlink.NavigateUri = new Uri("https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing");
             run.Text = "https://docs.microsoft.com/en-us/windows-hardware/drivers/sensors/testing-sensor-landing";
             instruction.Text = "Orientation Test failed.\n\nFor more information on sensor testing, please refer to:";
@@ -1968,6 +2000,7 @@ namespace SensorExplorer
             restartButtonOrientation.Visibility = Visibility.Visible;
             saveButtonOrientation.Visibility = Visibility.Visible;
             saveButtonOrientation.IsEnabled = true;
+            rootPage.NotifyUser("", NotifyType.StatusMessage);
         }
 
         private void Refresh()

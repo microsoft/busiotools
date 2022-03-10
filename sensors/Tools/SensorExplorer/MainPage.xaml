@@ -38,6 +38,7 @@
                         <TextBlock x:Name="Copyright" Text="&#xA9; Microsoft Corporation. All rights reserved."
                                    RelativePanel.Above="LinksPanel" Margin="10,10,0,0"
                                    TextWrapping="Wrap"/>
+                        <HyperlinkButton Content="Dump Logs" Click="SaveAllLogsClick" FontSize="12"/>
                         <StackPanel x:Name="LinksPanel" Orientation="Horizontal" Margin="10,10,0,10">
                             <HyperlinkButton Content="Trademarks" Tag="http://go.microsoft.com/fwlink/?LinkID=623755" Click="FooterClick" FontSize="12"/>
                             <TextBlock Text="|" VerticalAlignment="Center" />

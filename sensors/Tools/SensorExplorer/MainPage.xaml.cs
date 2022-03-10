@@ -9,6 +9,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Provider;
+using Windows.Storage.Streams;
 using Windows.Foundation.Diagnostics;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -22,7 +26,6 @@ namespace SensorExplorer
     public sealed partial class MainPage : Page
     {
         public static MainPage Current;
-
         public FileLoggingSession LoggingSessionTests;
         public FileLoggingSession LoggingSessionView;
         public LoggingChannel LoggingChannelTests;
@@ -130,6 +133,50 @@ namespace SensorExplorer
         async void FooterClick(object sender, RoutedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri(((HyperlinkButton)sender).Tag.ToString()));
+        }
+
+        private async void SaveAllLogsClick(object sender, RoutedEventArgs e)
+        {
+            FileSavePicker savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            savePicker.FileTypeChoices.Add("ETL", new List<string>() { ".etl" });
+            savePicker.SuggestedFileName = "SensorExplorerLog";
+            StorageFile file = await savePicker.PickSaveFileAsync();
+            if (file != null)
+            {
+                CachedFileManager.DeferUpdates(file);
+                StorageFile logFileGenerated = await Current.LoggingSessionView.CloseAndSaveToFileAsync(); //returns NULL if the current log file is empty
+
+                if (logFileGenerated != null)
+                {
+                    await logFileGenerated.CopyAndReplaceAsync(file);
+                    FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
+                    if (status == FileUpdateStatus.Complete)
+                    {
+                        Current.NotifyUser("File " + file.Name + " was saved.", NotifyType.StatusMessage);
+                    }
+                    else if (status == FileUpdateStatus.CompleteAndRenamed)
+                    {
+                        Current.NotifyUser("File " + file.Name + " was renamed and saved.", NotifyType.StatusMessage);
+                    }
+                    else
+                    {
+                        Current.NotifyUser("File " + file.Name + " couldn't be saved.", NotifyType.ErrorMessage);
+                    }
+                }
+                else
+                {
+                    Current.NotifyUser("The log is empty.", NotifyType.ErrorMessage);
+                }
+            }
+            else
+            {
+                Current.NotifyUser("Operation cancelled.", NotifyType.ErrorMessage);
+            }
+
+            // start a new logging session
+            Current.LoggingSessionView = new FileLoggingSession("SensorExplorerLogViewNew");
+            Current.LoggingSessionView.AddLoggingChannel(Current.LoggingChannelView);
         }
 
         private void ButtonClick(object sender, RoutedEventArgs e)

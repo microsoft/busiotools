@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ using Windows.System.Display;
 using Windows.UI.Core;
 using Windows.UI;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -492,6 +492,8 @@ namespace SensorExplorer
                 StartAutomaticTestsButton.Visibility = Visibility.Visible;
                 _currentCameraNumber %= devices.Count;
 
+                DeviceInformation frontCamera = devices.FirstOrDefault(x => x.EnclosureLocation != null && x.EnclosureLocation.Panel == Windows.Devices.Enumeration.Panel.Front);
+
                 if (devices.Count > 1)
                 {
                     CameraToggleTextBox.Text = "Using camera " + (_currentCameraNumber + 1) + " of " + devices.Count;
@@ -501,9 +503,25 @@ namespace SensorExplorer
 
                 _mediaCapture = new MediaCapture();
 
-                var cameraDevice = devices[_currentCameraNumber];
-                var settings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraDevice.Id };
-                await _mediaCapture.InitializeAsync(settings);
+                if (_currentCameraNumber == 0 && frontCamera != null)
+                {
+                    var settings = new MediaCaptureInitializationSettings { VideoDeviceId = frontCamera.Id }; //replace camera 0 with the front facing camera
+                    await _mediaCapture.InitializeAsync(settings);
+                } else if (frontCamera != null)
+                {
+                    var cameraDevice = devices[_currentCameraNumber];
+                    if (cameraDevice.Id == frontCamera.Id)
+                    {
+                        cameraDevice = devices[0]; //we replaced camera 0 with the front facing camera so replace front facing camera with camera 0
+                    }
+                    var settings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraDevice.Id };
+                    await _mediaCapture.InitializeAsync(settings);
+                } else
+                {
+                    var cameraDevice = devices[_currentCameraNumber];
+                    var settings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraDevice.Id };
+                    await _mediaCapture.InitializeAsync(settings);
+                }
 
                 _displayRequest.RequestActive();
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;

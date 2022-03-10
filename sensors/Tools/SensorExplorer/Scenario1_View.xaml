@@ -31,19 +31,6 @@
                     <ProgressRing x:Name="ProgressRingSensor" Height="100" Width="100" IsActive="True"/>
                 </Grid>
             </Grid>
-            <StackPanel x:Name="stackPanelMALTConnection" Visibility="Collapsed" Background="AliceBlue" Margin="20,10,0,0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="MALT Device Selection" Margin="10" FontSize="18"/>
-                    <Button x:Name="ConnectToDeviceButton" Content="Connect to device" Click="ConnectToDeviceClick" Margin="10"/>
-                </StackPanel>
-                <ListBox x:Name="connectDevices" ItemsSource="{Binding Source={StaticResource DeviceListSource}}"  Height="250" Background="AliceBlue">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding InstanceId}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </Page>

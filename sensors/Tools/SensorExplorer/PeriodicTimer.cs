@@ -127,31 +127,6 @@ namespace SensorExplorer
             });
         }
 
-        public static void CreateMALTScenario1()
-        {
-            if (periodicTimerMALTScenario1 == null)
-            {
-                periodicTimerMALTScenario1 = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(PeriodicTimerCallbackMALTScenario1), new TimeSpan(0, 0, 2));
-            }
-        }
-
-        public static void CancelMALTScenario1()
-        {
-            if (periodicTimerMALTScenario1 != null)
-            {
-                periodicTimerMALTScenario1.Cancel();
-                periodicTimerMALTScenario1 = null;
-            }
-        }
-
-        private async static void PeriodicTimerCallbackMALTScenario1(ThreadPoolTimer timer)
-        {
-            await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                Scenario1View.Scenario1.GetMALTData();
-            });
-        }
-
         public static void CreateMALTScenario2()
         {
             if (periodicTimerMALTScenario2 == null)

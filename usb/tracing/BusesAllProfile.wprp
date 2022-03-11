@@ -150,6 +150,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="UcmCxTlg" Name="11434984-9AB6-57F0-FC34-DF79EA15C255" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="UcmTcpciCxWpp" Name="8DEAEA72-4C63-49A4-9B8B-25DA24DAE056" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -166,11 +171,6 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="UcmUcsiAcpiClientWpp" Name="EDEF8E04-4E22-4A95-9D04-539EBD112A5E" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="UcmCxTlg" Name="11434984-9AB6-57F0-FC34-DF79EA15C255" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>

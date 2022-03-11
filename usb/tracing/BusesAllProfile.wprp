@@ -150,6 +150,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="UcmCxTlg" Name="11434984-9AB6-57F0-FC34-DF79EA15C255" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="UcmTcpciCxWpp" Name="8DEAEA72-4C63-49A4-9B8B-25DA24DAE056" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -454,6 +459,7 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
           <EventProviders>
             <EventProviderId Value="UcmCxWpp" />
+            <EventProviderId Value="UcmCxTlg" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />
@@ -659,6 +665,7 @@
         <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
           <EventProviders>
             <EventProviderId Value="UcmCxWpp" />
+            <EventProviderId Value="UcmCxTlg" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />

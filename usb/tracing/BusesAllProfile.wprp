@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WindowsPerformanceRecorder   Version="1" Author="DiagTrack Scenario Editor" Copyright="Microsoft Corporation" Company="Microsoft Corporation" >
   <Profiles>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1" Name="UsbTrace">
+    <EventCollector Id="EventCollector_Usb" Name="UsbTrace">
       <BufferSize Value="64" />
       <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2" Name="UsbCAndUsbFnTrace">
-      <BufferSize Value="64" />
-      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
-    </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3" Name="InputTrace">
-      <BufferSize Value="64" />
-      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
-    </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4" Name="Usb4Trace">
+    <EventCollector Id="EventCollector_Usb4" Name="Usb4Trace">
       <BufferSize Value="64" />
       <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp" Name="PnPTrace">
+    <EventCollector Id="EventCollector_UsbC" Name="UsbCTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pci" Name="PciTrace">
+    <EventCollector Id="EventCollector_Input" Name="InputTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_display" Name="DisplayTrace">
+    <EventCollector Id="EventCollector_LowPowerBuses" Name="LowPowerBusesTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_ndisnetcx" Name="NdisNetCxTrace">
+    <EventCollector Id="EventCollector_PnP" Name="PnPTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_LowPowerBuses" Name="LowPowerBusesTrace">
+    <EventCollector Id="EventCollector_Pci" Name="PciTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_6" Name="UIFProvider">
+    <EventCollector Id="EventCollector_Display" Name="DisplayTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
+    <EventCollector Id="EventCollector_NdisNetCx" Name="NdisNetCxTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
@@ -48,6 +44,9 @@
       <Keywords>
         <Keyword Value="0x8241" />
       </Keywords>
+      <CaptureStateOnSave>
+        <Keyword Value="0x8241" />
+      </CaptureStateOnSave>
     </EventProvider>
     <EventProvider Id="UcxWpp" Name="6FB6E467-9ED4-4B73-8C22-70B97E22C7D9" NonPagedMemory="true" Level="5">
       <Keywords>
@@ -68,6 +67,9 @@
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
+      <CaptureStateOnSave>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </CaptureStateOnSave>
     </EventProvider>
     <EventProvider Id="UsbHub3Wpp" Name="6E6CC2C5-8110-490e-9905-9F2ED700E455" NonPagedMemory="true" Level="5">
       <Keywords>
@@ -83,6 +85,9 @@
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
+      <CaptureStateOnSave>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </CaptureStateOnSave>
     </EventProvider>
     <EventProvider Id="UsbXhciCompanionWpp" Name="3BBABCCA-A210-4570-B501-0E34D88A88FB" NonPagedMemory="true" Level="4">
       <Keywords>
@@ -337,11 +342,6 @@
     <!--
       Other Event Providers
     -->
-    <EventProvider Id="UifEventSourceProvider" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0x1" />
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="KernelPnPEtw" Name="Microsoft-Windows-Kernel-PnP" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0xc9a000" />
@@ -426,44 +426,47 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <!-- Microsoft.Windows.Power.DeviceProblems (energy.dll) -->
-    <EventProvider Id="DeviceProblemsTlg" Name="CDEF60FA-5777-4B02-9980-1E2C0DF22635" NonPagedMemory="true" Level="5">
-      <Keywords>
-        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
-      </Keywords>
-    </EventProvider>
 
     <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="USB2, USB3, USB4, USB-C, Input and UIF logging">
+      Description="USB2, USB3, USB4, USB-C and Input">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
+        <EventCollectorId Value="EventCollector_Usb">
           <EventProviders>
-            <EventProviderId Value="UsbCcgpWpp" />
-            <EventProviderId Value="UsbHub2Etw" />
-            <EventProviderId Value="UsbHub3Etw" />
-            <EventProviderId Value="UsbHub3Wpp" />
-            <EventProviderId Value="UsbPortEtw" />
             <EventProviderId Value="UsbXhciCommonEtw" />
             <EventProviderId Value="UsbXhciCompanionWpp" />
             <EventProviderId Value="UsbXhciDriverWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
-            <EventProviderId Value="WinUsbWpp" />
-            <EventProviderId Value="UsbXhciTrustletWpp" />
-            <EventProviderId Value="PciWpp" />
+            <EventProviderId Value="UsbHub3Etw" />
+            <EventProviderId Value="UsbHub3Wpp" />
+            <EventProviderId Value="UsbHub2Etw" />
+            <EventProviderId Value="UsbPortEtw" />
             <EventProviderId Value="UsbPortWpp" />
+            <EventProviderId Value="UsbCcgpWpp" />
             <EventProviderId Value="UsbSerWpp" />
+            <EventProviderId Value="WinUsbWpp" />
+            <EventProviderId Value="PciWpp" />
             <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
+        <EventCollectorId Value="EventCollector_Usb4">
+          <EventProviders>
+            <EventProviderId Value="USB4HrdWpp" />
+            <EventProviderId Value="USB4DrdWpp" />
+            <EventProviderId Value="USB4HrdTlg" />
+            <EventProviderId Value="USB4DrdTlg" />
+            <EventProviderId Value="Usb4NetWpp" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_UsbC">
           <EventProviders>
             <EventProviderId Value="UcmCxWpp" />
             <EventProviderId Value="UcmCxTlg" />
-            <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />
             <EventProviderId Value="UcmUcsiAcpiClientWpp" />
+            <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UrsCxWpp" />
             <EventProviderId Value="UrsChipideaWpp" />
             <EventProviderId Value="UrsSynopsysWpp" />
@@ -480,7 +483,7 @@
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
+        <EventCollectorId Value="EventCollector_Input">
           <EventProviders>
             <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWpp" />
@@ -506,53 +509,38 @@
             <EventProviderId Value="Win32kTraceLogging" />
             <EventProviderId Value="Win32kBaseWpp" />
             <EventProviderId Value="SurfaceHidMiniDriver" />
-            <EventProviderId Value="DeviceProblemsTlg" />
-          </EventProviders>
-        </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
-          <EventProviders>
-            <EventProviderId Value="USB4HrdWpp" />
-            <EventProviderId Value="USB4DrdWpp" />
-            <EventProviderId Value="USB4HrdTlg" />
-            <EventProviderId Value="USB4DrdTlg" />
-            <EventProviderId Value="Usb4NetWpp" />
-          </EventProviders>
-        </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_6">
-          <EventProviders>
-            <EventProviderId Value="UifEventSourceProvider" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
     <Profile Id="BusesAllProfile.Verbose.File" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="File" 
-      Description="USB2, USB3, USB4, USB-C, Input and UIF logging"
+      Description="USB2, USB3, USB4, USB-C and Input"
       Base="BusesAllProfile.Verbose.Memory"/>
 
     <Profile Id="UsbOnlyProfile.Verbose.Memory" Name="UsbOnlyProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="USB2, USB3 and USB4 logging">
+      Description="USB2, USB3 and USB4">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
+        <EventCollectorId Value="EventCollector_Usb">
           <EventProviders>
-            <EventProviderId Value="UsbCcgpWpp" />
-            <EventProviderId Value="UsbHub2Etw" />
-            <EventProviderId Value="UsbHub3Etw" />
-            <EventProviderId Value="UsbHub3Wpp" />
-            <EventProviderId Value="UsbPortEtw" />
             <EventProviderId Value="UsbXhciCommonEtw" />
             <EventProviderId Value="UsbXhciCompanionWpp" />
             <EventProviderId Value="UsbXhciDriverWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
+            <EventProviderId Value="UsbHub3Etw" />
+            <EventProviderId Value="UsbHub3Wpp" />
+            <EventProviderId Value="UsbHub2Etw" />
+            <EventProviderId Value="UsbPortEtw" />
+            <EventProviderId Value="UsbPortWpp" />
+            <EventProviderId Value="UsbCcgpWpp" />
+            <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
-            <EventProviderId Value="UsbXhciTrustletWpp" />
-            <EventProviderId Value="UsbPortWpp" />
-            <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
+        <EventCollectorId Value="EventCollector_Usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
@@ -564,30 +552,32 @@
       </Collectors>
     </Profile>
     <Profile Id="UsbOnlyProfile.Verbose.File" Name="UsbOnlyProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="USB2, USB3 and USB4 logging"
+      Description="USB2, USB3 and USB4"
       Base="UsbOnlyProfile.Verbose.Memory"/>
 
     <Profile Id="UsbAndPnPProfile.Verbose.Memory" Name="UsbAndPnPProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="USB2, USB3, USB4 and PnP logging">
+      Description="USB2, USB3, USB4 and PnP">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
+        <EventCollectorId Value="EventCollector_Usb">
           <EventProviders>
-            <EventProviderId Value="UsbCcgpWpp" />
-            <EventProviderId Value="UsbHub2Etw" />
-            <EventProviderId Value="UsbHub3Etw" />
-            <EventProviderId Value="UsbHub3Wpp" />
-            <EventProviderId Value="UsbPortEtw" />
             <EventProviderId Value="UsbXhciCommonEtw" />
             <EventProviderId Value="UsbXhciCompanionWpp" />
             <EventProviderId Value="UsbXhciDriverWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
             <EventProviderId Value="UcxEtw" />
             <EventProviderId Value="UcxWpp" />
+            <EventProviderId Value="UsbHub3Etw" />
+            <EventProviderId Value="UsbHub3Wpp" />
+            <EventProviderId Value="UsbHub2Etw" />
+            <EventProviderId Value="UsbPortEtw" />
+            <EventProviderId Value="UsbPortWpp" />
+            <EventProviderId Value="UsbCcgpWpp" />
+            <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
-            <EventProviderId Value="UsbXhciTrustletWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
+        <EventCollectorId Value="EventCollector_Usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
@@ -596,7 +586,7 @@
             <EventProviderId Value="Usb4NetWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp">
+        <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
             <EventProviderId Value="KernelPnPEtw" />
           </EventProviders>
@@ -604,13 +594,25 @@
       </Collectors>
     </Profile>
     <Profile Id="UsbAndPnPProfile.Verbose.File" Name="UsbAndPnPProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="USB2, USB3, USB4 and PnP logging"
+      Description="USB2, USB3, USB4 and PnP"
       Base="UsbAndPnPProfile.Verbose.Memory"/>
 
     <Profile Id="Usb4WithTunnelsProfile.Verbose.Memory" Name="Usb4WithTunnelsProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="USB3, USB4, PnP, Display, Net and PCI logging">
+      Description="USB3, USB4, PnP, Display, Net and PCI">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_usb4">
+        <EventCollectorId Value="EventCollector_Usb">
+          <EventProviders>
+            <EventProviderId Value="UsbXhciCommonEtw" />
+            <EventProviderId Value="UsbXhciCompanionWpp" />
+            <EventProviderId Value="UsbXhciDriverWpp" />
+            <EventProviderId Value="UsbXhciTrustletWpp" />
+            <EventProviderId Value="UcxEtw" />
+            <EventProviderId Value="UcxWpp" />
+            <EventProviderId Value="UsbHub3Etw" />
+            <EventProviderId Value="UsbHub3Wpp" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_Usb4">
           <EventProviders>
             <EventProviderId Value="USB4HrdWpp" />
             <EventProviderId Value="USB4DrdWpp" />
@@ -619,35 +621,23 @@
             <EventProviderId Value="Usb4NetWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_1">
-          <EventProviders>
-            <EventProviderId Value="UsbHub3Etw" />
-            <EventProviderId Value="UsbHub3Wpp" />
-            <EventProviderId Value="UsbXhciCommonEtw" />
-            <EventProviderId Value="UsbXhciCompanionWpp" />
-            <EventProviderId Value="UsbXhciDriverWpp" />
-            <EventProviderId Value="UcxEtw" />
-            <EventProviderId Value="UcxWpp" />
-            <EventProviderId Value="UsbXhciTrustletWpp" />
-          </EventProviders>
-        </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pnp">
+        <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
             <EventProviderId Value="KernelPnPEtw" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_pci">
+        <EventCollectorId Value="EventCollector_Pci">
           <EventProviders>
             <EventProviderId Value="PciWpp" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_display">
+        <EventCollectorId Value="EventCollector_Display">
           <EventProviders>
             <EventProviderId Value="DisplayDxgDiagnostics" />
             <EventProviderId Value="DisplayWin32K" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_ndisnetcx">
+        <EventCollectorId Value="EventCollector_NdisNetCx">
           <EventProviders>
             <EventProviderId Value="NdisWpp" />
             <EventProviderId Value="NetAdapterCxWpp" />
@@ -656,20 +646,20 @@
       </Collectors>
     </Profile>
     <Profile Id="Usb4WithTunnelsProfile.Verbose.File" Name="Usb4WithTunnelsProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="USB3, USB4, PnP, Display, Net and PCI logging"
+      Description="USB3, USB4, PnP, Display, Net and PCI"
       Base="Usb4WithTunnelsProfile.Verbose.Memory"/>
 
     <Profile Id="USBCProfile.Verbose.Memory" Name="USBCProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="USB-C, URS and USBFN logging">
+      Description="USB-C, URS and USBFN">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_2">
+        <EventCollectorId Value="EventCollector_UsbC">
           <EventProviders>
             <EventProviderId Value="UcmCxWpp" />
             <EventProviderId Value="UcmCxTlg" />
-            <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />
             <EventProviderId Value="UcmUcsiAcpiClientWpp" />
+            <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UrsCxWpp" />
             <EventProviderId Value="UrsChipideaWpp" />
             <EventProviderId Value="UrsSynopsysWpp" />
@@ -688,13 +678,13 @@
       </Collectors>
     </Profile>
     <Profile Id="USBCProfile.Verbose.File" Name="USBCProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="USB-C, URS and USBFN logging"
+      Description="USB-C, URS and USBFN"
       Base="USBCProfile.Verbose.Memory"/>
 
     <Profile Id="InputOnlyProfile.Verbose.Memory" Name="InputOnlyProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="Input only logging">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_3">
+        <EventCollectorId Value="EventCollector_Input">
           <EventProviders>
             <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWpp" />
@@ -720,7 +710,6 @@
             <EventProviderId Value="Win32kTraceLogging" />
             <EventProviderId Value="Win32kBaseWpp" />
             <EventProviderId Value="SurfaceHidMiniDriver" />
-            <EventProviderId Value="DeviceProblemsTlg" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -730,9 +719,9 @@
       Base="InputOnlyProfile.Verbose.Memory"/>
 
     <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="SerCx2 and SpbCx logging">
+      Description="SerCx2 and SpbCx">
       <Collectors>
-        <EventCollectorId Value="EventCollector_DiagTrack_5cfb325a347145dda3b17990b1675ac9_LowPowerBuses">
+        <EventCollectorId Value="EventCollector_LowPowerBuses">
           <EventProviders>
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
@@ -742,15 +731,16 @@
       </Collectors>
     </Profile>
     <Profile Id="LowPowerBusesProfile.Verbose.File" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="SerCx2 and SpbCx logging"
+      Description="SerCx2 and SpbCx"
       Base="LowPowerBusesProfile.Verbose.Memory"/>
 
   </Profiles>
+
   <TraceMergeProperties>
-    <TraceMergeProperty Id="USB_Default" Name="USB_Default">
+    <TraceMergeProperty Id="BusesTraceMerge_Default" Name="BusesTraceMerge_Default">
       <DeletePreMergedTraceFiles Value="false" />
       <FileCompression Value="false" />
-      <InjectOnly Value="false" />
+      <InjectOnly Value="true" />
       <SkipMerge Value="false" />
       <CustomEvents>
       <CustomEvent Value="ImageId" />

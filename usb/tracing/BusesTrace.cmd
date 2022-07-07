@@ -60,15 +60,17 @@ echo ---------------------------------------
 echo Which components to collect trace from?
 echo ---------------------------------------
 echo 1) All buses components
-echo 2) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
-echo 3) Other options...
-echo 4) Back
+echo 2) USB4 components
+echo 3) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
+echo 4) Other options...
+echo 5) Back
 echo.
 set /p selection=Enter selection number: 
 if "%selection%"=="1" set profileName=BusesAllProfile
-if "%selection%"=="2" set profileName=InputOnlyProfile
-if "%selection%"=="3" goto OtherProfilesMenu
-if "%selection%"=="4" goto MainMenu
+if "%selection%"=="2" set profileName=Usb4WithTunnelsProfile
+if "%selection%"=="3" set profileName=InputOnlyProfile
+if "%selection%"=="4" goto OtherProfilesMenu
+if "%selection%"=="5" goto MainMenu
 if not "%profileName%"=="" goto StartOptionsMenu
 echo.
 echo "%selection%" is not a valid option.  Please try again.
@@ -84,17 +86,17 @@ echo Which profile to use?
 echo ----------------------
 echo 1) UsbOnlyProfile (USB2, USB3 and USB4)
 echo 2) UsbAndPnPProfile (USB2, USB3, USB4 and PnP)
-echo 3) Usb4WithTunnelsProfile (USB3, USB4, PnP, Display, Net and PCI)
-echo 4) UsbCProfile (UCM, URS and USBFN)
-echo 5) LowPowerBusesProfile (SerCx2 and SpbCx)
+echo 3) UsbCProfile (UCM, URS and USBFN)
+echo 4) LowPowerBusesProfile (SerCx2 and SpbCx)
+echo 5) InputOnlyWithVerboseWppProfile (Input)
 echo 6) Back
 echo.
 set /p selection=Enter selection number: 
 if "%selection%"=="1" set profileName=UsbOnlyProfile
 if "%selection%"=="2" set profileName=UsbAndPnpProfile
-if "%selection%"=="3" set profileName=Usb4WithTunnelsProfile
-if "%selection%"=="4" set profileName=UsbCProfile
-if "%selection%"=="5" set profileName=LowPowerBUsesProfile
+if "%selection%"=="3" set profileName=UsbCProfile
+if "%selection%"=="4" set profileName=LowPowerBUsesProfile
+if "%selection%"=="5" set profileName=InputOnlyWithVerboseWppProfile
 if "%selection%"=="6" goto BasicProfilesMenu
 if not "%profileName%"=="" goto StartOptionsMenu
 echo.
@@ -140,10 +142,10 @@ echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
 echo.
-echo #################################################################
-echo Please reboot your PC to enable tracing.
-echo Run this script and select "Stop Boot Session Trace" to disable.
-echo #################################################################
+echo ###############################################################################
+echo Please reboot your PC to start tracing. After reproducing the issue, run this
+echo script again and select "Stop Boot Session Trace" to stop tracing.
+echo ###############################################################################
 echo.
 goto End
 

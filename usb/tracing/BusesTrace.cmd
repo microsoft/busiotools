@@ -3,7 +3,8 @@ set wprpFileName=BusesAllProfile.wprp
 set traceFilesOutputPath=%SystemRoot%\Tracing
 set wprStatusFileName=BusesWprStatus.txt
 set etlFileName=BusesMergedTraces.etl
-set pnpStateFileName=BusesPnpState.pnp
+set pnpStatePreReproFileName=BusesPnpStatePreRepro.pnp
+set pnpStatePostReproFileName=BusesPnpStatePostRepro.pnp
 set pnpLogsFileName=BusesDriverWatchdog.evtx
 set buildNumberFileName=BuildNumber.txt
 
@@ -124,6 +125,11 @@ echo.
 goto StartOptionsMenu
 
 :StartNow
+rem Collect pre-repro PnP state
+echo Collecting pre-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
+if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
+pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
+rem Start tracing now
 echo Starting Tracing Now... (%wprpFileName%!%profileName%)
 wpr.exe -start %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
@@ -134,13 +140,19 @@ echo ----------------------------------------------------------------------
 pause
 echo Saving status to %wprStatusFileName%...
 wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
+echo Stopping tracing...
 wpr.exe -stop %traceFilesOutputPath%\%etlFileName%
 goto CollectMoreInfo
 
 :ConfigureBootTrace
+rem Configure boot trace
 echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
+rem Collect pre-repro PnP state
+echo Collecting pre-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
+if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
+pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
 echo.
 echo ###############################################################################
 echo Please reboot your PC to start tracing. After reproducing the issue, run this
@@ -152,6 +164,7 @@ goto End
 :StopBootTrace
 echo Saving status to %wprStatusFileName%...
 wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
+echo Stopping boot session tracing...
 wpr.exe -stopboot %traceFilesOutputPath%\%etlFileName%
 if not %ERRORLEVEL%==0 goto End
 goto CollectMoreInfo
@@ -163,9 +176,9 @@ rem OS Build Numbers
 echo - OS build numbers...
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %traceFilesOutputPath%\%buildNumberFileName%
 rem PnP State
-echo - PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
-if exist %traceFilesOutputPath%\%pnpStateFileName% del %traceFilesOutputPath%\%pnpStateFileName%
-pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStateFileName%
+echo - Post-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
+if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutputPath%\%pnpStatePostReproFileName%
+pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePostReproFileName%
 rem Event Logs
 echo - Event logs...
 copy %SystemRoot%\System32\Winevt\Logs\System.evtx %traceFilesOutputPath%\
@@ -189,7 +202,8 @@ echo   %etlFileName%
 echo   WPR_initiated_WprApp_*.etl
 echo   %buildNumberFileName%
 echo   %wprStatusFileName%
-echo   %pnpStateFileName%
+echo   %pnpStatePreReproFileName%
+echo   %pnpStatePostReproFileName%
 echo   System.evtx
 echo   Application.evtx
 echo   %pnpLogsFileName%
@@ -217,12 +231,13 @@ echo #########
 goto End
 
 :End
-echo.
-pause
 set wprpFileName=
 set traceFilesOutputPath=
 set etlFileName=
-set pnpStateFileName=
+set pnpStatePreReproFileName=
+set pnpStatePostReproFileName=
 set pnpLogsFileName=
 set selection=
 set profileName=
+echo.
+pause

@@ -499,12 +499,12 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="ApxGuid.Verbose" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="4" NonPagedMemory="false">
+    <EventProvider Id="ApxGuid.Verbose" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="ApxGuid" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="5" NonPagedMemory="false">
+    <EventProvider Id="ApxGuid" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -546,12 +546,12 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="ApxKm.Verbose" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="4" NonPagedMemory="true">
+    <EventProvider Id="ApxKm.Verbose" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="5" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="ApxKm" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="5" NonPagedMemory="true">
+    <EventProvider Id="ApxKm" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -908,6 +908,7 @@
             <EventProviderId Value="Microsoft-Windows-Telephony-PhoneUtil"/>
             <EventProviderId Value="Microsoft-Windows-Telephony-PhoneService"/>
             <EventProviderId Value="Microsoft-Windows-Telephony-TelephonyInteractiveUser"/>
+		<EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CallsRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneService"/>
@@ -1081,6 +1082,7 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
+		<EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
@@ -1132,8 +1134,8 @@
             <EventProviderId Value="Microsoft.Windows.Audio.PortClass"/>
             <EventProviderId Value="portcls"/>
             <EventProviderId Value="Microsoft.Windows.Audio.AudioClassExtension"/>
-            <EventProviderId Value="AcxLogger"/>
-            <EventProviderId Value="ApxKm"/>
+            <EventProviderId Value="AcxLogger.Verbose"/>
+            <EventProviderId Value="ApxKm.Verbose"/>
           </EventProviders>
         </EventCollectorId>
 

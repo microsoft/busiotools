@@ -499,11 +499,6 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="ApxGuid.Verbose" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="5" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0x7fffffff"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="ApxGuid" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="4" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
@@ -536,17 +531,7 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="AcxLogger.Verbose" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="5" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0x7fffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="AcxLogger" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="5" NonPagedMemory="true">
-      <Keywords>
-        <Keyword Value="0x7fffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="ApxKm.Verbose" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="5" NonPagedMemory="true">
+    <EventProvider Id="AcxLogger" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
@@ -1066,7 +1051,7 @@
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
             <EventProviderId Value="Microsoft.Bluetooth.Audio.Verbose"/>
-            <EventProviderId Value="ApxGuid.Verbose"/>
+            <EventProviderId Value="ApxGuid"/>
             <EventProviderId Value="Microsoft.Windows.CapabilityAccessManager"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CommsEnhancementRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Shell.Components.Calling"/>
@@ -1134,8 +1119,8 @@
             <EventProviderId Value="Microsoft.Windows.Audio.PortClass"/>
             <EventProviderId Value="portcls"/>
             <EventProviderId Value="Microsoft.Windows.Audio.AudioClassExtension"/>
-            <EventProviderId Value="AcxLogger.Verbose"/>
-            <EventProviderId Value="ApxKm.Verbose"/>
+            <EventProviderId Value="AcxLogger"/>
+            <EventProviderId Value="ApxKm"/>
           </EventProviders>
         </EventCollectorId>
 

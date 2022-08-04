@@ -489,22 +489,27 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Bluetooth.Audio" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="4" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0x7fffffff"/>
-      </Keywords>
-    </EventProvider>
     <EventProvider Id="Microsoft.Bluetooth.Audio.Verbose" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.CapabilityAccessManager" Name="1aff130c-7154-4379-a18a-6d6e22dd5b16" Level="5" NonPagedMemory="false">
+    <EventProvider Id="Microsoft.Bluetooth.Audio" Name="6F3A682E-24E1-4073-93F2-15327F542536" Level="4" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xfffffff"/>
+        <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.TestExecution.WexLogger" Name="40c4df8b-00a9-5159-62bc-9bbc5ee78a29" Level="4" NonPagedMemory="false">
+    <EventProvider Id="ApxGuid.Verbose" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="ApxGuid" Name="96760AC7-C416-43A7-AA7F-1A676942589C" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.CapabilityAccessManager" Name="1aff130c-7154-4379-a18a-6d6e22dd5b16" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xfffffff"/>
       </Keywords>
@@ -526,6 +531,31 @@
     </EventProvider>
 
     <!-- Non Paged providers. They are kept separate for readability -->
+    <EventProvider Id="portcls" Name="10EB6007-818C-4DB6-A694-B518E589D07A" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="AcxLogger.Verbose" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="AcxLogger" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="ApxKm.Verbose" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="ApxKm" Name="E3A25276-CD6E-40DC-8BB6-1659A5E00952" Level="5" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x7fffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHUSB" Name="33693e1d-246a-471b-83be-3e75f47a832d" Level="5" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0xffffffffffffffff"/>
@@ -689,6 +719,8 @@
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Proximity" Name="FA5FD884-8804-4A36-98B8-70BFC46A9FA2" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.QuickPair" Name="7BD2C7F4-6671-474E-BDFC-2D141A0B6B7E" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController" Name="257D541D-16D8-433C-B421-9AE2255DF475" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Audio.AudioClassExtension" Name="CB306FBC-D202-5666-F075-23A1AB91BEA9" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Audio.PortClass" Name="BEBD6159-6F76-5A22-366A-7753C2A63C3C" Level="5" NonPagedMemory="true" />
 
     <!-- BthPort ETW provider. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTHPORT" Name="8a1f9517-3a8c-4a9e-a018-4f17a200f277" Level="4" NonPagedMemory="true">
@@ -866,6 +898,7 @@
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
             <EventProviderId Value="Microsoft.Bluetooth.Audio"/>
+            <EventProviderId Value="ApxGuid"/>
             <EventProviderId Value="Microsoft.Windows.CapabilityAccessManager"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CommsEnhancementRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Shell.Components.Calling"/>
@@ -881,7 +914,6 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
-            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
@@ -930,6 +962,11 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.PortClass"/>
+            <EventProviderId Value="portcls"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.AudioClassExtension"/>
+            <EventProviderId Value="AcxLogger"/>
+            <EventProviderId Value="ApxKm"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1028,6 +1065,7 @@
             <EventProviderId Value="Microsoft.Windows.ServiceControlManager"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Profiles.AVRCP"/>
             <EventProviderId Value="Microsoft.Bluetooth.Audio.Verbose"/>
+            <EventProviderId Value="ApxGuid.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.CapabilityAccessManager"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CommsEnhancementRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Shell.Components.Calling"/>
@@ -1043,7 +1081,6 @@
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
-            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
@@ -1092,6 +1129,11 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Telephony.AsyncPhoneController"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.PortClass"/>
+            <EventProviderId Value="portcls"/>
+            <EventProviderId Value="Microsoft.Windows.Audio.AudioClassExtension"/>
+            <EventProviderId Value="AcxLogger"/>
+            <EventProviderId Value="ApxKm"/>
           </EventProviders>
         </EventCollectorId>
 

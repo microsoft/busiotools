@@ -531,7 +531,7 @@
     </EventProvider>
 
     <!-- Non Paged providers. They are kept separate for readability -->
-    <EventProvider Id="portcls" Name="10EB6007-818C-4DB6-A694-B518E589D07A" Level="5" NonPagedMemory="true">
+    <EventProvider Id="portcls" Name="10EB6007-818C-4DB6-A694-B518E589D07A" Level="4" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0x7fffffff"/>
       </Keywords>

@@ -509,6 +509,11 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.TestExecution.WexLogger" Name="40c4df8b-00a9-5159-62bc-9bbc5ee78a29" Level="4" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xfffffff"/>
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Bluetooth.LooselyCoupledDevices" Name="8A6767B6-D556-4AAA-8612-DD370FADA6A9" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xffffffff"/>

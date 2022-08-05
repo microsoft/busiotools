@@ -898,13 +898,13 @@
             <EventProviderId Value="Microsoft-Windows-Telephony-PhoneUtil"/>
             <EventProviderId Value="Microsoft-Windows-Telephony-PhoneService"/>
             <EventProviderId Value="Microsoft-Windows-Telephony-TelephonyInteractiveUser"/>
-            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Apps.CallsRTProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneService"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneShellUi"/>
             <EventProviderId Value="Microsoft.Windows.Apps.PhoneUtilsProviders"/>
             <EventProviderId Value="Microsoft.Windows.Apps.TelephonyInteractiveUser"/>
+            <EventProviderId Value="Microsoft.Windows.TestExecution.WexLogger"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>

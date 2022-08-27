@@ -411,7 +411,7 @@
     </EventProvider>
     <EventProvider Id="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation" Name="80a3bcff-2f89-4e33-aa39-73930ccba351" Level="5" NonPagedMemory="false">
       <Keywords>
-        <Keyword Value="0xffffffff"/>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF"/>
       </Keywords>
     </EventProvider>
     <EventProvider Id="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers" Name="3a245d5a-f00f-48f6-a94b-c51cdd290f18" Level="5" NonPagedMemory="false">

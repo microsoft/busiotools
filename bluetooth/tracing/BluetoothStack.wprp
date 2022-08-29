@@ -404,16 +404,9 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Shell.DevicesFlowDataModel" Name="9f30c07c-57ce-5ec3-bb5e-476dd25c2742" Level="5" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0xfffffff"/>
-      </Keywords>
-    </EventProvider>
-    <EventProvider Id="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation" Name="80a3bcff-2f89-4e33-aa39-73930ccba351" Level="5" NonPagedMemory="false">
-      <Keywords>
-        <Keyword Value="0xffffffff"/>
-      </Keywords>
-    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Shell.DevicesFlowDataModel" Name="9f30c07c-57ce-5ec3-bb5e-476dd25c2742" Level="5" NonPagedMemory="false"/>
+    <EventProvider Id="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation" Name="80a3bcff-2f89-4e33-aa39-73930ccba351" Level="5" NonPagedMemory="false"/>
+    <EventProvider Id="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler" Name="56143DD6-AD65-4FB1-972C-6DFA2BEF0916" Level="5" NonPagedMemory="false"/>
     <EventProvider Id="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers" Name="3a245d5a-f00f-48f6-a94b-c51cdd290f18" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xffffffff"/>
@@ -872,6 +865,7 @@
             <EventProviderId Value="Microsoft.Windows.Shell.DevicePairing"/>
             <EventProviderId Value="Microsoft.Windows.Shell.DevicesFlowDataModel"/>
             <EventProviderId Value="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler"/>
             <EventProviderId Value="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers"/>
             <EventProviderId Value="Microsoft.Windows.Microsoft.WirelessDisplayWPP"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManager"/>
@@ -1040,6 +1034,7 @@
             <EventProviderId Value="Microsoft.Windows.Shell.DevicePairing"/>
             <EventProviderId Value="Microsoft.Windows.Shell.DevicesFlowDataModel"/>
             <EventProviderId Value="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler"/>
             <EventProviderId Value="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers"/>
             <EventProviderId Value="Microsoft.Windows.Microsoft.WirelessDisplayWPP"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManager"/>

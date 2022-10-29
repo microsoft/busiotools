@@ -1,4 +1,12 @@
 @ECHO OFF
+rem Command line options
+set PNPOPTION=false
+:loopArgs 
+if "%1"=="" goto :done
+if %1==-pnp set PNPOPTION=true
+shift
+goto :loopArgs
+:done
 
 IF EXIST c:\windows\system32\logman.exe (
 echo Running logging for desktop systems...
@@ -46,6 +54,8 @@ logman start -n SensorsTrace -ets
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+rem Exporting pnp state
+if %PNPOPTION%==true pnputil /export-pnpstate %SystemRoot%\Tracing\pnpstateexport.pnp >nul
 echo Tracing has been setup.
 echo ===========================================================
 echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing.
@@ -69,6 +79,7 @@ tracelog -start SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+
 echo Tracing has been setup.
 echo ===========================================================
 echo Restart your machine to start tracing. Repro your scenario. Once complete, run StopSensorsTracing.cmd to stop tracing.

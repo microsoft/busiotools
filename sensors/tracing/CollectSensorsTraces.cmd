@@ -1,6 +1,14 @@
 @ECHO OFF
 
 SETLOCAL ENABLEDELAYEDEXPANSION
+rem Command line options
+set PNPOPTION=false
+:loopArgs 
+if "%1"=="" goto :done
+if %1==-pnp set PNPOPTION=true
+shift
+goto :loopArgs
+:done
 
 CALL WHOAMI.EXE /GROUPS | FINDSTR.EXE /I "S-1-16-12288" >nul
 IF ERRORLEVEL 1 (
@@ -42,6 +50,8 @@ logman update trace SensorsTrace -p "{45DFC839-5805-49E9-A622-51AEB4C35A3B}" 0xf
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1
+rem Exporting pnp state
+if %PNPOPTION%==true pnputil /export-pnpstate %SystemRoot%\Tracing\pnpstateexport.pnp >nul
 echo Tracing has been started.
 echo ===========================
 echo Repro your scenario now. Once complete, press any key to stop tracing.

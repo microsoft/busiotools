@@ -7,6 +7,7 @@ Unzip the package locally and browse to the sensors\tracing subfolder
 
 1) Open an elevated command prompt
 2) Run StartPersistentSensorsTracing.cmd
+2a) If you would like to capture the device driver details Run StartPersistentSensorsTracing.cmd -pnp
 3) Reboot the system when instructed
 4) After reboot, reproduce the problem
 5) Run StopPersistentSensorsTracing.cmd from an elevated command prompt
@@ -16,6 +17,7 @@ The steps above are the recommended steps. Alternatively, if you think rebooting
 
 1) Open an elevated command prompt
 2) Run CollectSensorsTraces.cmd
+2a) If you would like to capture the device driver details Run CollectSensorsTraces.cmd -pnp
 3) When prompted, reproduce the problem
 4) Press any key on the command prompt where you ran CollectSensorsTraces.cmd
 5) Collect the traces and build information from C:\Windows\tracing

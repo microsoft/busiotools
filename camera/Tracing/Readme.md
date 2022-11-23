@@ -3,7 +3,7 @@
 ### How to collect traces
 #### Desktop:
 - Launch elevated powershell, run Trace.ps1.
-  - If problems to exceture the powershell script, first run `Set-ExecutionPolicy -ExecutionPolicy Bypass -Force` from the elevated powershell.
+  - If encountering problems to execute the powershell script, first run `Set-ExecutionPolicy -ExecutionPolicy Bypass -Force` from the elevated powershell.
 - Run your scenario when told.
 - Press Enter and wait for the script to complete.
 - The folder containing the traces will pop up.

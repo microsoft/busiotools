@@ -109,7 +109,7 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-	<!-- UsbSettingsHandlers.dll (Microsoft.Windows.Shell.SystemSettings.Usb) -->
+    <!-- UsbSettingsHandlers.dll (Microsoft.Windows.Shell.SystemSettings.Usb) -->
     <EventProvider Id="UsbSettingsHandlersTlg" Name="15E77116-7CE1-4A0E-A2B5-4C458D9AD18C" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -257,7 +257,7 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </CaptureStateOnSave>
     </EventProvider>
-	<!-- Windows.Devices.HumanInterfaceDevice.dll -->
+    <!-- Windows.Devices.HumanInterfaceDevice.dll -->
     <EventProvider Id="HidWinRtWpp" Name="5E061987-B01F-40B7-9800-88A83FB4CD4F" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -423,6 +423,42 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <!-- Others -->
+    <EventProvider Id="QcUsb4FilterWpp" Name="914D56C3-C726-494D-A824-3E6C2D0B9F2D" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcUsb4BusWpp" Name="38AE9E05-004E-4963-9B66-F9AA7DE33388" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcXhciFilterWpp" Name="11ED5F0A-0200-42AF-B5DF-B8BEC02C9624" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcUsbFnSSFilterWpp" Name="6FD2F1A8-C3D9-4A72-B122-30C6AD3E0A5F" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcUsbCUcsi8280Wpp" Name="3168776E-0E5B-4B63-8F92-9D6C1B395166" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcPpxWpp" Name="11BB6DA3-32F8-443D-886F-2811CD201BB7" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="QcDxkmWpp" Name="E55D560E-55FA-47C3-A3EC-2AA0C319C2EF" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
 
     <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="USB2, USB3, USB4, USB-C and Input">
@@ -471,7 +507,7 @@
             <EventProviderId Value="UfxSynopsysWpp" />
             <EventProviderId Value="UfxSynopsysEtw" />
             <EventProviderId Value="UsbTaskWpp" />
-			<EventProviderId Value="UsbSettingsHandlersTlg" />
+            <EventProviderId Value="UsbSettingsHandlersTlg" />
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
@@ -482,7 +518,7 @@
             <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWppInfo" />
             <EventProviderId Value="HidClassEtw" />
-			<EventProviderId Value="HidWinRtWpp" />
+            <EventProviderId Value="HidWinRtWpp" />
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
@@ -532,7 +568,7 @@
             <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
-			<EventProviderId Value="UsbSettingsHandlersTlg" />
+            <EventProviderId Value="UsbSettingsHandlersTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -570,7 +606,7 @@
             <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
-			<EventProviderId Value="UsbSettingsHandlersTlg" />
+            <EventProviderId Value="UsbSettingsHandlersTlg" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -606,6 +642,9 @@
             <EventProviderId Value="UcxWpp" />
             <EventProviderId Value="UsbHub3Etw" />
             <EventProviderId Value="UsbHub3Wpp" />
+            <EventProviderId Value="QcXhciFilterWpp" />
+            <EventProviderId Value="QcUsbFnSSFilterWpp" />
+            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -615,6 +654,8 @@
             <EventProviderId Value="USB4HrdTlg" />
             <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
+            <EventProviderId Value="QcUsb4FilterWpp" />
+            <EventProviderId Value="QcUsb4BusWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
@@ -625,12 +666,14 @@
         <EventCollectorId Value="EventCollector_Pci">
           <EventProviders>
             <EventProviderId Value="PciWpp" />
+            <EventProviderId Value="QcPpxWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Display">
           <EventProviders>
             <EventProviderId Value="DisplayDxgDiagnostics" />
             <EventProviderId Value="DisplayWin32K" />
+            <EventProviderId Value="QcDxkmWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_NdisNetCx">
@@ -682,7 +725,7 @@
             <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWppInfo" />
             <EventProviderId Value="HidClassEtw" />
-			<EventProviderId Value="HidWinRtWpp" />
+            <EventProviderId Value="HidWinRtWpp" />
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
@@ -720,7 +763,7 @@
             <EventProviderId Value="I8042PrtWpp" />
             <EventProviderId Value="HidClassWppVerbose" />
             <EventProviderId Value="HidClassEtw" />
-			<EventProviderId Value="HidWinRtWpp" />
+            <EventProviderId Value="HidWinRtWpp" />
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
@@ -770,7 +813,7 @@
 
   <!-- 
     Due to the use of InjectOnly=true here, the ETL merged by "wpr.exe -stop" won't have trace logs. You need
-	  to add "-recordtempto" to "wpr.exe -start" to keep unmerged ETLs, which have trace logs.
+      to add "-recordtempto" to "wpr.exe -start" to keep unmerged ETLs, which have trace logs.
   -->
   <TraceMergeProperties>
     <TraceMergeProperty Id="BusesTraceMerge_Default" Name="BusesTraceMerge_Default">

@@ -24,6 +24,7 @@
     <EventProvider Id="Jedi" Name="e647b5bf-99a4-41fe-8789-56c6bb3fa9c8" Level="32" />
     <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
+    <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
     <EventProvider Id="Microsoft_Windows_Devices_Background" Name="64ef2b1c-4ae1-4e64-8599-1636e441ec88" />
     <EventProvider Id="Microsoft-Apps-SkypeApp-UI" Name="edd0620d-036c-516e-dc22-564351a84725" />
     <EventProvider Id="Microsoft-Kinect-FrameProvide" Name="a0e3d8ea-c34f-4419-a1db-90435b8b21d0" />
@@ -132,6 +133,7 @@
     <EventProvider Id="NGC_CtnrSvc" Name="cac8d861-7b16-5b6b-5fc0-85014776bdac" />
     <EventProvider Id="NGC_KspSvc" Name="add0de40-32b0-4b58-9d5e-938b2f5c1d1f" />
     <EventProvider Id="Osiris" Name="7d40a645-bcab-5bb4-82f0-09a26f9af2ea" Level="32" />
+    <EventProvider Id="PerceptionCore" Name="ab71fe82-3742-446b-982a-1fedbb7d9594" />
     <EventProvider Id="PlayAudio" Name="ac239183-f48e-47b1-b70c-d028d24c2fb4" />
     <EventProvider Id="PlayReady-WPP" Name="00000000-7ac4-430a-94e4-b0dfd254650f" />
     <EventProvider Id="Secure-ClearDMFT" Name="4280b01e-1f58-4e48-a282-20e609c8e528" Level="5" />
@@ -176,6 +178,7 @@
             <EventProviderId Value="Jedi" />
             <EventProviderId Value="MfWmiControl" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
+            <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
             <EventProviderId Value="Microsoft_Windows_Devices_Background" />
             <EventProviderId Value="Microsoft-Apps-SkypeApp-UI" />
             <EventProviderId Value="Microsoft-Kinect-FrameProvide" />
@@ -276,6 +279,7 @@
             <EventProviderId Value="NGC_CtnrSvc" />
             <EventProviderId Value="NGC_KspSvc" />
             <EventProviderId Value="Osiris" />
+            <EventProviderId Value="PerceptionCore" />
             <EventProviderId Value="PlayAudio" />
             <EventProviderId Value="PlayReady-WPP" />
             <EventProviderId Value="Secure-ClearDMFT" />

@@ -480,6 +480,7 @@
             <EventProviderId Value="UsbSerWpp" />
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="PciWpp" />
+            <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -489,6 +490,8 @@
             <EventProviderId Value="USB4HrdTlg" />
             <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
+            <EventProviderId Value="QcUsb4FilterWpp" />
+            <EventProviderId Value="QcUsb4BusWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_UsbC">
@@ -511,6 +514,8 @@
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
+            <EventProviderId Value="QcUsbFnSSFilterWpp" />
+            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Input">
@@ -569,6 +574,7 @@
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbSettingsHandlersTlg" />
+            <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -578,6 +584,8 @@
             <EventProviderId Value="USB4HrdTlg" />
             <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
+            <EventProviderId Value="QcUsb4FilterWpp" />
+            <EventProviderId Value="QcUsb4BusWpp" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -607,6 +615,7 @@
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbSettingsHandlersTlg" />
+            <EventProviderId Value="QcXhciFilterWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -616,6 +625,8 @@
             <EventProviderId Value="USB4HrdTlg" />
             <EventProviderId Value="USB4DrdTlg" />
             <EventProviderId Value="Usb4NetWpp" />
+            <EventProviderId Value="QcUsb4FilterWpp" />
+            <EventProviderId Value="QcUsb4BusWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
@@ -709,6 +720,8 @@
             <EventProviderId Value="UsbPmApiWpp" />
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
+            <EventProviderId Value="QcUsbFnSSFilterWpp" />
+            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

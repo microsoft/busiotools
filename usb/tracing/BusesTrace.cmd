@@ -6,6 +6,7 @@ set etlFileName=BusesMergedTraces.etl
 set pnpStatePreReproFileName=BusesPnpStatePreRepro.pnp
 set pnpStatePostReproFileName=BusesPnpStatePostRepro.pnp
 set pnpLogsFileName=BusesDriverWatchdog.evtx
+set kseLogsFileName=BusesKernelShimEngine.evtx
 set buildNumberFileName=BuildNumber.txt
 
 if not exist %wprpFileName% (
@@ -184,7 +185,9 @@ echo - Event logs...
 copy %SystemRoot%\System32\Winevt\Logs\System.evtx %traceFilesOutputPath%\
 copy %SystemRoot%\System32\Winevt\Logs\Application.evtx %traceFilesOutputPath%\
 if exist %traceFilesOutputPath%\%pnpLogsFileName% del %traceFilesOutputPath%\%pnpLogsFileName%
+if exist %traceFilesOutputPath%\%kseLogsFileName% del %traceFilesOutputPath%\%kseLogsFileName%
 wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" "%traceFilesOutputPath%\%pnpLogsFileName%"
+wevtutil.exe export-log "Microsoft-Windows-Kernel-ShimEngine/Operational" "%traceFilesOutputPath%\%kseLogsFileName%"
 rem USB Live Kernel Reports
 echo - Live kernel reports...
 if exist %SystemRoot%\LiveKernelReports\USB* (
@@ -207,6 +210,7 @@ echo   %pnpStatePostReproFileName%
 echo   System.evtx
 echo   Application.evtx
 echo   %pnpLogsFileName%
+echo   %kseLogsFileName%
 echo.
 if exist %SystemRoot%\LiveKernelReports\USB* (
 echo Please also collect the LiveKernelReports found above.
@@ -237,6 +241,7 @@ set etlFileName=
 set pnpStatePreReproFileName=
 set pnpStatePostReproFileName=
 set pnpLogsFileName=
+set kseLogsFileName=
 set selection=
 set profileName=
 echo.

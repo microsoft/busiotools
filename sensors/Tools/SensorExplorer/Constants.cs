@@ -82,6 +82,7 @@ namespace SensorExplorer
             { "DEVPKEY_Device_InstanceId", "{78C34FC8-104A-4ACA-9EA4-524D52996E57} 256" },
             { "DEVPKEY_Sensor_ProximityType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 80" },
             { "DEVPKEY_Sensor_HumanPresenceDetectionType", "{D4247382-969D-4F24-BB14-FB9671870BBF} 81" },
+            { "PKEY_Sensor_Proximity_SensorCapabilities", "{D4247382-969D-4F24-BB14-FB9671870BBF} 82" }
         };
 
         public static Dictionary<string, string> SensorCategories = new Dictionary<string, string>() {
@@ -127,7 +128,8 @@ namespace SensorExplorer
             Properties["Sensor_Model"],
             Properties["Sensor_PersistentUniqueId"],
             Properties["DEVPKEY_Sensor_ProximityType"],
-            Properties["DEVPKEY_Sensor_HumanPresenceDetectionType"]
+            Properties["DEVPKEY_Sensor_HumanPresenceDetectionType"],
+            Properties["PKEY_Sensor_Proximity_SensorCapabilities"]
         };
 
         public static Dictionary<int, double[]> OffsetTestExpectedValue = new Dictionary<int, double[]> {
@@ -148,6 +150,7 @@ namespace SensorExplorer
             { Sensor.COMPASS, "Compass" },
             { Sensor.CUSTOMSENSOR, "Custom Sensor" },
             { Sensor.GYROMETER, "Gyrometer" },
+            { Sensor.HUMANPRESENCESENSOR, "Human Presence Sensor" },
             { Sensor.INCLINOMETER, "Inclinometer" },
             { Sensor.LIGHTSENSOR, "Light Sensor" },
             { Sensor.MAGNETOMETER, "Magnetometer" },
@@ -238,6 +241,12 @@ namespace SensorExplorer
             "Distance (mm)"
         };
 
+        public static readonly string[] HumanPresenceSensorPropertyTitles = new string[] {
+            "IsPresent",
+            "IsEngaged",
+            "Distance (mm)"
+        };
+
         public static readonly string[] SimpleOrientationSensorPropertyTitles = new string[] {
             "SimpleOrientation"
         };
@@ -319,6 +328,12 @@ namespace SensorExplorer
         public static readonly Color[] ProximitySensorColors = new Color[] {
             Colors.DarkOrange,
             Colors.DarkBlue
+        };
+
+        public static readonly Color[] HumanPresenceSensorColors = new Color[] {
+            Colors.DarkBlue,
+            Colors.DarkOrange,
+            Colors.DarkRed
         };
 
         public static readonly Color[] SimpleOrientationSensorColors = new Color[] {

@@ -33,6 +33,7 @@ namespace SensorExplorer
         public const int PEDOMETER = 15;
         public const int PROXIMITYSENSOR = 16;
         public const int SIMPLEORIENTATIONSENSOR = 17;
+        public const int HUMANPRESENCESENSOR = 18;
 
         public const int ACTIVITYNONE = 2;
         public const int ACTIVITYNOTSUPPORTED = 3;
@@ -47,6 +48,7 @@ namespace SensorExplorer
         public static bool CompassFailed;
         public static bool CustomSensorFailed;
         public static bool GyrometerFailed;
+        public static bool HumanPresenceSensorFailed;
         public static bool InclinometerFailed;
         public static bool LightSensorFailed;
         public static bool MagnetometerFailed;
@@ -90,6 +92,9 @@ namespace SensorExplorer
         public static List<Gyrometer> GyrometerList;
         public static List<DeviceInformation> GyrometerDeviceInfo;
         public static List<string[]> GyrometerPLD;
+        public static List<HumanPresenceSensor> HumanPresenceSensorList;
+        public static List<DeviceInformation> HumanPresenceSensorDeviceInfo;
+        public static List<string[]> HumanPresenceSensorPLD;
         public static List<Inclinometer> InclinometerList;
         public static List<DeviceInformation> InclinometerDeviceInfo;
         public static List<string[]> InclinometerPLD;
@@ -468,6 +473,9 @@ namespace SensorExplorer
             GyrometerList = new List<Gyrometer>();
             GyrometerDeviceInfo = new List<DeviceInformation>();
             GyrometerPLD = new List<string[]>();
+            HumanPresenceSensorList= new List<HumanPresenceSensor>();
+            HumanPresenceSensorDeviceInfo = new List<DeviceInformation>();
+            HumanPresenceSensorPLD = new List<string[]>();
             InclinometerList = new List<Inclinometer>();
             InclinometerDeviceInfo = new List<DeviceInformation>();
             InclinometerPLD = new List<string[]>();
@@ -510,6 +518,7 @@ namespace SensorExplorer
             CompassFailed = false;
             CustomSensorFailed = false;
             GyrometerFailed = false;
+            HumanPresenceSensorFailed = false;
             InclinometerFailed = false;
             LightSensorFailed = false;
             MagnetometerFailed = false;
@@ -808,6 +817,40 @@ namespace SensorExplorer
             {
                 GyrometerFailed = false;
             }
+
+            try
+            {
+                deviceInfoCollection = await DeviceInformation.FindAllAsync(HumanPresenceSensor.GetDeviceSelector(), Constants.RequestedProperties);
+                foreach (DeviceInformation deviceInfo in deviceInfoCollection)
+                {
+                    if (deviceInfo.Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() == "1")
+                    {
+                        HumanPresenceSensor humanPresenceSensor = await HumanPresenceSensor.FromIdAsync(deviceInfo.Id);
+                        HumanPresenceSensorList.Add(humanPresenceSensor);
+                        HumanPresenceSensorDeviceInfo.Add(deviceInfo);
+
+                        if (getPLD)
+                        {
+                            var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                            if (pldInfo == null)
+                            {
+                                string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                                HumanPresenceSensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                            }
+                            else
+                            {
+                                HumanPresenceSensorPLD.Add(pldInfo);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                HumanPresenceSensorFailed = true;
+            }
+
             try
             {
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(Inclinometer.GetDeviceSelector(SensorReadingType.Absolute), Constants.RequestedProperties);
@@ -1023,23 +1066,56 @@ namespace SensorExplorer
                 deviceInfoCollection = await DeviceInformation.FindAllAsync(ProximitySensor.GetDeviceSelector(), Constants.RequestedProperties);
                 foreach (DeviceInformation deviceInfo in deviceInfoCollection)
                 {
-                    ProximitySensor proximitySensor = ProximitySensor.FromId(deviceInfo.Id);
-                    ProximitySensorList.Add(proximitySensor);
-                    ProximitySensorDeviceInfo.Add(deviceInfo);
+                    if (deviceInfo.Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() != "1") {
+                        ProximitySensor proximitySensor = ProximitySensor.FromId(deviceInfo.Id);
+                        ProximitySensorList.Add(proximitySensor);
+                        ProximitySensorDeviceInfo.Add(deviceInfo);
 
-                    if (getPLD)
+                        if (getPLD)
+                        {
+                            var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                            if (pldInfo == null)
+                            {
+                                string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                                ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                            }
+                            else
+                            {
+                                ProximitySensorPLD.Add(pldInfo);
+                            }
+                        }
+                    } else if (deviceInfo.Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() == "1")
                     {
-                        var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+                        // Don't add if optional property DEVPKEY_Sensor_ProximityType is set as 1 and there's already a human presence sensor
+                        int count = HumanPresenceSensorList.Count;
+                        if (count > 0)
+                        {
+                            count--;
+                        } else
+                        {
+                            // If there isn't a human presence sensor already, add it as a biometric proximity sensor
+                            // Label it "Proximity (Human Presence)"
+                            ProximitySensor proximitySensor = ProximitySensor.FromId(deviceInfo.Id);
+                            ProximitySensorList.Add(proximitySensor);
+                            ProximitySensorDeviceInfo.Add(deviceInfo);
 
-                        if (pldInfo == null)
-                        {
-                            string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
-                            ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                            if (getPLD)
+                            {
+                                var pldInfo = await GetPLDInformation(deviceInfo.Id, DeviceInformationKind.DeviceInterface);
+
+                                if (pldInfo == null)
+                                {
+                                    string deviceInstanceId = deviceInfo.Properties[Constants.Properties["DEVPKEY_Device_InstanceId"]].ToString();
+                                    ProximitySensorPLD.Add(await GetPLDInformation(deviceInstanceId));
+                                }
+                                else
+                                {
+                                    ProximitySensorPLD.Add(pldInfo);
+                                }
+                            }
                         }
-                        else
-                        {
-                            ProximitySensorPLD.Add(pldInfo);
-                        }
+
                     }
                 }
             }
@@ -1116,6 +1192,9 @@ namespace SensorExplorer
                     case GYROMETER:
                         EnableGyrometer(index, totalIndex);
                         break;
+                    case HUMANPRESENCESENSOR:
+                        EnableHumanPresenceSensor(index, totalIndex);
+                        break;
                     case INCLINOMETER:
                         EnableInclinometer(index, totalIndex);
                         break;
@@ -1181,6 +1260,9 @@ namespace SensorExplorer
                     case GYROMETER:
                         DisableGyrometer(index);
                         break;
+                    case HUMANPRESENCESENSOR:
+                        DisableHumanPresenceSensor(index);
+                        break;
                     case INCLINOMETER:
                         DisableInclinometer(index);
                         break;
@@ -1244,7 +1326,7 @@ namespace SensorExplorer
                 catch { };
 
                 var deviceProperties = await GetProperties(AccelerometerStandardDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, reportLatency, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, reportLatency, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(AccelerometerStandardPLD[index]);
                 AccelerometerStandardList[index].ReadingChanged += AccelerometerReadingChanged;
             }
@@ -1311,7 +1393,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(AccelerometerGravityDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, reportLatency, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, reportLatency, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(AccelerometerGravityPLD[index]);
                 AccelerometerGravityList[index].ReadingChanged += AccelerometerGravityReadingChanged;
             }
@@ -1378,7 +1460,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(AccelerometerLinearDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, reportLatency, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, reportLatency, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(AccelerometerLinearPLD[index]);
                 AccelerometerLinearList[index].ReadingChanged += AccelerometerLinearReadingChanged;
             }
@@ -1433,7 +1515,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(ActivitySensorDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, 0, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, 0, minimumReportInterval, -1.00f, 0, deviceProperties);
 
                 // subscribe to all supported activities
                 foreach (ActivityType activityType in ActivitySensorList[index].SupportedActivities)
@@ -1501,7 +1583,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(AltimeterDeviceInfo);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(AltimeterPLD);
                 Altimeter.ReadingChanged += AltimeterReadingChanged;
             }
@@ -1562,7 +1644,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(BarometerDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(BarometerPLD[index]);
                 BarometerList[index].ReadingChanged += BarometerReadingChanged;
             }
@@ -1618,7 +1700,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(CompassDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(CompassPLD[index]);
                 CompassList[index].ReadingChanged += CompassReadingChanged;
             }
@@ -1676,7 +1758,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(CustomSensorDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(CustomSensorPLD[index]);
                 CustomSensorList[index].ReadingChanged += CustomSensorReadingChanged;
             }
@@ -1737,7 +1819,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(GyrometerDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(GyrometerPLD[index]);
                 GyrometerList[index].ReadingChanged += GyrometerReadingChanged;
             }
@@ -1773,6 +1855,53 @@ namespace SensorExplorer
             catch { }
         }
 
+        private static async void EnableHumanPresenceSensor(int index, int totalIndex)
+        {
+            if (HumanPresenceSensorList[index] != null)
+            {
+                string deviceId = string.Empty;
+
+                try
+                {
+                    deviceId = HumanPresenceSensorList[index].DeviceId;
+                    var deviceProperties = await GetProperties(HumanPresenceSensorDeviceInfo[index]);
+                    SensorData[totalIndex].AddProperty(deviceId, 0, 0, -1.00f, 0, deviceProperties);
+                    SensorData[totalIndex].AddPLDProperty(HumanPresenceSensorPLD[index]);
+                    HumanPresenceSensorList[index].ReadingChanged += HumanPresenceSensorReadingChanged;
+                }
+                catch { }
+            }
+        }
+
+        private static void DisableHumanPresenceSensor(int index)
+        {
+            if (HumanPresenceSensorList[index] != null)
+            {
+                HumanPresenceSensorList[index].ReadingChanged -= HumanPresenceSensorReadingChanged;
+            }
+        }
+
+        private async static void HumanPresenceSensorReadingChanged(object sender, HumanPresenceSensorReadingChangedEventArgs e)
+        {
+            try
+            {
+                if (SensorData[CurrentId].SensorType == HUMANPRESENCESENSOR)
+                {
+                    HumanPresenceSensorReading reading = e.Reading;
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.Engagement), Convert.ToDouble(reading.Presence), Convert.ToDouble(reading.DistanceInMillimeters) }))
+                    {
+                        await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            if (CurrentId < SensorData.Count)
+                            {
+                                SensorDisplay[CurrentId].UpdateText(SensorData[CurrentId]);
+                            }
+                        });
+                    }
+                }
+            }
+            catch { }
+        }
         private static async void EnableInclinometer(int index, int totalIndex)
         {
             if (InclinometerList[index] != null)
@@ -1798,7 +1927,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(InclinometerDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(InclinometerPLD[index]);
                 InclinometerList[index].ReadingChanged += InclinometerReadingChanged;
             }
@@ -1844,6 +1973,7 @@ namespace SensorExplorer
                 string deviceId = string.Empty;
                 uint reportInterval = 0;
                 uint minimumReportInterval = 0;
+                float threshold = -1.0f;
 
                 try
                 {
@@ -1857,12 +1987,17 @@ namespace SensorExplorer
                 catch { }
                 try
                 {
+                    threshold = LightSensorList[index].ReportThreshold.LuxPercentage;
+                }
+                catch { }
+                try
+                {
                     minimumReportInterval = LightSensorList[index].MinimumReportInterval;
                 }
                 catch { }
 
                 var deviceProperties = await GetProperties(LightSensorDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, threshold, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(LightSensorPLD[index]);
                 LightSensorList[index].ReadingChanged += LightSensorReadingChanged;
             }
@@ -1938,7 +2073,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(MagnetometerDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(MagnetometerPLD[index]);
                 MagnetometerList[index].ReadingChanged += MagnetometerReadingChanged;
             }
@@ -1999,7 +2134,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(OrientationAbsoluteDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(OrientationAbsolutePLD[index]);
                 OrientationAbsoluteList[index].ReadingChanged += OrientationSensorReadingChanged;
             }
@@ -2072,7 +2207,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(OrientationGeomagneticDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(OrientationGeomagneticPLD[index]);
                 OrientationGeomagneticList[index].ReadingChanged += OrientationGeomagneticReadingChanged;
             }
@@ -2145,7 +2280,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(OrientationRelativeDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(OrientationRelativePLD[index]);
                 OrientationRelativeList[index].ReadingChanged += OrientationRelativeReadingChanged;
             }
@@ -2218,7 +2353,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(PedometerDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, reportInterval, minimumReportInterval, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(PedometerPLD[index]);
                 PedometerList[index].ReadingChanged += PedometerReadingChanged;
             }
@@ -2267,7 +2402,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(ProximitySensorDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, 0, 0, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, 0, 0, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(ProximitySensorPLD[index]);
                 ProximitySensorList[index].ReadingChanged += ProximitySensorReadingChanged;
             }
@@ -2316,7 +2451,7 @@ namespace SensorExplorer
                 catch { }
 
                 var deviceProperties = await GetProperties(SimpleOrientationSensorDeviceInfo[index]);
-                SensorData[totalIndex].AddProperty(deviceId, 0, 0, 0, deviceProperties);
+                SensorData[totalIndex].AddProperty(deviceId, 0, 0, -1.00f, 0, deviceProperties);
                 SensorData[totalIndex].AddPLDProperty(SimpleOrientationSensorPLD[index]);
                 SimpleOrientationSensorList[index].OrientationChanged += SimpleOrientationSensorOrientationChanged;
             }

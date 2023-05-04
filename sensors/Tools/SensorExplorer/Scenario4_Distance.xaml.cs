@@ -123,10 +123,6 @@ namespace SensorExplorer
                 RunManualTestsButton.Visibility = Visibility.Visible;
                 CurrentProximitySensorName.Text = GetSensorName();
                 ProximitySensorFoundTextBox.Text = "Using proximity sensor 1 of " + Sensor.ProximitySensorList.Count;
-                if (IsHumanPresenceSensor())
-                {
-                    ProximitySensorFoundTextBox.Text = "Using proximity sensor (human presence) 1 of " + Sensor.ProximitySensorList.Count;
-                }
             }
             else if (Sensor.ProximitySensorList.Count == 1)
             {
@@ -134,10 +130,6 @@ namespace SensorExplorer
                 RunManualTestsButton.Visibility = Visibility.Visible;
                 CurrentProximitySensorName.Text = GetSensorName();
                 ProximitySensorFoundTextBox.Text = "Using proximity sensor 1 of " + Sensor.ProximitySensorList.Count;
-                if (IsHumanPresenceSensor())
-                {
-                    ProximitySensorFoundTextBox.Text = "Using proximity sensor (human presence) 1 of " + Sensor.ProximitySensorList.Count;
-                }
             }
 
             if (Sensor.ProximitySensorList.Count >= 1)
@@ -637,18 +629,6 @@ namespace SensorExplorer
             return errorPercent;
         }
 
-        bool IsHumanPresenceSensor()
-        {
-            try
-            {
-                return (Sensor.ProximitySensorDeviceInfo[_currentSensorNumber].Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() == "1");
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         string GetSensorName()
         {
             try
@@ -702,10 +682,6 @@ namespace SensorExplorer
             CurrentProximitySensorName.Text = GetSensorName();
 
             ProximitySensorFoundTextBox.Text = "Using proximity sensor " + (_currentSensorNumber + 1) + " of " + Sensor.ProximitySensorList.Count;
-            if (IsHumanPresenceSensor())
-            {
-                ProximitySensorFoundTextBox.Text = "Using proximity sensor (human presence) " + (_currentSensorNumber + 1) + " of " + Sensor.ProximitySensorList.Count;
-            }
  
             _proximitySensor = Sensor.ProximitySensorList[_currentSensorNumber];
         }

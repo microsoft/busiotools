@@ -179,6 +179,13 @@ namespace SensorExplorer
                     SensorType.Add(Sensor.GYROMETER);
                     totalIndexToIndex.Add(index);
                 }
+                for (int index = 0; index < Sensor.HumanPresenceSensorList.Count; index++)
+                {
+                    totalIndex++;
+                    AddPivotItem(Sensor.HUMANPRESENCESENSOR, index, totalIndex);
+                    SensorType.Add(Sensor.HUMANPRESENCESENSOR);
+                    totalIndexToIndex.Add(index);
+                }
                 for (int index = 0; index < Sensor.InclinometerList.Count; index++)
                 {
                     totalIndex++;
@@ -392,17 +399,6 @@ namespace SensorExplorer
             StackPanel stackPanel = new StackPanel();
             TextBlock noTestAvailable = new TextBlock() { Text = "No tests available for this sensor.", FontSize = 20, Margin = new Thickness(50), HorizontalAlignment = HorizontalAlignment.Center };
             pivotItemSensor.Header = Constants.SensorName[sensorType] + " " + (index + 1);
-
-            // Special case proximity sensors and label the human presence sensors explicitly through the header. A human presence sensor is a proximity
-            // sensor with the optional property DEVPKEY_Sensor_ProximityType set as 1.
-            try
-            {
-                if (sensorType == Sensor.PROXIMITYSENSOR && (Sensor.ProximitySensorDeviceInfo[index].Properties[Constants.Properties["DEVPKEY_Sensor_ProximityType"]].ToString() == "1"))
-                {
-                    pivotItemSensor.Header = Constants.SensorName[sensorType] + " (Human Presence) " + (index + 1);
-                }
-            }
-            catch { }
 
             if (sensorType == Sensor.ACCELEROMETER)
             {

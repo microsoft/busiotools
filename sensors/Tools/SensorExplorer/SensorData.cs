@@ -58,6 +58,7 @@ namespace SensorExplorer
         public uint ReportInterval = 0;
         public uint MinReportInterval = 0;
         public uint ReportLatency = 0;
+        public float LightSensorThreshold = -1.00f;
 
         public SensorData(int sensorType, int totalIndex, string[] property)
         {
@@ -68,7 +69,7 @@ namespace SensorExplorer
             MinValue = new double[Property.Length];
         }
 
-        public void AddProperty(string deviceId, uint reportInterval, uint minReportInterval, uint reportLatency, string[] properties)
+        public void AddProperty(string deviceId, uint reportInterval, uint minReportInterval, float threshold, uint reportLatency, string[] properties)
         {
             if (DefaultReportInterval == 0)
             {
@@ -76,6 +77,7 @@ namespace SensorExplorer
             }
 
             DeviceId = deviceId;
+            LightSensorThreshold = threshold;
             ReportInterval = reportInterval;
             MinReportInterval = minReportInterval;
             ReportLatency = reportLatency;
@@ -120,6 +122,14 @@ namespace SensorExplorer
             {
                 ReportInterval = reportInterval;
                 ReportIntervalChanged = true;
+            }
+        }
+
+        public void UpdateThreshold(float threshold)
+        {
+            if (threshold != LightSensorThreshold)
+            {
+                LightSensorThreshold = threshold;
             }
         }
 

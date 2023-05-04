@@ -46,8 +46,9 @@ namespace SensorExplorer
         public StackPanel StackPanelSensor = new StackPanel() { Orientation = Orientation.Vertical, Visibility = Visibility.Collapsed, Margin = new Thickness(0, 0, 18, 20) };
         public StackPanel StackPanelTop = new StackPanel() { Orientation = Orientation.Horizontal, Height = 100, HorizontalAlignment = HorizontalAlignment.Center };
         public TextBox TextboxReportInterval = new TextBox() { Height = 32, Width = 100, Margin = new Thickness(40, 20, 10, 10) };
-
         private Button buttonReportInterval = new Button() { Height = 32, Content = "Change", Margin = new Thickness(0, 20, 10, 10) };
+        public TextBox TextboxThreshold = new TextBox() { Height = 32, Width = 100, Margin = new Thickness(40, 0, 10, 0) };
+        private Button buttonThreshold = new Button() { Height = 32, Content = "Change", Margin = new Thickness(0, 0, 10, 0) };
         private Button buttonSensor = new Button();
         private Canvas canvasSensor = new Canvas();
         private Ellipse ellipseAccelerometer = new Ellipse() { Width = 20, Height = 20, Fill = new SolidColorBrush(Colors.DarkRed), Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 5 };
@@ -81,6 +82,7 @@ namespace SensorExplorer
         private string[] properties = new string[] {
             "\r\nReport Interval",
             "Min Report Interval",
+            "Threshold (0.0 to 100.0)",
             "Category",
             "PersistentUniqueID",
             "ACPI Object Name",
@@ -211,7 +213,7 @@ namespace SensorExplorer
                 StackPanelTop.Children.Add(stackPanelY);
                 StackPanelTop.Children.Add(stackPanelZ);
             }
-            else if (sensorType == Sensor.ACTIVITYSENSOR || sensorType == Sensor.LIGHTSENSOR || sensorType == Sensor.PEDOMETER || sensorType == Sensor.PROXIMITYSENSOR)
+            else if (sensorType == Sensor.ACTIVITYSENSOR || sensorType == Sensor.LIGHTSENSOR || sensorType == Sensor.PEDOMETER || sensorType == Sensor.PROXIMITYSENSOR || sensorType == Sensor.HUMANPRESENCESENSOR)
             {
                 StackPanelTop.Children.Add(textBlockSensor);
             }
@@ -298,6 +300,25 @@ namespace SensorExplorer
                     stackPanelReportInterval.Children.Add(TextboxReportInterval);
                     stackPanelReportInterval.Children.Add(buttonReportInterval);
                     stackPanelPropertyValue.Children.Add(stackPanelReportInterval);
+                }
+                else if (i == 2)
+                {
+                    if (sensorType == Sensor.LIGHTSENSOR)
+                    {
+                        textBlockPropertyName[i].Height = 40;
+                        textBlockPropertyValue[i].Height = 40;
+                        buttonThreshold.Click += Scenario1View.Scenario1.ThresholdButton;
+                        StackPanel stackPanelThreshold = new StackPanel();
+                        stackPanelThreshold.Orientation = Orientation.Horizontal;
+                        stackPanelThreshold.Children.Add(textBlockPropertyValue[i]);
+                        stackPanelThreshold.Children.Add(TextboxThreshold);
+                        stackPanelThreshold.Children.Add(buttonThreshold);
+                        stackPanelPropertyValue.Children.Add(stackPanelThreshold);
+                    }
+                    else
+                    {
+                        stackPanelPropertyValue.Children.Add(new TextBlock() { Text = "   N/A", HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center });
+                    }
                 }
                 else
                 {
@@ -402,23 +423,24 @@ namespace SensorExplorer
         {
             textBlockPropertyValue[0].Text = string.Format("\r\n  {0}", sensorData.ReportInterval != 0 ? sensorData.ReportInterval.ToString() : "-");
             textBlockPropertyValue[1].Text = string.Format("  {0}", sensorData.MinReportInterval != 0 ? sensorData.MinReportInterval.ToString() : "-");
-            textBlockPropertyValue[2].Text = "  " + sensorData.Category;
-            textBlockPropertyValue[3].Text = "  " + sensorData.PersistentUniqueId;
-            textBlockPropertyValue[4].Text = "  " + sensorData.ObjectHierarchy;
-            textBlockPropertyValue[5].Text = "  " + sensorData.SensorName;
-            textBlockPropertyValue[6].Text = "  " + sensorData.Manufacturer;
-            textBlockPropertyValue[7].Text = "  " + sensorData.Model;
-            textBlockPropertyValue[8].Text = "  " + sensorData.ConnectionType;
-            textBlockPropertyValue[9].Text = "  " + sensorData.IsPrimary;
-            textBlockPropertyValue[10].Text = "  " + sensorData.VendorDefinedSubType;
-            textBlockPropertyValue[11].Text = "  " + sensorData.State;
+            textBlockPropertyValue[2].Text = "  " + sensorData.LightSensorThreshold;
+            textBlockPropertyValue[3].Text = "  " + sensorData.Category;
+            textBlockPropertyValue[4].Text = "  " + sensorData.PersistentUniqueId;
+            textBlockPropertyValue[5].Text = "  " + sensorData.ObjectHierarchy;
+            textBlockPropertyValue[6].Text = "  " + sensorData.SensorName;
+            textBlockPropertyValue[7].Text = "  " + sensorData.Manufacturer;
+            textBlockPropertyValue[8].Text = "  " + sensorData.Model;
+            textBlockPropertyValue[9].Text = "  " + sensorData.ConnectionType;
+            textBlockPropertyValue[10].Text = "  " + sensorData.IsPrimary;
+            textBlockPropertyValue[11].Text = "  " + sensorData.VendorDefinedSubType;
+            textBlockPropertyValue[12].Text = "  " + sensorData.State;
             if (sensorData.HumanPresenceDetectionType != null)
             {
-                textBlockPropertyValue[12].Text = "  " + sensorData.HumanPresenceDetectionType;
+                textBlockPropertyValue[13].Text = "  " + sensorData.HumanPresenceDetectionType;
             }
             if (sensorData.DeviceId != null)
             {
-                textBlockPropertyValue[13].Text = $"{sensorData.DeviceId.Replace("{", "\r\n  {")}";
+                textBlockPropertyValue[14].Text = $"{sensorData.DeviceId.Replace("{", "\r\n  {")}";
             }
         }
 
@@ -587,6 +609,38 @@ namespace SensorExplorer
                         {
                             SimpleOrientation simpleOrientation = (SimpleOrientation)sensorData.Readings[index].Value[i];
                             textBlockValue[i].Text = string.Format("        {0}", simpleOrientation).Replace("DegreesCounterclockwise", "°↺");
+                            textBlockMinValue[i].Text = "";
+                            textBlockMaxValue[i].Text = "";
+                        }
+                        else if (sensorData.SensorType == Sensor.HUMANPRESENCESENSOR && sensorData.Property[i] == "IsEngaged")
+                        {
+                            UInt32 engagement = 0;
+                            const UInt32 engagementCapable = 0x02;
+
+                            try
+                            {
+                                engagement = (UInt32)Sensor.HumanPresenceSensorDeviceInfo[index].Properties[Constants.Properties["PKEY_Sensor_Proximity_SensorCapabilities"]];
+                            }
+                            catch {
+                                engagement = 0;
+                            }
+                           
+                            if ((engagement & engagementCapable) != 0)
+                            {
+                                HumanEngagement engagedEnum = (HumanEngagement)sensorData.Readings[index].Value[0];
+                                textBlockValue[i].Text = string.Format("        {0}", engagedEnum);
+                            }
+                            else
+                            {
+                                textBlockValue[i].Text = string.Format("        {0}", "Not Supported");
+                            }
+                            textBlockMinValue[i].Text = "";
+                            textBlockMaxValue[i].Text = "";
+                        }
+                        else if (sensorData.SensorType == Sensor.HUMANPRESENCESENSOR && sensorData.Property[i] == "IsPresent")
+                        {
+                            HumanPresence presenceEnum = (HumanPresence)sensorData.Readings[index].Value[1];
+                            textBlockValue[i].Text = string.Format("        {0}", presenceEnum);
                             textBlockMinValue[i].Text = "";
                             textBlockMaxValue[i].Text = "";
                         }

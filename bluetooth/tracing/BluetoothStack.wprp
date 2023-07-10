@@ -314,7 +314,7 @@
         <Keyword Value="0xfffffff"/>
       </Keywords>
     </EventProvider>
-    <EventProvider Id="Microsoft.Windows.Bluetooth.SDP" Name="85D815C6-7437-43BA-9B11-23B8AEF6BE88" Level="7" NonPagedMemory="false">
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BTAGService" Name="85D815C6-7437-43BA-9B11-23B8AEF6BE88" Level="7" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xfffffff"/>
       </Keywords>
@@ -853,7 +853,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.QuickPair"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.UserService"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.SDP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTAGService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.AudioService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dpService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Avrcp"/>
@@ -1026,7 +1026,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.QuickPair"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.UserService"/>
-            <EventProviderId Value="Microsoft.Windows.Bluetooth.SDP"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTAGService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.AudioService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.A2dpService"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Avrcp"/>

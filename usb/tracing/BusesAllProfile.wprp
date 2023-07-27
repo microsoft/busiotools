@@ -298,6 +298,17 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="VhfKmWpp" Name="5E11AB47-4E39-4D45-8BD5-C9C42AB9D1E6" NonPagedMemory="true" Level="5">
+      <!--Note: Client driver (consuming VhfKm.lib) must have been built with and enabled WPP tracing-->
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="VhfUmWpp" Name="18FCFA6D-941F-4DD2-BDEF-CA08CFADF95F" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="MsGpiowin32Wpp" Name="5A81715A-84C0-4DEF-AE38-EDDE40DF5B3A" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -531,6 +542,8 @@
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
             <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="VhfKmWpp" />
+            <EventProviderId Value="VhfUmWpp" />
             <EventProviderId Value="MsGpiowin32Wpp" />
             <EventProviderId Value="ButtonConverterWpp" />
             <EventProviderId Value="KbdHidWpp" />
@@ -746,6 +759,8 @@
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
             <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="VhfKmWpp" />
+            <EventProviderId Value="VhfUmWpp" />
             <EventProviderId Value="MsGpiowin32Wpp" />
             <EventProviderId Value="ButtonConverterWpp" />
             <EventProviderId Value="KbdHidWpp" />
@@ -784,6 +799,8 @@
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
             <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="VhfKmWpp" />
+            <EventProviderId Value="VhfUmWpp" />
             <EventProviderId Value="MsGpiowin32Wpp" />
             <EventProviderId Value="ButtonConverterWpp" />
             <EventProviderId Value="KbdHidWpp" />

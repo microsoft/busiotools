@@ -41,16 +41,21 @@ namespace Tracing
         public Provider()
         {
             this.Guid  = System.Guid.Empty;
-            this.Flags = Provider.DefaultFlags;
-            this.Level = Provider.DefaultLevel;
+            this.Flags = null;
+            this.Level = null;
+            this.StateSave = null;
+            this.EventKey = null;
         }
 
         public string       Name;
         public System.Guid  Guid;
-        public ulong        Flags;
-        public ulong        Level;
+        public ulong?       Flags;
+        public ulong?       Level;
         public string       GroupName;
         public bool         IsKernelMode;
+        public ulong?       StateSave;
+        public ulong?       EventKey;
+        public bool?        IsInternal;
 
         public Provider Clone()
         {
@@ -61,7 +66,10 @@ namespace Tracing
                 Flags        = this.Flags,
                 Level        = this.Level,
                 GroupName    = this.GroupName,
-                IsKernelMode = this.IsKernelMode
+                IsKernelMode = this.IsKernelMode,
+                StateSave    = this.StateSave,
+                EventKey     = this.EventKey,
+                IsInternal   = this.IsInternal
             };
         }
     }

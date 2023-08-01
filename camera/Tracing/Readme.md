@@ -30,3 +30,4 @@
 Zip files (Right click > Send to > Compressed folder) and send.
 
 View the resulting WPP traces with TraceView, available in the Windows SDK.
+Click here to download the Trace package as a zip file: https://github.com/Microsoft/busiotools/archive/master.zip

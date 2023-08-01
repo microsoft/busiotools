@@ -824,8 +824,13 @@ function Gather-DXDiag {
  Run background task to gather SetupAPIlog
 #>
 function Gather-SetupAPILog {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [string] $OutputFile = "setupapi.dev.log"
+    )
 
-    Queue-BackgroundJob -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
+    Queue-BackgroundJob -Name "SetupAPI log" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\$OutputFile") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -849,12 +854,14 @@ function Gather-SetupAPILog {
 function Gather-PnpUtil {
     [CmdletBinding()]
     [OutputType([void])]
-    param()
+    param(
+        [string] $OutputFile = "pnpUtil.pnp"
+    )
     #
     # Collect information about the machine.
     #
 
-    Queue-BackgroundJob -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\pnpUtil.pnp") -ScriptBlock {
+    Queue-BackgroundJob -Name "PnpUtil" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)\$OutputFile") -ScriptBlock {
         param(
             [Parameter(Mandatory = $true)]
             [string]
@@ -998,6 +1005,52 @@ function Gather-WinHelloInfo {
 
         } catch {
             Write-Verbose "[Gather-WinHelloInfo] Error while getting winHelloInfo logs: $_"
+        }
+    }
+}
+
+<#
+ .SYNOPSIS
+ Run background task to gather microsoftTeams log
+#>
+function Gather-MicrosoftTeamsLog {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
+    #
+    # Collect information about the machine.
+    #
+    Queue-BackgroundJob -Name "MicrosoftTeamsLog" -ArgumentList @("$($EnvironmentInfo.TracePathLocal)") -ScriptBlock {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]
+            $OutputFile
+        )
+
+        try {
+
+            $appxList = @(Get-AppxPackage | where {$_.Name -match "teams"})
+
+            if($appxList.count -eq 0) {
+                Write-Verbose "[Gather-MicrosoftTeamsLog] MicrosoftTeams is not installed on the system."
+            }
+            else {
+                foreach($appx in $appxList) {
+                    $pfn = $appx.PackageFamilyName
+                    $logPath = join-path $env:LOCALAPPDATA "Packages\$pfn\LocalCache\Microsoft\MSTeams\Logs\mediastack"
+
+                    if(test-path $logPath) {
+                        $log = Get-ChildItem $logpath -File -Filter "*.blog" | Sort-Object LastWriteTime | Select-Object -last 1                  
+                        $filename = $pfn +"_$($log.Name)"
+
+                        Write-Verbose "Log: $log, outputLog: $filename"
+                        copy $log.FullName -destination $OutputFile\$filename
+                    }
+                }
+            }
+
+        } catch {
+            Write-Verbose "[Gather-MicrosoftTeamsLog] Error while getting MicrosoftTeams logs: $_"
         }
     }
 }

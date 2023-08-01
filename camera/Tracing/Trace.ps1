@@ -42,6 +42,15 @@
 
 [CmdletBinding(DefaultParameterSetName = "Common")]
 param(
+    [Parameter(ParameterSetName = "Common", ValueFromPipeline = $true, Position = 0)]
+    [ValidateSet(
+        # If chosen, the $DefaultScenario value is used instead.
+        "Multimedia", "Camera-Perf"
+        )]
+    [Alias("s")]
+    [String]
+    $Scenario = "Multimedia",
+
     [Parameter(ParameterSetName = "Common", ValueFromPipeline = $true)]
     [Alias("o")]
     [String]
@@ -62,9 +71,9 @@ param(
     [Switch]
     $Help,
 
-    [Parameter(ParameterSetName = "List")]
+    [Parameter(ParameterSetName = "List", Mandatory = $true)]
     [Switch]
-    $Detailed
+    $List
 )
 #--------------------------------------------------------------------
 # Setup Trace script log
@@ -76,9 +85,10 @@ Start-Transcript -Path $log -Append
 # Variables
 #--------------------------------------------------------------------
 
-# Scenario to be used, when the "Default" scenario is chosen.
-$Scenario = New-Object System.Collections.ArrayList
-$Scenario.Add("Multimedia") > $null
+$Scenarios = @{
+    "Multimedia" = @{}
+    "Camera-Perf" = @{}
+    }
 
 $Modules = @(
 
@@ -128,8 +138,22 @@ function Main {
             Get-Help $MyInvocation.PSCommandPath -Detailed
             return
         }
+        
+        #list scenarios
+        if ($List) {
+            $Scenarios.Keys
+            return
+        }
 
         . $PSScriptRoot\lib\TraceFn.ps1
+
+        # Make sure that all scenarios specified exist.
+        $notDefinedScenarios = -not $($Scenarios.contains($Scenario))
+
+        if ($notDefinedScenarios) {
+            Write-Error "[Validate-Input] Scenario(s) not defined: $Scenario"
+            return
+        }
 
         # Convert the input arguments to the proper strongly-typed values.
         $script:OperationModeType  = Read-TraceOperationMode      "NoPostProcessing"
@@ -378,8 +402,6 @@ function Save-TargetDetailsOnStart {
             # Collect information about the machine.
             #
             Gather-DxDiag
-            Gather-SetupAPILog
-            Gather-PnpUtil
 
             Write-Verbose "[Save-TargetDetailsOnStart] Done"
         }
@@ -405,8 +427,11 @@ function Save-TargetDetailsOnStop {
         } else {
             Write-Verbose "[Save-TargetDetailsOnStop] Collecting machine information and crash reports"
 
+            Gather-SetupAPILog
+            Gather-PnpUtil
             Gather-WinHelloInfo
             Gather-WinBioEvtx
+            Gather-MicrosoftTeamsLog 
 
             Write-Verbose "[Save-TargetDetailsOnStop] Done"
        }
@@ -423,6 +448,9 @@ $WarningPreference     = "Continue"
 
 try
 {
+    Write-Host "Trace script log: $log"
+    Write-host "Version: 1.1" 
+
     Main
 }
 finally

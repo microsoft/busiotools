@@ -176,6 +176,9 @@ echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %traceFilesOutputPath%\%buildNumberFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%buildNumberFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%buildNumberFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFilesOutputPath%\%buildNumberFileName%
 rem PnP State
 echo - Post-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
 if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutputPath%\%pnpStatePostReproFileName%

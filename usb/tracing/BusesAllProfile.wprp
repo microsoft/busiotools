@@ -367,6 +367,16 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="I3cHostWpp" Name="13cf0a0a-50f6-4f4b-80ea-1b3121f5658c" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="I3cHostEtw" Name="13c2d858-c815-4bd8-a23e-2962d8478579" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <!--
       Other Event Providers
     -->
@@ -558,6 +568,15 @@
             <EventProviderId Value="Win32kTraceLogging" />
             <EventProviderId Value="Win32kBaseWpp" />
             <EventProviderId Value="SurfaceHidMiniDriver" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_LowPowerBuses">
+          <EventProviders>
+            <EventProviderId Value="SerCx2Wpp" />
+            <EventProviderId Value="SerCx2Etw" />
+            <EventProviderId Value="SpbCxWpp" />
+            <EventProviderId Value="I3cHostWpp" />
+            <EventProviderId Value="I3cHostEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -831,6 +850,8 @@
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
             <EventProviderId Value="SpbCxWpp" />
+            <EventProviderId Value="I3cHostWpp" />
+            <EventProviderId Value="I3cHostEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

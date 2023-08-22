@@ -2,7 +2,7 @@
 set wprpFileName=BusesAllProfile.wprp
 set traceFilesOutputPath=%SystemRoot%\Tracing
 set wprStatusFileName=BusesWprStatus.txt
-set etlFileName=BusesMergedTraces.etl
+set etlFileName=BusesMachineInfo.etl
 set pnpStatePreReproFileName=BusesPnpStatePreRepro.pnp
 set pnpStatePostReproFileName=BusesPnpStatePostRepro.pnp
 set pnpLogsFileName=BusesDriverWatchdog.evtx

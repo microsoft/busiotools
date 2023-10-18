@@ -707,7 +707,7 @@
     <EventProvider Id="KernelPnPConfigTlg" Name="C8BDE9FF-F31F-59DC-6C27-CA37C516ADA5" Level="5" NonPagedMemory="true" />
     <EventProvider Id="KernelPnPEtw" Name="9C205A39-1250-487D-ABD7-E831C6290539" Level="5" NonPagedMemory="true">
       <Keywords>
-        <Keyword Value="0x80000000008FE000"/>
+        <Keyword Value="0x81000000008FE000"/>
       </Keywords>
     </EventProvider>
     <EventProvider Id="KernelPnPTlg" Name="6C0EBBBB-C292-457D-9675-DFCC1C0D58B0" Level="5" NonPagedMemory="true" />

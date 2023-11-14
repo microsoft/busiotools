@@ -65,7 +65,7 @@
     <EventProvider Id="Microsoft-Windows-MediaFoundation-SinkWriter" Name="ca1d0166-619f-4177-a6c5-6faae46b42ef" />
     <EventProvider Id="Microsoft-Windows-MediaFoundation-SourceReader" Name="86bf288b-fe8c-4174-98aa-0ea625a0bea6" />
     <EventProvider Id="Microsoft-Windows-MF" Name="a7364e1a-894f-4b3d-a930-2ed9c8c4c811" />
-    <EventProvider Id="Microsoft-Windows-MF-CAPTURE-ENGINE-WPP" Name="00000007-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
+    <EventProvider Id="Microsoft-Windows-MF-CAPTURE-ENGINE-WPP" Name="00000007-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-MF-CORE-MFTS-WPP" Name="00000005-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
     <EventProvider Id="Microsoft-Windows-MF-CORE-SINKS-WPP" Name="00000002-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
     <EventProvider Id="Microsoft-Windows-MF-CORE-SOURCES-WPP" Name="00000003-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
@@ -76,7 +76,7 @@
     <EventProvider Id="Microsoft-Windows-MF-PIPELINE-WPP" Name="00000001-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
     <EventProvider Id="Microsoft-Windows-MF-PLATFORM-WPP" Name="00000000-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
     <EventProvider Id="Microsoft-Windows-MF-PLAY-WPP" Name="00000006-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" Name="00000008-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
+    <EventProvider Id="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" Name="00000008-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime" Name="0279b50e-52bd-4ed6-a7fd-b683d9cdf45d" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Stub" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Verbose" Name="f4183a75-20d4-479b-967d-367dbf62a058" />

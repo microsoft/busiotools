@@ -16,11 +16,11 @@
     <EventProvider Id="AuthUX_7" Name="fb3cd94d-95ef-5a73-b35c-6c78451095ef" />
     <EventProvider Id="AuthUX_8" Name="6d7051a0-9c83-5e52-cf8f-0ecaf5d5f6fd" />
     <EventProvider Id="Camera-App" Name="e647b5bf-99a4-41fe-8789-56c6bb3fa9c8" Level="32" />
-    <EventProvider Id="CTRLGUID_EVR_WPP" Name="d3045008-e530-485e-81b7-c6d54dbd9044" Level="15" />
-    <EventProvider Id="DRMWMI" Name="6e03dd26-581b-4ec5-8f22-601a4de5f022" Level="15" />
+    <EventProvider Id="CTRLGUID_EVR_WPP" Name="d3045008-e530-485e-81b7-c6d54dbd9044" />
+    <EventProvider Id="DRMWMI" Name="6e03dd26-581b-4ec5-8f22-601a4de5f022" />
     <EventProvider Id="Fingerprint_CredProv" Name="0aba6892-455b-551d-7da8-3a8f85225e1a" />
     <EventProvider Id="FsIsoTracelogProvider" Name="0a645885-cc18-4dec-ab0a-8aa890c13d3e" Level="3" />
-    <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" Level="15" />
+    <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
     <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" Level="32">
@@ -48,7 +48,7 @@
     <EventProvider Id="Microsoft-Windows-Audio" Name="ae4bd3be-f36f-45b6-8d21-bdd6fb832853" Level="3" />
     <EventProvider Id="Microsoft-Windows-AudioEngineVerbose" Name="a6a00efd-21f2-4a99-807e-9b3bf1d90285" />
     <EventProvider Id="Microsoft-Windows-AudioStackTrace-WPP" Name="e27950eb-1768-451f-96ac-cc4e14f6d3d0" Level="4" />
-    <EventProvider Id="Microsoft-Windows-AvStream" Name="46deb98e-b7d7-4578-a15a-e3f365c73ddb" Level="15" />
+    <EventProvider Id="Microsoft-Windows-AvStream" Name="46deb98e-b7d7-4578-a15a-e3f365c73ddb" />
     <EventProvider Id="Microsoft-Windows-Biometrics" Name="beb1a719-40d1-54e5-c207-232d48ac6dea" />
     <EventProvider Id="Microsoft-Windows-Capture-Photography" Name="2aa2b8df-8a4e-52a7-8cc7-c72f28293393" />
     <EventProvider Id="Microsoft-Windows-Capture-RtMediaPreview" Name="c2b69254-1579-4c5f-9746-28ea00311bdd" />
@@ -65,18 +65,18 @@
     <EventProvider Id="Microsoft-Windows-MediaFoundation-SinkWriter" Name="ca1d0166-619f-4177-a6c5-6faae46b42ef" />
     <EventProvider Id="Microsoft-Windows-MediaFoundation-SourceReader" Name="86bf288b-fe8c-4174-98aa-0ea625a0bea6" />
     <EventProvider Id="Microsoft-Windows-MF" Name="a7364e1a-894f-4b3d-a930-2ed9c8c4c811" />
-    <EventProvider Id="Microsoft-Windows-MF-CAPTURE-ENGINE-WPP" Name="00000007-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-CORE-MFTS-WPP" Name="00000005-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-CORE-SINKS-WPP" Name="00000002-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-CORE-SOURCES-WPP" Name="00000003-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
+    <EventProvider Id="Microsoft-Windows-MF-CAPTURE-ENGINE-WPP" Name="00000007-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-CORE-MFTS-WPP" Name="00000005-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-CORE-SINKS-WPP" Name="00000002-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-CORE-SOURCES-WPP" Name="00000003-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-MFH264Enc" Name="2a49de31-8a5b-4d3a-a904-7fc7409ae90d" />
-    <EventProvider Id="Microsoft-Windows-MF-MEDIAENGINE-WPP" Name="c9c074d2-ff9b-410f-8ac6-81c7b8e60d0f" Level="4" />
-    <EventProvider Id="Microsoft-Windows-MF-NETWORK-WPP" Name="00000004-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-PERSAMPLE-INFO-WPP" Name="00000011-0dc9-401d-b9b8-05e4eca4977e" Level="31" />
-    <EventProvider Id="Microsoft-Windows-MF-PIPELINE-WPP" Name="00000001-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-PLATFORM-WPP" Name="00000000-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-PLAY-WPP" Name="00000006-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
-    <EventProvider Id="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" Name="00000008-0dc9-401d-b9b8-05e4eca4977e" Level="15" />
+    <EventProvider Id="Microsoft-Windows-MF-MEDIAENGINE-WPP" Name="c9c074d2-ff9b-410f-8ac6-81c7b8e60d0f" />
+    <EventProvider Id="Microsoft-Windows-MF-NETWORK-WPP" Name="00000004-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-PERSAMPLE-INFO-WPP" Name="00000011-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-PIPELINE-WPP" Name="00000001-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-PLATFORM-WPP" Name="00000000-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-PLAY-WPP" Name="00000006-0dc9-401d-b9b8-05e4eca4977e" />
+    <EventProvider Id="Microsoft-Windows-MF-VIDEO_PROCESSOR-WPP" Name="00000008-0dc9-401d-b9b8-05e4eca4977e" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime" Name="0279b50e-52bd-4ed6-a7fd-b683d9cdf45d" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Stub" Name="c73dbab0-5395-4d87-8134-290d28ac0e01" />
     <EventProvider Id="Microsoft-Windows-PerceptionRuntime-Verbose" Name="f4183a75-20d4-479b-967d-367dbf62a058" />
@@ -100,7 +100,7 @@
     <EventProvider Id="Microsoft-WindowsPhone-StoryboardEngine" Name="b679d3b8-35a2-437f-9172-bdf0978d7de1" />
     <EventProvider Id="Microsoft-WindowsPhone-VideoProvider" Name="d5e118bb-e2ca-42e5-8f5a-ba2f9b13660a" />
     <EventProvider Id="Microsoft-WindowsPhone-zMediaQueueApp" Name="9e0d9603-4e6a-4a48-8cbd-63305d398f63" />
-    <EventProvider Id="Microsoft-Windows-Portcls" Name="10eb6007-818c-4db6-a694-b518e589d07a" Level="15" />
+    <EventProvider Id="Microsoft-Windows-Portcls" Name="10eb6007-818c-4db6-a694-b518e589d07a" />
     <EventProvider Id="Microsoft-Windows-Runtime-Media" Name="8f0db3a8-299b-4d64-a4ed-907b409d4584" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-Face" Name="48cafa6c-73aa-499c-bdd8-c0d36f84813e" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-FaceDiag" Name="8db3086d-116f-5bed-cfd5-9afda80d28ea" />
@@ -125,9 +125,9 @@
     <EventProvider Id="NGC_CtnrSvc" Name="cac8d861-7b16-5b6b-5fc0-85014776bdac" />
     <EventProvider Id="NGC_KspSvc" Name="add0de40-32b0-4b58-9d5e-938b2f5c1d1f" />
     <EventProvider Id="PerceptionCore" Name="ab71fe82-3742-446b-982a-1fedbb7d9594" Level="255" />
-    <EventProvider Id="PlayReady-WPP" Name="00000000-7ac4-430a-94e4-b0dfd254650f" Level="15" />
+    <EventProvider Id="PlayReady-WPP" Name="00000000-7ac4-430a-94e4-b0dfd254650f" />
     <EventProvider Id="Secure-ClearDMFT" Name="4280b01e-1f58-4e48-a282-20e609c8e528" Level="3" />
-    <EventProvider Id="SSMFSOURCE" Name="8f55386b-eb37-4afc-88e0-c475b2fefd9a" Level="15" />
+    <EventProvider Id="SSMFSOURCE" Name="8f55386b-eb37-4afc-88e0-c475b2fefd9a" />
     <EventProvider Id="TPM" Name="85be49ea-38f1-4547-a604-80060202fb27" />
     <EventProvider Id="UifEventSource" Name="b39b8cea-eaaa-5a74-5794-4948e222c663" />
     <EventProvider Id="UsbVideo" Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" Level="4" NonPagedMemory="true">

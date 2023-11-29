@@ -19,6 +19,10 @@
 - Restart the Windows and run your scenario that required reboot
 - Launch elevated powershell and stop the trace with the previously provided command.
 
+#### Camera performance trace scenario
+- Launch elevated powershell, run `Trace.ps1 -Scenario Camera-Perf`.
+  - If encountering problems to execute the powershell script, first run `Set-ExecutionPolicy -ExecutionPolicy Bypass -Force` from the elevated powershell.
+
 #### Tshell connected device:
 - Launch tshell and establish connection to device
 - run `Trace.ps1`

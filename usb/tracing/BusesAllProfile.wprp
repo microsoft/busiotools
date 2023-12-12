@@ -775,6 +775,11 @@
             <EventProviderId Value="QcUsbCUcsi8280Wpp" />
           </EventProviders>
         </EventCollectorId>
+        <EventCollectorId Value="EventCollector_PnP">
+          <EventProviders>
+            <EventProviderId Value="KernelPnPEtw" />
+          </EventProviders>
+        </EventCollectorId>
       </Collectors>
     </Profile>
     <Profile Id="USBCProfile.Verbose.File" Name="USBCProfile" DetailLevel="Verbose" LoggingMode="File"
@@ -815,6 +820,11 @@
             <EventProviderId Value="SurfaceHidMiniDriver" />
           </EventProviders>
         </EventCollectorId>
+        <EventCollectorId Value="EventCollector_PnP">
+          <EventProviders>
+            <EventProviderId Value="KernelPnPEtw" />
+          </EventProviders>
+        </EventCollectorId>
       </Collectors>
     </Profile>
     <Profile Id="InputOnlyProfile.Verbose.File" Name="InputOnlyProfile" DetailLevel="Verbose" LoggingMode="File"
@@ -853,6 +863,11 @@
             <EventProviderId Value="Win32kTraceLogging" />
             <EventProviderId Value="Win32kBaseWpp" />
             <EventProviderId Value="SurfaceHidMiniDriver" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_PnP">
+          <EventProviders>
+            <EventProviderId Value="KernelPnPEtw" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>

@@ -181,6 +181,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="UcmUcsiCxEtw" Name="569D11AA-5068-5EE5-DA22-CE541C0B1481" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="UcmUcsiAcpiClientWpp" Name="EDEF8E04-4E22-4A95-9D04-539EBD112A5E" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -531,6 +536,7 @@
             <EventProviderId Value="UcmCxTlg" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />
+            <EventProviderId Value="UcmUcsiCxEtw" />
             <EventProviderId Value="UcmUcsiAcpiClientWpp" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UrsCxWpp" />
@@ -752,6 +758,7 @@
             <EventProviderId Value="UcmCxTlg" />
             <EventProviderId Value="UcmUcsiWpp" />
             <EventProviderId Value="UcmUcsiCxWpp" />
+            <EventProviderId Value="UcmUcsiCxEtw" />
             <EventProviderId Value="UcmUcsiAcpiClientWpp" />
             <EventProviderId Value="UcmTcpciCxWpp" />
             <EventProviderId Value="UrsCxWpp" />

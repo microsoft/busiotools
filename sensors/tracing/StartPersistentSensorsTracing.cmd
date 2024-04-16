@@ -50,6 +50,8 @@ rem DEO
 logman update trace -n autosession\SensorsTrace -p "{7AE1974C-262A-43C6-B1FA-58CB4E36084B}" 0xffffffffffffffff 0xff -ets >nul
 rem Settings Handler
 logman update trace -n autosession\SensorsTrace -p "{45DFC839-5805-49E9-A622-51AEB4C35A3B}" 0xffffffffffffffff 0xff -ets >nul
+rem Power Traces
+logman update trace -n autosession\SensorsTrace -p "{63BCA7A1-77EC-4EA7-95D0-98D3F0C0EBF7}" 0xffffffffffffffff 0xff -ets >nul
 logman start -n SensorsTrace -ets
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
@@ -76,6 +78,7 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Se
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WUDF\Services\SdoV2\Parameters" /f /v VerboseOn /t REG_DWORD /d 1
 tracelog -addautologger SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #c88b592b-6090-480f-a839-ca2434de5844 -flag 0x7fffffff -level 0xff >nul
 tracelog -start SensorsTrace -f "%SystemRoot%\Tracing\SensorsTraces.etl" -guid #c88b592b-6090-480f-a839-ca2434de5844 -flag 0x7fffffff -level 0xff >nul
+tracelog -enable SensorTrace -guid #63BCA7A1-77EC-4EA7-95D0-98D3F0C0EBF7 -flag 0x7fffffff -level 0xff >nul
 rem UMDF tracing (available in %ProgramData%\Microsoft\WDF\WudfTrace.etl)
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogEnable /t REG_DWORD /d 1
 reg add "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /f /v LogFlushPeriodSeconds /t REG_DWORD /d 1

@@ -1,13 +1,16 @@
 @echo off
 set wprpFileName=BusesAllProfile.wprp
 set traceFilesOutputPath=%SystemRoot%\Tracing
-set wprStatusFileName=BusesWprStatus.txt
-set etlFileName=BusesMachineInfo.etl
-set pnpStatePreReproFileName=BusesPnpStatePreRepro.pnp
-set pnpStatePostReproFileName=BusesPnpStatePostRepro.pnp
-set pnpLogsFileName=BusesDriverWatchdog.evtx
-set kseLogsFileName=BusesKernelShimEngine.evtx
-set buildNumberFileName=BuildNumber.txt
+set wprStatusFileName=Buses-WprStatus.txt
+set etlFileName=Buses-MachineInfo.etl
+set pnpStatePreReproFileName=Buses-PnpStatePreRepro.pnp
+set pnpStatePostReproFileName=Buses-PnpStatePostRepro.pnp
+set systemEventLogsFileName=Buses-System.evtx
+set applicationEventLogsFileName=Buses-Application.evtx
+set pnpLogsFileName=Buses-DriverWatchdog.evtx
+set kseLogsFileName=Buses-KernelShimEngine.evtx
+set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
+set buildNumberFileName=Buses-BuildNumber.txt
 
 if not exist %wprpFileName% (
     echo.
@@ -185,12 +188,11 @@ if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutpu
 pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePostReproFileName%
 rem Event Logs
 echo - Event logs...
-copy %SystemRoot%\System32\Winevt\Logs\System.evtx %traceFilesOutputPath%\
-copy %SystemRoot%\System32\Winevt\Logs\Application.evtx %traceFilesOutputPath%\
-if exist %traceFilesOutputPath%\%pnpLogsFileName% del %traceFilesOutputPath%\%pnpLogsFileName%
-if exist %traceFilesOutputPath%\%kseLogsFileName% del %traceFilesOutputPath%\%kseLogsFileName%
-wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" "%traceFilesOutputPath%\%pnpLogsFileName%"
-wevtutil.exe export-log "Microsoft-Windows-Kernel-ShimEngine/Operational" "%traceFilesOutputPath%\%kseLogsFileName%"
+wevtutil.exe export-log "System" /ow:true "%traceFilesOutputPath%\%systemEventLogsFileName%
+wevtutil.exe export-log "Application" /ow:true "%traceFilesOutputPath%\%applicationEventLogsFileName%"
+wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" /ow:true "%traceFilesOutputPath%\%pnpLogsFileName%"
+wevtutil.exe export-log "Microsoft-Windows-Kernel-ShimEngine/Operational" /ow:true "%traceFilesOutputPath%\%kseLogsFileName%"
+wevtutil.exe export-log "Microsoft-Windows-USB-UCMUCSICX/Operational" /ow:true "%traceFilesOutputPath%\%ucmUcsiCxLogsFileName%"
 rem USB Live Kernel Reports
 echo - Live kernel reports...
 if exist %SystemRoot%\LiveKernelReports\USB* (
@@ -210,10 +212,11 @@ echo   %buildNumberFileName%
 echo   %wprStatusFileName%
 echo   %pnpStatePreReproFileName%
 echo   %pnpStatePostReproFileName%
-echo   System.evtx
-echo   Application.evtx
+echo   %systemEventLogsFileName%
+echo   %applicationEventLogsFileName%
 echo   %pnpLogsFileName%
 echo   %kseLogsFileName%
+echo   %ucmUcsiCxLogsFileName%
 echo.
 if exist %SystemRoot%\LiveKernelReports\USB* (
 echo Please also collect the LiveKernelReports found above.
@@ -240,11 +243,16 @@ goto End
 :End
 set wprpFileName=
 set traceFilesOutputPath=
+set wprStatusFileName=
 set etlFileName=
+set systemEventLogsFileName=
+set applicationEventLogsFileName=
 set pnpStatePreReproFileName=
 set pnpStatePostReproFileName=
 set pnpLogsFileName=
 set kseLogsFileName=
+set ucmUcsiCxLogsFileName=
+set buildNumberFileName=
 set selection=
 set profileName=
 echo.

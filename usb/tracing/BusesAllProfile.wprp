@@ -528,6 +528,10 @@
             <EventProviderId Value="Usb4NetWpp" />
             <EventProviderId Value="QcUsb4FilterWpp" />
             <EventProviderId Value="QcUsb4BusWpp" />
+            <EventProviderId Value="DisplayDxgDiagnostics" />
+            <EventProviderId Value="DisplayWin32K" />
+            <EventProviderId Value="QcDxkmWpp" />
+            <EventProviderId Value="QcPpxWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_UsbC">

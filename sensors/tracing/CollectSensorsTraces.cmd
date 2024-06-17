@@ -31,6 +31,8 @@ rem SensorService and class extension
 logman update trace SensorsTrace -p "{c88b592b-6090-480f-a839-ca2434de5844}" 0xffffffffffffffff 0xff -ets >nul
 rem Desktop SensrSvc
 logman update trace SensorsTrace -p "{49DA058C-1384-4e57-8915-070F1B8C8AD2}" 0xffffffffffffffff 0xff -ets >nul
+rem Sensors Core
+logman update trace SensorsTrace -p "{751c292b-23e6-58cf-1fd4-38f8512c66c2}" 0xffffffffffffffff 0xff -ets >nul 
 rem Desktop RotMgr
 logman update trace SensorsTrace -p "{1ADF4F66-3AE0-43B1-BEC0-C7D891A77AC5}" 0xffffffffffffffff 0xff -ets >nul
 rem Windows V1 Sensor Class Extension

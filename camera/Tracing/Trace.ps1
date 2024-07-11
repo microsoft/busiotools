@@ -450,6 +450,7 @@ try
 {
     Write-Host "Trace script log: $log"
     Write-host "Version: 1.2" 
+    Write-host "Version: 1.3" 
 
     Main
 }

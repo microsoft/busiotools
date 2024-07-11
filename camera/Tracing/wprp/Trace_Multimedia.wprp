@@ -119,6 +119,8 @@
     <EventProvider Id="Microsoft-Windows-WinBioDataModel" Name="63221d5a-4d00-4be3-9d38-de9aaf5d0258" />
     <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
     <EventProvider Id="Microsoft-Windows-WMP" Name="f3f14ff3-7b80-4868-91d0-d77e497b025e" />
+    <EventProvider Id="MJPEG_DECODER_TELEMETRY_PROVIDER" Name="99f95b10-5f83-4872-9d19-8c1e78d7fee3" />
+    <EventProvider Id="MJPEGDECODER_TELEMETRY_ETW_PROVIDER" Name="ba88ee68-db64-470e-ac77-e4b2e96744b7" />
     <EventProvider Id="NGC_CredProv" Name="e92355c0-41e4-4aed-8d67-df6b2058f090" />
     <EventProvider Id="NGC_Crypt" Name="9df6a82d-5174-5ebf-842a-39947c48bf2a" />
     <EventProvider Id="NGC_Ctnr" Name="b66b577f-ae49-5ccf-d2d7-8eb96bfd440c" />
@@ -255,6 +257,8 @@
             <EventProviderId Value="Microsoft-Windows-WinBioDataModel" />
             <EventProviderId Value="Microsoft-Windows-WinRT-Error" />
             <EventProviderId Value="Microsoft-Windows-WMP" />
+            <EventProviderId Value="MJPEG_DECODER_TELEMETRY_PROVIDER" />
+            <EventProviderId Value="MJPEGDECODER_TELEMETRY_ETW_PROVIDER" />
             <EventProviderId Value="NGC_CredProv" />
             <EventProviderId Value="NGC_Crypt" />
             <EventProviderId Value="NGC_Ctnr" />

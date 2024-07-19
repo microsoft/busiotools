@@ -5,6 +5,8 @@
   - Camera trace scripts are located in camera/Tracing subfolder
 
 ### How to collect traces
+**NOTE:** Please follow [Desktop](#Desktop) case guidance below if not specifically needing or asked to use some of the other scenarios.
+
 #### Desktop:
 - Launch elevated powershell, run `Trace.ps1`.
   - If encountering problems to execute the powershell script, first run `Set-ExecutionPolicy -ExecutionPolicy Bypass -Force` from the elevated powershell.

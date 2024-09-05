@@ -12,7 +12,6 @@ namespace SensorExplorer
     {
         private static CoreDispatcher cd = Window.Current.CoreWindow.Dispatcher;
         private static ThreadPoolTimer periodicTimerSensorDisplay = null;
-        private static ThreadPoolTimer periodicTimerMALTScenario1 = null;
         private static ThreadPoolTimer periodicTimerMALTScenario2 = null;
         private static ThreadPoolTimer periodicTimerDEO = null;
         private static ThreadPoolTimer periodicTimerDistance = null;

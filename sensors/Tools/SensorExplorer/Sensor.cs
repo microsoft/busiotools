@@ -95,6 +95,7 @@ namespace SensorExplorer
         public static List<HumanPresenceSensor> HumanPresenceSensorList;
         public static List<DeviceInformation> HumanPresenceSensorDeviceInfo;
         public static List<string[]> HumanPresenceSensorPLD;
+        public static List<int[]> HumanPresenceSensorCapabilities;
         public static List<Inclinometer> InclinometerList;
         public static List<DeviceInformation> InclinometerDeviceInfo;
         public static List<string[]> InclinometerPLD;
@@ -476,6 +477,7 @@ namespace SensorExplorer
             HumanPresenceSensorList= new List<HumanPresenceSensor>();
             HumanPresenceSensorDeviceInfo = new List<DeviceInformation>();
             HumanPresenceSensorPLD = new List<string[]>();
+            HumanPresenceSensorCapabilities = new List<int[]>();
             InclinometerList = new List<Inclinometer>();
             InclinometerDeviceInfo = new List<DeviceInformation>();
             InclinometerPLD = new List<string[]>();
@@ -842,6 +844,9 @@ namespace SensorExplorer
                             {
                                 HumanPresenceSensorPLD.Add(pldInfo);
                             }
+
+                            int[] capabilities = { humanPresenceSensor.IsPresenceSupported ? 1 : 0, humanPresenceSensor.IsEngagementSupported ? 1 : 0, humanPresenceSensor.MaxDetectablePersons };
+                            HumanPresenceSensorCapabilities.Add(capabilities);
                         }
                     }
                 }
@@ -1867,6 +1872,7 @@ namespace SensorExplorer
                     var deviceProperties = await GetProperties(HumanPresenceSensorDeviceInfo[index]);
                     SensorData[totalIndex].AddProperty(deviceId, 0, 0, -1.00f, 0, deviceProperties);
                     SensorData[totalIndex].AddPLDProperty(HumanPresenceSensorPLD[index]);
+                    SensorData[totalIndex].AddPresenceCapabilities(HumanPresenceSensorCapabilities[index]);
                     HumanPresenceSensorList[index].ReadingChanged += HumanPresenceSensorReadingChanged;
                 }
                 catch { }
@@ -1888,7 +1894,8 @@ namespace SensorExplorer
                 if (SensorData[CurrentId].SensorType == HUMANPRESENCESENSOR)
                 {
                     HumanPresenceSensorReading reading = e.Reading;
-                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.Engagement), Convert.ToDouble(reading.Presence), Convert.ToDouble(reading.DistanceInMillimeters) }))
+
+                    if (SensorData[CurrentId].AddReading(reading.Timestamp.UtcDateTime, new double[] { Convert.ToDouble(reading.Engagement), Convert.ToDouble(reading.Presence), Convert.ToDouble(reading.OnlookerPresence), Convert.ToDouble(reading.DistanceInMillimeters) }))
                     {
                         await cd.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {

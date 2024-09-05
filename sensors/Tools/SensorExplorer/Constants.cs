@@ -244,6 +244,7 @@ namespace SensorExplorer
         public static readonly string[] HumanPresenceSensorPropertyTitles = new string[] {
             "IsPresent",
             "IsEngaged",
+            "IsOnlookerPresent",
             "Distance (mm)"
         };
 

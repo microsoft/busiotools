@@ -96,6 +96,12 @@ namespace SensorExplorer
             "HumanPresenceDetectionType",
             "Device ID",
         };
+        private string[] presenceCapabilities = new string[]
+        {
+            "PresenceSupported",
+            "EngagementSupported",
+            "MaxDetectablePersons",
+        };
         private StackPanel stackPanelBottom = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomData = new StackPanel() { Orientation = Orientation.Horizontal };
         private StackPanel stackPanelBottomRightCol = new StackPanel() { Orientation = Orientation.Vertical };
@@ -124,6 +130,15 @@ namespace SensorExplorer
         private TextBlock[] textBlockPLDName;
         private TextBlock[] textBlockPLDValue;
 
+        // Presence Capabilities
+        private Expander expanderPresenceCap = new Expander() { Header = "Presence Capabilities" };
+        private ScrollViewer scrollViewerPresenceCap = new ScrollViewer() { HorizontalScrollBarVisibility = ScrollBarVisibility.Visible, VerticalScrollBarVisibility = ScrollBarVisibility.Visible };
+        private StackPanel stackPanelPresenceCap = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(20) };
+        private StackPanel stackPanelPresenceCapName = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 10, 0, 10) };
+        private StackPanel stackPanelPresenceCapValue = new StackPanel() { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
+        private TextBlock[] textBlockPresenceCapName;
+        private TextBlock[] textBlockPresenceCapValue;
+
         public SensorDisplay(int sensorType, int index, int totalIndex, int minValue, int maxValue, int scale, Color[] color)
         {
             SensorType = sensorType;
@@ -138,6 +153,9 @@ namespace SensorExplorer
             scrollViewerProperty.Content = StackPanelProperty;
             expanderPLD.Content = scrollViewerPLD;
             scrollViewerPLD.Content = stackPanelPLD;
+
+            expanderPresenceCap.Content = scrollViewerPresenceCap;
+            scrollViewerPresenceCap.Content = stackPanelPresenceCap;
 
             for (int i = 0; i <= scale; i++)
             {
@@ -258,6 +276,11 @@ namespace SensorExplorer
                 stackPanelMaxValue.Children.Add(textBlockMaxValue[i]);
             }
 
+            if (sensorType == Sensor.HUMANPRESENCESENSOR)
+            {
+                stackPanelExpander.Children.Add(expanderPresenceCap);
+            }
+
             stackPanelExpander.Children.Add(expanderProperty);
             stackPanelExpander.Children.Add(expanderPLD);
             stackPanelBottom.Children.Add(stackPanelExpander);
@@ -343,6 +366,20 @@ namespace SensorExplorer
             stackPanelPLD.Children.Add(stackPanelPLDName);
             stackPanelPLD.Children.Add(stackPanelPLDValue);
 
+            textBlockPresenceCapName = new TextBlock[presenceCapabilities.Length];
+            textBlockPresenceCapValue = new TextBlock[textBlockPresenceCapName.Length];
+
+            for (int i = 0; i < presenceCapabilities.Length; i++)
+            {
+                textBlockPresenceCapName[i] = new TextBlock() { Text = presenceCapabilities[i], HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+                textBlockPresenceCapValue[i] = new TextBlock() { Text = (i == 0 ? "\r\n" : "") + "        -", HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+                stackPanelPresenceCapName.Children.Add(textBlockPresenceCapName[i]);
+                stackPanelPresenceCapValue.Children.Add(textBlockPresenceCapValue[i]);
+            }
+
+            stackPanelPresenceCap.Children.Add(stackPanelPresenceCapName);
+            stackPanelPresenceCap.Children.Add(stackPanelPresenceCapValue);
+
             StackPanelSensor.Children.Add(StackPanelTop);
             StackPanelSensor.Children.Add(canvasSensor);
             StackPanelSensor.Children.Add(stackPanelBottom);
@@ -370,6 +407,7 @@ namespace SensorExplorer
             canvasSensor.Width = width * 0.7;
             scrollViewerProperty.MaxWidth = width * 0.5;
             scrollViewerPLD.MaxWidth = width * 0.5;
+            scrollViewerPresenceCap.MaxWidth = width * 0.5;
         }
 
         private void SetFontSize(double fontSize)
@@ -394,6 +432,12 @@ namespace SensorExplorer
                 textBlockPLDValue[i].FontSize = fontSize;
             }
 
+            for (int i = 0; i < textBlockPresenceCapName.Length; i++)
+            {
+                textBlockPresenceCapName[i].FontSize = fontSize;
+                textBlockPresenceCapValue[i].FontSize = fontSize;
+            }
+
             TextBlock textBlock = new TextBlock() { Text = "00000000", FontSize = fontSize };
             textBlock.Measure(new Size(200, 200)); // Assuming 200x200 is max size of textblock
             canvasSensor.Margin = new Thickness(textBlock.DesiredSize.Width, textBlock.DesiredSize.Height, 0, textBlock.DesiredSize.Height * 2);
@@ -406,6 +450,7 @@ namespace SensorExplorer
             canvasSensor.Width = height;
             scrollViewerProperty.MaxHeight = height;
             scrollViewerPLD.MaxHeight = height;
+            scrollViewerPresenceCap.MaxHeight = height;
         }
 
         public void EnableSensor()
@@ -469,6 +514,13 @@ namespace SensorExplorer
             textBlockPLDValue[14].Text = (sensorData.PanelVisible == null) ? "null" : sensorData.PanelVisible;
         }
 
+        public void UpdatePresenceCapabilities(SensorData sensorData)
+        {
+            textBlockPresenceCapValue[0].Text = sensorData.PresenceSupported ? "  Yes" : "  No";
+            textBlockPresenceCapValue[1].Text = sensorData.EngagementSupported ? "  Yes" : "  No";
+            textBlockPresenceCapValue[2].Text = sensorData.MaxDetectablePersons.ToString();
+        }
+
         public void UpdateText(SensorData sensorData)
         {
             try
@@ -478,6 +530,7 @@ namespace SensorExplorer
                 {
                     UpdateProperty(sensorData);
                     UpdatePLDProperty(sensorData);
+                    UpdatePresenceCapabilities(sensorData);
                 }
 
                 if (StackPanelSensor.Visibility == Visibility.Visible)
@@ -614,26 +667,9 @@ namespace SensorExplorer
                         }
                         else if (sensorData.SensorType == Sensor.HUMANPRESENCESENSOR && sensorData.Property[i] == "IsEngaged")
                         {
-                            UInt32 engagement = 0;
-                            const UInt32 engagementCapable = 0x02;
-
-                            try
-                            {
-                                engagement = (UInt32)Sensor.HumanPresenceSensorDeviceInfo[index].Properties[Constants.Properties["PKEY_Sensor_Proximity_SensorCapabilities"]];
-                            }
-                            catch {
-                                engagement = 0;
-                            }
-                           
-                            if ((engagement & engagementCapable) != 0)
-                            {
-                                HumanEngagement engagedEnum = (HumanEngagement)sensorData.Readings[index].Value[0];
-                                textBlockValue[i].Text = string.Format("        {0}", engagedEnum);
-                            }
-                            else
-                            {
-                                textBlockValue[i].Text = string.Format("        {0}", "Not Supported");
-                            }
+                            HumanEngagement engagedEnum = (HumanEngagement)sensorData.Readings[index].Value[0];
+                            textBlockValue[i].Text = string.Format("        {0}", engagedEnum);
+      
                             textBlockMinValue[i].Text = "";
                             textBlockMaxValue[i].Text = "";
                         }
@@ -641,6 +677,13 @@ namespace SensorExplorer
                         {
                             HumanPresence presenceEnum = (HumanPresence)sensorData.Readings[index].Value[1];
                             textBlockValue[i].Text = string.Format("        {0}", presenceEnum);
+                            textBlockMinValue[i].Text = "";
+                            textBlockMaxValue[i].Text = "";
+                        }
+                        else if (sensorData.SensorType == Sensor.HUMANPRESENCESENSOR && sensorData.Property[i] == "IsOnlookerPresent")
+                        {
+                            HumanPresence onlookerEnum = (HumanPresence)sensorData.Readings[index].Value[2];
+                            textBlockValue[i].Text = string.Format("        {0}", onlookerEnum);
                             textBlockMinValue[i].Text = "";
                             textBlockMaxValue[i].Text = "";
                         }

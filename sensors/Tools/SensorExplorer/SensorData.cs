@@ -60,6 +60,10 @@ namespace SensorExplorer
         public uint ReportLatency = 0;
         public float LightSensorThreshold = -1.00f;
 
+        public bool PresenceSupported = false;
+        public bool EngagementSupported = false;
+        public int MaxDetectablePersons = 1;
+
         public SensorData(int sensorType, int totalIndex, string[] property)
         {
             SensorType = sensorType;
@@ -113,6 +117,16 @@ namespace SensorExplorer
                 PanelColor = PLD[12];
                 PanelShape = PLD[13];
                 PanelVisible = PLD[14];
+            }
+        }
+
+        public void AddPresenceCapabilities(int[] capabilities)
+        {
+            if (null != capabilities)
+            {
+                PresenceSupported = (capabilities[0] != 0);
+                EngagementSupported = (capabilities[1] != 0);
+                MaxDetectablePersons = capabilities[2];
             }
         }
 

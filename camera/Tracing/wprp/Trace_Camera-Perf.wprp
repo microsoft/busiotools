@@ -104,6 +104,12 @@
         <Keyword Value="0x000000000000FFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
+    <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
+    <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" />
+    <EventProvider Id="Microsoft.Windows.MediaFoundation.FrameServer" Name="ec50b9c2-b123-4552-931f-c4826f70a67e" />
+    <EventProvider Id="Microsoft.Windows.MediaFoundation.MediaCapture" Name="3ff44415-ee99-4f03-bc9e-e4a1d1833418" />
+    <EventProvider Id="Microsoft.Windows.ResourceManager" Name="4180c4f7-e238-5519-338f-ec214f0b49aa" Level="4" />
     <EventProvider Id="Microsoft-IE" Name="9e3b3947-ca5d-4614-91a2-7b624e0e7244" />
     <EventProvider Id="Microsoft-Windows-Audio" Name="ae4bd3be-f36f-45b6-8d21-bdd6fb832853" Level="3" />
     <EventProvider Id="Microsoft-Windows-AudioEngineVerbose" Name="a6a00efd-21f2-4a99-807e-9b3bf1d90285" Level="3">
@@ -229,12 +235,6 @@
     <EventProvider Id="Microsoft-Windows-WinHttp" Name="7d44233d-3055-4b9c-ba64-0d47ca40a232" />
     <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
     <EventProvider Id="Microsoft-Windows-WLAN-AutoConfig" Name="9580d7dd-0379-4658-9870-d5be7d52d6de" />
-    <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
-    <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
-    <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" />
-    <EventProvider Id="Microsoft.Windows.MediaFoundation.FrameServer" Name="ec50b9c2-b123-4552-931f-c4826f70a67e" />
-    <EventProvider Id="Microsoft.Windows.MediaFoundation.MediaCapture" Name="3ff44415-ee99-4f03-bc9e-e4a1d1833418" />
-    <EventProvider Id="Microsoft.Windows.ResourceManager" Name="4180c4f7-e238-5519-338f-ec214f0b49aa" Level="4" />
     <EventProvider Id="NDIS" Name="dd7a21e6-a651-46d4-b7c2-66543067b869" />
     <EventProvider Id="PerceptionCore" Name="ab71fe82-3742-446b-982a-1fedbb7d9594" Level="255" />
     <EventProvider Id="Secure-ClearDMFT" Name="4280b01e-1f58-4e48-a282-20e609c8e528" Level="3" />
@@ -262,6 +262,12 @@
             <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="KMFilterControlGuid" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
+            <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
+            <EventProviderId Value="Microsoft.Windows.Media.Editing" />
+            <EventProviderId Value="Microsoft.Windows.MediaFoundation.FrameServer" />
+            <EventProviderId Value="Microsoft.Windows.MediaFoundation.MediaCapture" />
+            <EventProviderId Value="Microsoft.Windows.ResourceManager" />
             <EventProviderId Value="Microsoft-IE" />
             <EventProviderId Value="Microsoft-Windows-Audio" />
             <EventProviderId Value="Microsoft-Windows-AudioEngineVerbose" />
@@ -330,12 +336,6 @@
             <EventProviderId Value="Microsoft-Windows-WinHttp" />
             <EventProviderId Value="Microsoft-Windows-WinRT-Error" />
             <EventProviderId Value="Microsoft-Windows-WLAN-AutoConfig" />
-            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
-            <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
-            <EventProviderId Value="Microsoft.Windows.Media.Editing" />
-            <EventProviderId Value="Microsoft.Windows.MediaFoundation.FrameServer" />
-            <EventProviderId Value="Microsoft.Windows.MediaFoundation.MediaCapture" />
-            <EventProviderId Value="Microsoft.Windows.ResourceManager" />
             <EventProviderId Value="NDIS" />
             <EventProviderId Value="PerceptionCore" />
             <EventProviderId Value="Secure-ClearDMFT" />

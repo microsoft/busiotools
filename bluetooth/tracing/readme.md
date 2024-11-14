@@ -13,7 +13,7 @@ More details can be found in the [Additional Information](#Additional-Informatio
 1. From an administrative PowerShell session run:
 
     ```powershell
-    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
+    Invoke-WebRequest https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
     wpr.exe -start BluetoothStack.wprp!BluetoothStack -filemode
     ```
     The above commands download and run the Bluetooth tracing Recording Profile ([BluetoothStack.wprp](./BluetoothStack.wprp))
@@ -31,7 +31,7 @@ More details can be found in the [Additional Information](#Additional-Informatio
 ## Autologger mode (collects logs across reboots)
 1. From an adminstrative PowerShell session:
      ```powershell
-    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -UseBasicParsing -outfile .\BluetoothStack.wprp
+    Invoke-WebRequest https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -UseBasicParsing -outfile .\BluetoothStack.wprp
     wpr.exe -boottrace -addboot BluetoothStack.wprp!BluetoothStack -filemode
     shutdown -r -f -t 0
     ```
@@ -57,7 +57,7 @@ Some additional information on the log collection steps above.
 ### How to Collect Bluetooth Radio Information
 From PowerShell execute:
 ```powershell
-wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex
+Invoke-WebRequest https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/GetBluetoothRadioInfo.ps1 -UseBasicParsing | iex
 ```
 
 ### Verbose/Non-verbose logs
@@ -70,7 +70,7 @@ The above collects Verbose logs by default. If you don't need verbose logs, repl
 ### Collecting logs for performance issues
 1. From an administrative PowerShell session:
     ```powershell
-    wget https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
+    Invoke-WebRequest https://github.com/Microsoft/busiotools/raw/master/bluetooth/tracing/BluetoothStack.wprp -outfile .\BluetoothStack.wprp
     wpr.exe -start BluetoothStack.wprp!BluetoothStack.Light -start CPU -filemode
     ```
     The above commands download and run the Bluetooth tracing Recording Profile ([BluetoothStack.wprp](./BluetoothStack.wprp)) to collect performance logs.

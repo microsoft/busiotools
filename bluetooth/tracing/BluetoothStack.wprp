@@ -8,6 +8,11 @@
   Tag="">
   <Profiles>
 
+    <SystemCollector Id="SystemCollector">
+      <BufferSize Value="1024"/>
+      <Buffers Value="20"/>
+    </SystemCollector>
+
     <EventCollector Id="Traces_paged" Name="Event Collector Paged">
       <BufferSize Value="1024"/>
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
@@ -32,6 +37,13 @@
       <BufferSize Value="1024"/>
       <Buffers Value="8" PercentageOfTotalMemory="true" MaximumBufferSpace="64"/>
     </EventCollector>
+
+    <SystemProvider Id="SystemProvider">
+      <Keywords>
+        <Keyword Value="Loader"/>
+        <Keyword Value="ProcessThread"/>
+      </Keywords>
+    </SystemProvider>
 
     <!-- Paged providers. They are kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Bluetooth.BTCMClientProvider" Name="B67069E7-206C-4e4c-80CE-4663560EA07F" Level="4" NonPagedMemory="false">
@@ -721,6 +733,15 @@
       </Keywords>
     </EventProvider>
 
+    <EventProvider Id="Microsoft.Windows.Bluetooth.BTHPORT.WithStacks" Name="8a1f9517-3a8c-4a9e-a018-4f17a200f277" Level="4" NonPagedMemory="true">
+      <Keywords>
+        <Keyword Value="0x0"/>
+      </Keywords>
+      <StackFilters FilterIn="true">
+        <EventId Value="403" />
+      </StackFilters>
+    </EventProvider>
+
     <!-- Handsfree ETW providers. Kept separate for readability -->
     <EventProvider Id="Microsoft.Windows.Apps.CommsEnhancementRTProviders" Name="7665d4fd-30eb-4ddc-9dc1-4ebab74ed98e" Level="5" NonPagedMemory="false">
       <Keywords>
@@ -1149,6 +1170,22 @@
           </EventProviders>
         </EventCollectorId>
 
+      </Collectors>
+    </Profile>
+
+    <Profile Id="BluetoothStackWithSystemProvider.Verbose.File" LoggingMode="File" Base="BluetoothStack.Verbose.File" Name="BluetoothStackWithSystemProvider" DetailLevel="Verbose" Description="Bluetooth stack profile that includes the System provider">
+      <Collectors Operation="Remove">
+        <EventCollectorId Value="Bthport_ETW" />
+      </Collectors>
+      <Collectors Operation="Add">
+        <SystemCollectorId Value="SystemCollector">
+          <SystemProviderId Value="SystemProvider" />
+        </SystemCollectorId>
+        <EventCollectorId Value="Bthport_ETW">
+          <EventProviders>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.BTHPORT.WithStacks"/>
+          </EventProviders>
+        </EventCollectorId>
       </Collectors>
     </Profile>
 

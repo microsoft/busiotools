@@ -372,6 +372,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="SpbCxEtw" Name="72CD9FF7-4AF8-4B89-AEDE-5F26FDA13567" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="I3cHostWpp" Name="13cf0a0a-50f6-4f4b-80ea-1b3121f5658c" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -595,6 +600,7 @@
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
             <EventProviderId Value="SpbCxWpp" />
+            <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
             <EventProviderId Value="WinI3CWpp" />
@@ -888,6 +894,7 @@
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
             <EventProviderId Value="SpbCxWpp" />
+            <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
             <EventProviderId Value="WinI3CWpp" />

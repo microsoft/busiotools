@@ -10,6 +10,7 @@ set applicationEventLogsFileName=Buses-Application.evtx
 set pnpLogsFileName=Buses-DriverWatchdog.evtx
 set kseLogsFileName=Buses-KernelShimEngine.evtx
 set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
+set sleepStudyReportFileName=Buses-SleepStudyReport.html
 set buildNumberFileName=Buses-BuildNumber.txt
 
 if not exist %wprpFileName% (
@@ -188,11 +189,13 @@ if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutpu
 pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePostReproFileName%
 rem Event Logs
 echo - Event logs...
-wevtutil.exe export-log "System" /ow:true "%traceFilesOutputPath%\%systemEventLogsFileName%
+wevtutil.exe export-log "System" /ow:true "%traceFilesOutputPath%\%systemEventLogsFileName%"
 wevtutil.exe export-log "Application" /ow:true "%traceFilesOutputPath%\%applicationEventLogsFileName%"
 wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" /ow:true "%traceFilesOutputPath%\%pnpLogsFileName%"
 wevtutil.exe export-log "Microsoft-Windows-Kernel-ShimEngine/Operational" /ow:true "%traceFilesOutputPath%\%kseLogsFileName%"
 wevtutil.exe export-log "Microsoft-Windows-USB-UCMUCSICX/Operational" /ow:true "%traceFilesOutputPath%\%ucmUcsiCxLogsFileName%"
+rem Sleep Study Report
+powercfg.exe /sleepstudy /OUTPUT "%traceFilesOutputPath%\%sleepStudyReportFileName%"
 rem USB Live Kernel Reports
 echo - Live kernel reports...
 if exist %SystemRoot%\LiveKernelReports\USB* (
@@ -217,6 +220,7 @@ echo   %applicationEventLogsFileName%
 echo   %pnpLogsFileName%
 echo   %kseLogsFileName%
 echo   %ucmUcsiCxLogsFileName%
+echo   %sleepStudyReportFileName%
 echo.
 if exist %SystemRoot%\LiveKernelReports\USB* (
 echo Please also collect the LiveKernelReports found above.
@@ -252,6 +256,7 @@ set pnpStatePostReproFileName=
 set pnpLogsFileName=
 set kseLogsFileName=
 set ucmUcsiCxLogsFileName=
+set sleepStudyReportFileName=
 set buildNumberFileName=
 set selection=
 set profileName=

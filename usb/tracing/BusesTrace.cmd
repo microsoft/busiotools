@@ -33,10 +33,19 @@ if not exist %wprpFileName% (
     echo #########################################################################################################
     goto End
 )
-else (
-    cls
-    goto MainMenu
+
+WHOAMI.EXE /GROUPS | FIND.EXE /I "S-1-16-12288" >nul
+IF ERRORLEVEL 1 (
+    echo.
+    echo #########################################################################################################
+    echo.
+    ECHO ERROR: This script must be run from an elevated command prompt.
+    echo.
+    echo #########################################################################################################
+    goto End
 )
+
+cls
 
 :MainMenu
 set selection=

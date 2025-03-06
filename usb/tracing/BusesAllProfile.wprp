@@ -216,6 +216,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="UfxTlg" Name="dadc175f-4a26-5b2b-ed3f-4f6822ac4d8f" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="UfxSynopsysWpp" Name="8650230D-68B0-476E-93ED-634490DCE145" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -553,6 +558,7 @@
             <EventProviderId Value="UrsSynopsysWpp" />
             <EventProviderId Value="UfxWpp" />
             <EventProviderId Value="UfxEtw" />
+            <EventProviderId Value="UfxTlg" />
             <EventProviderId Value="UfxSynopsysWpp" />
             <EventProviderId Value="UfxSynopsysEtw" />
             <EventProviderId Value="UsbTaskWpp" />
@@ -776,6 +782,7 @@
             <EventProviderId Value="UrsSynopsysWpp" />
             <EventProviderId Value="UfxWpp" />
             <EventProviderId Value="UfxEtw" />
+            <EventProviderId Value="UfxTlg" />
             <EventProviderId Value="UfxSynopsysWpp" />
             <EventProviderId Value="UfxSynopsysEtw" />
             <EventProviderId Value="UsbPmApiWpp" />

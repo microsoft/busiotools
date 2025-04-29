@@ -510,43 +510,43 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_Microsoft-Windows-USBVideo" Level="5"
-        Name="DA1D1DBD-3186-4FA2-BC2D-075EFD9E43E2" NonPagedMemory="true" EventKey="true">
+        Name="DA1D1DBD-3186-4FA2-BC2D-075EFD9E43E2" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0xC000000000000000" />
         </Keywords>
     </EventProvider> 
     <EventProvider Id="EventProvider_UsbVideoWPP" Level="5"
-        Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" NonPagedMemory="true" EventKey="true">
+        Name="401f3683-4d1a-4396-99da-6d1fdfab1ddb" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0xFFFFFFFF" />
         </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_Microsoft-Windows-MF-FrameServer" Level="5"
-        Name="9E22A3ED-7B32-4B99-B6C2-21DD6ACE01E1" NonPagedMemory="true" EventKey="true">
+        Name="9E22A3ED-7B32-4B99-B6C2-21DD6ACE01E1" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0xE000000000000000" />
         </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_Microsoft-Windows-KernelStreaming" Level="4"
-        Name="548C4417-CE45-41FF-99DD-528F01CE0FE1" NonPagedMemory="true" EventKey="true">
+        Name="548C4417-CE45-41FF-99DD-528F01CE0FE1" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0x8000000000000000" />
         </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_Microsoft-Windows-MF" Level="5"
-        Name="A7364E1A-894F-4B3D-A930-2ED9C8C4C811" NonPagedMemory="true" EventKey="true">
+        Name="A7364E1A-894F-4B3D-A930-2ED9C8C4C811" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0x8000000000000000" />
         </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_WindowsAvStreamWPP" Level="5"
-        Name="46deb98e-b7d7-4578-a15a-e3f365c73ddb" NonPagedMemory="true" EventKey="true">
+        Name="46deb98e-b7d7-4578-a15a-e3f365c73ddb" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0xFFFFFFFF" />
         </Keywords>
     </EventProvider>
     <EventProvider Id="EventProvider_MFCore_DevProxyFS_WPP" Level="5"
-        Name="00000005-0dc9-401d-b9b8-05e4eca4977e" NonPagedMemory="true" EventKey="true">
+        Name="00000005-0dc9-401d-b9b8-05e4eca4977e" NonPagedMemory="true">
         <Keywords>
           <Keyword Value="0xFFFFFFFF" />
         </Keywords>

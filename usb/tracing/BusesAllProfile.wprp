@@ -17,6 +17,10 @@
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
+    <EventCollector Id="EventCollector_Sensors" Name="SensorsTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
     <EventCollector Id="EventCollector_LowPowerBuses" Name="LowPowerBusesTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
@@ -360,6 +364,69 @@
       </Keywords>
     </EventProvider>
     <!--
+      Sensors Providers
+    -->
+    <EventProvider Id="SensorsHid" Name="32e38bd8-ac95-4605-894e-a5d815ca0f3b" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SensorService" Name="c88b592b-6090-480f-a839-ca2434de5844" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DesktopSensrSvc" Name="49DA058C-1384-4e57-8915-070F1B8C8AD2" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SensorsCore" Name="751c292b-23e6-58cf-1fd4-38f8512c66c2" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DesktopRotMgr" Name="1ADF4F66-3AE0-43B1-BEC0-C7D891A77AC5" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WindowsV1SensorClassExtension" Name="d4575dd5-963b-43c6-8c68-8b070b8692fc" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WindowsV1SensorsAPI" Name="b12f2c9f-d3a1-447b-92f8-dca5f6c31429" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WindowsV2SensorsAPI" Name="096772ba-b6d9-4c54-b776-3d070efb40ec" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DES" Name="5875532E-B0C2-4954-A77E-5319D71F97B8" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DEM" Name="DD902827-DD80-4244-ABFD-0289ADB05F31" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="DEO" Name="7AE1974C-262A-43C6-B1FA-58CB4E36084B" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="SettingsHandlers_HumanPresence" Name="45DFC839-5805-49E9-A622-51AEB4C35A3B" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <!--
       Lower Power Buses Event Providers
     -->
     <EventProvider Id="SerCx2Wpp" Name="0ae46f43-b144-4056-9195-470054009d6c" NonPagedMemory="true" Level="5">
@@ -405,9 +472,14 @@
     <!--
       Other Event Providers
     -->
-    <EventProvider Id="KernelPnPEtw" Name="Microsoft-Windows-Kernel-PnP" NonPagedMemory="true">
+    <EventProvider Id="Microsoft-Windows-Kernel-PnP" Name="Microsoft-Windows-Kernel-PnP" NonPagedMemory="true">
       <Keywords>
         <Keyword Value="0xc9a000" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Kernel.Power(Telemetry)" Name="63BCA7A1-77EC-4EA7-95D0-98D3F0C0EBF7" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
     <EventProvider Id="PciWpp" Name="47711976-08c7-44ef-8fa2-082da6a30a30" NonPagedMemory="true" Level="255">
@@ -697,7 +769,7 @@
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
-            <EventProviderId Value="KernelPnPEtw" />
+            <EventProviderId Value="Microsoft-Windows-Kernel-PnP" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -737,7 +809,7 @@
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
-            <EventProviderId Value="KernelPnPEtw" />
+            <EventProviderId Value="Microsoft-Windows-Kernel-PnP" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Pci">
@@ -794,7 +866,7 @@
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
-            <EventProviderId Value="KernelPnPEtw" />
+            <EventProviderId Value="Microsoft-Windows-Kernel-PnP" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -839,7 +911,7 @@
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
-            <EventProviderId Value="KernelPnPEtw" />
+            <EventProviderId Value="Microsoft-Windows-Kernel-PnP" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -884,7 +956,7 @@
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
           <EventProviders>
-            <EventProviderId Value="KernelPnPEtw" />
+            <EventProviderId Value="Microsoft-Windows-Kernel-PnP" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -892,6 +964,40 @@
     <Profile Id="InputOnlyWithVerboseWppProfile.Verbose.File" Name="InputOnlyWithVerboseWppProfile" DetailLevel="Verbose" LoggingMode="File"
       Description="Input only with verbose WPP logging"
       Base="InputOnlyWithVerboseWppProfile.Verbose.Memory"/>
+
+    <Profile Id="SensorsOnlyProfile.Verbose.Memory" Name="SensorsOnlyProfile" DetailLevel="Verbose" LoggingMode="Memory"
+      Description="Sensors only logging">
+      <Collectors>
+        <EventCollectorId Value="EventCollector_Sensors">
+          <EventProviders>
+            <EventProviderId Value="HidClassWppInfo" />
+            <EventProviderId Value="HidClassEtw" />
+            <EventProviderId Value="HidUsbWpp" />
+            <EventProviderId Value="HidI2cWpp" />
+            <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidVhfWpp" />
+            <EventProviderId Value="VhfKmWpp" />
+            <EventProviderId Value="VhfUmWpp" />
+            <EventProviderId Value="SensorsHid" />
+            <EventProviderId Value="SensorService" />
+            <EventProviderId Value="DesktopSensrSvc" />
+            <EventProviderId Value="SensorsCore" />
+            <EventProviderId Value="DesktopRotMgr" />
+            <EventProviderId Value="WindowsV1SensorClassExtension" />
+            <EventProviderId Value="WindowsV1SensorsAPI" />
+            <EventProviderId Value="WindowsV2SensorsAPI" />
+            <EventProviderId Value="DES" />
+            <EventProviderId Value="DEM" />
+            <EventProviderId Value="DEO" />
+            <EventProviderId Value="SettingsHandlers_HumanPresence" />
+            <EventProviderId Value="Microsoft.Windows.Kernel.Power(Telemetry)" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="SensorsOnlyProfile.Verbose.File" Name="SensorsOnlyProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="Sensors only logging"
+      Base="SensorsOnlyProfile.Verbose.Memory"/>
 
     <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="SerCx2 and SpbCx">

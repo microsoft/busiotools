@@ -1,4 +1,6 @@
 @echo off
+setlocal
+set scriptDirectory=%~dp0
 set wprpFileName=BusesAllProfile.wprp
 set traceFilesOutputPath=%SystemRoot%\Tracing
 set wprStatusFileName=Buses-WprStatus.txt
@@ -12,6 +14,10 @@ set kseLogsFileName=Buses-KernelShimEngine.evtx
 set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
 set sleepStudyReportFileName=Buses-SleepStudyReport.html
 set buildNumberFileName=Buses-BuildNumber.txt
+set miniDumpCollectionScript=UtilityCollectMiniDumps.ps1
+set Buses_Backup_LogMinidumpType=0x1120
+set Buses_Backup_LogEnable=0
+set Buses_Backup_LogFlushPeriodSeconds=300
 
 if not exist %wprpFileName% (
     echo.
@@ -77,15 +83,17 @@ echo ---------------------------------------
 echo 1) All buses components
 echo 2) USB4 components
 echo 3) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
-echo 4) Other options...
-echo 5) Back
+echo 4) Sensors components only
+echo 5) Other options...
+echo 6) Back
 echo.
 set /p selection=Enter selection number: 
 if "%selection%"=="1" set profileName=BusesAllProfile
 if "%selection%"=="2" set profileName=Usb4WithTunnelsProfile
 if "%selection%"=="3" set profileName=InputOnlyProfile
-if "%selection%"=="4" goto OtherProfilesMenu
-if "%selection%"=="5" goto MainMenu
+if "%selection%"=="4" set profileName=SensorsOnlyProfile
+if "%selection%"=="5" goto OtherProfilesMenu
+if "%selection%"=="6" goto MainMenu
 if not "%profileName%"=="" goto StartOptionsMenu
 echo.
 echo "%selection%" is not a valid option.  Please try again.
@@ -130,20 +138,36 @@ echo 2) Start From Next Boot Session
 echo 3) Back
 echo.
 set /p selection=Enter selection number: 
-if "%selection%"=="1" goto StartNow
-if "%selection%"=="2" goto ConfigureBootTrace
+if "%selection%"=="1" goto CommonStartSteps
+if "%selection%"=="2" goto CommonStartSteps
 if "%selection%"=="3" goto BasicProfilesMenu
 echo.
 echo "%selection%" is not a valid option.  Please try again.
 echo.
 goto StartOptionsMenu
 
-:StartNow
+:CommonStartSteps
 rem Collect pre-repro PnP state
 echo Collecting pre-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
 if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
 pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
+rem Backup and changing WUDF settings
+echo Updating WUDF trace and dump settings...
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d 0x1122 /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable') DO set Buses_Backup_LogEnable=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1 /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1 /f
+if "%selection%"=="2" goto ConfigureBootTrace
+rem else it's "Start Now"
+
+:StartNow
 rem Start tracing now
+echo.
 echo Starting Tracing Now... (%wprpFileName%!%profileName%)
 wpr.exe -start %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
@@ -163,10 +187,6 @@ rem Configure boot trace
 echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
-rem Collect pre-repro PnP state
-echo Collecting pre-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
-if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
-pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
 echo.
 echo ###############################################################################
 echo Please reboot your PC to start tracing. After reproducing the issue, run this
@@ -185,13 +205,33 @@ goto CollectMoreInfo
 
 :CollectMoreInfo
 echo.
+rem Restore WUDF settings
+echo Restoring WUDF trace and dump settings...
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /f
+echo.
 echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
-reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX > %traceFilesOutputPath%\%buildNumberFileName%
+echo Tracing Start Time: > %traceFilesOutputPath%\%buildNumberFileName%
+time /T >> %traceFilesOutputPath%\%buildNumberFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFilesOutputPath%\%buildNumberFileName%
+if exist "%SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll" (
+  powershell "(dir %SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll).VersionInfo | fl" >> %traceFilesOutputPath%\%buildNumberFileName%
+)
+dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%buildNumberFileName%
+
+
 rem PnP State
 echo - Post-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
 if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutputPath%\%pnpStatePostReproFileName%
@@ -204,8 +244,13 @@ wevtutil.exe export-log "Microsoft-Windows-Kernel-PnP/Driver Watchdog" /ow:true 
 wevtutil.exe export-log "Microsoft-Windows-Kernel-ShimEngine/Operational" /ow:true "%traceFilesOutputPath%\%kseLogsFileName%"
 wevtutil.exe export-log "Microsoft-Windows-USB-UCMUCSICX/Operational" /ow:true "%traceFilesOutputPath%\%ucmUcsiCxLogsFileName%"
 rem Sleep Study Report
+echo - Sleep study report...
 powercfg.exe /sleepstudy /OUTPUT "%traceFilesOutputPath%\%sleepStudyReportFileName%"
+echo - WUDF trace and dumps...
+if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %traceFilesOutputPath%\ /f >nul 2>&1
+if exist %ProgramData%\Microsoft\WDF\*.*dmp copy %ProgramData%\Microsoft\WDF\*.*dmp %traceFilesOutputPath%\ /f >nul 2>&1
 rem USB Live Kernel Reports
+echo.
 echo - Live kernel reports...
 if exist %SystemRoot%\LiveKernelReports\USB* (
     echo Found these reports for USB. They may be related.
@@ -213,6 +258,28 @@ if exist %SystemRoot%\LiveKernelReports\USB* (
     dir %SystemRoot%\LiveKernelReports\USB*
     echo.
 )
+
+
+rem Collecting DispDiag and if availiable the DES mini dump 
+if  "%profileName%"=="SensorsOnlyProfile" (
+    echo.
+    echo Now collecting DispDiag
+    dispdiag
+    move "%scriptDirectory%*.dat" %traceFilesOutputPath% 
+
+    if exist %miniDumpCollectionScript% (
+        echo Now DES Minidump
+        pushd "%~dp0"
+        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll" -OutputPath "%traceFilesOutputPath%" -Verb runAs
+        copy %SYSTEMROOT%\system32\DispDiag*.dat %traceFilesOutputPath% >nul 2>&1
+        popd
+    )
+)
+
+echo Tracing End Time: >> %traceFilesOutputPath%\%buildNumberFileName%
+time /T >> %traceFilesOutputPath%\%buildNumberFileName%
+
+
 rem Summary
 echo.
 echo ######################################################################################
@@ -230,9 +297,19 @@ echo   %pnpLogsFileName%
 echo   %kseLogsFileName%
 echo   %ucmUcsiCxLogsFileName%
 echo   %sleepStudyReportFileName%
+echo   All *.dat and *.dmp files (for display diagnose)
+
+if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl (
+  echo   WudfTrace.etl
+)
+if exist %ProgramData%\Microsoft\WDF\*.*dmp (
+  for /F %%f in ('dir /b %ProgramData%\Microsoft\WDF\*.*dmp) do (
+    echo   %%f
+  )
+)
 echo.
 if exist %SystemRoot%\LiveKernelReports\USB* (
-echo Please also collect the LiveKernelReports found above.
+  echo Please also collect the LiveKernelReports found above.
 )
 echo.
 echo ######################################################################################
@@ -247,6 +324,16 @@ echo is not currently active.
 echo.
 wpr.exe -cancel
 wpr.exe -cancelboot
+rem Restore WUDF settings
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /f
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /f
 echo.
 echo #########
 echo   Done.
@@ -267,6 +354,10 @@ set kseLogsFileName=
 set ucmUcsiCxLogsFileName=
 set sleepStudyReportFileName=
 set buildNumberFileName=
+set miniDumpCollectionScript=
+set Buses_Backup_LogMinidumpType=
+set Buses_Backup_LogEnabled=
+set Buses_Backup_LogFlushPeriodSeconds=
 set selection=
 set profileName=
 echo.

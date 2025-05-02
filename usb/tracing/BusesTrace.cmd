@@ -14,6 +14,7 @@ set kseLogsFileName=Buses-KernelShimEngine.evtx
 set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
 set sleepStudyReportFileName=Buses-SleepStudyReport.html
 set buildNumberFileName=Buses-BuildNumber.txt
+set collectPnpStates=1
 set miniDumpCollectionScript=UtilityCollectMiniDumps.ps1
 set Buses_Backup_LogMinidumpType=0x1120
 set Buses_Backup_LogEnable=0
@@ -40,18 +41,21 @@ if not exist %wprpFileName% (
     goto End
 )
 
-WHOAMI.EXE /GROUPS | FIND.EXE /I "S-1-16-12288" >nul
-IF ERRORLEVEL 1 (
-    echo.
-    echo #########################################################################################################
-    echo.
-    ECHO ERROR: This script must be run from an elevated command prompt.
-    echo.
-    echo #########################################################################################################
-    goto End
+if exist %SystemRoot%\system32\WHOAMI.EXE (
+    %SystemRoot%\system32\WHOAMI.EXE /GROUPS | FIND.EXE /I "S-1-16-12288" >nul
+    IF ERRORLEVEL 1 (
+        echo.
+        echo #########################################################################################################
+        echo.
+        ECHO ERROR: This script must be run from an elevated command prompt.
+        echo.
+        echo #########################################################################################################
+        goto End
+    )
 )
 
 cls
+if /I "%~1"=="-NoPnpState" set collectPnpStates=0
 
 :MainMenu
 set selection=
@@ -147,10 +151,13 @@ echo.
 goto StartOptionsMenu
 
 :CommonStartSteps
-rem Collect pre-repro PnP state
-echo Collecting pre-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
-if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
-pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
+if "%collectPnpStates%"=="1" (
+    rem Collect pre-repro PnP state (the echo text below cannot use parentheses, or it will end the if statement prematurely.
+    echo Collecting pre-repro PnP state... [If it doesn't complete within a few minutes, use CTRL-C to interrupt it.]
+    if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
+    pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
+)
+
 rem Backup and changing WUDF settings
 echo Updating WUDF trace and dump settings...
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
@@ -187,6 +194,14 @@ rem Configure boot trace
 echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
+
+if "%collectPnpStates%"=="1" (
+    rem Collect pre-repro PnP state
+    echo Collecting pre-repro PnP state... [If it doesn't complete within a few minutes, use CTRL-C to interrupt it.]
+    if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
+    pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
+)
+
 echo.
 echo ###############################################################################
 echo Please reboot your PC to start tracing. After reproducing the issue, run this
@@ -232,10 +247,13 @@ if exist "%SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll" (
 dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%buildNumberFileName%
 
 
-rem PnP State
-echo - Post-repro PnP state... (If it doesn't complete within a few minutes, use CTRL-C to interrupt it.) 
-if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutputPath%\%pnpStatePostReproFileName%
-pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePostReproFileName%
+if "%collectPnpStates%"=="1" (
+    rem PnP State
+    echo - Post-repro PnP state... [If it doesn't complete within a few minutes, use CTRL-C to interrupt it.]
+    if exist %traceFilesOutputPath%\%pnpStatePostReproFileName% del %traceFilesOutputPath%\%pnpStatePostReproFileName%
+    pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePostReproFileName%
+)
+
 rem Event Logs
 echo - Event logs...
 wevtutil.exe export-log "System" /ow:true "%traceFilesOutputPath%\%systemEventLogsFileName%"
@@ -354,6 +372,7 @@ set kseLogsFileName=
 set ucmUcsiCxLogsFileName=
 set sleepStudyReportFileName=
 set buildNumberFileName=
+set collectPnpStates=
 set miniDumpCollectionScript=
 set Buses_Backup_LogMinidumpType=
 set Buses_Backup_LogEnabled=

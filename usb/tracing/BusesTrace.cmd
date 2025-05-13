@@ -132,6 +132,7 @@ echo.
 goto OtherProfilesMenu
 
 :StartOptionsMenu
+set startTime=%Time%
 set selection=
 echo.
 echo --------------
@@ -235,8 +236,7 @@ echo.
 echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
-echo Tracing Start Time: > %traceFilesOutputPath%\%buildNumberFileName%
-time /T >> %traceFilesOutputPath%\%buildNumberFileName%
+echo Tracing Start Time: %startTime% > %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%buildNumberFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%buildNumberFileName%
@@ -294,9 +294,7 @@ if  "%profileName%"=="SensorsOnlyProfile" (
     )
 )
 
-echo Tracing End Time: >> %traceFilesOutputPath%\%buildNumberFileName%
-time /T >> %traceFilesOutputPath%\%buildNumberFileName%
-
+echo Tracing End Time: %Time% >> %traceFilesOutputPath%\%buildNumberFileName%
 
 rem Summary
 echo.

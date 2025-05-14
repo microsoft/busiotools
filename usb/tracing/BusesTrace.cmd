@@ -288,7 +288,7 @@ if  "%profileName%"=="SensorsOnlyProfile" (
     if exist %miniDumpCollectionScript% (
         echo Now DES Minidump
         pushd "%~dp0"
-        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll" -OutputPath "%traceFilesOutputPath%" -Verb runAs
+        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll" -OutputPath "%traceFilesOutputPath%" -Verb runAs
         copy %SYSTEMROOT%\system32\DispDiag*.dat %traceFilesOutputPath% >nul 2>&1
         popd
     )

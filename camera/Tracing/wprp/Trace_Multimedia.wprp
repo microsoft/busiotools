@@ -16,6 +16,9 @@
     <EventProvider Id="AuthUX_7" Name="fb3cd94d-95ef-5a73-b35c-6c78451095ef" />
     <EventProvider Id="AuthUX_8" Name="6d7051a0-9c83-5e52-cf8f-0ecaf5d5f6fd" />
     <EventProvider Id="Camera-App" Name="e647b5bf-99a4-41fe-8789-56c6bb3fa9c8" Level="32" />
+    <EventProvider Id="CcxDmft" Name="CBCCA12E-9472-409D-A1B1-753C98BF03C0" Level="5" />
+    <EventProvider Id="CcxDriver" Name="7B23B7A8-96F7-42F9-B082-9D5A8AB3F137" Level="5" />
+    <EventProvider Id="CcxFramework" Name="2393C85D-B36A-4FE2-86A9-12500A05B76A" Level="5" />
     <EventProvider Id="CTRLGUID_EVR_WPP" Name="d3045008-e530-485e-81b7-c6d54dbd9044" />
     <EventProvider Id="DRMWMI" Name="6e03dd26-581b-4ec5-8f22-601a4de5f022" />
     <EventProvider Id="Fingerprint_CredProv" Name="0aba6892-455b-551d-7da8-3a8f85225e1a" />
@@ -162,6 +165,9 @@
             <EventProviderId Value="AuthUX_7" />
             <EventProviderId Value="AuthUX_8" />
             <EventProviderId Value="Camera-App" />
+            <EventProviderId Value="CcxDmft" />
+            <EventProviderId Value="CcxDriver" />
+            <EventProviderId Value="CcxFramework" />
             <EventProviderId Value="CTRLGUID_EVR_WPP" />
             <EventProviderId Value="DRMWMI" />
             <EventProviderId Value="Fingerprint_CredProv" />

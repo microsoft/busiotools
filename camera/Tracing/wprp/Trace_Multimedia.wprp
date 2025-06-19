@@ -36,6 +36,7 @@
     <EventProvider Id="Microsoft-OSG-OSS-CredProvFramework" Name="176cd9c5-c90c-5471-38ba-0eeb4f7e0bd0" />
     <EventProvider Id="Microsoft-Skype-Cafe-Threshold-Calling" Name="eb5667d3-a91a-5ede-35bc-fcfb2c6bffb1" />
     <EventProvider Id="Microsoft-Skype-Cafe-Threshold-Skype" Name="a5a483a3-76df-445b-a371-24265926199b" />
+    <EventProvider Id="Microsoft-Window-MF-FrameServer" Name="9e22a3ed-7b32-4b99-b6c2-21dd6ace01e1" />
     <EventProvider Id="Microsoft-Windows-Analog-SensorDataService" Name="39a5aa08-031d-4777-a32d-ed386bf03470" />
     <EventProvider Id="Microsoft-Windows-Apps-Flighting-Photos" Name="dca2b5b9-047f-5768-688f-9b4c705b541f" />
     <EventProvider Id="Microsoft-Windows-Apps-Photos" Name="3c20a2bd-0497-5e1d-ad49-7b789b9d7318" />
@@ -178,6 +179,7 @@
             <EventProviderId Value="Microsoft-OSG-OSS-CredProvFramework" />
             <EventProviderId Value="Microsoft-Skype-Cafe-Threshold-Calling" />
             <EventProviderId Value="Microsoft-Skype-Cafe-Threshold-Skype" />
+            <EventProviderId Value="Microsoft-Window-MF-FrameServer" />
             <EventProviderId Value="Microsoft-Windows-Analog-SensorDataService" />
             <EventProviderId Value="Microsoft-Windows-Apps-Flighting-Photos" />
             <EventProviderId Value="Microsoft-Windows-Apps-Photos" />

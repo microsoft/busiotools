@@ -104,6 +104,7 @@
         <Keyword Value="0x000000000000FFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Capture.USBVideo" Name="80863bfb-0974-45c1-88df-e4e9a4b2b7d4" Level="4" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
     <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" />
@@ -263,6 +264,7 @@
             <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="KMFilterControlGuid" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
             <EventProviderId Value="Microsoft.Windows.Media.Editing" />

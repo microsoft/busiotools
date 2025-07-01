@@ -104,6 +104,7 @@
         <Keyword Value="0x000000000000FFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Capture.USBVideo" Name="80863bfb-0974-45c1-88df-e4e9a4b2b7d4" Level="4" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
     <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" />
@@ -111,6 +112,7 @@
     <EventProvider Id="Microsoft.Windows.MediaFoundation.MediaCapture" Name="3ff44415-ee99-4f03-bc9e-e4a1d1833418" />
     <EventProvider Id="Microsoft.Windows.ResourceManager" Name="4180c4f7-e238-5519-338f-ec214f0b49aa" Level="4" />
     <EventProvider Id="Microsoft-IE" Name="9e3b3947-ca5d-4614-91a2-7b624e0e7244" />
+    <EventProvider Id="Microsoft-Window-MF-FrameServer" Name="9e22a3ed-7b32-4b99-b6c2-21dd6ace01e1" />
     <EventProvider Id="Microsoft-Windows-Audio" Name="ae4bd3be-f36f-45b6-8d21-bdd6fb832853" Level="3" />
     <EventProvider Id="Microsoft-Windows-AudioEngineVerbose" Name="a6a00efd-21f2-4a99-807e-9b3bf1d90285" Level="3">
       <Keywords>
@@ -262,6 +264,7 @@
             <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="KMFilterControlGuid" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Microsoft.Windows.Capture.USBVideo" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
             <EventProviderId Value="Microsoft.Windows.Media.Editing" />
@@ -269,6 +272,7 @@
             <EventProviderId Value="Microsoft.Windows.MediaFoundation.MediaCapture" />
             <EventProviderId Value="Microsoft.Windows.ResourceManager" />
             <EventProviderId Value="Microsoft-IE" />
+            <EventProviderId Value="Microsoft-Window-MF-FrameServer" />
             <EventProviderId Value="Microsoft-Windows-Audio" />
             <EventProviderId Value="Microsoft-Windows-AudioEngineVerbose" />
             <EventProviderId Value="Microsoft-Windows-Battery" />

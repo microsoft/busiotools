@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WindowsPerformanceRecorder   Version="1" Author="DiagTrack Scenario Editor" Copyright="Microsoft Corporation" Company="Microsoft Corporation" >
   <Profiles>
+    <SystemCollector Id="SystemCollector" Name="SystemCollector">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </SystemCollector>
     <EventCollector Id="EventCollector_Usb" Name="UsbTrace">
       <BufferSize Value="64" />
       <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
@@ -41,6 +45,12 @@
       <BufferSize Value="64" />
       <Buffers Value="3" PercentageOfTotalMemory="true" MaximumBufferSpace="120" />
     </EventCollector>
+    <SystemProvider Id="SystemProvider">
+      <Keywords>
+        <Keyword Value="Loader" />
+        <Keyword Value="ProcessThread" />
+      </Keywords>
+    </SystemProvider>
     <!-- 
       Buses USBHost Event Providers
     -->
@@ -908,6 +918,9 @@
     <Profile Id="InputOnlyWithVerboseWppProfile.Verbose.Memory" Name="InputOnlyWithVerboseWppProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="Input only with verbose WPP logging">
       <Collectors>
+        <SystemCollectorId Value="SystemCollector">
+          <SystemProviderId Value="SystemProvider" />
+        </SystemCollectorId>
         <EventCollectorId Value="EventCollector_Input">
           <EventProviders>
             <EventProviderId Value="I8042PrtWpp" />

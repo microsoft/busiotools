@@ -6,10 +6,11 @@ Before filing a bug report, please review existing [blog posts](https://techcomm
 If these topics do not cover what you're looking for, please follow these steps to collect files for your bug report.
 
 ### 1. BusesTrace.cmd
-- Download both [BusesAllProfile.wprp](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesAllProfile.wprp) and [BusesTrace.cmd](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesTrace.cmd).
+- Download the following three files:
+     [BusesAllProfile.wprp](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesAllProfile.wprp), [BusesTrace.cmd](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesTrace.cmd), and [UtilityCollectMiniDumps.ps1](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/UtilityCollectMiniDumps.ps1)
 - Run **BusesTrace.cmd** from an elevated command prompt.
 - At the first menu, select "**Start Tracing**".
-- At the second menu, select "**Input/HID components only**" if you are reporting an input related issue. Otherwise, select "**All buses components**".
+- At the second menu select the component in which tracing is desired: for example select "**Input/HID components only**" if you are reporting an input related issue. If unsure, you can also select "**All buses components**".
 - At the next menu, choose to either start tracing now, or start tracing on next boot session.
 - Follow the on-screen instructions to reproduce the issue and conclude the files.
 - If applicable, note the approximate time the problem happened in the bug report. For example "the problem happened around 13:50:25 (hh:mm:ss)", or "the problem started about 5 seconds before tracing was stopped."
@@ -17,6 +18,8 @@ If these topics do not cover what you're looking for, please follow these steps 
 ### 2. Memory Dump
 If you are reporting a system crash or hang, please include a memory dump along with the output from kernel debug command "!analyze -v" in the bug report.
 USB and other kernel debugger extensions are [documented here](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/usb-3-extensions)
+
+Display/sensor minidumps are automatically collected if you select "sensor components only" in the second menu **BusesTrace.cmd**. A full dump might still be required.
 
 [Back to root](http://aka.ms/bustools) 
 

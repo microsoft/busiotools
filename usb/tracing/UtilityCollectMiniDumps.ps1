@@ -57,7 +57,7 @@ function ParseAndDump([string]$desc, [string]$module) {
         $words = -split $line
 
         if ($words.Count -ge 3) {
-            if ($words[0] -eq 'svchost.exe') {
+            if ($words[0] -eq 'svchost.exe' -or $words[0] -eq 'wudfhost.exe') {
                 Write-Host $line
 
                 $procId = $words[1]

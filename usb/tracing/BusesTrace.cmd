@@ -3,7 +3,6 @@ setlocal
 set scriptDirectory=%~dp0
 set wprpFileName=BusesAllProfile.wprp
 set traceFilesOutputPath=%SystemRoot%\Tracing
-set wprStatusFileName=Buses-WprStatus.txt
 set etlFileName=Buses-MachineInfo.etl
 set pnpStatePreReproFileName=Buses-PnpStatePreRepro.pnp
 set pnpStatePostReproFileName=Buses-PnpStatePostRepro.pnp
@@ -13,7 +12,7 @@ set pnpLogsFileName=Buses-DriverWatchdog.evtx
 set kseLogsFileName=Buses-KernelShimEngine.evtx
 set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
 set sleepStudyReportFileName=Buses-SleepStudyReport.html
-set buildNumberFileName=Buses-BuildNumber.txt
+set busesTraceInfoFileName=Buses-TraceInfo.txt
 set collectPnpStates=1
 set miniDumpCollectionScript=UtilityCollectMiniDumps.ps1
 set Buses_Backup_LogMinidumpType=0x1120
@@ -184,8 +183,8 @@ echo ----------------------------------------------------------------------
 echo Tracing started. Reproduce the issue and hit any key to stop tracing.
 echo ----------------------------------------------------------------------
 pause
-echo Saving status to %wprStatusFileName%...
-wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
+echo Saving WPR status to %busesTraceInfoFileName%...
+wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%busesTraceInfoFileName%
 echo Stopping tracing...
 wpr.exe -stop %traceFilesOutputPath%\%etlFileName%
 goto CollectMoreInfo
@@ -212,8 +211,8 @@ echo.
 goto End
 
 :StopBootTrace
-echo Saving status to %wprStatusFileName%...
-wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%wprStatusFileName%
+echo Saving WPR status to %busesTraceInfoFileName%...
+wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%busesTraceInfoFileName%
 echo Stopping boot session tracing...
 wpr.exe -stopboot %traceFilesOutputPath%\%etlFileName%
 if not %ERRORLEVEL%==0 goto End
@@ -236,15 +235,13 @@ echo.
 echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
-echo Tracing Start Time: %startTime% > %traceFilesOutputPath%\%buildNumberFileName%
-reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %traceFilesOutputPath%\%buildNumberFileName%
-reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%buildNumberFileName%
-reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%buildNumberFileName%
-reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFilesOutputPath%\%buildNumberFileName%
-if exist "%SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll" (
-  powershell "(dir %SYSTEMROOT%\system32\drivers\UMDF\SensorsHid.dll).VersionInfo | fl" >> %traceFilesOutputPath%\%buildNumberFileName%
-)
-dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%buildNumberFileName%
+echo Tracing Start Time: %startTime% > %traceFilesOutputPath%\%busesTraceInfoFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+powershell -command "REG QUERY \"HKLM\Software\Microsoft\Windows NT\CurrentVersion\Update\TargetingInfo\Installed\" /s | Select-string Client.OS -context 0,5" >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 
 
 if "%collectPnpStates%"=="1" (
@@ -286,15 +283,16 @@ if  "%profileName%"=="SensorsOnlyProfile" (
     move "%scriptDirectory%*.dat" %traceFilesOutputPath% 
 
     if exist %miniDumpCollectionScript% (
-        echo Now DES Minidump
+        echo Now collecting sensor process minidumps
         pushd "%~dp0"
-        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll" -OutputPath "%traceFilesOutputPath%" -Verb runAs
+        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll SensorsCx.dll" -OutputPath "%traceFilesOutputPath%" 
         copy %SYSTEMROOT%\system32\DispDiag*.dat %traceFilesOutputPath% >nul 2>&1
         popd
     )
+
 )
 
-echo Tracing End Time: %Time% >> %traceFilesOutputPath%\%buildNumberFileName%
+echo Tracing End Time: %Time% >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 
 rem Summary
 echo.
@@ -303,8 +301,7 @@ echo Please collect the following files under %traceFilesOutputPath% for further
 echo.
 echo   %etlFileName%
 echo   WPR_initiated_WprApp_*.etl
-echo   %buildNumberFileName%
-echo   %wprStatusFileName%
+echo   %busesTraceInfoFileName%
 echo   %pnpStatePreReproFileName%
 echo   %pnpStatePostReproFileName%
 echo   %systemEventLogsFileName%
@@ -357,25 +354,6 @@ echo #########
 goto End
 
 :End
-set wprpFileName=
-set traceFilesOutputPath=
-set wprStatusFileName=
-set etlFileName=
-set systemEventLogsFileName=
-set applicationEventLogsFileName=
-set pnpStatePreReproFileName=
-set pnpStatePostReproFileName=
-set pnpLogsFileName=
-set kseLogsFileName=
-set ucmUcsiCxLogsFileName=
-set sleepStudyReportFileName=
-set buildNumberFileName=
-set collectPnpStates=
-set miniDumpCollectionScript=
-set Buses_Backup_LogMinidumpType=
-set Buses_Backup_LogEnabled=
-set Buses_Backup_LogFlushPeriodSeconds=
-set selection=
-set profileName=
+endlocal
 echo.
 pause

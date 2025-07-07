@@ -420,6 +420,7 @@
     <EventProvider Id="Microsoft.Windows.DevicesFlowBroker.DevicesFlowActivation" Name="80a3bcff-2f89-4e33-aa39-73930ccba351" Level="5" NonPagedMemory="false"/>
     <EventProvider Id="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler" Name="56143DD6-AD65-4FB1-972C-6DFA2BEF0916" Level="5" NonPagedMemory="false"/>
     <EventProvider Id="Microsoft.Windows.Shell.SystemSettings.AdminFlow" Name="2E07964E-7D10-5D8E-761D-99B038F42BB6" Level="5" NonPagedMemory="false"/>
+    <EventProvider Id="Microsoft.Windows.Shell.DevicesFlowProvider" Name="C4B09550-BFA0-49B5-A8C3-CA2A5DBA7D57" Level="5" NonPagedMemory="false"/>
     <EventProvider Id="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers" Name="3a245d5a-f00f-48f6-a94b-c51cdd290f18" Level="5" NonPagedMemory="false">
       <Keywords>
         <Keyword Value="0xffffffff"/>
@@ -898,6 +899,7 @@
             <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler"/>
             <EventProviderId Value="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers"/>
             <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.AdminFlow"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.DevicesFlowProvider"/>
             <EventProviderId Value="Microsoft.Windows.Microsoft.WirelessDisplayWPP"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManager"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManagerApi"/>
@@ -1072,6 +1074,7 @@
             <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.BluetoothHandler"/>
             <EventProviderId Value="Microsoft.Windows.Desktop.Shell.SystemSettingsV2-Handlers"/>
             <EventProviderId Value="Microsoft.Windows.Shell.SystemSettings.AdminFlow"/>
+            <EventProviderId Value="Microsoft.Windows.Shell.DevicesFlowProvider"/>
             <EventProviderId Value="Microsoft.Windows.Microsoft.WirelessDisplayWPP"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManager"/>
             <EventProviderId Value="Microsoft.Windows.DSM.DeviceSetupManagerApi"/>

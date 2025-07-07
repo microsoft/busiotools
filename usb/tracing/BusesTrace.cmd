@@ -262,8 +262,8 @@ rem Sleep Study Report
 echo - Sleep study report...
 powercfg.exe /sleepstudy /OUTPUT "%traceFilesOutputPath%\%sleepStudyReportFileName%"
 echo - WUDF trace and dumps...
-if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl copy %ProgramData%\Microsoft\WDF\WudfTrace.etl %traceFilesOutputPath%\ /f >nul 2>&1
-if exist %ProgramData%\Microsoft\WDF\*.*dmp copy %ProgramData%\Microsoft\WDF\*.*dmp %traceFilesOutputPath%\ /f >nul 2>&1
+if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl copy /y %ProgramData%\Microsoft\WDF\WudfTrace.etl %traceFilesOutputPath%\ >nul 2>&1
+if exist %ProgramData%\Microsoft\WDF\*.*dmp copy /y %ProgramData%\Microsoft\WDF\*.*dmp %traceFilesOutputPath%\ >nul 2>&1
 rem USB Live Kernel Reports
 echo.
 echo - Live kernel reports...
@@ -310,7 +310,6 @@ echo   %pnpLogsFileName%
 echo   %kseLogsFileName%
 echo   %ucmUcsiCxLogsFileName%
 echo   %sleepStudyReportFileName%
-echo   All *.dat and *.dmp files (for display diagnose)
 
 if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl (
   echo   WudfTrace.etl
@@ -320,6 +319,9 @@ if exist %ProgramData%\Microsoft\WDF\*.*dmp (
     echo   %%f
   )
 )
+
+echo   All *.dat and *.dmp files (for display diagnose)
+
 echo.
 if exist %SystemRoot%\LiveKernelReports\USB* (
   echo Please also collect the LiveKernelReports found above.

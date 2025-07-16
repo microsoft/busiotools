@@ -158,8 +158,8 @@ if "%collectPnpStates%"=="1" (
     pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
 )
 
-rem Backup and changing WUDF settings
-echo Updating WUDF trace and dump settings...
+rem Backup and changing UMDF settings
+echo Updating UMDF trace and dump settings...
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d 0x1122 /f

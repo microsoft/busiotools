@@ -220,8 +220,8 @@ goto CollectMoreInfo
 
 :CollectMoreInfo
 echo.
-rem Restore WUDF settings
-echo Restoring WUDF trace and dump settings...
+rem Restore UMDF settings
+echo Restoring UMDF trace and dump settings...
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
@@ -259,7 +259,7 @@ wevtutil.exe export-log "Microsoft-Windows-USB-UCMUCSICX/Operational" /ow:true "
 rem Sleep Study Report
 echo - Sleep study report...
 powercfg.exe /sleepstudy /OUTPUT "%traceFilesOutputPath%\%sleepStudyReportFileName%"
-echo - WUDF trace and dumps...
+echo - UMDF trace and dumps...
 if exist %ProgramData%\Microsoft\WDF\WudfTrace.etl copy /y %ProgramData%\Microsoft\WDF\WudfTrace.etl %traceFilesOutputPath%\ >nul 2>&1
 if exist %ProgramData%\Microsoft\WDF\*.*dmp copy /y %ProgramData%\Microsoft\WDF\*.*dmp %traceFilesOutputPath%\ >nul 2>&1
 rem USB Live Kernel Reports
@@ -337,7 +337,7 @@ echo is not currently active.
 echo.
 wpr.exe -cancel
 wpr.exe -cancelboot
-rem Restore WUDF settings
+rem Restore UMDF settings
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v

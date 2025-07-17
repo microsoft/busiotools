@@ -13,11 +13,11 @@ set kseLogsFileName=Buses-KernelShimEngine.evtx
 set ucmUcsiCxLogsFileName=Buses-UcmUcsiCx.evtx
 set sleepStudyReportFileName=Buses-SleepStudyReport.html
 set busesTraceInfoFileName=Buses-TraceInfo.txt
-set collectPnpStates=1
 set miniDumpCollectionScript=UtilityCollectMiniDumps.ps1
 set Buses_Backup_LogMinidumpType=0x1120
 set Buses_Backup_LogEnable=0
 set Buses_Backup_LogFlushPeriodSeconds=300
+set collectPnpStates=1
 
 if not exist %wprpFileName% (
     echo.
@@ -132,6 +132,7 @@ goto OtherProfilesMenu
 
 :StartOptionsMenu
 set startTime=%Time%
+set startDate=%Date%
 set selection=
 echo.
 echo --------------
@@ -233,7 +234,7 @@ echo.
 echo Collecting more info...
 rem OS Build Numbers
 echo - OS build numbers...
-echo Tracing Start Time: %startTime% > %traceFilesOutputPath%\%busesTraceInfoFileName%
+echo Tracing Start Time: %startTime% %startDate% > %traceFilesOutputPath%\%busesTraceInfoFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v BuildLabEX >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion >> %traceFilesOutputPath%\%busesTraceInfoFileName%
@@ -290,7 +291,7 @@ if  "%profileName%"=="SensorsOnlyProfile" (
 
 )
 
-echo Tracing End Time: %Time% >> %traceFilesOutputPath%\%busesTraceInfoFileName%
+echo Tracing End Time: %Time% %Date%>> %traceFilesOutputPath%\%busesTraceInfoFileName%
 
 rem Summary
 echo.

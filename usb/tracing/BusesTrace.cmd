@@ -161,13 +161,13 @@ if "%collectPnpStates%"=="1" (
 rem Backup and changing UMDF settings
 echo Updating UMDF trace and dump settings...
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
-REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d 0x1122 /f
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable') DO set Buses_Backup_LogEnable=%%v
-REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d 1 /f
 FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
-REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
+REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d 1 /f
 if "%selection%"=="2" goto ConfigureBootTrace
 rem else it's "Start Now"
@@ -222,15 +222,13 @@ goto CollectMoreInfo
 echo.
 rem Restore WUDF settings
 echo Restoring WUDF trace and dump settings...
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /f
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /f
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /f
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /f
 echo.
 echo Collecting more info...
 rem OS Build Numbers
@@ -340,15 +338,14 @@ echo.
 wpr.exe -cancel
 wpr.exe -cancelboot
 rem Restore WUDF settings
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogMinidumpType') DO set Buses_Backup_LogMinidumpType=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogMinidumpType /t REG_DWORD /d %Buses_Backup_LogMinidumpType% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogMinidumpType /f
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogEnable') DO set Buses_Backup_LogEnable=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogEnable /t REG_DWORD /d %Buses_Backup_LogEnable% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogEnable /f
-FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
+FOR /F "tokens=3" %%v IN ('reg.exe query "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /v Buses_Backup_LogFlushPeriodSeconds') DO set Buses_Backup_LogFlushPeriodSeconds=%%v
 REG.EXE ADD "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v LogFlushPeriodSeconds /t REG_DWORD /d %Buses_Backup_LogFlushPeriodSeconds% /f
-REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf" /v Buses_Backup_LogFlushPeriodSeconds /f
+
+REG.EXE DELETE "HKLM\Software\Microsoft\windows NT\CurrentVersion\Wudf\BackupValues" /f
 echo.
 echo #########
 echo   Done.

@@ -306,6 +306,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="HidI3cWpp" Name="c020ab1a-e824-44f2-8f04-7bc4a3b26594" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="HidSpiWpp" Name="0a6b3bb2-3504-49c1-81d0-6a4b88b96427" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -473,12 +478,17 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="WinI3CWpp" Name="13c826fc-d2b1-4531-8f88-b17dd3bb2eaa" NonPagedMemory="true" Level="5">
+    <EventProvider Id="WinI3CTargetWpp" Name="13c826fc-d2b1-4531-8f88-b17dd3bb2eaa" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="WinI3CEtw" Name="13c4f22b-b8d2-443d-b298-99cf6f89c633" NonPagedMemory="true" Level="5">
+    <EventProvider Id="WinI3CTargetEtw" Name="13c4f22b-b8d2-443d-b298-99cf6f89c633" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WinI3CEtw" Name="13c549d5-ad31-44e2-b47f-6ed22430771e" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -707,6 +717,7 @@
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidI3cWpp" />
             <EventProviderId Value="HidSpiWpp" />
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
@@ -737,7 +748,8 @@
             <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
-            <EventProviderId Value="WinI3CWpp" />
+            <EventProviderId Value="WinI3CTargetWpp" />
+            <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />
           </EventProviders>
         </EventCollectorId>
@@ -954,6 +966,7 @@
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidI3cWpp" />
             <EventProviderId Value="HidSpiWpp" />
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
@@ -1002,6 +1015,7 @@
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidI3cWpp" />
             <EventProviderId Value="HidSpiWpp" />
             <EventProviderId Value="HidSpiCxWpp" />
             <EventProviderId Value="HidInterruptWpp" />
@@ -1045,6 +1059,7 @@
             <EventProviderId Value="HidUsbWpp" />
             <EventProviderId Value="HidI2cWpp" />
             <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidI3cWpp" />
             <EventProviderId Value="HidVhfWpp" />
             <EventProviderId Value="VhfKmWpp" />
             <EventProviderId Value="VhfUmWpp" />
@@ -1080,7 +1095,8 @@
             <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
-            <EventProviderId Value="WinI3CWpp" />
+            <EventProviderId Value="WinI3CTargetWpp" />
+            <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />
           </EventProviders>
         </EventCollectorId>

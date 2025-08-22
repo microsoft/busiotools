@@ -4,7 +4,7 @@
     <EventCollector Id="EventCollector_Trace_Multimedia" Name="MFTrace Event Collector" Private="false" ProcessPrivate="false" Secure="false" Realtime="false">
       <BufferSize Value="1024" />
       <Buffers Value="40" />
-      <MaximumFileSize Value="256" FileMode="Circular" />
+      <MaximumFileSize Value="384" FileMode="Circular" />
       <FileMax Value="1" />
     </EventCollector>
     <EventProvider Id="AuthUX_1" Name="3ec987dd-90e6-5877-ccb7-f27cdf6a976b" />
@@ -119,7 +119,7 @@
     </EventProvider>
     <EventProvider Id="Microsoft-Windows-WdfCompanionFilter" Name="12ab1cf8-c42c-4b9a-bd9c-3fa45b42bdca" Level="3" />
     <EventProvider Id="Microsoft-Windows-WinBioDataModel" Name="63221d5a-4d00-4be3-9d38-de9aaf5d0258" />
-    <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
+    <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" Stack="true" />
     <EventProvider Id="Microsoft-Windows-WMP" Name="f3f14ff3-7b80-4868-91d0-d77e497b025e" />
     <EventProvider Id="MJPEG_DECODER_TELEMETRY_PROVIDER" Name="99f95b10-5f83-4872-9d19-8c1e78d7fee3" />
     <EventProvider Id="MJPEGDECODER_TELEMETRY_ETW_PROVIDER" Name="ba88ee68-db64-470e-ac77-e4b2e96744b7" />

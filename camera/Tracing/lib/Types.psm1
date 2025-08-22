@@ -51,6 +51,7 @@ namespace Tracing
         public System.Guid  Guid;
         public ulong?       Flags;
         public ulong?       Level;
+        public bool?        Stack;
         public string       GroupName;
         public bool         IsKernelMode;
         public ulong?       StateSave;
@@ -69,7 +70,8 @@ namespace Tracing
                 IsKernelMode = this.IsKernelMode,
                 StateSave    = this.StateSave,
                 EventKey     = this.EventKey,
-                IsInternal   = this.IsInternal
+                IsInternal   = this.IsInternal,
+                Stack        = this.Stack
             };
         }
     }

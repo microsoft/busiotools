@@ -449,7 +449,7 @@ $WarningPreference     = "Continue"
 try
 {
     Write-Host "Trace script log: $log"
-    Write-host "Version: 1.4" 
+    Write-host "Version: 1.5" 
 
     Main
 }

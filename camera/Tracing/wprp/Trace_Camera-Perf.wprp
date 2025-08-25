@@ -4,13 +4,13 @@
     <SystemCollector Id="SystemCollector_Trace_Camera-Perf" Name="MFTrace Kernel Logger" Realtime="false">
       <BufferSize Value="1024" />
       <Buffers Value="40" />
-      <MaximumFileSize Value="384" FileMode="Circular" />
+      <MaximumFileSize Value="1024" FileMode="Circular" />
       <FileMax Value="1" />
     </SystemCollector>
     <EventCollector Id="EventCollector_Trace_Camera-Perf" Name="MFTrace Event Collector" Private="false" ProcessPrivate="false" Secure="false" Realtime="false">
       <BufferSize Value="1024" />
       <Buffers Value="40" />
-      <MaximumFileSize Value="256" FileMode="Circular" />
+      <MaximumFileSize Value="1024" FileMode="Circular" />
       <FileMax Value="1" />
     </EventCollector>
     <SystemProvider Id="SystemProvider_Trace_Camera-Perf">
@@ -197,7 +197,7 @@
     <EventProvider Id="Microsoft-Windows-OneX" Name="ab0d8ef9-866d-4d39-b83f-453f3b8f6325" />
     <EventProvider Id="Microsoft-Windows-PDC" Name="a6bf0deb-3659-40ad-9f81-e25af62ce3c7" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft-Windows-RTWorkQueue-Extended" Name="83faaa86-63c8-4dd8-a2da-fbadddfc0655" />
-    <EventProvider Id="Microsoft-Windows-RTWorkQueue-Threading" Name="e18d0fc9-9515-4232-98e4-89e456d8551b" />
+    <EventProvider Id="Microsoft-Windows-RTWorkQueue-Threading" Name="e18d0fc9-9515-4232-98e4-89e456d8551b" Level="4" />
     <EventProvider Id="Microsoft-Windows-Runtime-Media" Name="8f0db3a8-299b-4d64-a4ed-907b409d4584" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-Face" Name="48cafa6c-73aa-499c-bdd8-c0d36f84813e" />
     <EventProvider Id="Microsoft-Windows-Security-Biometrics-CredentialProvider-FaceDiag" Name="8db3086d-116f-5bed-cfd5-9afda80d28ea" />
@@ -235,7 +235,7 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="Microsoft-Windows-WinHttp" Name="7d44233d-3055-4b9c-ba64-0d47ca40a232" />
-    <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" />
+    <EventProvider Id="Microsoft-Windows-WinRT-Error" Name="a86f8471-c31d-4fbc-a035-665d06047b03" Level="5" Stack="true" />
     <EventProvider Id="Microsoft-Windows-WLAN-AutoConfig" Name="9580d7dd-0379-4658-9870-d5be7d52d6de" />
     <EventProvider Id="NDIS" Name="dd7a21e6-a651-46d4-b7c2-66543067b869" />
     <EventProvider Id="PerceptionCore" Name="ab71fe82-3742-446b-982a-1fedbb7d9594" Level="255" />

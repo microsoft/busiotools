@@ -601,6 +601,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="NVPEP" Name="6B779A1B-EDAD-4193-8B07-D15DE11F43F6" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0x7FFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="EventProvider_Microsoft-Windows-USBVideo" Level="5"
         Name="DA1D1DBD-3186-4FA2-BC2D-075EFD9E43E2" NonPagedMemory="true">
         <Keywords>
@@ -665,6 +670,7 @@
             <EventProviderId Value="WinUsbWpp" />
             <EventProviderId Value="PciWpp" />
             <EventProviderId Value="QcXhciFilterWpp" />
+            <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -792,6 +798,7 @@
             <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbSettingsHandlersTlg" />
             <EventProviderId Value="QcXhciFilterWpp" />
+            <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -833,6 +840,7 @@
             <EventProviderId Value="UsbTaskWpp" />
             <EventProviderId Value="UsbSettingsHandlersTlg" />
             <EventProviderId Value="QcXhciFilterWpp" />
+            <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">
@@ -873,6 +881,7 @@
             <EventProviderId Value="QcXhciFilterWpp" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
             <EventProviderId Value="QcUsbCUcsi8280Wpp" />
+            <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Usb4">

@@ -196,13 +196,6 @@ echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
 
-if "%collectPnpStates%"=="1" (
-    rem Collect pre-repro PnP state
-    echo Collecting pre-repro PnP state... [If it doesn't complete within a few minutes, use CTRL-C to interrupt it.]
-    if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
-    pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
-)
-
 echo.
 echo ###############################################################################
 echo Please reboot your PC to start tracing. After reproducing the issue, run this
@@ -357,3 +350,4 @@ goto End
 endlocal
 echo.
 pause
+

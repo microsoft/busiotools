@@ -10,7 +10,6 @@ on:
         description: "Build configuration (Release/Debug)"
         required: false
         default: "Release"
-
 jobs:
   # 1) Compute next version once. Tag happens in the release job.
   versioning:
@@ -19,23 +18,10 @@ jobs:
       next_version: ${{ steps.version.outputs.next_version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Fetch tags
-        run: git fetch --tags
-
-      - name: Debug tags
-        shell: pwsh
-        run: |
-          git --version
-          git rev-parse --is-inside-work-tree
-          try {
-            git tag --list 2>$null | Sort-Object
-          } catch {
-            Write-Warning "Unable to list tags: $_"
-          } finally {
-            $global:LASTEXITCODE = 0
-          }
+        uses: actions/checkout@v4  
+        with:
+          fetch-depth: 0           # full history
+          fetch-tags: true         # also fetch tags
 
       - name: Calculate next version
         id: version
@@ -43,17 +29,17 @@ jobs:
         run: |
          $latestTag = ''
           try {
-            $latestTag = (git describe --tags --abbrev=0 2>$null) -replace "`r?`n",""
+            $latestTag = (git describe --tags --abbrev=0 --match "bt[0-9]*.[0-9]*.[0-9]*")
           } catch {
             $latestTag = ''
           } finally {
             $global:LASTEXITCODE = 0
           }
-          
+         
           if ([string]::IsNullOrEmpty($latestTag)) {
             $major = 1; $minor = 0; $patch = 0
           } else {
-            $version = $latestTag.TrimStart('v')
+            $version = $latestTag.TrimStart('bt')
             $parts = $version.Split('.')
             $major = [int]$parts[0]; $minor = [int]$parts[1]; $patch = [int]$parts[2]
             $bump = "${{ github.event.inputs.version }}"
@@ -154,6 +140,8 @@ jobs:
   release:
     needs: [versioning, build]
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -169,7 +157,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch --tags
-          $tag = "v${{ needs.versioning.outputs.next_version }}"
+          $tag = "bt${{ needs.versioning.outputs.next_version }}"
           # Only create if it doesn't exist
           $existing = (git tag --list $tag)
           if (-not $existing) {
@@ -182,7 +170,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ needs.versioning.outputs.next_version }}
+          tag_name: bt${{ needs.versioning.outputs.next_version }}
           name: "Buses Tracing Tools (winget) v${{ needs.versioning.outputs.next_version }}"
           files: |
             release/zips-win-x64/busestracing-win-x64.zip

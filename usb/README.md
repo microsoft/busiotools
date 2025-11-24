@@ -5,10 +5,15 @@ Before filing a bug report, please review existing [blog posts](https://techcomm
 
 If these topics do not cover what you're looking for, please follow these steps to collect files for your bug report.
 
-### 1. BusesTrace.cmd
-- Download the following three files:
+### 1. Collect Traces
+- Install/deploy tracing files; either (choose (i) OR (ii), not both):-
+  1. Install tracing files from winget
+     - Run `winget install windowsbusestracing` from an elevated command prompt
+     - Run `startwindowsbusestracing` from an elevated command prompt
+  2. OR Use tracing files directly
+     - Download the following three files:
      [BusesAllProfile.wprp](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesAllProfile.wprp), [BusesTrace.cmd](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/BusesTrace.cmd), and [UtilityCollectMiniDumps.ps1](https://raw.githubusercontent.com/microsoft/busiotools/master/usb/tracing/UtilityCollectMiniDumps.ps1)
-- Run **BusesTrace.cmd** from an elevated command prompt.
+     - Run **BusesTrace.cmd** from an elevated command prompt.
 - At the first menu, select "**Start Tracing**".
 - At the second menu select the component in which tracing is desired: for example select "**Input/HID components only**" if you are reporting an input related issue. If unsure, you can also select "**All buses components**".
 - At the next menu, choose to either start tracing now, or start tracing on next boot session.

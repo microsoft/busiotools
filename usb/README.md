@@ -7,7 +7,7 @@ If these topics do not cover what you're looking for, please follow these steps 
 
 ### 1. Collect Traces
 - Install/deploy tracing files; either (choose (i) OR (ii), not both):-
-  1. Install tracing files from winget
+  1. Install tracing files from [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
      - Run `winget install windowsbusestracing` from an elevated command prompt
      - Run `startwindowsbusestracing` from an elevated command prompt
   2. OR Use tracing files directly

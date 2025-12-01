@@ -171,8 +171,8 @@
             <EventProviderId Value="Fingerprint_CredProv" />
             <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="MfWmiControl" />
-            <EventProviderId Value="Intel-Mipi-Camera-DeviceMFT" />
-            <EventProviderId Value="Intel-Mipi-Camera-IspIacamera" />
+            <EventProviderId Value="Intel-Camera-Intel(R) AVStream Camera" />
+            <EventProviderId Value="Intel-Camera-Intel(R) AVStream Camera DeviceMFT" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />

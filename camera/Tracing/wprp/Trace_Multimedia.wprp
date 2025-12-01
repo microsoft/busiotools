@@ -21,6 +21,8 @@
     <EventProvider Id="Fingerprint_CredProv" Name="0aba6892-455b-551d-7da8-3a8f85225e1a" />
     <EventProvider Id="FsIsoTracelogProvider" Name="0a645885-cc18-4dec-ab0a-8aa890c13d3e" Level="3" />
     <EventProvider Id="MfWmiControl" Name="362007f7-6e50-4044-9082-dfa078c63a73" />
+    <EventProvider Id="Intel-Mipi-Camera-DeviceMFT" Name="1DE583AB-7ABE-49BC-8ED6-96AFA7212345" />
+    <EventProvider Id="Intel-Mipi-Camera-IspIacamera" Name="8148FD77-300C-4515-B9AB-C80660E12345" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo" Name="80863bfb-0974-45c1-88df-e4e9a4b2b7d4" Level="4" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
@@ -169,6 +171,8 @@
             <EventProviderId Value="Fingerprint_CredProv" />
             <EventProviderId Value="FsIsoTracelogProvider" />
             <EventProviderId Value="MfWmiControl" />
+            <EventProviderId Value="Intel-Mipi-Camera-DeviceMFT" />
+            <EventProviderId Value="Intel-Mipi-Camera-IspIacamera" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />

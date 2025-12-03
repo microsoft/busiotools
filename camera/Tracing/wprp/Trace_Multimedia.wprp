@@ -24,6 +24,12 @@
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo" Name="80863bfb-0974-45c1-88df-e4e9a4b2b7d4" Level="4" />
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
+    <EventProvider Id="Intel-Camera-Intel(R)-AVStream-Camera" Name="8148FD77-300C-4515-B9AB-C80660E12345"/>
+    <EventProvider Id="Intel-Camera-Intel(R)-AVStream-Camera-DeviceMFT" Name="1DE583AB-7ABE-49BC-8ED6-96AFA7212345">
+      <Keywords>
+        <Keyword Value="0x0000000000000001" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="Microsoft.Windows.Media.Editing" Name="1123dc81-0423-4f27-bf57-6619e6bf85cc" Level="32">
       <Keywords>
         <Keyword Value="0x000000001FFFFFFF" />
@@ -172,6 +178,8 @@
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo" />
             <EventProviderId Value="Microsoft.Windows.Capture.USBVideo.Trustlet" />
             <EventProviderId Value="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" />
+            <EventProviderId Value="Intel-Camera-Intel(R)-AVStream-Camera" />
+            <EventProviderId Value="Intel-Camera-Intel(R)-AVStream-Camera-DeviceMFT" />
             <EventProviderId Value="Microsoft.Windows.Media.Editing" />
             <EventProviderId Value="Microsoft.Windows.MediaFoundation.FrameServer" />
             <EventProviderId Value="Microsoft.Windows.MediaFoundation.MediaCapture" />

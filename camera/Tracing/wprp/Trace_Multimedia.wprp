@@ -25,6 +25,9 @@
     <EventProvider Id="Microsoft.Windows.Capture.USBVideo.Trustlet" Name="0f0917eb-05ef-4416-87b1-0148718adfec" Level="5" />
     <EventProvider Id="Microsoft.Windows.Capture.WindowsEffectCameraMediaSource" Name="991484e1-73b3-4846-8715-ea57c84879bb" />
     <EventProvider Id="Intel-Camera-Intel(R)-AVStream-Camera" Name="8148FD77-300C-4515-B9AB-C80660E12345"/>
+      <Keywords>
+        <Keyword Value="0x0000000000000001" />
+      </Keywords>
     <EventProvider Id="Intel-Camera-Intel(R)-AVStream-Camera-DeviceMFT" Name="1DE583AB-7ABE-49BC-8ED6-96AFA7212345">
       <Keywords>
         <Keyword Value="0x0000000000000001" />

@@ -536,6 +536,11 @@
         <Keyword Value="0x7fffffff"/>
       </Keywords>
     </EventProvider>
+    <EventProvider Id="Microsoft.Windows.Media.Audio.AudioPlaybackConnection" Name="98C32C7A-945F-4A88-A832-0157B9FBFA35" Level="5" NonPagedMemory="false">
+      <Keywords>
+        <Keyword Value="0xffffffff"/>
+      </Keywords>
+    </EventProvider>
 
     <!-- Non Paged providers. They are kept separate for readability -->
     <EventProvider Id="portcls" Name="10EB6007-818C-4DB6-A694-B518E589D07A" Level="4" NonPagedMemory="true">
@@ -935,6 +940,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
+            <EventProviderId Value="Microsoft.Windows.Media.Audio.AudioPlaybackConnection"/>
           </EventProviders>
         </EventCollectorId>
 
@@ -1110,6 +1116,7 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.AutoConfig"/>
             <EventProviderId Value="Microsoft.Windows.WLAN.WDI"/>
+            <EventProviderId Value="Microsoft.Windows.Media.Audio.AudioPlaybackConnection"/>
           </EventProviders>
         </EventCollectorId>
 

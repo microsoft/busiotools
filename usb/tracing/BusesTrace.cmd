@@ -159,7 +159,7 @@ if "%collectPnpStates%"=="1" (
     pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
 )
 
-rem Put message into dispdiag's ring buffer, note this does trigger collection of the .dat file
+rem Put message into dispdiag's ring buffer, note this does not trigger collection of the .dat file
 dispdiag.exe -msg "Buses Trace: Starting trace with profile %profileName% at %startTime% %startDate%"
 
 rem Backup and changing UMDF settings
@@ -238,7 +238,7 @@ reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFi
 powershell -command "REG QUERY \"HKLM\Software\Microsoft\Windows NT\CurrentVersion\Update\TargetingInfo\Installed\" /s | Select-string Client.OS -context 0,5" >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 
-rem Put message into dispdiag's ring buffer, note this does trigger collection of the .dat file
+rem Put message into dispdiag's ring buffer, note this does not trigger collection of the .dat file
 dispdiag.exe -msg "Buses Trace: stopped trace with profile %profileName%"
 
 if "%collectPnpStates%"=="1" (

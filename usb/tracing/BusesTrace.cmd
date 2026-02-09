@@ -67,7 +67,7 @@ echo 2) Stop Boot Session Trace
 echo 3) Cleanup Previous Session
 echo 4) Exit
 echo.
-set /p selection=Enter selection number: 
+set /p selection=Enter selection number:
 if "%selection%"=="1" goto BasicProfilesMenu
 if "%selection%"=="2" goto StopBootTrace
 if "%selection%"=="3" goto Cleanup
@@ -90,7 +90,7 @@ echo 4) Sensors components only
 echo 5) Other options...
 echo 6) Back
 echo.
-set /p selection=Enter selection number: 
+set /p selection=Enter selection number:
 if "%selection%"=="1" set profileName=BusesAllProfile
 if "%selection%"=="2" set profileName=Usb4WithTunnelsProfile
 if "%selection%"=="3" set profileName=InputOnlyProfile
@@ -117,7 +117,7 @@ echo 4) LowPowerBusesProfile (SerCx2 and SpbCx)
 echo 5) InputOnlyWithVerboseWppProfile (Input)
 echo 6) Back
 echo.
-set /p selection=Enter selection number: 
+set /p selection=Enter selection number:
 if "%selection%"=="1" set profileName=UsbOnlyProfile
 if "%selection%"=="2" set profileName=UsbAndPnpProfile
 if "%selection%"=="3" set profileName=UsbCProfile
@@ -142,7 +142,7 @@ echo 1) Start Now
 echo 2) Start From Next Boot Session
 echo 3) Back
 echo.
-set /p selection=Enter selection number: 
+set /p selection=Enter selection number:
 if "%selection%"=="1" goto CommonStartSteps
 if "%selection%"=="2" goto CommonStartSteps
 if "%selection%"=="3" goto BasicProfilesMenu
@@ -158,6 +158,9 @@ if "%collectPnpStates%"=="1" (
     if exist %traceFilesOutputPath%\%pnpStatePreReproFileName% del %traceFilesOutputPath%\%pnpStatePreReproFileName%
     pnputil.exe /export-pnpstate %traceFilesOutputPath%\%pnpStatePreReproFileName%
 )
+
+rem Put message into dispdiag's ring buffer, note this does not trigger collection of the .dat file
+dispdiag.exe -msg "Buses Trace: Starting trace with profile %profileName% at %startTime% %startDate%"
 
 rem Backup and changing UMDF settings
 echo Updating UMDF trace and dump settings...
@@ -235,6 +238,8 @@ reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v UBR >> %traceFi
 powershell -command "REG QUERY \"HKLM\Software\Microsoft\Windows NT\CurrentVersion\Update\TargetingInfo\Installed\" /s | Select-string Client.OS -context 0,5" >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 dir /s %SystemRoot%\LiveKernelReports\* >> %traceFilesOutputPath%\%busesTraceInfoFileName%
 
+rem Put message into dispdiag's ring buffer, note this does not trigger collection of the .dat file
+dispdiag.exe -msg "Buses Trace: stopped trace with profile %profileName%"
 
 if "%collectPnpStates%"=="1" (
     rem PnP State
@@ -267,22 +272,24 @@ if exist %SystemRoot%\LiveKernelReports\USB* (
 )
 
 
-rem Collecting DispDiag and if availiable the DES mini dump 
-if  "%profileName%"=="SensorsOnlyProfile" (
+rem Collecting DispDiag and if availiable the DES mini dump
+if  "%profileName%"=="SensorsOnlyProfile" goto CollectDispDiag
+if  "%profileName%"=="Usb4WithTunnelsProfile" goto CollectDispDiag
+goto SkipCollectDispDiag
+:CollectDispDiag
     echo.
     echo Now collecting DispDiag
-    dispdiag
-    move "%scriptDirectory%*.dat" %traceFilesOutputPath% 
+    dispdiag.exe
+    move "%scriptDirectory%*.dat" %traceFilesOutputPath%
 
     if exist %miniDumpCollectionScript% (
         echo Now collecting sensor process minidumps
         pushd "%~dp0"
-        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll SensorsCx.dll" -OutputPath "%traceFilesOutputPath%" 
+        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll SensorsCx.dll" -OutputPath "%traceFilesOutputPath%"
         copy %SYSTEMROOT%\system32\DispDiag*.dat %traceFilesOutputPath% >nul 2>&1
         popd
     )
-
-)
+:SkipCollectDispDiag
 
 echo Tracing End Time: %Time% %Date%>> %traceFilesOutputPath%\%busesTraceInfoFileName%
 

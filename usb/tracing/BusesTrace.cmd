@@ -275,6 +275,7 @@ if exist %SystemRoot%\LiveKernelReports\USB* (
 rem Collecting DispDiag and if availiable the DES mini dump
 if  "%profileName%"=="SensorsOnlyProfile" goto CollectDispDiag
 if  "%profileName%"=="Usb4WithTunnelsProfile" goto CollectDispDiag
+if  "%profileName%"=="BusesAllProfile" goto CollectDispDiag
 goto SkipCollectDispDiag
 :CollectDispDiag
     echo.

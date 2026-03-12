@@ -707,11 +707,13 @@
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp.Verbose" Name="8776AD1E-5022-4451-A566-F47E708B9075" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthEnum" Name="8C8349A2-F297-4178-80A5-0810A56C9DFB" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.BthPort" Name="A8DD90AF-85F0-40B1-B022-4F54961E8AE5" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Csip" Name="6DCE2B00-C210-4FB1-BD8C-47DC33EC3596" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Gap" Name="2AEE48B8-F498-4F2E-A2A2-898665DB5C3E" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HfAud" Name="8D87AA29-0EBE-41AF-B3C4-F56CE668BD22" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HfEnum" Name="9680893F-0696-4EC0-9AF5-65974897C9D4" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HFP" Name="1D571AB7-C34D-41C5-B141-42D76317C7C5" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH" Name="0575a639-1f8c-510e-8aaa-0af5e54229ab" Level="5" NonPagedMemory="true" />
+    <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.LE.Audio.Services" Name="BB867B81-15FA-4578-95B6-39E3A45F5DE3" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices" Name="1adab660-a3f8-5f4a-276b-743d455464ee" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.Proximity" Name="FA5FD884-8804-4A36-98B8-70BFC46A9FA2" Level="5" NonPagedMemory="true" />
     <EventProvider Id="Microsoft.Windows.Bluetooth.Telemetry.QuickPair" Name="7BD2C7F4-6671-474E-BDFC-2D141A0B6B7E" Level="5" NonPagedMemory="true" />
@@ -971,11 +973,13 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthPort"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Csip"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfAud"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HFP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LE.Audio.Services"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>
@@ -1146,11 +1150,13 @@
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthA2dp.Verbose"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.BthPort"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Csip"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Gap"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfAud"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HfEnum"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HFP"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.HIDBTH"/>
+            <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LE.Audio.Services"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.LooselyCoupledDevices"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.Proximity"/>
             <EventProviderId Value="Microsoft.Windows.Bluetooth.Telemetry.QuickPair"/>

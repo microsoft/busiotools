@@ -610,7 +610,7 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
-    <EventProvider Id="QcUsbCUcsi8280Wpp" Name="3168776E-0E5B-4B63-8F92-9D6C1B395166" NonPagedMemory="true" Level="5">
+    <EventProvider Id="QcUsbCUcsiWpp" Name="3168776E-0E5B-4B63-8F92-9D6C1B395166" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -735,7 +735,7 @@
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
+            <EventProviderId Value="QcUsbCUcsiWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Input">
@@ -905,7 +905,7 @@
             <EventProviderId Value="UsbHub3Wpp" />
             <EventProviderId Value="QcXhciFilterWpp" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
+            <EventProviderId Value="QcUsbCUcsiWpp" />
             <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
@@ -965,7 +965,7 @@
             <EventProviderId Value="UsbHub3Wpp" />
             <EventProviderId Value="QcXhciFilterWpp" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
+            <EventProviderId Value="QcUsbCUcsiWpp" />
             <EventProviderId Value="NVPEP" />
           </EventProviders>
         </EventCollectorId>
@@ -1031,7 +1031,7 @@
             <EventProviderId Value="UsbCApiWpp" />
             <EventProviderId Value="CadEtw" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
-            <EventProviderId Value="QcUsbCUcsi8280Wpp" />
+            <EventProviderId Value="QcUsbCUcsiWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">

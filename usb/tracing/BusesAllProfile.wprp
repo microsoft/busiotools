@@ -615,6 +615,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="QcPmicGlinkWpp" Name="3804DC7C-C7BC-457D-8386-DB0BCB690358" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="QcPpxWpp" Name="11BB6DA3-32F8-443D-886F-2811CD201BB7" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -736,6 +741,7 @@
             <EventProviderId Value="CadEtw" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
             <EventProviderId Value="QcUsbCUcsiWpp" />
+            <EventProviderId Value="QcPmicGlinkWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Input">
@@ -1032,6 +1038,7 @@
             <EventProviderId Value="CadEtw" />
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
             <EventProviderId Value="QcUsbCUcsiWpp" />
+            <EventProviderId Value="QcPmicGlinkWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">

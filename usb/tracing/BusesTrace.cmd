@@ -274,11 +274,16 @@ if exist %SystemRoot%\LiveKernelReports\USB* (
 )
 
 
-rem Collecting DispDiag and if availiable the DES mini dump
+rem Collecting DispDiag and if available the DES mini dump
+rem Note: when stopping a boot trace, profileName is not set (the user only
+rem selects "Stop Boot Session Trace" without choosing a profile), so we
+rem always collect DispDiag and minidumps in that case since we can't
+rem determine which profile was used to start the boot trace.
 if  "%profileName%"=="SensorsOnlyProfile" goto CollectDispDiag
 if  "%profileName%"=="Usb4WithTunnelsProfile" goto CollectDispDiag
 if  "%profileName%"=="BusesAllProfile" goto CollectDispDiag
 if  "%profileName%"=="Usb4WithExtendedDisplayProfile" goto CollectDispDiag
+if  "%profileName%"=="" goto CollectDispDiag
 goto SkipCollectDispDiag
 :CollectDispDiag
     echo.
@@ -286,10 +291,10 @@ goto SkipCollectDispDiag
     dispdiag.exe
     move "%scriptDirectory%*.dat" %traceFilesOutputPath%
 
-    if exist %miniDumpCollectionScript% (
+    if exist %scriptDirectory%%miniDumpCollectionScript% (
         echo Now collecting sensor process minidumps
         pushd "%~dp0"
-        powershell -ExecutionPolicy bypass -file "%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll SensorsCx.dll" -OutputPath "%traceFilesOutputPath%"
+        powershell -ExecutionPolicy bypass -file "%scriptDirectory%%miniDumpCollectionScript%" -FileList "Microsoft.Graphics.Display.DisplayEnhancementService.dll umpoext.dll sensorservice.dll SensorsCx.dll" -OutputPath "%traceFilesOutputPath%"
         copy %SYSTEMROOT%\system32\DispDiag*.dat %traceFilesOutputPath% >nul 2>&1
         popd
     )

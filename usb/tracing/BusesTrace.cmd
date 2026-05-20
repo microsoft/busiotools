@@ -18,6 +18,7 @@ set Buses_Backup_LogMinidumpType=0x1120
 set Buses_Backup_LogEnable=0
 set Buses_Backup_LogFlushPeriodSeconds=300
 set collectPnpStates=1
+set busesTraceRegKey=HKLM\Software\Microsoft\BusesTrace
 
 if not exist %wprpFileName% (
     echo.
@@ -201,6 +202,9 @@ echo Configuring Boot Session Trace... (%wprpFileName%!%profileName%)
 wpr.exe -addboot %wprpFileName%!%profileName% -filemode -recordTempTo %traceFilesOutputPath%\
 if not %ERRORLEVEL%==0 goto End
 
+rem Save the profile name to registry so we can retrieve it when stopping the boot trace.
+REG.EXE ADD "%busesTraceRegKey%" /v ProfileName /t REG_SZ /d %profileName% /f
+
 echo.
 echo ###############################################################################
 echo Please reboot your PC to start tracing. After reproducing the issue, run this
@@ -210,6 +214,9 @@ echo.
 goto End
 
 :StopBootTrace
+rem Restore the profile name saved when the boot trace was configured.
+FOR /F "skip=2 tokens=3" %%v IN ('reg.exe query "%busesTraceRegKey%" /v ProfileName 2^>nul') DO set profileName=%%v
+REG.EXE DELETE "%busesTraceRegKey%" /v ProfileName /f >nul 2>&1
 echo Saving WPR status to %busesTraceInfoFileName%...
 wpr.exe -status profiles collectors -details > %traceFilesOutputPath%\%busesTraceInfoFileName%
 echo Stopping boot session tracing...
@@ -275,10 +282,6 @@ if exist %SystemRoot%\LiveKernelReports\USB* (
 
 
 rem Collecting DispDiag and if available the DES mini dump
-rem Note: when stopping a boot trace, profileName is not set (the user only
-rem selects "Stop Boot Session Trace" without choosing a profile), so we
-rem always collect DispDiag and minidumps in that case since we can't
-rem determine which profile was used to start the boot trace.
 if  "%profileName%"=="SensorsOnlyProfile" goto CollectDispDiag
 if  "%profileName%"=="Usb4WithTunnelsProfile" goto CollectDispDiag
 if  "%profileName%"=="BusesAllProfile" goto CollectDispDiag

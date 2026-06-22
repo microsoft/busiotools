@@ -25,7 +25,11 @@
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
-    <EventCollector Id="EventCollector_LowPowerBuses" Name="LowPowerBusesTrace">
+    <EventCollector Id="EventCollector_I3CAndLowPowerBuses" Name="I3CAndLowPowerBusesTrace">
+      <BufferSize Value="64" />
+      <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
+    </EventCollector>
+    <EventCollector Id="EventCollector_TestResults" Name="TestResultsTrace">
       <BufferSize Value="64" />
       <Buffers Value="1.4" PercentageOfTotalMemory="true" MaximumBufferSpace="32" />
     </EventCollector>
@@ -455,7 +459,7 @@
       </Keywords>
     </EventProvider>
     <!--
-      Lower Power Buses Event Providers
+      I3C and Low Power Buses Event Providers
     -->
     <EventProvider Id="SerCx2Wpp" Name="0ae46f43-b144-4056-9195-470054009d6c" NonPagedMemory="true" Level="5">
       <Keywords>
@@ -498,6 +502,11 @@
       </Keywords>
     </EventProvider>
     <EventProvider Id="WinI3CEtw" Name="13c549d5-ad31-44e2-b47f-6ed22430771e" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
+    <EventProvider Id="WinI3CWpp" Name="13cbc7ca-ea5c-4b69-ad93-b47a1915d814" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
@@ -677,6 +686,18 @@
           <Keyword Value="0xFFFFFFFF" />
         </Keywords>
     </EventProvider>
+    <!-- Taef -->
+    <EventProvider Id="EventProvider_Microsoft.Windows.TestExecution.WexLogger" Name="40c4df8b-00a9-5159-62bc-9bbc5ee78a29" Level="4" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.TestExecution.WexLogger_Errors_Stacks" Name="40c4df8b-00a9-5159-62bc-9bbc5ee78a29" Level="2" Stack="true" NonPagedMemory="true"/>
+    <!-- WIL -->
+    <EventProvider Id="EventProvider_Microsoft.Windows.ErrorHandling.Fallback" Name="bf4c9654-66d1-5720-7b51-d2ae226735ea" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.ErrorHandling.Fallback_Stacks" Name="bf4c9654-66d1-5720-7b51-d2ae226735ea" Stack="true" NonPagedMemory="true"/>
+    <!-- WER -->
+    <EventProvider Id="EventProvider_Microsoft.Windows.FaultReportingTracingGuid" Name="1377561D-9312-452C-AD13-C4A1C9C906E0" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.WindowsErrorReportingTracingGuid" Name="CC79CF77-70D9-4082-9B52-23F3A3E92FE4" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.WERSecureVerticalTracingGuid" Name="97945555-b04c-47c0-b399-e453d509a5f0" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.WERVerticalTracingGuid" Name="2b87e57e-7bd0-43a3-a278-02e62d59b2b1" NonPagedMemory="true"/>
+    <EventProvider Id="EventProvider_Microsoft.Windows.HangReportingTracingGuid" Name="3E0D88DE-AE5C-438A-BB1C-C2E627F8AECB" NonPagedMemory="true"/>
 
     <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="USB2, USB3, USB4, USB-C and Input">
@@ -777,7 +798,7 @@
             <EventProviderId Value="SurfaceHidMiniDriver" />
           </EventProviders>
         </EventCollectorId>
-        <EventCollectorId Value="EventCollector_LowPowerBuses">
+        <EventCollectorId Value="EventCollector_I3CAndLowPowerBuses">
           <EventProviders>
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
@@ -788,6 +809,7 @@
             <EventProviderId Value="WinI3CTargetWpp" />
             <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />
+            <EventProviderId Value="WinI3CWpp" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Camera">
@@ -799,6 +821,19 @@
             <EventProviderId Value="EventProvider_Microsoft-Windows-MF" />
             <EventProviderId Value="EventProvider_WindowsAvStreamWPP" />
             <EventProviderId Value="EventProvider_MFCore_DevProxyFS_WPP" />
+          </EventProviders>
+        </EventCollectorId>
+        <EventCollectorId Value="EventCollector_TestResults">
+          <EventProviders>
+            <EventProviderId Value="EventProvider_Microsoft.Windows.TestExecution.WexLogger" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.TestExecution.WexLogger_Errors_Stacks" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.ErrorHandling.Fallback" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.ErrorHandling.Fallback_Stacks" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.FaultReportingTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WindowsErrorReportingTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WERSecureVerticalTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WERVerticalTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.HangReportingTracingGuid" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
@@ -1185,10 +1220,10 @@
       Description="Sensors only logging"
       Base="SensorsOnlyProfile.Verbose.Memory"/>
 
-    <Profile Id="LowPowerBusesProfile.Verbose.Memory" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
+    <Profile Id="I3CAndLowPowerBusesProfile.Verbose.Memory" Name="I3CAndLowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="SerCx2 and SpbCx">
       <Collectors>
-        <EventCollectorId Value="EventCollector_LowPowerBuses">
+        <EventCollectorId Value="EventCollector_I3CAndLowPowerBuses">
           <EventProviders>
             <EventProviderId Value="SerCx2Wpp" />
             <EventProviderId Value="SerCx2Etw" />
@@ -1199,13 +1234,29 @@
             <EventProviderId Value="WinI3CTargetWpp" />
             <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />
+            <EventProviderId Value="WinI3CWpp" />
+            <EventProviderId Value="HidClassWppInfo" />
+            <EventProviderId Value="HidClassEtw" />
+            <EventProviderId Value="HidI2cWpp" />
+            <EventProviderId Value="HidI2cEtw" />
+            <EventProviderId Value="HidI3cWpp" />
+            <EventProviderId Value="HidI3cEtw" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.TestExecution.WexLogger" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.TestExecution.WexLogger_Errors_Stacks" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.ErrorHandling.Fallback" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.ErrorHandling.Fallback_Stacks" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.FaultReportingTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WindowsErrorReportingTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WERSecureVerticalTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.WERVerticalTracingGuid" />
+            <EventProviderId Value="EventProvider_Microsoft.Windows.HangReportingTracingGuid" />
           </EventProviders>
         </EventCollectorId>
       </Collectors>
     </Profile>
-    <Profile Id="LowPowerBusesProfile.Verbose.File" Name="LowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="File"
-      Description="SerCx2 and SpbCx"
-      Base="LowPowerBusesProfile.Verbose.Memory"/>
+    <Profile Id="I3CAndLowPowerBusesProfile.Verbose.File" Name="I3CAndLowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="File"
+      Description="I3C, SerCx2 and SpbCx"
+      Base="I3CAndLowPowerBusesProfile.Verbose.Memory"/>
 
   </Profiles>
 

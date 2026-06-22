@@ -86,18 +86,20 @@ echo Which components to collect trace from?
 echo ---------------------------------------
 echo 1) All buses components
 echo 2) USB4 components
-echo 3) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
-echo 4) Sensors components only
-echo 5) Other options...
-echo 6) Back
+echo 3) I3C/LowPoweredBuses components only
+echo 4) Input/HID components only (select for HID problems - keyboard, mouse, touch input, buttons etc.)
+echo 5) Sensors components only
+echo 6) Other options...
+echo 7) Back
 echo.
 set /p selection=Enter selection number:
 if "%selection%"=="1" set profileName=BusesAllProfile
 if "%selection%"=="2" set profileName=Usb4WithTunnelsProfile
-if "%selection%"=="3" set profileName=InputOnlyProfile
-if "%selection%"=="4" set profileName=SensorsOnlyProfile
-if "%selection%"=="5" goto OtherProfilesMenu
-if "%selection%"=="6" goto MainMenu
+if "%selection%"=="3" set profileName=I3CAndLowPowerBusesProfile
+if "%selection%"=="4" set profileName=InputOnlyProfile
+if "%selection%"=="5" set profileName=SensorsOnlyProfile
+if "%selection%"=="6" goto OtherProfilesMenu
+if "%selection%"=="7" goto MainMenu
 if not "%profileName%"=="" goto StartOptionsMenu
 echo.
 echo "%selection%" is not a valid option.  Please try again.
@@ -114,19 +116,17 @@ echo ----------------------
 echo 1) UsbOnlyProfile (USB2, USB3 and USB4)
 echo 2) UsbAndPnPProfile (USB2, USB3, USB4 and PnP)
 echo 3) UsbCProfile (UCM, URS and USBFN)
-echo 4) LowPowerBusesProfile (SerCx2 and SpbCx)
-echo 5) InputOnlyWithVerboseWppProfile (Input)
-echo 6) Usb4WithExtendedDisplayProfile (USB3, USB4, PnP, PCI, Display, and Display IHV providers)
-echo 7) Back
+echo 4) InputOnlyWithVerboseWppProfile (Input)
+echo 5) Usb4WithExtendedDisplayProfile (USB3, USB4, PnP, PCI, Display, and Display IHV providers)
+echo 6) Back
 echo.
 set /p selection=Enter selection number:
 if "%selection%"=="1" set profileName=UsbOnlyProfile
 if "%selection%"=="2" set profileName=UsbAndPnpProfile
 if "%selection%"=="3" set profileName=UsbCProfile
-if "%selection%"=="4" set profileName=LowPowerBusesProfile
-if "%selection%"=="5" set profileName=InputOnlyWithVerboseWppProfile
-if "%selection%"=="6" set profileName=Usb4WithExtendedDisplayProfile
-if "%selection%"=="7" goto BasicProfilesMenu
+if "%selection%"=="4" set profileName=InputOnlyWithVerboseWppProfile
+if "%selection%"=="5" set profileName=Usb4WithExtendedDisplayProfile
+if "%selection%"=="6" goto BasicProfilesMenu
 if not "%profileName%"=="" goto StartOptionsMenu
 echo.
 echo "%selection%" is not a valid option.  Please try again.

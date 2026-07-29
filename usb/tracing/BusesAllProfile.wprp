@@ -491,6 +491,11 @@
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
       </Keywords>
     </EventProvider>
+    <EventProvider Id="I3cHostManifested" Name="13cd5ed8-f66e-4662-9a63-665b30592158" NonPagedMemory="true" Level="5">
+      <Keywords>
+        <Keyword Value="0xFFFFFFFFFFFFFFFF" />
+      </Keywords>
+    </EventProvider>
     <EventProvider Id="WinI3CTargetWpp" Name="13c826fc-d2b1-4531-8f88-b17dd3bb2eaa" NonPagedMemory="true" Level="5">
       <Keywords>
         <Keyword Value="0xFFFFFFFFFFFFFFFF" />
@@ -806,6 +811,7 @@
             <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
+            <EventProviderId Value="I3cHostManifested" />
             <EventProviderId Value="WinI3CTargetWpp" />
             <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />
@@ -1221,7 +1227,7 @@
       Base="SensorsOnlyProfile.Verbose.Memory"/>
 
     <Profile Id="I3CAndLowPowerBusesProfile.Verbose.Memory" Name="I3CAndLowPowerBusesProfile" DetailLevel="Verbose" LoggingMode="Memory"
-      Description="SerCx2 and SpbCx">
+      Description="I3C, SerCx2 and SpbCx">
       <Collectors>
         <EventCollectorId Value="EventCollector_I3CAndLowPowerBuses">
           <EventProviders>
@@ -1231,6 +1237,7 @@
             <EventProviderId Value="SpbCxEtw" />
             <EventProviderId Value="I3cHostWpp" />
             <EventProviderId Value="I3cHostEtw" />
+            <EventProviderId Value="I3cHostManifested" />
             <EventProviderId Value="WinI3CTargetWpp" />
             <EventProviderId Value="WinI3CTargetEtw" />
             <EventProviderId Value="WinI3CEtw" />

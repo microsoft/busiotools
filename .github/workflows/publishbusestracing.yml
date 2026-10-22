@@ -1,15 +1,38 @@
 name: Publish Buses Tracing Tools (for winget)
+
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version bump (major, minor, patch) (e.g., major)"
-        required: false
-        default: "major"
+        description: "Version bump"
+        type: choice
+        required: true
+        default: minor
+        options:
+          - major
+          - minor
+          - patch
       configuration:
-        description: "Build configuration (Release/Debug)"
-        required: false
-        default: "Release"
+        description: "Build configuration"
+        type: choice
+        required: true
+        default: Release
+        options:
+          - Release
+          - Debug
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+# All branches publish into the same release-tag namespace.
+concurrency:
+  group: publish-busestracing
+  cancel-in-progress: false
+
 jobs:
   # 1) Compute next version once. Tag happens in the release job.
   versioning:
@@ -20,39 +43,51 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          fetch-depth: 0           # full history
-          fetch-tags: true         # also fetch tags
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Calculate next version
         id: version
-        shell: pwsh
+        env:
+          VERSION_BUMP: ${{ inputs.version }}
         run: |
-         $latestTag = ''
-          try {
-            $latestTag = (git describe --tags --abbrev=0 --match "bt[0-9]*.[0-9]*.[0-9]*")
-          } catch {
-            $latestTag = ''
-          } finally {
-            $global:LASTEXITCODE = 0
+          $bump = $env:VERSION_BUMP
+          if ($bump -notin @('major', 'minor', 'patch')) {
+            throw "Invalid version bump: '$bump'."
           }
-         
+
+          $tags = git --no-pager tag --list 'bt*' --sort=-version:refname
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to list release tags."
+          }
+
+          $latestTag = $tags |
+            Where-Object { $_ -match '^bt[0-9]+\.[0-9]+\.[0-9]+$' } |
+            Select-Object -First 1
+
           if ([string]::IsNullOrEmpty($latestTag)) {
-            $major = 1; $minor = 0; $patch = 0
+            $nextVersion = '1.0.0'
+            Write-Host "No existing release tags; starting at $nextVersion."
           } else {
-            $version = $latestTag.TrimStart('bt')
-            $parts = $version.Split('.')
-            $major = [int]$parts[0]; $minor = [int]$parts[1]; $patch = [int]$parts[2]
-            $bump = "${{ github.event.inputs.version }}"
+            $parts = $latestTag.Substring(2).Split('.')
+            $major = [int]$parts[0]
+            $minor = [int]$parts[1]
+            $patch = [int]$parts[2]
+
             switch ($bump) {
               'major' { $major += 1; $minor = 0; $patch = 0 }
               'minor' { $minor += 1; $patch = 0 }
               'patch' { $patch += 1 }
-              default { $patch += 1 } # fallback
             }
-          }
-          $nextVersion = "$major.$minor.$patch"
-          "next_version=$nextVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
+            $nextVersion = "$major.$minor.$patch"
+            Write-Host "Previous release tag: $latestTag"
+          }
+
+          Write-Host "Requested bump: $bump"
+          Write-Host "Next release tag: bt$nextVersion"
+          "next_version=$nextVersion" |
+            Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
   # 2) Build matrix for both win-x64 and win-arm64. Upload per-runtime zip artifact.
   build:
     needs: versioning
@@ -63,8 +98,9 @@ jobs:
         runtime: [win-x64, win-arm64]
     env:
       DOTNET_VERSION: '9.0.x'
-      CONFIGURATION: ${{ github.event.inputs.configuration || 'Release' }}
-      PROJECT_PATH: 'usb/tracingwrapper/BusesTraceWrapper.csproj'
+      CONFIGURATION: ${{ inputs.configuration }}
+      PROJECT_PATH: 'usb\tracingwrapper\BusesTraceWrapper.csproj'
+      RUNTIME: ${{ matrix.runtime }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -75,67 +111,63 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore "${{ env.PROJECT_PATH }}"
+        run: |
+          dotnet restore "$env:PROJECT_PATH"
+          if ($LASTEXITCODE -ne 0) {
+            throw "dotnet restore failed."
+          }
+
+      - name: Calculate BusesTrace.cmd SHA-256
+        id: busestrace_hash
+        run: |
+          $hash = (Get-FileHash `
+            -LiteralPath 'usb\tracing\BusesTrace.cmd' `
+            -Algorithm SHA256 `
+            -ErrorAction Stop).Hash
+
+          "sha256=$hash" |
+            Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Publish EXE (single-file, self-contained)
+        env:
+          BUSES_TRACE_SHA256: ${{ steps.busestrace_hash.outputs.sha256 }}
         run: |
-          dotnet publish "${{ env.PROJECT_PATH }}" `
-            -c "${{ env.CONFIGURATION }}" `
-            -r "${{ matrix.runtime }}" `
+          dotnet publish "$env:PROJECT_PATH" `
+            -c "$env:CONFIGURATION" `
+            -r "$env:RUNTIME" `
             /p:PublishSingleFile=true `
             /p:SelfContained=true `
             /p:IncludeNativeLibrariesForSelfExtract=true `
-            /p:EnableCompressionInSingleFile=true
+            /p:EnableCompressionInSingleFile=true `
+            "/p:BusesTraceSha256=$env:BUSES_TRACE_SHA256" `
+            --output "publish\$env:RUNTIME"
 
-      - name: Locate publish output
-        id: paths
-        shell: pwsh
-        run: |
-          $projDir = Split-Path "${{ env.PROJECT_PATH }}"
-          $base = Join-Path $projDir "bin/${{ env.CONFIGURATION }}/${{ matrix.runtime }}"
-          # Prefer the explicit runtime subfolder; fall back to scanning if needed
-          if (Test-Path $base) {
-            $publishDirs = Get-ChildItem -Path $base -Recurse -Directory -Filter publish | Sort-Object LastWriteTime -Descending
-          } else {
-            $base2 = Join-Path $projDir "bin/${{ env.CONFIGURATION }}"
-            $publishDirs = Get-ChildItem -Path $base2 -Recurse -Directory -Filter publish | Sort-Object LastWriteTime -Descending
-          }
-          if (-not $publishDirs -or $publishDirs.Count -eq 0) {
-            Write-Error "No publish directories found."
-          }
-          $pub = $publishDirs[0].FullName
-          "publishDir=$pub" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          $exe = Get-ChildItem -Path $pub -Filter *.exe -File | Select-Object -First 1
-          if ($exe) {
-            "exePath=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          } else {
-            Write-Error "No EXE found in publish directory: $pub"
+          if ($LASTEXITCODE -ne 0) {
+            throw "dotnet publish failed for $env:RUNTIME."
           }
 
       - name: Stage scripts + EXE for this runtime
-        shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path "stage/${{ matrix.runtime }}" -Force | Out-Null
-          # copy scripts
-          Copy-Item "usb/tracing/*" "stage/${{ matrix.runtime }}/" -Recurse -Force
-          # copy runtime-specific EXE
-          Copy-Item "${{ steps.paths.outputs.exePath }}" "stage/${{ matrix.runtime }}/" -Force
+          $stage = "stage\$env:RUNTIME"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+          Copy-Item -Path 'usb\tracing\*' -Destination $stage -Recurse -Force
+          Copy-Item -LiteralPath "publish\$env:RUNTIME\BusesTraceWrapper.exe" `
+            -Destination $stage -Force
 
       - name: Create zip for this runtime
-        shell: pwsh
         run: |
           New-Item -ItemType Directory -Path release -Force | Out-Null
-          $zipName = "busestracing-${{ matrix.runtime }}.zip"
-          Compress-Archive -Path "stage/${{ matrix.runtime }}/*" -DestinationPath "release/$zipName"
-          Write-Host "Created release/$zipName"
+          $zipName = "busestracing-$env:RUNTIME.zip"
+          Compress-Archive -Path "stage\$env:RUNTIME\*" `
+            -DestinationPath "release\$zipName"
+          Write-Host "Created release\$zipName"
 
       - name: Upload artifact (this runtime)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: zips-${{ matrix.runtime }}
-          path: release/busestracing-${{ matrix.runtime }}.zip
+          path: release\busestracing-${{ matrix.runtime }}.zip
           if-no-files-found: error
-
   # 3) Single release job: creates tag and publishes both zips in one release.
   release:
     needs: [versioning, build]
@@ -145,33 +177,56 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-    
+
       - name: Download all artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           path: release
 
-      - name: Create tag
-        shell: pwsh
+      - name: Create new tag
+        env:
+          NEXT_VERSION: ${{ needs.versioning.outputs.next_version }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch --tags
-          $tag = "bt${{ needs.versioning.outputs.next_version }}"
-          # Only create if it doesn't exist
-          $existing = (git tag --list $tag)
-          if (-not $existing) {
-            git tag $tag
-            git push origin $tag
-          } else {
-            Write-Host "Tag $tag already exists; skipping creation."
+          git fetch --tags origin
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to fetch release tags."
           }
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
-        with:
-          tag_name: bt${{ needs.versioning.outputs.next_version }}
-          name: "Buses Tracing Tools (winget) v${{ needs.versioning.outputs.next_version }}"
-          files: |
-            release/zips-win-x64/busestracing-win-x64.zip
-            release/zips-win-arm64/busestracing-win-arm64.zip
+          $tag = "bt$env:NEXT_VERSION"
+          $existing = git --no-pager tag --list $tag
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to check whether $tag already exists."
+          }
+          if ($existing) {
+            throw "Tag $tag already exists; refusing to overwrite release assets."
+          }
+
+          git tag $tag "$env:GITHUB_SHA"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to create tag $tag."
+          }
+
+          git push origin "refs/tags/${tag}:refs/tags/${tag}"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to push tag $tag; the release will not be published."
+          }
+
+          Write-Host "Created $tag at $env:GITHUB_SHA."
+
+      - name: Create new GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NEXT_VERSION: ${{ needs.versioning.outputs.next_version }}
+        run: |
+          $tag = "bt$env:NEXT_VERSION"
+          gh release create $tag `
+            'release\zips-win-x64\busestracing-win-x64.zip' `
+            'release\zips-win-arm64\busestracing-win-arm64.zip' `
+            --verify-tag `
+            --title "Buses Tracing Tools (winget) v$env:NEXT_VERSION" `
+            --notes "Buses Tracing Tools for Windows x64 and Arm64."
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to create release $tag; existing releases are not updated."
+          }

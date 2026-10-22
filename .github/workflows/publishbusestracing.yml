@@ -77,7 +77,19 @@ jobs:
       - name: Restore
         run: dotnet restore "${{ env.PROJECT_PATH }}"
 
+      - name: Calculate BusesTrace.cmd SHA-256
+        id: busestrace_hash
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash `
+            -LiteralPath 'usb\tracing\BusesTrace.cmd' `
+            -Algorithm SHA256 `
+            -ErrorAction Stop).Hash
+
+          "sha256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
       - name: Publish EXE (single-file, self-contained)
+        shell: pwsh
         run: |
           dotnet publish "${{ env.PROJECT_PATH }}" `
             -c "${{ env.CONFIGURATION }}" `
@@ -85,7 +97,8 @@ jobs:
             /p:PublishSingleFile=true `
             /p:SelfContained=true `
             /p:IncludeNativeLibrariesForSelfExtract=true `
-            /p:EnableCompressionInSingleFile=true
+            /p:EnableCompressionInSingleFile=true `
+            "/p:BusesTraceSha256=${{ steps.busestrace_hash.outputs.sha256 }}"
 
       - name: Locate publish output
         id: paths

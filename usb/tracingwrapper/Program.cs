@@ -44,8 +44,10 @@ class Program
                 return 1;
             }
 
-            ProcessStartInfo psi = new ProcessStartInfo("cmd.exe", "/c \"" + cmd + "\"")
+            ProcessStartInfo psi = new ProcessStartInfo()
             {
+                FileName = System.Environment.ExpandEnvironmentVariables(@"%SystemRoot%\System32\cmd.exe"),
+                Arguments = "/c \"" + cmd + "\"",
                 WorkingDirectory = exeDir,
                 UseShellExecute = false
             };

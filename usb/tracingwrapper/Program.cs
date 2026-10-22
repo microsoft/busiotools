@@ -1,30 +1,70 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Security.Cryptography;
 
 class Program
 {
     static int Main()
     {
         string? exeDir = Path.GetDirectoryName(GetRealExecutablePath());
-
         string cmd = exeDir + "\\BusesTrace.cmd";
+
         if (!File.Exists(cmd))
         {
             Console.Error.WriteLine("BusesTrace.cmd not found next to launcher." + cmd);
             return 1;
         }
 
-        ProcessStartInfo psi = new ProcessStartInfo("cmd.exe", "/c \"" + cmd + "\"")
+        string?[] embeddedHashes = typeof(Program).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+            .Where(attribute => attribute.Key == "BusesTraceSha256")
+            .Select(attribute => attribute.Value)
+            .ToArray();
+
+        if (embeddedHashes.Length != 1 ||
+            embeddedHashes[0] is not string expectedHash ||
+            expectedHash.Length != 64 ||
+            !expectedHash.All(Uri.IsHexDigit))
         {
-            WorkingDirectory = exeDir,
-            UseShellExecute = false
-        };
+            Console.Error.WriteLine("Missing or invalid embedded BusesTraceSha256; refusing to run.");
+            return 1;
+        }
 
-        Process? p = Process.Start(psi);
-        p?.WaitForExit();
+        try
+        {
+            // Keep the handle open through execution to deny writes and deletion.
+            using FileStream script = new FileStream(cmd, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-        return p?.ExitCode ?? 1;
+            string actualHash = Convert.ToHexString(SHA256.HashData(script));
+
+            if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Error.WriteLine("BusesTrace.cmd SHA-256 mismatch; refusing to run.");
+                return 1;
+            }
+
+            ProcessStartInfo psi = new ProcessStartInfo("cmd.exe", "/c \"" + cmd + "\"")
+            {
+                WorkingDirectory = exeDir,
+                UseShellExecute = false
+            };
+
+            using Process? p = Process.Start(psi);
+            if (p is null)
+            {
+                Console.Error.WriteLine("Failed to start BusesTrace.cmd.");
+                return 1;
+            }
+
+            p.WaitForExit();
+            return p.ExitCode;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException)
+        {
+            Console.Error.WriteLine($"Unable to validate or run BusesTrace.cmd: {ex.Message}");
+            return 1;
+        }
     }
 
     public static string GetRealExecutablePath()

@@ -1,31 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <ItemGroup>
+        <AssemblyMetadata Include="BusesTraceSha256" Value="$(BusesTraceSha256)" />
+    </ItemGroup>
 
-    <!-- Make a single-file exe -->
-    <PublishSingleFile>true</PublishSingleFile>
+    <Target Name="RequireBusesTraceSha256" BeforeTargets="GenerateAssemblyInfo">
+        <Error Condition="'$(BusesTraceSha256)' == ''" Text="Pass /p:BusesTraceSha256 when building." />
+    </Target>
 
-    <!-- Self-contained so users don't need the .NET runtime installed -->
-    <SelfContained>true</SelfContained>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-    <!-- Build matrix of Windows x64 + Arm64 -->
-    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+        <!-- Make a single-file exe -->
+        <PublishSingleFile>true</PublishSingleFile>
 
-      <!-- Recommended for single-file size/perf tradeoffs -->
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <!-- Self-contained so users don't need the .NET runtime installed -->
+        <SelfContained>true</SelfContained>
 
-    <!-- Optional: reduce pdbs in output -->
-    <DebugType>None</DebugType>
-    <InvariantGlobalization>false</InvariantGlobalization>
+        <!-- Build matrix of Windows x64 + Arm64 -->
+        <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 
-    <!-- Trimming can break reflection-heavy code; leave off unless you audit -->
-    <PublishTrimmed>false</PublishTrimmed>
+          <!-- Recommended for single-file size/perf tradeoffs -->
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+
+        <!-- Optional: reduce pdbs in output -->
+        <DebugType>None</DebugType>
+        <InvariantGlobalization>false</InvariantGlobalization>
+
+        <!-- Trimming can break reflection-heavy code; leave off unless you audit -->
+        <PublishTrimmed>false</PublishTrimmed>
 
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+     <DebugType>portable</DebugType>
+     <DebugSymbols>true</DebugSymbols>
+     <Optimize>false</Optimize>
+      <BusesTraceSha256>555A2BBB582C58317C474507CFADD1C16A58441AD56D132D722C5A49DA4959F1</BusesTraceSha256>
+   </PropertyGroup>
 
 </Project>

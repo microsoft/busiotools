@@ -703,6 +703,7 @@
     <EventProvider Id="EventProvider_Microsoft.Windows.WERSecureVerticalTracingGuid" Name="97945555-b04c-47c0-b399-e453d509a5f0" NonPagedMemory="true"/>
     <EventProvider Id="EventProvider_Microsoft.Windows.WERVerticalTracingGuid" Name="2b87e57e-7bd0-43a3-a278-02e62d59b2b1" NonPagedMemory="true"/>
     <EventProvider Id="EventProvider_Microsoft.Windows.HangReportingTracingGuid" Name="3E0D88DE-AE5C-438A-BB1C-C2E627F8AECB" NonPagedMemory="true"/>
+    <EventProvider Id="ACPIEtw" Name="Microsoft-Windows-Kernel-Acpi" NonPagedMemory="true"/>
 
     <Profile Id="BusesAllProfile.Verbose.Memory" Name="BusesAllProfile" DetailLevel="Verbose" LoggingMode="Memory"
       Description="USB2, USB3, USB4, USB-C and Input">
@@ -768,6 +769,7 @@
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
             <EventProviderId Value="QcUsbCUcsiWpp" />
             <EventProviderId Value="QcPmicGlinkWpp" />
+            <EventProviderId Value="ACPIEtw" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_Input">
@@ -1080,6 +1082,7 @@
             <EventProviderId Value="QcUsbFnSSFilterWpp" />
             <EventProviderId Value="QcUsbCUcsiWpp" />
             <EventProviderId Value="QcPmicGlinkWpp" />
+            <EventProviderId Value="ACPIEtw" />
           </EventProviders>
         </EventCollectorId>
         <EventCollectorId Value="EventCollector_PnP">
